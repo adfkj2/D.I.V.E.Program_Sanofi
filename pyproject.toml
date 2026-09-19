@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dive-memory"
-version = "0.1.0"
+version = "0.2.0"
 description = "Event-sourced long-term interactive AI memory service"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
 api = ["fastapi>=0.110", "uvicorn>=0.29"]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "httpx>=0.28"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

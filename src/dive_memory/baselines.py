@@ -22,7 +22,7 @@ def full_history(service: MemoryService, namespace: str, query: str) -> Baseline
 
 
 def vector_rag(service: MemoryService, namespace: str, query: str, limit: int = 5) -> BaselineResult:
-    query_vec = stable_vector(query)
+    query_vec = service.store.embedder.embed(query)
     rows = service.store.db.execute(
         "SELECT m.*, v.vector FROM memories m JOIN memory_vectors v ON v.memory_id=m.id "
         "WHERE m.namespace=? AND m.status='ACTIVE'", (namespace,)

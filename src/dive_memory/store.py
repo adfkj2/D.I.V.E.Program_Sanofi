@@ -3,9 +3,11 @@ from __future__ import annotations
 import json
 import math
 import sqlite3
+import threading
 from collections.abc import Iterable
 
 from .ids import cosine, stable_vector
+from .embeddings import DeterministicEmbeddingProvider, EmbeddingProvider
 from .models import Event, EvidenceState, Memory, MemoryStatus, utc_now
 
 
@@ -32,6 +34,9 @@ CREATE TABLE IF NOT EXISTS memories (
 CREATE TABLE IF NOT EXISTS memory_sources (memory_id TEXT NOT NULL, event_id TEXT NOT NULL,
   PRIMARY KEY(memory_id, event_id));
 CREATE TABLE IF NOT EXISTS memory_vectors (memory_id TEXT PRIMARY KEY, vector TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS vector_metadata (
+  id INTEGER PRIMARY KEY CHECK (id = 1), model TEXT NOT NULL, dimensions INTEGER NOT NULL
+);
 CREATE VIRTUAL TABLE IF NOT EXISTS memory_fts USING fts5(memory_id UNINDEXED, content, structured_content);
 CREATE TABLE IF NOT EXISTS tombstones (object_type TEXT NOT NULL, object_id TEXT PRIMARY KEY,
   reason TEXT NOT NULL, deleted_at TEXT NOT NULL);
@@ -69,10 +74,22 @@ CREATE TABLE IF NOT EXISTS profiles (
 
 
 class SQLiteStore:
-    def __init__(self, path: str = ":memory:") -> None:
-        self.db = sqlite3.connect(path)
+    def __init__(self, path: str = ":memory:", embedder: EmbeddingProvider | None = None) -> None:
+        # FastAPI executes synchronous handlers in a worker pool. The service
+        # serializes access, while this flag allows the same local connection
+        # to be used by those workers.
+        self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
+        self.embedder = embedder or DeterministicEmbeddingProvider()
+        metadata = self.db.execute("SELECT model, dimensions FROM vector_metadata WHERE id=1").fetchone()
+        self._vector_index_compatible = metadata is None or (
+            metadata["model"] == self.embedder.model and metadata["dimensions"] == self.embedder.dimensions
+        )
+        if metadata is None:
+            self.db.execute("INSERT INTO vector_metadata(id, model, dimensions) VALUES (1, ?, ?)",
+                            (self.embedder.model, self.embedder.dimensions))
+        self.db.commit()
 
     def close(self) -> None:
         self.db.close()
@@ -122,6 +139,8 @@ class SQLiteStore:
         return self._memory(row) if row else None
 
     def add_memory(self, memory: Memory) -> None:
+        if not self._vector_index_compatible:
+            raise RuntimeError("embedding model changed; call reindex_vectors before writing")
         self.db.execute("INSERT INTO memories VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         (memory.id, memory.namespace, memory.kind, memory.evidence_state.value, memory.content,
                          json.dumps(memory.structured_content), memory.status.value, memory.importance, memory.confidence,
@@ -129,9 +148,29 @@ class SQLiteStore:
                          memory.created_at, memory.updated_at, memory.version, memory.supersedes_id, memory.contradicts_id))
         for event_id in memory.source_event_ids:
             self.db.execute("INSERT OR IGNORE INTO memory_sources VALUES (?,?)", (memory.id, event_id))
-        self.db.execute("INSERT INTO memory_vectors VALUES (?,?)", (memory.id, json.dumps(stable_vector(memory.content))))
+        self.db.execute("INSERT INTO memory_vectors VALUES (?,?)",
+                        (memory.id, json.dumps(self.embedder.embed(memory.content))))
         self.db.execute("INSERT INTO memory_fts VALUES (?,?,?)", (memory.id, memory.content, json.dumps(memory.structured_content)))
         self.db.commit()
+
+    def reindex_vectors(self, namespace: str | None = None) -> int:
+        clause = "WHERE namespace=? AND status != 'DELETED'" if namespace else "WHERE status != 'DELETED'"
+        params = (namespace,) if namespace else ()
+        rows = self.db.execute("SELECT id, content FROM memories " + clause, params).fetchall()
+        if namespace:
+            self.db.execute("DELETE FROM memory_vectors WHERE memory_id IN "
+                            "(SELECT id FROM memories WHERE namespace=? AND status='DELETED')", (namespace,))
+        else:
+            self.db.execute("DELETE FROM memory_vectors WHERE memory_id IN "
+                            "(SELECT id FROM memories WHERE status='DELETED')")
+        for row in rows:
+            self.db.execute("INSERT OR REPLACE INTO memory_vectors(memory_id, vector) VALUES (?, ?)",
+                            (row["id"], json.dumps(self.embedder.embed(row["content"]))))
+        self.db.execute("INSERT OR REPLACE INTO vector_metadata(id, model, dimensions) VALUES (1, ?, ?)",
+                        (self.embedder.model, self.embedder.dimensions))
+        self.db.commit()
+        self._vector_index_compatible = True
+        return len(rows)
 
     def attach_entity(self, namespace: str, memory_id: str, canonical_name: str, entity_type: str,
                       role: str = "mentioned") -> int:
@@ -195,7 +234,7 @@ class SQLiteStore:
 
     def search(self, namespace: str, query: str, limit: int = 20, as_of: str | None = None,
                include_history: bool = False) -> list[tuple[Memory, float, list[str]]]:
-        query_vec = stable_vector(query)
+        query_vec = self.embedder.embed(query)
         lexical: dict[str, float] = {}
         terms = [t for t in query.lower().split() if t]
         if terms:
@@ -222,7 +261,8 @@ class SQLiteStore:
                 continue
             if as_of and memory.valid_to and memory.valid_to <= as_of:
                 continue
-            dense = cosine(query_vec, json.loads(row["vector"]))
+            stored_vector = json.loads(row["vector"])
+            dense = cosine(query_vec, stored_vector) if self._vector_index_compatible and len(stored_vector) == len(query_vec) else 0.0
             sparse = lexical.get(memory.id, 0.0)
             entity_boost = 0.2 if memory.id in entity_matches else 0.0
             relation_boost = 0.3 if memory.id in relation_matches else 0.0

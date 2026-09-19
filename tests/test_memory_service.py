@@ -1,4 +1,6 @@
 from dive_memory.service import MemoryService
+from dive_memory.worker import OutboxWorker
+from concurrent.futures import ThreadPoolExecutor
 
 
 def test_ephemeral_text_is_not_persisted():
@@ -127,6 +129,16 @@ def test_namespaces_are_isolated():
     assert service.retrieve("u2", "咖啡").items == []
 
 
+def test_concurrent_ingest_is_serialized_for_http_worker_threads():
+    service = MemoryService()
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(
+            lambda _: service.ingest("u1", "请记住我喜欢咖啡", explicit=True), range(20)
+        ))
+    assert len({result["event_id"] for result in results}) == 20
+    assert len(service.list_memories("u1", status="ACTIVE")) == 20
+
+
 def test_deferred_event_is_processed_by_outbox_worker():
     service = MemoryService()
     result = service.ingest("u1", "请记住我喜欢咖啡", explicit=True, defer=True)
@@ -135,6 +147,15 @@ def test_deferred_event_is_processed_by_outbox_worker():
     assert processed[0]["event_id"] == result["event_id"]
     assert processed[0]["memory_ids"]
     assert service.pending_events() == []
+
+
+def test_outbox_worker_drains_deferred_events():
+    service = MemoryService()
+    service.ingest("u1", "请记住我喜欢咖啡", explicit=True, defer=True)
+    report = OutboxWorker(service, batch_size=1).drain()
+    assert report.processed == 1
+    assert report.results[0]["memory_ids"]
+    assert OutboxWorker(service).run_once().processed == 0
 
 
 def test_forget_deferred_event_prevents_late_projection():

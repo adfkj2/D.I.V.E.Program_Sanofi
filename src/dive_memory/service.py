@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import threading
+from functools import wraps
 from pathlib import Path
 
 from .extraction import extract_candidates
@@ -14,32 +16,45 @@ from .entities import entity_candidates
 from .relations import relation_predicate
 from .decay import apply_decay
 from .store import SQLiteStore
+from .embeddings import EmbeddingProvider
+
+
+def _synchronized(method):
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        with self._lock:
+            return method(self, *args, **kwargs)
+    return wrapper
 
 
 class MemoryService:
-    def __init__(self, db_path: str = ":memory:", extractor: ExtractionProvider | None = None) -> None:
-        self.store = SQLiteStore(db_path)
+    def __init__(self, db_path: str = ":memory:", extractor: ExtractionProvider | None = None,
+                 embedder: EmbeddingProvider | None = None) -> None:
+        self.store = SQLiteStore(db_path, embedder=embedder)
+        self._lock = threading.RLock()
         self._memory_enabled: dict[str, bool] = {}
         self.extractor = extractor or HeuristicExtractionProvider()
 
+    @_synchronized
     def ingest(self, namespace: str, text: str, *, event_type: str = "message", explicit: bool = False,
                observed_at: str | None = None, idempotency_key: str | None = None, defer: bool = False) -> dict:
-        observed_at = observed_at or utc_now()
-        event = Event(new_id("evt"), namespace, event_type, {"text": text, "explicit": explicit}, observed_at, idempotency_key=idempotency_key)
-        accepted = self.store.append_event(event)
-        if not accepted:
-            existing = self.store.get_event_by_idempotency(idempotency_key) if idempotency_key else None
-            return {"event_id": existing.id if existing else event.id, "accepted": False, "duplicate": True, "memory_ids": []}
-        if self._memory_enabled.get(namespace, True) is False:
-            # The event remains auditable, but it has been intentionally
-            # rejected for memory projection and must not be retried later.
+        with self._lock:
+            observed_at = observed_at or utc_now()
+            event = Event(new_id("evt"), namespace, event_type, {"text": text, "explicit": explicit}, observed_at, idempotency_key=idempotency_key)
+            accepted = self.store.append_event(event)
+            if not accepted:
+                existing = self.store.get_event_by_idempotency(idempotency_key) if idempotency_key else None
+                return {"event_id": existing.id if existing else event.id, "accepted": False, "duplicate": True, "memory_ids": []}
+            if self._memory_enabled.get(namespace, True) is False:
+                # The event remains auditable, but it has been intentionally
+                # rejected for memory projection and must not be retried later.
+                self.mark_event_processed(event.id)
+                return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": [], "memory_disabled": True}
+            if defer:
+                return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": [], "deferred": True}
+            memory_ids = self._process_event(event, text=text, explicit=explicit)
             self.mark_event_processed(event.id)
-            return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": [], "memory_disabled": True}
-        if defer:
-            return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": [], "deferred": True}
-        memory_ids = self._process_event(event, text=text, explicit=explicit)
-        self.mark_event_processed(event.id)
-        return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": memory_ids}
+            return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": memory_ids}
 
     def _process_event(self, event: Event, *, text: str | None = None, explicit: bool = False) -> list[str]:
         text = text if text is not None else str(event.payload.get("text", ""))
@@ -77,21 +92,24 @@ class MemoryService:
                 return existing
         return None
 
+    @_synchronized
     def retrieve(self, namespace: str, query: str, *, limit: int = 8, as_of: str | None = None,
                  intent: str | None = None) -> RetrievalResult:
-        query_plan = plan_query(query, limit=limit)
-        intent = intent or query_plan.intent
-        as_of = as_of or query_plan.as_of
-        include_history = query_plan.temporal_mode in {"historical", "earliest", "all"} or as_of is not None
-        rows = self.store.search(namespace, query, limit=limit, as_of=as_of, include_history=include_history)
-        items = [RetrievalItem(memory, score, channels, memory.source_event_ids) for memory, score, channels in rows]
-        for rank, item in enumerate(items, start=1):
-            self.store.record_access(item.memory.id, query, rank, item.score, utc_now())
-        abstain = None if items else "no supported memory found"
-        return RetrievalResult(items, {"intent": intent, "temporal_mode": query_plan.temporal_mode,
-                                       "as_of": as_of, "limit": query_plan.limit,
-                                       "token_budget": query_plan.token_budget, "channels": query_plan.channels}, abstain)
+        with self._lock:
+            query_plan = plan_query(query, limit=limit)
+            intent = intent or query_plan.intent
+            as_of = as_of or query_plan.as_of
+            include_history = query_plan.temporal_mode in {"historical", "earliest", "all"} or as_of is not None
+            rows = self.store.search(namespace, query, limit=limit, as_of=as_of, include_history=include_history)
+            items = [RetrievalItem(memory, score, channels, memory.source_event_ids) for memory, score, channels in rows]
+            for rank, item in enumerate(items, start=1):
+                self.store.record_access(item.memory.id, query, rank, item.score, utc_now())
+            abstain = None if items else "no supported memory found"
+            return RetrievalResult(items, {"intent": intent, "temporal_mode": query_plan.temporal_mode,
+                                           "as_of": as_of, "limit": query_plan.limit,
+                                           "token_budget": query_plan.token_budget, "channels": query_plan.channels}, abstain)
 
+    @_synchronized
     def retrieve_context(self, namespace: str, query: str, *, limit: int = 8, token_budget: int = 1500,
                          as_of: str | None = None) -> dict:
         result = self.retrieve(namespace, query, limit=limit, as_of=as_of)
@@ -99,12 +117,14 @@ class MemoryService:
         return {"context": packed.text, "items": packed.items, "estimated_tokens": packed.estimated_tokens,
                 "omitted": packed.omitted, "plan": result.plan, "abstain_reason": result.abstain_reason}
 
+    @_synchronized
     def forget(self, memory_id: str, reason: str = "user_request") -> None:
         memory = self.get_memory(memory_id)
         self.store.tombstone_memory(memory_id, reason, utc_now())
         if memory is not None:
             self._refresh_profile(memory.namespace)
 
+    @_synchronized
     def forget_event(self, event_id: str, reason: str = "user_request") -> list[str]:
         namespaces = {memory.namespace for memory in self.store.memories_for_event(event_id)}
         deleted = self.store.tombstone_event(event_id, reason, utc_now())
@@ -112,15 +132,19 @@ class MemoryService:
             self._refresh_profile(namespace)
         return deleted
 
+    @_synchronized
     def set_memory_enabled(self, namespace: str, enabled: bool) -> None:
         self._memory_enabled[namespace] = enabled
 
+    @_synchronized
     def pending_events(self, limit: int = 100) -> list[Event]:
         return self.store.pending_events(limit)
 
+    @_synchronized
     def mark_event_processed(self, event_id: str) -> None:
         self.store.mark_event_processed(event_id, utc_now())
 
+    @_synchronized
     def process_pending(self, limit: int = 100) -> list[dict]:
         results = []
         for event in self.pending_events(limit):
@@ -129,9 +153,17 @@ class MemoryService:
             results.append({"event_id": event.id, "memory_ids": memory_ids})
         return results
 
+    @_synchronized
     def get_memory(self, memory_id: str) -> Memory | None:
-        return self.store.get_memory(memory_id)
+        with self._lock:
+            return self.store.get_memory(memory_id)
 
+    @_synchronized
+    def get_event(self, event_id: str) -> Event | None:
+        with self._lock:
+            return self.store.get_event(event_id)
+
+    @_synchronized
     def list_memories(self, namespace: str, *, status: str | None = None, limit: int = 100,
                       offset: int = 0) -> list[Memory]:
         memories = self.store.memories_for_namespace(namespace, include_deleted=status == "DELETED")
@@ -139,6 +171,7 @@ class MemoryService:
             memories = [memory for memory in memories if memory.status.value == status]
         return memories[offset:offset + max(1, min(limit, 1000))]
 
+    @_synchronized
     def profile(self, namespace: str) -> dict:
         return self.store.get_profile(namespace) or {"_meta": {"schema_version": 1, "generated_from_version": 0}}
 
@@ -153,6 +186,7 @@ class MemoryService:
                 version = max(version, memory.version)
         self.store.upsert_profile(namespace, profile, version, utc_now())
 
+    @_synchronized
     def correct_memory(self, memory_id: str, content: str, *, namespace: str | None = None) -> dict:
         old = self.get_memory(memory_id)
         if old is None:
@@ -160,17 +194,21 @@ class MemoryService:
         self.forget(memory_id, reason="user_correction")
         return self.ingest(namespace or old.namespace, content, explicit=True, event_type="memory_correction")
 
+    @_synchronized
     def consolidate(self, namespace: str, *, dry_run: bool = False) -> ConsolidationReport:
         return consolidate(self.store, namespace, dry_run=dry_run)
 
+    @_synchronized
     def archive_expired(self, namespace: str, *, now: str | None = None, dry_run: bool = False) -> int:
         return archive_expired(self.store, namespace, now=now, dry_run=dry_run)
 
+    @_synchronized
     def decay(self, namespace: str, *, now: str | None = None, dry_run: bool = False) -> dict:
         result = apply_decay(self.store, namespace, now=now, dry_run=dry_run)
         self._refresh_profile(namespace)
         return result
 
+    @_synchronized
     def timeline(self, namespace: str, *, as_of: str | None = None) -> list[Memory]:
         result = []
         for memory in self.store.memories_for_namespace(namespace):
@@ -181,6 +219,7 @@ class MemoryService:
             result.append(memory)
         return result
 
+    @_synchronized
     def export_namespace(self, namespace: str, path: str | None = None) -> dict:
         payload = {
             "namespace": namespace,

@@ -14,6 +14,15 @@ CREATE TABLE IF NOT EXISTS events (
   idempotency_key text UNIQUE,
   created_at timestamptz NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS outbox (
+  event_id text PRIMARY KEY REFERENCES events(id),
+  status text NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'PROCESSING', 'DONE', 'FAILED')),
+  attempts integer NOT NULL DEFAULT 0,
+  last_error text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  claimed_at timestamptz,
+  processed_at timestamptz
+);
 CREATE TABLE IF NOT EXISTS memories (
   id text PRIMARY KEY,
   namespace text NOT NULL,
@@ -32,7 +41,9 @@ CREATE TABLE IF NOT EXISTS memories (
   updated_at timestamptz NOT NULL DEFAULT now(),
   version integer NOT NULL DEFAULT 1,
   supersedes_id text,
-  contradicts_id text
+  contradicts_id text,
+  search_document tsvector GENERATED ALWAYS AS
+    (to_tsvector('simple', content || ' ' || structured_content::text)) STORED
 );
 CREATE TABLE IF NOT EXISTS memory_sources (
   memory_id text NOT NULL REFERENCES memories(id),
@@ -47,6 +58,20 @@ CREATE TABLE IF NOT EXISTS memory_access (
   score real NOT NULL,
   used boolean NOT NULL DEFAULT false,
   accessed_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS memory_vectors (
+  memory_id text PRIMARY KEY REFERENCES memories(id),
+  embedding vector NOT NULL,
+  model text NOT NULL,
+  dimensions integer NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS tombstones (
+  object_type text NOT NULL,
+  object_id text NOT NULL,
+  reason text NOT NULL,
+  deleted_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (object_type, object_id)
 );
 CREATE TABLE IF NOT EXISTS entities (
   id bigserial PRIMARY KEY,
@@ -86,6 +111,9 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 CREATE INDEX IF NOT EXISTS memories_scope_status_idx ON memories(namespace, status);
 CREATE INDEX IF NOT EXISTS memories_valid_window_gist ON memories USING gist(valid_window);
+CREATE INDEX IF NOT EXISTS memories_search_document_idx ON memories USING gin(search_document);
 CREATE INDEX IF NOT EXISTS memory_sources_event_idx ON memory_sources(event_id);
+CREATE INDEX IF NOT EXISTS outbox_pending_idx ON outbox(status, created_at) WHERE status IN ('PENDING', 'FAILED');
+CREATE INDEX IF NOT EXISTS tombstones_deleted_at_idx ON tombstones(deleted_at);
 CREATE INDEX IF NOT EXISTS entities_scope_name_idx ON entities(namespace, canonical_name);
 CREATE INDEX IF NOT EXISTS relations_scope_predicate_idx ON relations(namespace, predicate);

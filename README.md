@@ -30,7 +30,21 @@ $env:PYTHONPATH = "src"
 python -m dive_memory.smoke
 ```
 
+The API adapter and integration tests use the optional development environment:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python -m pip install -e ".[api,dev]"
+.venv\Scripts\python -m pytest -q
+```
+
+Embeddings are supplied through a provider interface. The default remains the
+offline deterministic provider; `OpenAICompatibleEmbeddingProvider` can call a
+compatible `/embeddings` endpoint, and `SQLiteStore.reindex_vectors()` is
+required before switching an existing index to a different model.
+
 The SQLite adapter is intentionally the local development backend. PostgreSQL
-and pgvector deployment is represented by `migrations/001_initial.sql`; the
-next production step is wiring a repository adapter and queue runner around the
-same service contract.
+and pgvector deployment is represented by `migrations/001_initial.sql`, which
+now includes outbox claims, vector metadata, tombstones, and PostgreSQL FTS.
+The remaining production step is wiring a PostgreSQL repository adapter around
+the same service contract.

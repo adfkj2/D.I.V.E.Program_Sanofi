@@ -16,8 +16,13 @@ def create_app(db_path: str = "memory.db") -> Any:
     except ImportError as exc:  # pragma: no cover - environment dependent
         raise RuntimeError("Install dive-memory[api] to use the HTTP adapter") from exc
 
-    app = FastAPI(title="D.I.V.E. Memory API", version="0.1.0")
+    app = FastAPI(title="D.I.V.E. Memory API", version="0.2.0")
     service = MemoryService(db_path)
+    app.state.memory_service = service
+
+    @app.get("/healthz")
+    def health() -> dict[str, str]:
+        return {"status": "ok", "storage": "sqlite"}
 
     @app.post("/v1/events")
     def ingest(body: dict[str, Any]) -> dict[str, Any]:
@@ -25,11 +30,18 @@ def create_app(db_path: str = "memory.db") -> Any:
             raise HTTPException(400, "namespace and text are required")
         return service.ingest(body["namespace"], body["text"], event_type=body.get("event_type", "message"),
                               explicit=bool(body.get("explicit")), observed_at=body.get("observed_at"),
-                              idempotency_key=body.get("idempotency_key"))
+                              idempotency_key=body.get("idempotency_key"), defer=bool(body.get("defer", False)))
 
     @app.post("/v1/jobs/process-outbox")
     def process_outbox(body: dict[str, Any] | None = None) -> dict[str, Any]:
-        results = service.process_pending(int((body or {}).get("limit", 100)))
+        payload = body or {}
+        if not isinstance(payload, dict):
+            raise HTTPException(400, "body must be an object")
+        try:
+            limit = int(payload.get("limit", 100))
+        except (TypeError, ValueError):
+            raise HTTPException(400, "limit must be an integer")
+        results = service.process_pending(max(1, min(limit, 1000)))
         return {"processed": len(results), "results": results}
 
     @app.post("/v1/retrieve")
@@ -47,8 +59,15 @@ def create_app(db_path: str = "memory.db") -> Any:
 
     @app.post("/v1/context")
     def context(body: dict[str, Any]) -> dict[str, Any]:
-        result = service.retrieve_context(body["namespace"], body["query"], limit=int(body.get("limit", 8)),
-                                          token_budget=int(body.get("token_budget", 1500)), as_of=body.get("as_of"))
+        if not isinstance(body, dict) or not body.get("namespace") or not body.get("query"):
+            raise HTTPException(400, "namespace and query are required")
+        try:
+            limit = int(body.get("limit", 8))
+            token_budget = int(body.get("token_budget", 1500))
+        except (TypeError, ValueError):
+            raise HTTPException(400, "limit and token_budget must be integers")
+        result = service.retrieve_context(body["namespace"], body["query"], limit=limit,
+                                          token_budget=token_budget, as_of=body.get("as_of"))
         return {"context": result["context"], "estimated_tokens": result["estimated_tokens"],
                 "omitted": result["omitted"], "plan": result["plan"], "abstain_reason": result["abstain_reason"]}
 
@@ -90,10 +109,14 @@ def create_app(db_path: str = "memory.db") -> Any:
 
     @app.post("/v1/events/{event_id}/forget")
     def forget_event(event_id: str) -> dict[str, Any]:
+        if service.get_event(event_id) is None:
+            raise HTTPException(404, "event not found")
         return {"deleted_memory_ids": service.forget_event(event_id)}
 
     @app.post("/v1/memory-mode")
     def memory_mode(body: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(body, dict) or not body.get("namespace"):
+            raise HTTPException(400, "namespace is required")
         service.set_memory_enabled(body["namespace"], bool(body.get("enabled", True)))
         return {"namespace": body["namespace"], "enabled": bool(body.get("enabled", True))}
 
@@ -109,12 +132,16 @@ def create_app(db_path: str = "memory.db") -> Any:
 
     @app.post("/v1/jobs/consolidate")
     def run_consolidation(body: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(body, dict) or not body.get("namespace"):
+            raise HTTPException(400, "namespace is required")
         report = service.consolidate(body["namespace"], dry_run=bool(body.get("dry_run", True)))
         return {"namespace": report.namespace, "examined": report.examined, "merged": report.merged,
                 "archived": report.archived, "dry_run": report.dry_run}
 
     @app.post("/v1/jobs/decay")
     def decay(body: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(body, dict) or not body.get("namespace"):
+            raise HTTPException(400, "namespace is required")
         return service.decay(body["namespace"], now=body.get("now"), dry_run=bool(body.get("dry_run", True)))
 
     return app

@@ -11,17 +11,21 @@
 - embedding model/dimension metadata 和 `reindex_vectors()`；切换模型前必须显式重建索引。
 - `OutboxWorker` 提供 `run_once()` 与 `drain()`，后续可以替换成 PostgreSQL queue runner。
 - PostgreSQL reference migration 补齐 outbox、vector、tombstone、FTS projection 和索引。
+- 删除会清理 relation/entity 派生索引，归档会刷新 profile；分页、预算、布尔值和 deferred mode 的边界均有测试。
+- 模型切换时禁止局部 reindex 把全局索引误标记为兼容，必须执行全量 reindex。
 
 ## 验收
 
 ```text
-33 tests passed in .venv
+95 tests passed in .venv
 compileall passed
-smoke: recall=0.6667, abstention_accuracy=1.0, false_memory_rate=0.0
+smoke: recall=1.0, abstention_accuracy=1.0, false_memory_rate=0.0, provenance_coverage=1.0
 ```
 
 smoke 集合仍是小型 deterministic fixture，不代表真实 embedding 的线上召回率。
 
 ## 下一阶段边界
 
-PostgreSQL migration 已具备 schema contract，但真正的 PostgreSQL repository adapter、事务式 outbox claim/retry/dead-letter、认证授权和真实数据集 benchmark 仍需独立实现和部署环境验证。
+本地 SQLite 路径已经具备事务式 claim/retry/dead-letter 和可选 namespace authorizer；PostgreSQL
+migration 也包含 `SKIP LOCKED` worker primitives。真正的 PostgreSQL repository adapter、真实
+pgvector 集成测试和公开数据集 benchmark 仍需要 PostgreSQL/数据集运行环境。

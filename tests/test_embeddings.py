@@ -33,6 +33,8 @@ def test_reindex_allows_switching_embedding_models(tmp_path):
     assert switched.retrieve("u1", "咖啡").items
     with pytest.raises(RuntimeError):
         switched.ingest("u1", "请记住我喜欢绿茶", explicit=True)
+    with pytest.raises(RuntimeError, match="full reindex"):
+        switched.store.reindex_vectors(namespace="u1")
     assert switched.store.reindex_vectors() == 1
     assert switched.process_pending()[0]["memory_ids"]
     result = switched.ingest("u1", "请记住我喜欢绿茶", explicit=True)
@@ -46,6 +48,17 @@ def test_reindex_does_not_restore_deleted_vectors():
     assert service.store.reindex_vectors() == 0
     row = service.store.db.execute("SELECT 1 FROM memory_vectors WHERE memory_id=?", (result["memory_ids"][0],)).fetchone()
     assert row is None
+
+
+def test_vector_baseline_abstains_until_model_migration_is_complete(tmp_path):
+    from dive_memory.baselines import vector_rag
+
+    db_path = str(tmp_path / "memory.sqlite3")
+    first = MemoryService(db_path)
+    first.ingest("u1", "请记住我喜欢咖啡", explicit=True)
+    first.store.close()
+    switched = MemoryService(db_path, embedder=TinyEmbedder())
+    assert vector_rag(switched, "u1", "咖啡").evidence == []
 
 
 def test_openai_compatible_embedding_falls_back_without_inventing_vector():
@@ -71,4 +84,19 @@ def test_openai_compatible_embedding_parses_standard_response(monkeypatch):
 
     monkeypatch.setattr(urllib.request, "urlopen", lambda request, timeout: Response())
     provider = OpenAICompatibleEmbeddingProvider("http://embedding.test", "test-model", "test-key", 2)
+    assert provider.embed("咖啡") == [0.6, 0.8]
+
+
+def test_embedding_fallback_is_normalised(monkeypatch):
+    class NonNormalisedFallback:
+        model = "fallback"
+        dimensions = 2
+
+        def embed(self, text):
+            return [3.0, 4.0]
+
+    monkeypatch.setattr(urllib.request, "urlopen", lambda *args, **kwargs: (_ for _ in ()).throw(OSError()))
+    provider = OpenAICompatibleEmbeddingProvider(
+        "http://embedding.test", "test-model", "test-key", 2, fallback=NonNormalisedFallback(),
+    )
     assert provider.embed("咖啡") == [0.6, 0.8]

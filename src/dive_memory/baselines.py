@@ -22,6 +22,8 @@ def full_history(service: MemoryService, namespace: str, query: str) -> Baseline
 
 
 def vector_rag(service: MemoryService, namespace: str, query: str, limit: int = 5) -> BaselineResult:
+    if not service.store.vector_index_compatible:
+        return BaselineResult("B-vector-rag", [], 0)
     query_vec = service.store.embedder.embed(query)
     rows = service.store.db.execute(
         "SELECT m.*, v.vector FROM memories m JOIN memory_vectors v ON v.memory_id=m.id "

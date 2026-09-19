@@ -6,6 +6,12 @@ from enum import StrEnum
 from typing import Any
 
 
+ALLOWED_MEMORY_KINDS = frozenset({
+    "working", "episode", "semantic_fact", "profile", "preference",
+    "procedural", "resource", "temporal_event", "relation", "inference",
+})
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -19,6 +25,7 @@ class EvidenceState(StrEnum):
 class MemoryStatus(StrEnum):
     CANDIDATE = "CANDIDATE"
     ACTIVE = "ACTIVE"
+    REINFORCED = "REINFORCED"
     SUPERSEDED = "SUPERSEDED"
     MERGED = "MERGED"
     ARCHIVED = "ARCHIVED"
@@ -62,6 +69,8 @@ class Memory:
     source_event_ids: list[str] = field(default_factory=list)
     supersedes_id: str | None = None
     contradicts_id: str | None = None
+    model_version: str | None = None
+    extractor_version: str | None = None
 
 
 @dataclass(slots=True)

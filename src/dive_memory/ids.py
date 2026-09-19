@@ -8,6 +8,12 @@ def new_id(prefix: str) -> str:
     return f"{prefix}_{uuid.uuid4().hex}"
 
 
+def stable_id(prefix: str, *parts: str) -> str:
+    """Return a deterministic id so rebuilding an event is idempotent."""
+    payload = "\x1f".join(parts).encode("utf-8")
+    return f"{prefix}_{hashlib.sha256(payload).hexdigest()[:32]}"
+
+
 def stable_vector(text: str, dimensions: int = 96) -> list[float]:
     """Dependency-free deterministic embedding for local tests.
 

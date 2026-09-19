@@ -27,6 +27,7 @@ class DeterministicEmbeddingProvider:
 
     dimensions: int = 96
     model: str = "deterministic-sha256-v1"
+    semantic_similarity: bool = False
 
     def embed(self, text: str) -> list[float]:
         return stable_vector(text, dimensions=self.dimensions)
@@ -42,6 +43,7 @@ class OpenAICompatibleEmbeddingProvider:
     dimensions: int
     timeout_seconds: float = 30.0
     fallback: EmbeddingProvider | None = None
+    semantic_similarity: bool = True
 
     def embed(self, text: str) -> list[float]:
         body = json.dumps({"model": self.model, "input": text}).encode("utf-8")
@@ -59,4 +61,10 @@ class OpenAICompatibleEmbeddingProvider:
         except (OSError, KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError):
             if self.fallback is None:
                 raise RuntimeError("embedding provider request failed") from None
-            return self.fallback.embed(text)
+            fallback_vector = self.fallback.embed(text)
+            if len(fallback_vector) != self.dimensions:
+                raise RuntimeError(
+                    f"embedding fallback dimensions do not match provider: expected {self.dimensions}, "
+                    f"got {len(fallback_vector)}"
+                )
+            return _normalise(fallback_vector)

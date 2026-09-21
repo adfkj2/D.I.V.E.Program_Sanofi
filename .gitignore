@@ -1,9 +1,12 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.pytest-*/
 *.egg-info/
 .venv/
+.venv-models/
 *.db
 *.sqlite
 *.sqlite3
 .env
+eval/external/

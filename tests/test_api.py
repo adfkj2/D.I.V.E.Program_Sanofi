@@ -193,6 +193,21 @@ def test_http_optional_authorizer_enforces_namespace_boundary():
                    headers={"Authorization": "Bearer admin"}).status_code == 200
 
 
+def test_http_authorizer_can_restrict_actions_inside_a_namespace():
+    app = create_app(":memory:", authorizer=StaticTokenAuthorizer({
+        "writer": {"u1": {"events:write"}},
+    }))
+    headers = {"Authorization": "Bearer writer"}
+    created = request(app, "POST", "/v1/events", headers=headers, json={
+        "namespace": "u1", "text": "请记住我喜欢绿茶", "explicit": True,
+        "idempotency_key": "action-auth-1",
+    })
+    assert created.status_code == 200
+    denied = request(app, "POST", "/v1/retrieve", headers=headers,
+                     json={"namespace": "u1", "query": "绿茶"})
+    assert denied.status_code == 403
+
+
 def test_http_rejects_invalid_query_bounds_and_mixed_projection_reindex():
     app = create_app(":memory:")
     assert request(app, "GET", "/v1/users/u1/memories?limit=0").status_code == 400

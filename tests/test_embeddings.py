@@ -100,3 +100,16 @@ def test_embedding_fallback_is_normalised(monkeypatch):
         "http://embedding.test", "test-model", "test-key", 2, fallback=NonNormalisedFallback(),
     )
     assert provider.embed("咖啡") == [0.6, 0.8]
+
+
+def test_embedding_fallback_is_explicitly_degraded(monkeypatch):
+    monkeypatch.setattr(urllib.request, "urlopen", lambda *args, **kwargs: (_ for _ in ()).throw(OSError()))
+    provider = OpenAICompatibleEmbeddingProvider(
+        "http://embedding.test", "test-model", "test-key", 96,
+        fallback=DeterministicEmbeddingProvider(),
+    )
+    result = provider.embed_result("咖啡")
+    assert result.degraded
+    assert not result.semantic
+    assert result.model == "test-model"
+    assert result.fallback_model == "deterministic-sha256-v1"

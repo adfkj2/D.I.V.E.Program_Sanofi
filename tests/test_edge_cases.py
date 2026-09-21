@@ -174,11 +174,16 @@ def test_natural_language_questions_reach_structured_facts():
 
 
 def test_explicit_multi_hop_query_traverses_bounded_relation_neighbors():
+    from dive_memory.retrieval import RetrievalConfig
+
     service = MemoryService()
     residence = service.ingest("u1", "我住在成都", explicit=True)
     preference = service.ingest("u1", "我喜欢绿茶", explicit=True)
 
-    result = service.retrieve("u1", "与成都关联的记忆", limit=10)
+    result = service.retrieve(
+        "u1", "与成都关联的记忆", limit=10,
+        config=RetrievalConfig.full(include_multi_hop=True),
+    )
     returned = {item.memory.id: item for item in result.items}
     assert set(returned) == {residence["memory_ids"][0], preference["memory_ids"][0]}
     assert "multi_hop" in returned[preference["memory_ids"][0]].channels

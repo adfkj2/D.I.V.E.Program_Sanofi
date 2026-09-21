@@ -2,6 +2,7 @@ from typing import Any
 
 from .auth import NamespaceAuthorizer
 from .context import pack_context
+from .config import RuntimeConfig
 from .models import Memory
 from .service import MemoryService
 
@@ -38,12 +39,15 @@ def memory_payload(memory: Memory) -> dict[str, Any]:
 
 
 def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: Any = None,
-               authorizer: NamespaceAuthorizer | None = None) -> Any:
+               authorizer: NamespaceAuthorizer | None = None,
+               runtime_config: RuntimeConfig | None = None) -> Any:
     """Create the optional FastAPI adapter.
 
     The domain/service layer deliberately does not require FastAPI. Install
     ``dive-memory[api]`` when exposing the HTTP service.
     """
+    runtime_config = runtime_config or RuntimeConfig()
+    runtime_config.validate_dependencies(authorizer=authorizer, embedder=embedder)
     try:
         from fastapi import FastAPI, Header, HTTPException, Query
         from fastapi.encoders import jsonable_encoder
@@ -124,6 +128,7 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
     app = FastAPI(title="D.I.V.E. Memory API", version="0.2.0")
     service = MemoryService(db_path, extractor=extractor, embedder=embedder)
     app.state.memory_service = service
+    app.state.runtime_config = runtime_config
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(_request: Any, exc: RequestValidationError) -> JSONResponse:
@@ -188,7 +193,10 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
             # Unparsable as_of would otherwise silently answer a different
             # question than the caller asked.
             raise HTTPException(400, str(exc)) from exc
-        packed = pack_context(result.items, body.token_budget)
+        packed = pack_context(
+            result.items, body.token_budget,
+            current_only=result.plan["temporal_mode"] not in {"historical", "earliest", "all"},
+        )
         warnings = ["token budget omitted one or more candidates"] if packed.omitted else []
         abstain_reason = result.abstain_reason
         if result.items and not packed.items:
@@ -196,7 +204,10 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
         return {"items": [{"memory": memory_payload(item.memory), "score": item.score,
                            "channels": item.channels, "source_refs": item.source_refs} for item in packed.items],
                 "plan": result.plan, "query_plan": result.plan, "budget_used": packed.estimated_tokens,
-                "warnings": warnings, "abstain_reason": abstain_reason, "degraded": result.degraded}
+                "warnings": warnings, "abstain_reason": abstain_reason, "degraded": result.degraded,
+                "trace": result.trace, "packing_decisions": packed.decisions,
+                "token_counter": packed.token_counter,
+                "token_count_degraded": packed.token_count_degraded}
 
     @app.post("/v1/search")
     def search(body: RetrieveRequest, authorization: str | None = Header(default=None)) -> dict[str, Any]:
@@ -212,7 +223,11 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
         return {"context": result["context"], "estimated_tokens": result["estimated_tokens"],
-                "omitted": result["omitted"], "plan": result["plan"], "abstain_reason": result["abstain_reason"]}
+                "omitted": result["omitted"], "plan": result["plan"],
+                "abstain_reason": result["abstain_reason"], "trace": result["trace"],
+                "packing_decisions": result["packing_decisions"],
+                "token_counter": result["token_counter"],
+                "token_count_degraded": result["token_count_degraded"]}
 
     @app.get("/v1/memories/{memory_id}")
     def get_memory(memory_id: str, include_versions: bool = Query(default=False),

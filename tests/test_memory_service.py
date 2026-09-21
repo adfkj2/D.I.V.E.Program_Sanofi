@@ -1,6 +1,7 @@
 from dive_memory.service import MemoryService
 from dive_memory.worker import OutboxWorker
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 
 
 def test_ephemeral_text_is_not_persisted():
@@ -104,17 +105,24 @@ def test_taxonomy_classifies_preference_procedure_episode_and_resource():
 def test_consolidation_is_dry_run_before_mutation():
     service = MemoryService()
     first = service.ingest("u1", "请记住我喜欢绿茶", explicit=True)
-    second = service.ingest("u1", "请记住我喜欢绿茶", explicit=True)
+    # The online resolver now merges duplicates immediately. Seed one legacy
+    # duplicate directly to retain coverage for the maintenance consolidator.
+    original = service.get_memory(first["memory_ids"][0])
+    duplicate = replace(
+        original, id="mem-legacy-duplicate", source_event_ids=["evt-legacy-duplicate"],
+        created_at="9999-12-31T00:00:00+00:00", updated_at="9999-12-31T00:00:00+00:00",
+    )
+    service.store.add_memory(duplicate)
     report = service.consolidate("u1", dry_run=True)
     assert report.examined == 2
     assert report.merged == 1
-    assert service.get_memory(second["memory_ids"][0]).status.value == "ACTIVE"
+    assert service.get_memory(duplicate.id).status.value == "ACTIVE"
     service.consolidate("u1", dry_run=False)
-    assert service.get_memory(second["memory_ids"][0]).status.value == "MERGED"
+    assert service.get_memory(duplicate.id).status.value == "MERGED"
     survivor = service.get_memory(first["memory_ids"][0])
-    assert set(survivor.source_event_ids) == {first["event_id"], second["event_id"]}
+    assert set(survivor.source_event_ids) == {first["event_id"], "evt-legacy-duplicate"}
     assert service.store.db.execute(
-        "SELECT 1 FROM memory_vectors WHERE memory_id=?", (second["memory_ids"][0],),
+        "SELECT 1 FROM memory_vectors WHERE memory_id=?", (duplicate.id,),
     ).fetchone() is None
 
 
@@ -206,9 +214,11 @@ def test_concurrent_ingest_is_serialized_for_http_worker_threads():
     with ThreadPoolExecutor(max_workers=8) as pool:
         results = list(pool.map(
             lambda _: service.ingest("u1", "请记住我喜欢咖啡", explicit=True), range(20)
-        ))
+    ))
     assert len({result["event_id"] for result in results}) == 20
-    assert len(service.list_memories("u1", status="ACTIVE")) == 20
+    memories = service.list_memories("u1", status="ACTIVE")
+    assert len(memories) == 1
+    assert len(memories[0].source_event_ids) == 20
 
 
 def test_deferred_event_is_processed_by_outbox_worker():

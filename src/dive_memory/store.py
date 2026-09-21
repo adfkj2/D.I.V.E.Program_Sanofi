@@ -5,11 +5,14 @@ import sqlite3
 from collections.abc import Iterable
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
+from time import perf_counter
 
 from . import lexical, temporal
-from .ids import cosine
-from .embeddings import DeterministicEmbeddingProvider, EmbeddingProvider
+from .ids import cosine, stable_id
+from .embeddings import DeterministicEmbeddingProvider, EmbeddingProvider, embed_with_metadata
 from .models import Event, EvidenceState, Memory, MemoryStatus, utc_now
+from .normalization import normalize_text
+from .retrieval import RetrievalConfig
 
 
 SCHEMA = """
@@ -34,24 +37,56 @@ CREATE TABLE IF NOT EXISTS memories (
   version INTEGER NOT NULL, supersedes_id TEXT, contradicts_id TEXT,
   model_version TEXT, extractor_version TEXT
 );
+CREATE TABLE IF NOT EXISTS memory_keys (
+  memory_id TEXT PRIMARY KEY, namespace TEXT NOT NULL, subject_key TEXT NOT NULL,
+  predicate_key TEXT NOT NULL, value_key TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS memory_keys_lookup_idx
+  ON memory_keys(namespace, subject_key, predicate_key, value_key);
 CREATE TABLE IF NOT EXISTS memory_versions (
   id INTEGER PRIMARY KEY AUTOINCREMENT, memory_id TEXT NOT NULL,
   version INTEGER NOT NULL, snapshot TEXT NOT NULL, reason TEXT NOT NULL,
   source_event_id TEXT, created_at TEXT NOT NULL,
   UNIQUE(memory_id, version)
 );
+CREATE TABLE IF NOT EXISTS memory_transitions (
+  id TEXT PRIMARY KEY, namespace TEXT NOT NULL, from_memory_id TEXT,
+  to_memory_id TEXT, relationship TEXT NOT NULL, action TEXT NOT NULL,
+  confidence REAL NOT NULL, reason TEXT NOT NULL, source_event_id TEXT NOT NULL,
+  resolver_version TEXT NOT NULL, created_at TEXT NOT NULL,
+  UNIQUE(namespace, from_memory_id, to_memory_id, relationship, source_event_id)
+);
 CREATE TABLE IF NOT EXISTS write_decisions (
   event_id TEXT NOT NULL, candidate_index INTEGER NOT NULL,
   accepted INTEGER NOT NULL, importance REAL NOT NULL, confidence REAL NOT NULL,
   salience REAL NOT NULL, durability TEXT NOT NULL, reason TEXT NOT NULL,
   extractor_version TEXT NOT NULL, processed_at TEXT NOT NULL,
+  outcome_code TEXT NOT NULL DEFAULT 'COMMITTED', features_json TEXT NOT NULL DEFAULT '{}',
+  policy_version TEXT NOT NULL DEFAULT 'utility-baseline-v1',
+  prompt_version TEXT, model_version TEXT, schema_version TEXT,
   PRIMARY KEY(event_id, candidate_index)
 );
 CREATE TABLE IF NOT EXISTS memory_sources (memory_id TEXT NOT NULL, event_id TEXT NOT NULL,
   PRIMARY KEY(memory_id, event_id));
 CREATE TABLE IF NOT EXISTS memory_vectors (memory_id TEXT PRIMARY KEY, vector TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS vector_metadata (
-  id INTEGER PRIMARY KEY CHECK (id = 1), model TEXT NOT NULL, dimensions INTEGER NOT NULL
+  id INTEGER PRIMARY KEY CHECK (id = 1), model TEXT NOT NULL, dimensions INTEGER NOT NULL,
+  provider TEXT, revision TEXT, active_generation TEXT, previous_generation TEXT
+);
+CREATE TABLE IF NOT EXISTS memory_vector_state (
+  memory_id TEXT PRIMARY KEY, generation_id TEXT NOT NULL, provider TEXT NOT NULL,
+  model TEXT NOT NULL, revision TEXT NOT NULL, dimensions INTEGER NOT NULL,
+  degraded INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS embedding_generations (
+  id TEXT PRIMARY KEY, provider TEXT NOT NULL, model TEXT NOT NULL, revision TEXT NOT NULL,
+  dimensions INTEGER NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, activated_at TEXT
+);
+CREATE TABLE IF NOT EXISTS embedding_vector_staging (
+  memory_id TEXT NOT NULL, generation_id TEXT NOT NULL, vector TEXT NOT NULL,
+  degraded INTEGER NOT NULL, provider TEXT NOT NULL, model TEXT NOT NULL,
+  revision TEXT NOT NULL, dimensions INTEGER NOT NULL, updated_at TEXT NOT NULL,
+  PRIMARY KEY(memory_id, generation_id)
 );
 CREATE VIRTUAL TABLE IF NOT EXISTS memory_fts USING fts5(memory_id UNINDEXED, content, structured_content);
 CREATE TABLE IF NOT EXISTS tombstones (object_type TEXT NOT NULL, object_id TEXT PRIMARY KEY,
@@ -109,14 +144,44 @@ class SQLiteStore:
         self.db.executescript(SCHEMA)
         self._upgrade_schema()
         self.embedder = embedder or DeterministicEmbeddingProvider()
-        metadata = self.db.execute("SELECT model, dimensions FROM vector_metadata WHERE id=1").fetchone()
+        metadata = self.db.execute("SELECT * FROM vector_metadata WHERE id=1").fetchone()
         self._vector_index_compatible = metadata is None or (
             metadata["model"] == self.embedder.model and metadata["dimensions"] == self.embedder.dimensions
         )
         if metadata is None:
-            self.db.execute("INSERT INTO vector_metadata(id, model, dimensions) VALUES (1, ?, ?)",
-                            (self.embedder.model, self.embedder.dimensions))
+            generation = self.embedding_generation_id(self.embedder)
+            self.db.execute(
+                "INSERT INTO vector_metadata(id,model,dimensions,provider,revision,active_generation) "
+                "VALUES (1,?,?,?,?,?)",
+                (self.embedder.model, self.embedder.dimensions,
+                 str(getattr(self.embedder, "provider_name", type(self.embedder).__name__)),
+                 str(getattr(self.embedder, "revision", "unversioned")), generation),
+            )
+        else:
+            generation = metadata["active_generation"] or stable_id(
+                "embgen", str(metadata["provider"] or "legacy"), metadata["model"],
+                str(metadata["revision"] or "unversioned"), str(metadata["dimensions"]),
+            )
+            if metadata["active_generation"] is None:
+                self.db.execute("UPDATE vector_metadata SET active_generation=? WHERE id=1", (generation,))
+        self.db.execute(
+            "INSERT OR IGNORE INTO embedding_generations(id,provider,model,revision,dimensions,status,created_at,activated_at) "
+            "VALUES (?,?,?,?,?,'ACTIVE',?,?)",
+            (generation, str(metadata["provider"] if metadata and metadata["provider"] else
+                             getattr(self.embedder, "provider_name", type(self.embedder).__name__)),
+             str(metadata["model"] if metadata else self.embedder.model),
+             str(metadata["revision"] if metadata and metadata["revision"] else
+                 getattr(self.embedder, "revision", "unversioned")),
+             int(metadata["dimensions"] if metadata else self.embedder.dimensions), utc_now(), utc_now()),
+        )
         self.db.commit()
+
+    @staticmethod
+    def embedding_generation_id(provider: EmbeddingProvider) -> str:
+        return stable_id(
+            "embgen", str(getattr(provider, "provider_name", type(provider).__name__)),
+            provider.model, str(getattr(provider, "revision", "unversioned")), str(provider.dimensions),
+        )
 
     def _upgrade_schema(self) -> None:
         """Add columns introduced after the first local database schema.
@@ -137,6 +202,32 @@ class SQLiteStore:
         for name in ("model_version", "extractor_version"):
             if name not in memory_columns:
                 self.db.execute(f"ALTER TABLE memories ADD COLUMN {name} TEXT")
+        vector_columns = {row["name"] for row in self.db.execute("PRAGMA table_info(vector_metadata)")}
+        for name in ("provider", "revision", "active_generation", "previous_generation"):
+            if name not in vector_columns:
+                self.db.execute(f"ALTER TABLE vector_metadata ADD COLUMN {name} TEXT")
+        decision_columns = {row["name"] for row in self.db.execute("PRAGMA table_info(write_decisions)")}
+        decision_additions = {
+            "outcome_code": "TEXT NOT NULL DEFAULT 'COMMITTED'",
+            "features_json": "TEXT NOT NULL DEFAULT '{}'",
+            "policy_version": "TEXT NOT NULL DEFAULT 'utility-baseline-v1'",
+            "prompt_version": "TEXT",
+            "model_version": "TEXT",
+            "schema_version": "TEXT",
+        }
+        for name, definition in decision_additions.items():
+            if name not in decision_columns:
+                self.db.execute(f"ALTER TABLE write_decisions ADD COLUMN {name} {definition}")
+        # Backfill the indexed resolution projection for databases created
+        # before relationship-rules-v1. JSON1 is built into supported SQLite.
+        self.db.execute(
+            "INSERT OR IGNORE INTO memory_keys(memory_id,namespace,subject_key,predicate_key,value_key) "
+            "SELECT id,namespace,"
+            "lower(COALESCE(json_extract(structured_content,'$.subject'),'user'))"
+            ",lower(COALESCE(json_extract(structured_content,'$.predicate'),'statement'))"
+            ",lower(COALESCE(json_extract(structured_content,'$.normalized_value'),"
+            "json_extract(structured_content,'$.value'),content)) FROM memories"
+        )
         tombstone_columns = {row["name"] for row in self.db.execute("PRAGMA table_info(tombstones)")}
         if "namespace" not in tombstone_columns:
             self.db.execute("ALTER TABLE tombstones ADD COLUMN namespace TEXT")
@@ -319,11 +410,8 @@ class SQLiteStore:
             raise RuntimeError("embedding model changed; call reindex_vectors before writing")
         # Compute before mutating SQLite. A provider failure must not leave an
         # open transaction containing a memory without its vector/FTS rows.
-        vector = self.embedder.embed(memory.content)
-        if len(vector) != self.embedder.dimensions:
-            raise ValueError(
-                f"embedding dimensions do not match provider: expected {self.embedder.dimensions}, got {len(vector)}"
-            )
+        embedding = embed_with_metadata(self.embedder, memory.content)
+        vector = list(embedding.vector)
         self.db.execute(
             "INSERT INTO memories(id,namespace,kind,evidence_state,content,structured_content,status,importance,"
             "confidence,salience,durability,valid_from,valid_to,observed_at,created_at,updated_at,version,"
@@ -334,10 +422,35 @@ class SQLiteStore:
                          memory.salience, memory.durability, memory.valid_from, memory.valid_to, memory.observed_at,
                          memory.created_at, memory.updated_at, memory.version, memory.supersedes_id, memory.contradicts_id,
                          memory.model_version, memory.extractor_version))
+        structured = memory.structured_content
+        self.db.execute(
+            "INSERT OR REPLACE INTO memory_keys(memory_id,namespace,subject_key,predicate_key,value_key) "
+            "VALUES (?,?,?,?,?)",
+            (memory.id, memory.namespace,
+             normalize_text(str(structured.get("subject", "user")), casefold=True),
+             normalize_text(str(structured.get("predicate", "statement")), casefold=True),
+             normalize_text(str(structured.get("normalized_value", structured.get("value", memory.content))),
+                            casefold=True)),
+        )
         for event_id in memory.source_event_ids:
             self.db.execute("INSERT OR IGNORE INTO memory_sources VALUES (?,?)", (memory.id, event_id))
         self.db.execute("INSERT INTO memory_vectors VALUES (?,?)",
                         (memory.id, json.dumps(vector)))
+        generation = self.db.execute(
+            "SELECT active_generation FROM vector_metadata WHERE id=1"
+        ).fetchone()[0]
+        self.db.execute(
+            "INSERT OR REPLACE INTO memory_vector_state(memory_id,generation_id,provider,model,revision,dimensions,"
+            "degraded,updated_at) VALUES (?,?,?,?,?,?,?,?)",
+            (memory.id, generation, embedding.provider, embedding.model, embedding.revision,
+             embedding.dimensions, int(embedding.degraded), utc_now()),
+        )
+        self.db.execute(
+            "INSERT OR REPLACE INTO embedding_vector_staging(memory_id,generation_id,vector,degraded,provider,model,"
+            "revision,dimensions,updated_at) VALUES (?,?,?,?,?,?,?,?,?)",
+            (memory.id, generation, json.dumps(vector), int(embedding.degraded), embedding.provider,
+             embedding.model, embedding.revision, embedding.dimensions, utc_now()),
+        )
         self.db.execute("INSERT INTO memory_fts VALUES (?,?,?)",
                         (memory.id, lexical.index_document(memory.content),
                          lexical.structured_document(memory.structured_content)))
@@ -367,6 +480,58 @@ class SQLiteStore:
              memory.source_event_ids[0] if memory.source_event_ids else None, memory.created_at),
         )
         self._commit()
+
+    def add_memory_source(self, memory_id: str, event_id: str) -> None:
+        self.db.execute("INSERT OR IGNORE INTO memory_sources(memory_id,event_id) VALUES (?,?)",
+                        (memory_id, event_id))
+        self._commit()
+
+    def record_transition(self, *, namespace: str, from_memory_id: str | None,
+                          to_memory_id: str | None, relationship: str, action: str,
+                          confidence: float, reason: str, source_event_id: str,
+                          resolver_version: str, created_at: str) -> str:
+        transition_id = stable_id(
+            "trn", namespace, from_memory_id or "", to_memory_id or "",
+            relationship, source_event_id,
+        )
+        self.db.execute(
+            "INSERT OR IGNORE INTO memory_transitions(id,namespace,from_memory_id,to_memory_id,relationship,"
+            "action,confidence,reason,source_event_id,resolver_version,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (transition_id, namespace, from_memory_id, to_memory_id, relationship, action,
+             confidence, reason, source_event_id, resolver_version, created_at),
+        )
+        self._commit()
+        return transition_id
+
+    def transitions_for_memory(self, memory_id: str) -> list[dict]:
+        rows = self.db.execute(
+            "SELECT * FROM memory_transitions WHERE from_memory_id=? OR to_memory_id=? ORDER BY created_at,id",
+            (memory_id, memory_id),
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def find_related_memory(self, candidate: Memory, *, allow_different_value: bool) -> Memory | None:
+        structured = candidate.structured_content
+        subject = normalize_text(str(structured.get("subject", "user")), casefold=True)
+        predicate = normalize_text(str(structured.get("predicate", "statement")), casefold=True)
+        value = normalize_text(
+            str(structured.get("normalized_value", structured.get("value", candidate.content))), casefold=True,
+        )
+        row = self.db.execute(
+            "SELECT m.* FROM memory_keys k JOIN memories m ON m.id=k.memory_id "
+            "WHERE k.namespace=? AND k.subject_key=? AND k.predicate_key=? AND k.value_key=? "
+            "AND m.status IN ('ACTIVE','REINFORCED') ORDER BY m.observed_at DESC,m.created_at DESC,m.id DESC LIMIT 1",
+            (candidate.namespace, subject, predicate, value),
+        ).fetchone()
+        if row is not None or not allow_different_value:
+            return self._memory(row) if row is not None else None
+        row = self.db.execute(
+            "SELECT m.* FROM memory_keys k JOIN memories m ON m.id=k.memory_id "
+            "WHERE k.namespace=? AND k.subject_key=? AND k.predicate_key=? "
+            "AND m.status IN ('ACTIVE','REINFORCED') ORDER BY m.observed_at DESC,m.created_at DESC,m.id DESC LIMIT 1",
+            (candidate.namespace, subject, predicate),
+        ).fetchone()
+        return self._memory(row) if row is not None else None
 
     def memory_versions(self, memory_id: str) -> list[dict]:
         rows = self.db.execute(
@@ -412,12 +577,20 @@ class SQLiteStore:
     def record_write_decision(self, event_id: str, candidate_index: int, *, accepted: bool,
                               importance: float, confidence: float, salience: float,
                               durability: str, reason: str, extractor_version: str,
-                              processed_at: str) -> None:
+                              processed_at: str, outcome_code: str = "COMMITTED",
+                              features: dict | None = None,
+                              policy_version: str = "utility-baseline-v1",
+                              prompt_version: str | None = None,
+                              model_version: str | None = None,
+                              schema_version: str | None = None) -> None:
         self.db.execute(
             "INSERT OR REPLACE INTO write_decisions(event_id,candidate_index,accepted,importance,confidence,"
-            "salience,durability,reason,extractor_version,processed_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            "salience,durability,reason,extractor_version,processed_at,outcome_code,features_json,policy_version,"
+            "prompt_version,model_version,schema_version) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (event_id, candidate_index, int(accepted), importance, confidence, salience,
-             durability, reason, extractor_version, processed_at),
+             durability, reason, extractor_version, processed_at, outcome_code,
+             json.dumps(features or {}, ensure_ascii=False, sort_keys=True), policy_version,
+             prompt_version, model_version, schema_version),
         )
         self._commit()
 
@@ -463,8 +636,9 @@ class SQLiteStore:
         with self.transaction():
             if namespace is None:
                 self.db.execute("DELETE FROM memory_fts")
-                for table in ("memory_access", "memory_relations", "relations", "memory_entities", "entities",
-                              "memory_vectors", "memory_sources", "memory_versions", "write_decisions",
+                for table in ("memory_access", "memory_transitions", "memory_relations", "relations", "memory_entities", "entities",
+                              "memory_vectors", "memory_vector_state", "embedding_vector_staging",
+                              "memory_sources", "memory_versions", "memory_keys", "write_decisions",
                               "memories", "profiles"):
                     self.db.execute(f"DELETE FROM {table}")
                 self.db.execute(
@@ -477,10 +651,13 @@ class SQLiteStore:
                 "SELECT id FROM memories WHERE namespace=?", (namespace,)).fetchall()]
             if memory_ids:
                 placeholders = ",".join("?" for _ in memory_ids)
+                self.db.execute("DELETE FROM memory_transitions WHERE namespace=?", (namespace,))
                 for table, column in (("memory_fts", "memory_id"), ("memory_access", "memory_id"),
                                       ("memory_relations", "memory_id"), ("memory_entities", "memory_id"),
-                                      ("memory_vectors", "memory_id"), ("memory_sources", "memory_id"),
-                                      ("memory_versions", "memory_id"), ("memories", "id")):
+                                      ("memory_vectors", "memory_id"), ("memory_vector_state", "memory_id"),
+                                      ("embedding_vector_staging", "memory_id"), ("memory_sources", "memory_id"),
+                                      ("memory_versions", "memory_id"), ("memory_keys", "memory_id"),
+                                      ("memories", "id")):
                     self.db.execute(f"DELETE FROM {table} WHERE {column} IN ({placeholders})", memory_ids)
             self.db.execute("DELETE FROM relations WHERE namespace=?", (namespace,))
             self.db.execute("DELETE FROM entities WHERE namespace=?", (namespace,))
@@ -526,14 +703,11 @@ class SQLiteStore:
         clause = "WHERE namespace=? AND status != 'DELETED'" if namespace else "WHERE status != 'DELETED'"
         params = (namespace,) if namespace else ()
         rows = self.db.execute("SELECT id, content FROM memories " + clause, params).fetchall()
-        vectors: list[tuple[str, str]] = []
+        vectors: list[tuple[str, str, object]] = []
         for row in rows:
-            vector = self.embedder.embed(row["content"])
-            if len(vector) != self.embedder.dimensions:
-                raise ValueError(
-                    f"embedding dimensions do not match provider: expected {self.embedder.dimensions}, got {len(vector)}"
-                )
-            vectors.append((row["id"], json.dumps(vector)))
+            embedding = embed_with_metadata(self.embedder, row["content"])
+            vectors.append((row["id"], json.dumps(embedding.vector), embedding))
+        generation = self.embedding_generation_id(self.embedder)
         with self.transaction():
             if namespace:
                 self.db.execute("DELETE FROM memory_vectors WHERE memory_id IN "
@@ -541,12 +715,22 @@ class SQLiteStore:
             else:
                 self.db.execute("DELETE FROM memory_vectors WHERE memory_id IN "
                                 "(SELECT id FROM memories WHERE status='DELETED')")
-            for memory_id, vector_json in vectors:
+            for memory_id, vector_json, embedding in vectors:
                 self.db.execute("INSERT OR REPLACE INTO memory_vectors(memory_id, vector) VALUES (?, ?)",
                                 (memory_id, vector_json))
+                self.db.execute(
+                    "INSERT OR REPLACE INTO memory_vector_state(memory_id,generation_id,provider,model,revision,"
+                    "dimensions,degraded,updated_at) VALUES (?,?,?,?,?,?,?,?)",
+                    (memory_id, generation, embedding.provider, embedding.model, embedding.revision,
+                     embedding.dimensions, int(embedding.degraded), utc_now()),
+                )
             if namespace is None:
-                self.db.execute("INSERT OR REPLACE INTO vector_metadata(id, model, dimensions) VALUES (1, ?, ?)",
-                                (self.embedder.model, self.embedder.dimensions))
+                self.db.execute(
+                    "UPDATE vector_metadata SET model=?,dimensions=?,provider=?,revision=?,active_generation=? WHERE id=1",
+                    (self.embedder.model, self.embedder.dimensions,
+                     str(getattr(self.embedder, "provider_name", type(self.embedder).__name__)),
+                     str(getattr(self.embedder, "revision", "unversioned")), generation),
+                )
         if namespace is None:
             self._vector_index_compatible = True
         return len(rows)
@@ -647,13 +831,39 @@ class SQLiteStore:
     def search(self, namespace: str, query: str, limit: int = 20, as_of: str | None = None,
                include_history: bool = False, predicates: Iterable[str] | None = None,
                temporal_mode: str = "any", observed_as_of: str | None = None,
-               multi_hop: bool = False
+               multi_hop: bool = False, config: RetrievalConfig | None = None,
+               trace: dict | None = None,
                ) -> list[tuple[Memory, float, list[str]]]:
-        query_vec = self.embedder.embed(query)
+        config = config or RetrievalConfig()
+        enabled = config.enabled_channels
+        trace = trace if trace is not None else {}
+        trace.setdefault("channels", {})
+        trace.setdefault("exclusions", {"temporal": 0, "model_generation": 0, "deletion_status": 0})
+        executed = [channel for channel in (
+            "bm25", "dense", "predicate", "temporal", "entity", "relation", "multi_hop"
+        ) if channel in enabled and (channel != "multi_hop" or multi_hop)]
+        trace["executed_channels"] = executed
+
+        dense_started = perf_counter()
+        if "dense" in enabled:
+            query_embedding = embed_with_metadata(self.embedder, query)
+            query_vec = list(query_embedding.vector)
+            dense_enabled = query_embedding.semantic and not query_embedding.degraded
+            trace["channels"]["dense"] = {
+                "candidate_count": 0,
+                "latency_ms": (perf_counter() - dense_started) * 1000,
+                "degraded": query_embedding.degraded,
+                "model": query_embedding.model,
+                "revision": query_embedding.revision,
+            }
+        else:
+            query_vec = []
+            dense_enabled = False
         predicate_filter = set(predicates or ())
         status_clause = "m.status IN ('ACTIVE','REINFORCED')" if not include_history else "m.status NOT IN ('DELETED','MERGED')"
         lexical_scores: dict[str, float] = {}
-        match_query = lexical.match_expression(query)
+        bm25_started = perf_counter()
+        match_query = lexical.match_expression(query) if "bm25" in enabled else ""
         if match_query:
             try:
                 hits = self.db.execute(
@@ -666,21 +876,41 @@ class SQLiteStore:
                     lexical_scores[hit["memory_id"]] = 1.0 / (1.0 + position)
             except sqlite3.OperationalError:
                 pass
+        if "bm25" in enabled:
+            trace["channels"]["bm25"] = {
+                "candidate_count": len(lexical_scores),
+                "latency_ms": (perf_counter() - bm25_started) * 1000,
+            }
         rows = self.db.execute(
-            "SELECT m.*, v.vector FROM memories m JOIN memory_vectors v ON v.memory_id=m.id "
+            "SELECT m.*, v.vector, COALESCE(s.degraded,0) AS vector_degraded,s.generation_id FROM memories m "
+            "JOIN memory_vectors v ON v.memory_id=m.id LEFT JOIN memory_vector_state s ON s.memory_id=m.id "
             "WHERE m.namespace=? AND " + status_clause + " ORDER BY m.observed_at, m.id",
             (namespace,),
         ).fetchall()
-        entity_matches = {row["memory_id"] for row in self.db.execute(
+        entity_started = perf_counter()
+        entity_matches = ({row["memory_id"] for row in self.db.execute(
             "SELECT me.memory_id FROM memory_entities me JOIN entities e ON e.id=me.entity_id "
             "WHERE e.namespace=? AND instr(?, e.canonical_name) > 0", (namespace, query.lower()))}
-        relation_matches = {row["memory_id"] for row in self.db.execute(
+                          if "entity" in enabled else set())
+        if "entity" in enabled:
+            trace["channels"]["entity"] = {
+                "candidate_count": len(entity_matches), "latency_ms": (perf_counter() - entity_started) * 1000,
+            }
+        relation_started = perf_counter()
+        relation_matches = ({row["memory_id"] for row in self.db.execute(
             "SELECT mr.memory_id FROM memory_relations mr JOIN relations r ON r.id=mr.relation_id "
             "JOIN entities s ON s.id=r.subject_entity_id JOIN entities o ON o.id=r.object_entity_id "
             "WHERE r.namespace=? AND (instr(?, s.canonical_name)>0 OR instr(?, o.canonical_name)>0 OR instr(?, r.predicate)>0)",
             (namespace, query.lower(), query.lower(), query.lower()))}
+                            if "relation" in enabled else set())
+        if "relation" in enabled:
+            trace["channels"]["relation"] = {
+                "candidate_count": len(relation_matches),
+                "latency_ms": (perf_counter() - relation_started) * 1000,
+            }
         multi_hop_matches: set[str] = set()
-        if multi_hop:
+        multi_started = perf_counter()
+        if multi_hop and "multi_hop" in enabled:
             frontier = {row["id"] for row in self.db.execute(
                 "SELECT id FROM entities WHERE namespace=? AND canonical_name NOT LIKE 'user:%' "
                 "AND instr(?, canonical_name)>0 LIMIT 20", (namespace, query.lower()))}
@@ -707,39 +937,78 @@ class SQLiteStore:
                     f"SELECT memory_id FROM memory_relations WHERE relation_id IN ({placeholders})",
                     tuple(relation_ids),
                 )}
+        if multi_hop and "multi_hop" in enabled:
+            trace["channels"]["multi_hop"] = {
+                "candidate_count": len(multi_hop_matches),
+                "latency_ms": (perf_counter() - multi_started) * 1000,
+            }
+        active_generation = self.db.execute(
+            "SELECT active_generation FROM vector_metadata WHERE id=1"
+        ).fetchone()[0]
         candidates: list[dict] = []
+        temporal_started = perf_counter()
         for row in rows:
             memory = self._memory(row)
-            if not temporal.visible_at(memory.valid_from, memory.valid_to, as_of):
+            if "temporal" in enabled and not temporal.visible_at(memory.valid_from, memory.valid_to, as_of):
+                trace["exclusions"]["temporal"] += 1
                 continue
             observed_cutoff = temporal.parse_instant(observed_as_of)
             observed_at = temporal.parse_instant(memory.observed_at)
-            if observed_cutoff is not None and observed_at is not None and observed_at > observed_cutoff:
+            if "temporal" in enabled and observed_cutoff is not None and observed_at is not None and observed_at > observed_cutoff:
+                trace["exclusions"]["temporal"] += 1
                 continue
             stored_vector = json.loads(row["vector"])
-            dense = cosine(query_vec, stored_vector) if self._vector_index_compatible and len(stored_vector) == len(query_vec) else 0.0
+            generation_matches = row["generation_id"] in {None, active_generation}
+            if "dense" in enabled and not generation_matches:
+                trace["exclusions"]["model_generation"] += 1
+            dense = cosine(query_vec, stored_vector) if (
+                dense_enabled and not row["vector_degraded"] and self._vector_index_compatible
+                and generation_matches and len(stored_vector) == len(query_vec)
+            ) else 0.0
             sparse = lexical_scores.get(memory.id, 0.0)
             candidates.append({"memory": memory, "dense": dense, "bm25": sparse,
                                "entity": memory.id in entity_matches,
                                "relation": memory.id in relation_matches,
                                "multi_hop": memory.id in multi_hop_matches,
-                               "predicate": memory.structured_content.get("predicate") in predicate_filter})
+                               "predicate": "predicate" in enabled and
+                               memory.structured_content.get("predicate") in predicate_filter})
+        trace["exclusions"]["deletion_status"] = self.db.execute(
+            "SELECT COUNT(*) FROM memories WHERE namespace=? AND status IN ('DELETED','MERGED')", (namespace,),
+        ).fetchone()[0]
+        if "temporal" in enabled:
+            trace["channels"]["temporal"] = {
+                "candidate_count": len(candidates),
+                "latency_ms": (perf_counter() - temporal_started) * 1000,
+            }
+        if "predicate" in enabled:
+            trace["channels"]["predicate"] = {
+                "candidate_count": sum(bool(candidate["predicate"]) for candidate in candidates),
+                "latency_ms": 0.0,
+            }
+        if "dense" in enabled:
+            trace["channels"]["dense"]["candidate_count"] = sum(candidate["dense"] > 0 for candidate in candidates)
 
         # Reciprocal-rank fusion keeps incompatible channel scales separate.
         # Each channel ranks the candidates it actually supports; a single weak
         # deterministic-vector collision is filtered before fusion.
         ranks: dict[str, dict[str, int]] = {}
         for channel in ("dense", "bm25"):
+            if channel not in enabled:
+                ranks[channel] = {}
+                continue
             ordered = sorted(
                 (candidate for candidate in candidates if candidate[channel] > 0),
                 key=lambda candidate: (-candidate[channel], candidate["memory"].id),
-            )
+            )[:config.depth(channel)]
             ranks[channel] = {candidate["memory"].id: rank for rank, candidate in enumerate(ordered, start=1)}
         for channel in ("entity", "relation", "multi_hop", "predicate"):
+            if channel not in enabled or (channel == "multi_hop" and not multi_hop):
+                ranks[channel] = {}
+                continue
             ordered = sorted(
                 (candidate for candidate in candidates if candidate[channel]),
                 key=lambda candidate: candidate["memory"].id,
-            )
+            )[:config.depth(channel)]
             ranks[channel] = {candidate["memory"].id: rank for rank, candidate in enumerate(ordered, start=1)}
 
         scored: list[tuple[Memory, float, list[str]]] = []
@@ -754,7 +1023,7 @@ class SQLiteStore:
                     continue
                 if candidate["dense"] < (0.15 / 0.55):
                     continue
-            rrf = sum(1.0 / (60 + ranks[channel][memory.id]) for channel in channels)
+            rrf = sum(config.weight(channel) / (config.rrf_k + ranks[channel][memory.id]) for channel in channels)
             # Lightweight deterministic rerank. RRF remains dominant while
             # evidence quality breaks close ties without mixing raw channel
             # scales back into the fusion score.
@@ -771,7 +1040,22 @@ class SQLiteStore:
                         reverse=temporal_mode == "latest")
         else:
             scored.sort(key=lambda item: (-item[1], item[0].id))
-        return scored[:limit]
+        final = scored[:limit]
+        final_scores = {memory.id: score for memory, score, _channels in final}
+        trace["candidates"] = [{
+            "memory_id": candidate["memory"].id,
+            "raw_scores": {channel: candidate[channel] for channel in ("dense", "bm25")
+                           if channel in enabled},
+            "matches": {channel: bool(candidate[channel])
+                        for channel in ("entity", "relation", "multi_hop", "predicate")
+                        if channel in enabled and (channel != "multi_hop" or multi_hop)},
+            "ranks": {channel: channel_ranks[candidate["memory"].id]
+                      for channel, channel_ranks in ranks.items()
+                      if candidate["memory"].id in channel_ranks},
+            "final_score": final_scores.get(candidate["memory"].id, 0.0),
+            "selected": candidate["memory"].id in final_scores,
+        } for candidate in candidates]
+        return final
 
     def tombstone_memory(self, memory_id: str, reason: str, deleted_at: str) -> None:
         with self.transaction():
@@ -788,6 +1072,8 @@ class SQLiteStore:
     def _delete_memory_projections(self, memory_id: str) -> None:
         self.db.execute("DELETE FROM memory_fts WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM memory_vectors WHERE memory_id=?", (memory_id,))
+        self.db.execute("DELETE FROM memory_vector_state WHERE memory_id=?", (memory_id,))
+        self.db.execute("DELETE FROM embedding_vector_staging WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM memory_relations WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM memory_entities WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM relations WHERE id NOT IN (SELECT relation_id FROM memory_relations)")
@@ -807,6 +1093,9 @@ class SQLiteStore:
             self.db.execute("DELETE FROM memory_access WHERE memory_id=?", (memory_id,))
             self.db.execute("DELETE FROM memory_sources WHERE memory_id=?", (memory_id,))
             self.db.execute("DELETE FROM memory_versions WHERE memory_id=?", (memory_id,))
+            self.db.execute("DELETE FROM memory_keys WHERE memory_id=?", (memory_id,))
+            self.db.execute("DELETE FROM memory_transitions WHERE from_memory_id=? OR to_memory_id=?",
+                            (memory_id, memory_id))
             self.db.execute("DELETE FROM memories WHERE id=?", (memory_id,))
 
     def record_access(self, memory_id: str, query: str, rank: int, score: float, accessed_at: str, used: bool = False) -> None:
@@ -887,6 +1176,7 @@ class SQLiteStore:
                 self.db.execute("UPDATE memory_versions SET source_event_id=NULL WHERE source_event_id=?", (event_id,))
                 self.db.execute("DELETE FROM memory_sources WHERE event_id=?", (event_id,))
                 self.db.execute("DELETE FROM write_decisions WHERE event_id=?", (event_id,))
+                self.db.execute("DELETE FROM memory_transitions WHERE source_event_id=?", (event_id,))
                 self.db.execute("DELETE FROM outbox WHERE event_id=?", (event_id,))
                 self.db.execute("DELETE FROM events WHERE id=?", (event_id,))
         return deleted_ids

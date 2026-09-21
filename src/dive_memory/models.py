@@ -87,3 +87,4 @@ class RetrievalResult:
     plan: dict[str, Any]
     abstain_reason: str | None = None
     degraded: bool = False
+    trace: dict[str, Any] = field(default_factory=dict)

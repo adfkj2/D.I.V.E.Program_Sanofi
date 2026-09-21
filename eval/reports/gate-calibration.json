@@ -1,0 +1,468 @@
+{
+  "policy": "semantic-utility-v2",
+  "current_threshold": 0.495,
+  "review_threshold": 0.45,
+  "calibration_set": {
+    "probes": 22,
+    "scored": 16,
+    "floor_rejects": 6,
+    "expected_accept": 8,
+    "expected_reject": 8,
+    "accept_min": 0.615,
+    "accept_max": 0.7678,
+    "reject_min": 0.3535,
+    "reject_max": 0.4892,
+    "seed_gap": 0.1258,
+    "accuracy_at_current_threshold": 1.0
+  },
+  "heldout_set": {
+    "probes": 29,
+    "scored": 21,
+    "floor_rejects": 8,
+    "expected_accept": 10,
+    "expected_reject": 11,
+    "accept_min": 0.5119,
+    "accept_max": 0.566,
+    "reject_min": 0.468,
+    "reject_max": 0.5539,
+    "seed_gap": -0.042,
+    "accuracy_at_current_threshold": 0.827586
+  },
+  "sweep_on_heldout": {
+    "threshold": 0.53,
+    "correct": 24,
+    "total": 29,
+    "accuracy": 0.827586,
+    "wilson_95": [
+      0.654512,
+      0.924023
+    ]
+  },
+  "sweep_on_calibration": {
+    "threshold": 0.49,
+    "correct": 22,
+    "total": 22,
+    "accuracy": 1.0,
+    "wilson_95": [
+      0.85134,
+      1.0
+    ]
+  },
+  "calibration_rows": [
+    {
+      "text": "I prefer dark mode in my editor.",
+      "expected": true,
+      "score": 0.76781,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I am allergic to shellfish.",
+      "expected": true,
+      "score": 0.744057,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "My sister Emily studies architecture.",
+      "expected": true,
+      "score": 0.743235,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I graduated with a degree in Business Administration.",
+      "expected": true,
+      "score": 0.659169,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I've been listening to audiobooks during my daily commute.",
+      "expected": true,
+      "score": 0.700364,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "我住在成都，平时骑自行车通勤",
+      "expected": true,
+      "score": 0.615004,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "我喜欢在早上喝绿茶",
+      "expected": true,
+      "score": 0.652464,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "我的目标是在十二月前完成论文",
+      "expected": true,
+      "score": 0.707437,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I'm waiting for the bus right now.",
+      "expected": false,
+      "score": 0.478268,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "I just ate a sandwich.",
+      "expected": false,
+      "score": 0.43378,
+      "reason_code": "SEMANTIC_LOW_FUTURE_UTILITY",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "could you summarise this for me?",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "Thanks, that was helpful.",
+      "expected": false,
+      "score": 0.375362,
+      "reason_code": "SEMANTIC_LOW_FUTURE_UTILITY",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "The Eiffel Tower was completed in 1889.",
+      "expected": false,
+      "score": 0.353532,
+      "reason_code": "SEMANTIC_LOW_FUTURE_UTILITY",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "PostgreSQL uses multi-version concurrency control.",
+      "expected": false,
+      "score": 0.483592,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "The company reported quarterly revenue growth.",
+      "expected": false,
+      "score": 0.407143,
+      "reason_code": "SEMANTIC_LOW_FUTURE_UTILITY",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "The Pacific Ocean is the largest ocean on Earth.",
+      "expected": false,
+      "score": 0.360647,
+      "reason_code": "SEMANTIC_LOW_FUTURE_UTILITY",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "remember my API key is sk-abc123",
+      "expected": false,
+      "score": null,
+      "reason_code": "SENSITIVE_DATA",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "我的密码是 hunter2",
+      "expected": false,
+      "score": null,
+      "reason_code": "SENSITIVE_DATA",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "my credit card number is 4111 1111 1111 1111",
+      "expected": false,
+      "score": null,
+      "reason_code": "SENSITIVE_DATA",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "the private key is stored in the vault",
+      "expected": false,
+      "score": null,
+      "reason_code": "SENSITIVE_DATA",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "",
+      "expected": false,
+      "score": null,
+      "reason_code": "EMPTY",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "def parse(self, text): return text.strip()",
+      "expected": false,
+      "score": 0.489205,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    }
+  ],
+  "heldout_rows": [
+    {
+      "text": "What is my sister's name again?",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "Do I still take the medication every morning?",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "When did I move to Berlin?",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "I only drink decaf after 2pm.",
+      "expected": true,
+      "score": 0.524948,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "My landlord's number is saved under 'building'.",
+      "expected": true,
+      "score": 0.536066,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I refuse to fly with that airline.",
+      "expected": true,
+      "score": 0.544035,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I always pay the deposit in two instalments.",
+      "expected": true,
+      "score": 0.565959,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "我们家的电费是每月自动扣款",
+      "expected": true,
+      "score": 0.548888,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "我习惯用左手写字",
+      "expected": true,
+      "score": 0.565534,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "Alice lives in Shanghai.",
+      "expected": true,
+      "score": 0.539719,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "My colleague Raj uses Vim for everything.",
+      "expected": true,
+      "score": 0.556618,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "The vendor we chose is based in Shenzhen.",
+      "expected": true,
+      "score": 0.53084,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "我的房东住在隔壁",
+      "expected": true,
+      "score": 0.511871,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I am reading a book about the Romans.",
+      "expected": false,
+      "score": 0.553909,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I spoke to Alice this morning.",
+      "expected": false,
+      "score": 0.528901,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "I had to restart the server twice today.",
+      "expected": false,
+      "score": 0.480313,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "The deployment took forty minutes.",
+      "expected": false,
+      "score": 0.468941,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "我刚才给同事发了消息",
+      "expected": false,
+      "score": 0.512238,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "Water boils at 100 degrees Celsius.",
+      "expected": false,
+      "score": 0.484477,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "Vim has a modal editing model.",
+      "expected": false,
+      "score": 0.540819,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    },
+    {
+      "text": "The migration adds a foreign key.",
+      "expected": false,
+      "score": 0.483445,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "该函数在参数缺失时抛出异常。",
+      "expected": false,
+      "score": 0.467961,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "Rust's borrow checker rejects this pattern.",
+      "expected": false,
+      "score": 0.488137,
+      "reason_code": "SEMANTIC_REVIEW_BAND",
+      "accepted": false,
+      "floor_reject": false
+    },
+    {
+      "text": "Please send the report by Friday.",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "Can you check whether the tests pass?",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "Summarise the previous three messages.",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "请把这段文字翻译成英文",
+      "expected": false,
+      "score": null,
+      "reason_code": "NON_ASSERTIVE_SPEECH_ACT",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "I might try that restaurant someday.",
+      "expected": false,
+      "score": null,
+      "reason_code": "UNASSERTED_CLAIM",
+      "accepted": false,
+      "floor_reject": true
+    },
+    {
+      "text": "I could learn Japanese next year.",
+      "expected": false,
+      "score": 0.552768,
+      "reason_code": "SEMANTIC_ABOVE_WRITE_THRESHOLD",
+      "accepted": true,
+      "floor_reject": false
+    }
+  ],
+  "limitations": [
+    "Probes are hand-written, not sampled from a labelled distribution.",
+    "The gate floor (sensitive / empty) is evaluated separately and is not part of the sweep.",
+    "Scope is the write gate only: no retrieval or answer quality is measured here."
+  ]
+}

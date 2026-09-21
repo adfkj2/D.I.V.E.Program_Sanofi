@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+from hashlib import sha256
 import threading
 from functools import wraps
 from pathlib import Path
+from typing import Any
 
 from .ids import new_id, stable_id
 from .lifecycle import ConsolidationReport, archive_expired, consolidate
@@ -11,10 +13,18 @@ from .models import Event, EvidenceState, Memory, MemoryStatus, RetrievalItem, R
 from . import temporal
 from .context import pack_context
 from .planner import plan_query
-from .llm import ExtractionProvider, HeuristicExtractionProvider
+from .llm import ExtractionOutcome, ExtractionOutcomeCode, ExtractionProvider, HeuristicExtractionProvider
 from .gate import decide
-from .entities import entity_candidates
+from .entities import entity_candidates, is_user_subject
 from .relations import is_single_valued, relation_predicate
+from .resolution import (
+    RelationshipResolver,
+    ResolutionAction,
+    ResolutionContext,
+    _AUTHORITATIVE_SOURCES,
+)
+from .retrieval import RetrievalConfig
+from .token_budget import TokenCounter
 from .decay import apply_decay
 from .store import SQLiteStore
 from .embeddings import EmbeddingProvider
@@ -28,24 +38,50 @@ def _synchronized(method):
     return wrapper
 
 
+def _accepts_source_type(extractor: Any) -> bool:
+    """True when the extractor advertises support for the ``source_type`` kwarg.
+
+    The shipped providers set ``supports_source_type = True``. Custom
+    extractors (and every pre-v2 implementation) do not, so the service calls
+    them with exactly the arguments they were written for.
+    """
+    return bool(getattr(extractor, "supports_source_type", False))
+
+
+def _extractor_source_kwargs(extractor: Any, source_type: str | None) -> dict[str, Any]:
+    return {"source_type": source_type} if _accepts_source_type(extractor) else {}
+
+
 class MemoryService:
     def __init__(self, db_path: str = ":memory:", extractor: ExtractionProvider | None = None,
-                 embedder: EmbeddingProvider | None = None) -> None:
-        self.store = SQLiteStore(db_path, embedder=embedder)
+                 embedder: EmbeddingProvider | None = None, store: Any | None = None,
+                 gate: Any | None = None) -> None:
+        self.store = store or SQLiteStore(db_path, embedder=embedder)
         self._lock = threading.RLock()
-        self.extractor = extractor or HeuristicExtractionProvider()
+        # ``gate`` is opt-in: passing a gate (e.g. ``semantic_gate.SemanticGate``)
+        # selects the v2 policy; omitting it keeps the v1 keyword provider that
+        # every existing call site expects.
+        self.extractor = extractor or HeuristicExtractionProvider(gate=gate)
+        self.resolver = RelationshipResolver()
 
     @_synchronized
     def ingest(self, namespace: str, text: str, *, event_type: str = "message", explicit: bool = False,
                observed_at: str | None = None, idempotency_key: str | None = None, defer: bool = False,
                supersedes_memory_id: str | None = None, occurred_from: str | None = None,
-               occurred_to: str | None = None, source_message_id: str | None = None) -> dict:
+               occurred_to: str | None = None, source_message_id: str | None = None,
+               source_type: str | None = None) -> dict:
         observed_at = temporal.require_instant(observed_at, "observed_at") or utc_now()
         occurred_from = temporal.require_instant(occurred_from, "occurred_from")
         occurred_to = temporal.require_instant(occurred_to, "occurred_to")
         if occurred_from and occurred_to and temporal.parse_instant(occurred_from) >= temporal.parse_instant(occurred_to):
             raise ValueError("occurred_from must be earlier than occurred_to")
         payload = {"text": text, "explicit": explicit}
+        # ``source_type`` is the provenance tier the v2 write gate needs to
+        # distinguish a user-supplied fact from an untrusted web string or a
+        # generated summary. It rides in the payload so no schema migration is
+        # required and old events (which lack the key) keep their v1 semantics.
+        if source_type is not None:
+            payload["source_type"] = str(source_type)
         if supersedes_memory_id:
             payload["supersedes_memory_id"] = supersedes_memory_id
         event = Event(new_id("evt"), namespace, event_type, payload, observed_at,
@@ -78,25 +114,74 @@ class MemoryService:
             raise
         return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": memory_ids}
 
+    def _memory_source_type(self, memory: Memory) -> str | None:
+        """Recover the provenance tier of an existing memory.
+
+        Each memory records the events that produced it; those events carry the
+        ``source_type`` that was supplied at ingest time. A memory reinforced by
+        several events has no single tier, so only an unambiguous first
+        (earliest recorded) event is reported. Returning ``None`` means
+        "unknown", which every caller must treat as the pre-v2 default.
+        """
+        tiers = set()
+        for event_id in memory.source_event_ids:
+            event = self.store.get_event(event_id)
+            if event is None:
+                continue
+            tiers.add(event.payload.get("source_type"))
+        if len(tiers) != 1:
+            return None
+        tier = tiers.pop()
+        return str(tier) if tier is not None else None
+
     def _process_event(self, event: Event, *, text: str | None = None, explicit: bool = False) -> list[str]:
         text = text if text is not None else str(event.payload.get("text", ""))
         explicit = explicit or bool(event.payload.get("explicit", False))
+        # Provenance tier recorded at ingest time. Events written before v2 (or
+        # by callers that never set it) yield ``None``, which the v1 gate never
+        # sees and the v2 gate treats as untrusted.
+        source_type = event.payload.get("source_type")
+        source_type = str(source_type) if source_type is not None else None
         memory_ids: list[str] = []
         forced_id = event.payload.get("supersedes_memory_id")
         forced = self.store.get_memory(str(forced_id)) if forced_id else None
         if forced is not None and forced.namespace != event.namespace:
             raise ValueError("a correction cannot move a memory across namespaces")
-        candidates = self.extractor.extract(
-            text, explicit=explicit, observed_at=event.occurred_from or event.observed_at)
+        extract_outcome = getattr(self.extractor, "extract_outcome", None)
+        if callable(extract_outcome):
+            if _accepts_source_type(self.extractor):
+                outcome = extract_outcome(
+                    text, explicit=explicit, observed_at=event.occurred_from or event.observed_at,
+                    source_type=source_type)
+            else:
+                # Third-party extractors written before v2 keep their exact
+                # signature; only providers that opt in receive provenance.
+                outcome = extract_outcome(
+                    text, explicit=explicit, observed_at=event.occurred_from or event.observed_at)
+            candidates = list(outcome.candidates)
+        else:
+            candidates = self.extractor.extract(
+                text, explicit=explicit, observed_at=event.occurred_from or event.observed_at,
+                **_extractor_source_kwargs(self.extractor, source_type))
+            outcome = ExtractionOutcome(
+                ExtractionOutcomeCode.COMMITTED if candidates else ExtractionOutcomeCode.EMPTY,
+                tuple(candidates),
+                "legacy extraction provider",
+                type(self.extractor).__name__,
+                type(self.extractor).__name__,
+                "legacy",
+                "legacy-candidate",
+            )
         extractor_version = type(self.extractor).__name__
         if not candidates:
-            reason = "extractor returned no accepted candidates"
-            if isinstance(self.extractor, HeuristicExtractionProvider):
-                reason = decide(text, explicit=explicit).reason
+            reason = outcome.reason or "extractor returned no accepted candidates"
             self.store.record_write_decision(
                 event.id, -1, accepted=False, importance=0.0, confidence=0.0, salience=0.0,
                 durability="ephemeral", reason=reason,
                 extractor_version=extractor_version, processed_at=utc_now(),
+                outcome_code=outcome.code.value, features={},
+                prompt_version=outcome.prompt_version, model_version=outcome.model,
+                schema_version=outcome.schema_version,
             )
         for index, candidate in enumerate(candidates):
             self.store.record_write_decision(
@@ -104,6 +189,10 @@ class MemoryService:
                 confidence=candidate.decision.confidence, salience=candidate.decision.salience,
                 durability=candidate.decision.durability, reason=candidate.decision.reason,
                 extractor_version=extractor_version, processed_at=utc_now(),
+                outcome_code=outcome.code.value, features=candidate.decision.features,
+                policy_version=candidate.decision.policy_version,
+                prompt_version=outcome.prompt_version, model_version=outcome.model,
+                schema_version=outcome.schema_version,
             )
             memory_id = stable_id("mem", event.id, str(index))
             if self.store.is_tombstoned("memory", memory_id):
@@ -116,54 +205,92 @@ class MemoryService:
                             extractor_version=extractor_version)
             if memory.valid_to is None:
                 memory.valid_to = event.occurred_to
-            existing = forced if index == 0 and forced is not None else self._find_conflict(memory)
-            if existing:
+            existing = forced if index == 0 and forced is not None else self.store.find_related_memory(
+                memory, allow_different_value=is_single_valued(memory.structured_content.get("predicate")))
+            proposal = self.resolver.classify(
+                existing, memory,
+                ResolutionContext(
+                    event.event_type, text,
+                    forced=forced is not None and index == 0,
+                    source_type=source_type,
+                    existing_source_type=self._memory_source_type(existing),
+                ),
+            ) if existing else None
+            if proposal and proposal.action in {ResolutionAction.MERGE_PROVENANCE, ResolutionAction.REINFORCE}:
+                self.store.add_memory_source(existing.id, event.id)
+                if proposal.action is ResolutionAction.REINFORCE:
+                    self.store.reinforce_memory(existing.id)
+                self.store.record_transition(
+                    namespace=event.namespace, from_memory_id=existing.id, to_memory_id=existing.id,
+                    relationship=proposal.relationship.value, action=proposal.action.value,
+                    confidence=proposal.confidence, reason=proposal.reason, source_event_id=event.id,
+                    resolver_version=proposal.resolver_version, created_at=utc_now(),
+                )
+                memory_ids.append(existing.id)
+                continue
+            if existing and proposal and proposal.action is ResolutionAction.SUPERSEDE:
                 self.store.close_validity(existing.id, event.observed_at)
                 self.store.update_status(existing.id, MemoryStatus.SUPERSEDED)
                 memory.supersedes_id = existing.id
                 memory.version = existing.version + 1
+            elif existing and proposal and proposal.action is ResolutionAction.COEXIST:
+                memory.contradicts_id = existing.id
             self.store.add_memory(memory)
             for entity_name, entity_type in entity_candidates(memory.content, memory.structured_content):
                 self.store.attach_entity(event.namespace, memory.id, entity_name, entity_type)
             predicate = relation_predicate(str(memory.structured_content.get("predicate", "")))
-            if predicate:
+            if predicate and is_user_subject(memory.structured_content.get("subject")):
+                # Relations hang off the *user* entity, so only first-person
+                # facts may create them. A third-party fact still becomes a
+                # memory with its own entity, just not a user relation.
                 self.store.add_relation(event.namespace, memory.id, f"user:{event.namespace}", predicate,
                                         str(memory.structured_content.get("value", "")), memory.valid_from,
                                         memory.valid_to, memory.confidence, event.id)
                 self._refresh_profile(event.namespace)
+            self.store.record_transition(
+                namespace=event.namespace,
+                from_memory_id=(existing.id if existing and proposal and proposal.action is not ResolutionAction.CREATE else None),
+                to_memory_id=memory.id,
+                relationship=proposal.relationship.value if proposal else "unrelated",
+                action=proposal.action.value if proposal else ResolutionAction.CREATE.value,
+                confidence=proposal.confidence if proposal else 1.0,
+                reason=proposal.reason if proposal else "no related active memory",
+                source_event_id=event.id,
+                resolver_version=proposal.resolver_version if proposal else self.resolver.version,
+                created_at=utc_now(),
+            )
             memory_ids.append(memory.id)
         return memory_ids
-
-    def _find_conflict(self, memory: Memory) -> Memory | None:
-        predicate = memory.structured_content.get("predicate")
-        value = memory.structured_content.get("value")
-        # Only single-valued predicates supersede. Preferences and free-form
-        # statements accumulate, so a new one never silently buries an older,
-        # unrelated fact.
-        if not is_single_valued(predicate):
-            return None
-        for existing in self.store.active_memories(memory.namespace):
-            if existing.kind != memory.kind or existing.structured_content.get("predicate") != predicate:
-                continue
-            if existing.structured_content.get("value") != value:
-                return existing
-        return None
 
     @_synchronized
     def retrieve(self, namespace: str, query: str, *, limit: int = 8, as_of: str | None = None,
                  intent: str | None = None, token_budget: int = 1500,
-                 observed_as_of: str | None = None) -> RetrievalResult:
+                 observed_as_of: str | None = None,
+                 config: RetrievalConfig | None = None) -> RetrievalResult:
         with self._lock:
             query_plan = plan_query(query, limit=limit, token_budget=token_budget)
             limit = query_plan.limit
             intent = intent or query_plan.intent
             as_of = temporal.require_instant(as_of or query_plan.as_of, "as_of")
             observed_as_of = temporal.require_instant(observed_as_of, "observed_as_of")
+            config = config or RetrievalConfig()
             include_history = query_plan.temporal_mode in {"historical", "earliest", "all"} or as_of is not None
+            trace: dict[str, Any] = {
+                "schema_version": "retrieval-trace-v1",
+                "request_id": new_id("req"),
+                "query_sha256": sha256(query.encode("utf-8")).hexdigest(),
+                "config_version": config.version,
+                "config_name": config.name,
+                "executed_channels": [],
+                "channels": {},
+                "candidates": [],
+                "exclusions": {"temporal": 0, "model_generation": 0, "deletion_status": 0},
+                "hard_filters": {"namespace": True, "deletion_status": True},
+            }
             rows = self.store.search(namespace, query, limit=limit, as_of=as_of,
                                      include_history=include_history, predicates=query_plan.predicates,
                                      temporal_mode=query_plan.temporal_mode, observed_as_of=observed_as_of,
-                                     multi_hop=query_plan.intent == "multi_hop")
+                                     multi_hop=query_plan.intent == "multi_hop", config=config, trace=trace)
             items = [RetrievalItem(memory, score, channels, memory.source_event_ids) for memory, score, channels in rows]
             with self.store.transaction():
                 accessed_at = utc_now()
@@ -175,18 +302,26 @@ class MemoryService:
                                            "observed_as_of": observed_as_of,
                                            "token_budget": query_plan.token_budget,
                                            "predicates": query_plan.predicates,
-                                           "channels": query_plan.channels}, abstain)
+                                           "channels": trace["executed_channels"],
+                                           "retrieval_config": config.name}, abstain,
+                                   degraded=any(item.get("degraded", False)
+                                                for item in trace["channels"].values()),
+                                   trace=trace)
 
     @_synchronized
     def retrieve_context(self, namespace: str, query: str, *, limit: int = 8, token_budget: int = 1500,
-                         as_of: str | None = None, observed_as_of: str | None = None) -> dict:
+                         as_of: str | None = None, observed_as_of: str | None = None,
+                         token_counter: TokenCounter | None = None) -> dict:
         token_budget = max(0, min(int(token_budget), 100_000))
         result = self.retrieve(namespace, query, limit=limit, as_of=as_of,
                                observed_as_of=observed_as_of, token_budget=token_budget)
-        packed = pack_context(result.items, token_budget)
+        current_only = result.plan["temporal_mode"] not in {"historical", "earliest", "all"}
+        packed = pack_context(result.items, token_budget, token_counter=token_counter, current_only=current_only)
         return {"context": packed.text, "items": packed.items, "estimated_tokens": packed.estimated_tokens,
                 "omitted": packed.omitted, "plan": {**result.plan, "token_budget": token_budget},
-                "abstain_reason": result.abstain_reason}
+                "abstain_reason": result.abstain_reason, "trace": result.trace,
+                "packing_decisions": packed.decisions, "token_counter": packed.token_counter,
+                "token_count_degraded": packed.token_count_degraded}
 
     @_synchronized
     def forget(self, memory_id: str, reason: str = "user_request", *, hard: bool = False) -> None:
@@ -304,22 +439,45 @@ class MemoryService:
         return self.store.get_profile(namespace) or {"_meta": {"schema_version": 1, "generated_from_version": 0}}
 
     def _refresh_profile(self, namespace: str) -> None:
+        # For a single-valued predicate the profile must pick by *provenance*
+        # before recency. A derived memory (summary / generated / tool) may
+        # legitimately coexist with a user fact — the resolver refuses to
+        # supersede across that boundary — but it must not become the projected
+        # answer. Ties, and the unknown-provenance case, keep the original
+        # last-writer-wins order so v1 behaviour is untouched.
+        authoritative: dict[str, tuple[str, Any, int]] = {}
+        fallback: dict[str, tuple[str, Any, int]] = {}
         profile: dict = {}
         version = 0
         for memory in self.store.active_memories(namespace):
+            # The profile is a *user* profile. A memory whose subject is someone
+            # else (``Alice``, a customer record, a colleague) is still a
+            # first-class memory but must never be projected under the user's
+            # predicates — that is exactly the entity-confusion failure the
+            # false-memory suite's ``ec-third-party-residence`` case encodes.
+            if not is_user_subject(memory.structured_content.get("subject")):
+                version = max(version, memory.version)
+                continue
             predicate = memory.structured_content.get("predicate")
             value = memory.structured_content.get("value")
-            if predicate and value is not None:
-                if is_single_valued(predicate):
-                    profile[predicate] = value
-                elif predicate not in profile:
-                    profile[predicate] = value
-                elif isinstance(profile[predicate], list):
-                    if value not in profile[predicate]:
-                        profile[predicate].append(value)
-                elif profile[predicate] != value:
-                    profile[predicate] = [profile[predicate], value]
-                version = max(version, memory.version)
+            if not predicate or value is None:
+                continue
+            source_tier = self._memory_source_type(memory)
+            if is_single_valued(predicate):
+                bucket = authoritative if source_tier in _AUTHORITATIVE_SOURCES else fallback
+                bucket[predicate] = (memory.id, value, memory.version)
+            elif predicate not in profile:
+                profile[predicate] = value
+            elif isinstance(profile[predicate], list):
+                if value not in profile[predicate]:
+                    profile[predicate].append(value)
+            elif profile[predicate] != value:
+                profile[predicate] = [profile[predicate], value]
+            version = max(version, memory.version)
+        for predicate, (_, value, _) in fallback.items():
+            profile.setdefault(predicate, value)
+        for predicate, (_, value, _) in authoritative.items():
+            profile[predicate] = value
         self.store.upsert_profile(namespace, profile, version, utc_now())
 
     @_synchronized
@@ -494,6 +652,8 @@ class MemoryService:
                 "s.canonical_name AS subject,o.canonical_name AS object "
                 "FROM relations r JOIN entities s ON s.id=r.subject_entity_id "
                 "JOIN entities o ON o.id=r.object_entity_id WHERE r.namespace=? ORDER BY r.id", (namespace,))],
+            "transitions": [dict(row) for row in self.store.db.execute(
+                "SELECT * FROM memory_transitions WHERE namespace=? ORDER BY created_at,id", (namespace,))],
             "tombstones": [dict(row) for row in self.store.db.execute(
                 "SELECT * FROM tombstones WHERE namespace=? ORDER BY deleted_at, object_id", (namespace,))],
         }

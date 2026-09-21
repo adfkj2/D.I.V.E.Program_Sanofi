@@ -1,0 +1,259 @@
+{
+  "policy": "keyword-v1-baseline",
+  "dataset": "C:\\Users\\Li peng\\Desktop\\长期交互式ai记忆系统\\D.I.V.E.Program_Sanofi\\eval\\external\\longmemeval\\longmemeval_s_cleaned.json",
+  "evidence_turns": 896,
+  "evidence_accepted": 55,
+  "evidence_formation_coverage": 0.06138392857142857,
+  "evidence_reason_codes": {
+    "LOW_FUTURE_UTILITY": 841
+  },
+  "all_turns": 246738,
+  "all_accepted": 57806,
+  "all_accept_rate": 0.23428089714596048,
+  "all_reason_codes": {
+    "LOW_FUTURE_UTILITY": 188348,
+    "SENSITIVE_DATA": 584
+  },
+  "evidence_reject_samples": [
+    {
+      "question_id": "e47becba",
+      "ref": "answer_280352e9:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I graduated with a degree in Business Administration, which has definitely helped me in my new role. Do you have any advice on how to stay organized when it comes to paperwork and documentation, especially when it comes to tracking expenses and reimbursements?"
+    },
+    {
+      "question_id": "118b2229",
+      "ref": "answer_40a90d51:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've been listening to audiobooks during my daily commute, which takes 45 minutes each way."
+    },
+    {
+      "question_id": "51a45a95",
+      "ref": "answer_d61669c7:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I actually redeemed a $5 coupon on coffee creamer last Sunday, which was a nice surprise since I didn't know I had it in my email inbox."
+    },
+    {
+      "question_id": "58bf7951",
+      "ref": "answer_355c48bb:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I was thinking of getting Emily to audition for a role, I'll definitely encourage her to give it a shot. The play I attended was actually a production of The Glass Menagerie, have you heard of it?"
+    },
+    {
+      "question_id": "1e043500",
+      "ref": "answer_3e012175:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "What's a good music streaming service that can help me discover new music and artists, especially in the ambient and lo-fi genres? Also, by the way, I've been listening to this one playlist on Spotify that I created, called Summer Vibes, and it's got all these chill tracks that are perfect for relax"
+    },
+    {
+      "question_id": "c5e8278d",
+      "ref": "answer_f6168136:0",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I need to update my address with my health insurance provider. Can you walk me through the process or give me a phone number to call? By the way, I just recently changed my last name, and I'm still getting used to it - it's funny, my old name was Johnson, but now it's Winters."
+    },
+    {
+      "question_id": "6ade9755",
+      "ref": "answer_9398da02:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've actually been using Down Dog for my home practice and I really like it. It's been super helpful for me, especially on days when I can't make it to Serenity Yoga."
+    },
+    {
+      "question_id": "6f9b354f",
+      "ref": "answer_feb5200f:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've heard great things about Snake Plants, but I'm also curious about the ZZ Plant. Can you tell me more about its watering schedule and how often it needs to be fertilized? By the way, I've been doing some redecorating and recently repainted my bedroom walls a lighter shade of gray - it's made the"
+    },
+    {
+      "question_id": "58ef2f1c",
+      "ref": "answer_59547700:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'm really looking forward to the silent auction and raffles at \"Strut Your Mutt\". I've had a great experience with similar events in the past, like the \"Love is in the Air\" fundraising dinner I volunteered at back on Valentine's Day. The energy and excitement of bidding on amazing prizes while supp"
+    },
+    {
+      "question_id": "f8c5f88b",
+      "ref": "answer_c3567066:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'll definitely do those exercises before playing tennis. By the way, I'm really happy with my new tennis racket, which I got from a sports store downtown. It's been performing really well, and I feel like it's improved my game. Do you have any tips on how to maintain and clean my racket?"
+    },
+    {
+      "question_id": "5d3d2817",
+      "ref": "answer_235eb6fb:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've used Trello in my previous role as a marketing specialist at a small startup and I'm familiar with its features. But I'm interested in exploring other options as well. Could you tell me more about ClickUp? How does it differ from Trello, and what are its strengths and weaknesses?"
+    },
+    {
+      "question_id": "c960da58",
+      "ref": "answer_e05e4612:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've been listening to a mix of Lo-Fi hip hop beats and Tameca Jones' album on repeat lately, and I realized I want to create a new playlist for relaxing music. Can you suggest some mellow artists or songs that might fit the vibe? Also, by the way, I have 20 playlists on Spotify already, and I'm loo"
+    },
+    {
+      "question_id": "3b6f954b",
+      "ref": "answer_94030872:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "That sounds amazing! I've been to the Great Ocean Road before, and it's definitely a must-see in Australia. I actually went there with some friends during my study abroad program at the University of Melbourne. We had a blast exploring the coast, hiking, and taking in the stunning views. If you have"
+    },
+    {
+      "question_id": "94f70d80",
+      "ref": "answer_c63c0458:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've been leaning towards a wooden top, but now I'm considering the glass top option too. Do you think a glass top would be more prone to scratches or fingerprints compared to wood? Also, by the way, I just assembled an IKEA bookshelf recently and it took me 4 hours, which wasn't too bad."
+    },
+    {
+      "question_id": "66f24dbb",
+      "ref": "answer_fea2e4d3:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "For my sister's birthday, I got her a yellow dress and a pair of earrings to match."
+    },
+    {
+      "question_id": "ad7109d1",
+      "ref": "answer_679840f8:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I did notice that my internet speed has been really good lately, especially when I'm streaming movies on Netflix. I upgraded to 500 Mbps about three weeks ago, and it's made a huge difference. Anyway, back to my battery issue... do you think it's possible that my laptop's battery is just old and nee"
+    },
+    {
+      "question_id": "af8d2e46",
+      "ref": "answer_82a04f59:6",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "That's really helpful! I've been trying to get better at packing, but I still tend to overpack. Like, on my last trip to Costa Rica, I brought 7 shirts and 5 pairs of shorts, but I only ended up wearing 3 of the shirts and 2 of the shorts. I guess I need to work on packing more essentials and fewer "
+    },
+    {
+      "question_id": "dccbc061",
+      "ref": "answer_8f276838:0",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'm trying to find some books on synchronicity and its connection to spirituality. Can you recommend some titles or authors? By the way, I've been reading a lot about Buddhism lately, which is a big shift from my previous stance on spirituality - I used to be a staunch atheist, but I've been explori"
+    },
+    {
+      "question_id": "c8c3f81d",
+      "ref": "answer_761acef8:6",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "Nike has been my favourite brand so far for running shoes. I'm looking for a new pair running shoes, specifically the same model as my current ones. Do you know where I can find them or if they have any similar models that might be a good fit?"
+    },
+    {
+      "question_id": "8ebdbe50",
+      "ref": "answer_8ad8a34f:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I need to add my latest certification in Data Science, which I completed last month, to my profile. Do you have any specific tips on how to showcase certifications?"
+    },
+    {
+      "question_id": "6b168ec8",
+      "ref": "answer_e623ae87:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've been doing some research on carbon fiber wheels and I think I'll make the purchase in the next few months. By the way, speaking of my bikes, I've got three of them - a road bike, a mountain bike, and a commuter bike - and I've been using them for different types of rides. Do you have any tips o"
+    },
+    {
+      "question_id": "75499fd8",
+      "ref": "answer_723bf11f:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'm thinking of getting Max a new collar with a nice name tag. Do you have any recommendations for a good collar brand or type that would suit a Golden Retriever like Max?"
+    },
+    {
+      "question_id": "21436231",
+      "ref": "answer_1e6d4567:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "By the way, I've had some experience with fishing in Lake Michigan, and I've found that spinner lures worked better for trout than live bait. Also, I caught 12 largemouth bass on my last trip there, so you might want to consider targeting those as well. What's the best type of spinner lure to use fo"
+    },
+    {
+      "question_id": "95bcc1c8",
+      "ref": "answer_cb742a61:0",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'm looking for some comedy writing tips. I've been taking a stand-up comedy class and I'm trying to come up with some new material. Do you have any advice on how to write a good joke? Oh, and by the way, I recently went to an open mic night and saw 10 amateur comedians perform - it was really inspi"
+    },
+    {
+      "question_id": "0862e8bf",
+      "ref": "answer_c6fd8ebd:10",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "By the way, my cat's name is Luna, and she's been such a sweetie throughout all the changes we've been making to her environment. I'm just glad I can provide her with a happy and healthy home."
+    },
+    {
+      "question_id": "a06e4cfe",
+      "ref": "answer_6fe9fb49:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "That's really helpful, thanks. I've actually been experimenting with different gin-to-vermouth ratios in my classic martini recipe, and I've settled on a 3:1 ratio with a dash of citrus bitters. I've found that it really brings out the flavors of the gin. Do you have any recommendations for a good v"
+    },
+    {
+      "question_id": "37d43f65",
+      "ref": "answer_55161935:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "My laptop is a Dell Inspiron 15 5000 series from 2018, and I've been using it as my primary work laptop. Before the RAM upgrade to 16GB, I was getting around 6-7 hours of battery life, but now I'm getting around 4-5 hours. I haven't made any other recent changes to the hardware or software aside fro"
+    },
+    {
+      "question_id": "b86304ba",
+      "ref": "answer_645b0329:6",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "That's really helpful. I was thinking about my flea market find, and I realized that it's actually worth triple what I paid for it, which is amazing!"
+    },
+    {
+      "question_id": "d52b4f67",
+      "ref": "answer_0df6aa4b:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I think the Lavender Dreams Skincare Set sounds like a great idea. I was just at my cousin's wedding at the Grand Ballroom last weekend, and my mom looked absolutely stunning, I want to get her something that will help her maintain that glow."
+    },
+    {
+      "question_id": "25e5aa4f",
+      "ref": "answer_986de8c3:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'm still leaning towards Stanford, but I'm concerned about the cost. I've been working in the tech industry for a while and I'm pretty confident I can get a good job after graduating. Do you think it's worth taking out loans to finance my education? Also, by the way, I completed my undergrad in CS "
+    },
+    {
+      "question_id": "caf9ead2",
+      "ref": "answer_0714183a:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I didn't think about asking the baristas for recommendations. That's a great idea! By the way, it took me and my friends around 5 hours to move everything into the new apartment, but it was worth it to be closer to work and save on commute time."
+    },
+    {
+      "question_id": "8550ddae",
+      "ref": "answer_c8354ae9:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "That's a lot of great ideas! I'm particularly interested in the Lavender Dream, as I've been experimenting with lavender in my cocktails lately. Speaking of which, I tried a lavender gin fizz recipe last weekend, but it didn't quite turn out as expected - I didn't have simple syrup, so I had to impr"
+    },
+    {
+      "question_id": "60d45044",
+      "ref": "answer_9cddca88:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I was thinking of making some Japanese-style dishes with my favorite Japanese short-grain rice. Do you have any simple recipes that pair well with it? Maybe something with grilled chicken or vegetables?"
+    },
+    {
+      "question_id": "3f1e9474",
+      "ref": "answer_57fc1954:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I think I'm starting to get a better understanding of how my personal beliefs and values can intersect with my professional life. Thank you for the advice and insights!\n\nActually, I was wondering if you could help me with something else. I've been thinking about my conversation with Sarah, and I wan"
+    },
+    {
+      "question_id": "86b68151",
+      "ref": "answer_dc11c1eb:8",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I just kind of went for it and started moving things around until it felt right. I wanted to create more space and make the room feel less cluttered. The new bookshelf is from IKEA, and I'm really happy with it. It's exactly what I needed to get my books organized."
+    },
+    {
+      "question_id": "577d4d32",
+      "ref": "answer_0dd4d99a:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've heard that this book is a great choice for a evening read, something to unwind with after a long day. Speaking of unwinding, I've been trying to establish a better evening routine, stopping work emails and messages by 7 pm to separate my work and personal life. It's really helped me relax and n"
+    },
+    {
+      "question_id": "ec81a493",
+      "ref": "answer_ed1982fc:6",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I was thinking of displaying my signed poster from my favorite artist's debut album, which is a limited edition of only 500 copies worldwide, alongside the clock. Do you think that would work?"
+    },
+    {
+      "question_id": "15745da0",
+      "ref": "answer_586de428:4",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I've been collecting vintage cameras for three months now, and I've already amassed a pretty impressive collection. Do you have any advice on how to keep my cameras organized and easily accessible for maintenance and cleaning?"
+    },
+    {
+      "question_id": "e01b8e2f",
+      "ref": "answer_5ca6cd28:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "I'm actually thinking of going back to Hawaii, I loved it so much when I went with my family for a week last month! Do you have any suggestions for things to do on the Big Island?"
+    },
+    {
+      "question_id": "bc8a6e93",
+      "ref": "answer_e6143162:2",
+      "reason_code": "LOW_FUTURE_UTILITY",
+      "text": "That's really helpful, thanks! I've actually had a lot of success with lemon-based desserts in the past - I recently made a lemon blueberry cake for my niece's birthday party and it was a huge hit. I was a bit nervous about how it would turn out, but the combination of the tangy lemon and sweet blue"
+    }
+  ]
+}

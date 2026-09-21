@@ -1,0 +1,12 @@
+{
+  "per_string_seconds": 0.09922888750008951,
+  "strings": 64,
+  "batch_8_seconds": 1.9421198000054574,
+  "batch_8_per_string_seconds": 0.03034562187508527,
+  "batch_16_seconds": 1.5218757999973604,
+  "batch_16_per_string_seconds": 0.023779309374958757,
+  "batch_32_seconds": 1.3677164999971865,
+  "batch_32_per_string_seconds": 0.02137057031245604,
+  "batch_64_seconds": 1.2352582000021357,
+  "batch_64_per_string_seconds": 0.01930090937503337
+}

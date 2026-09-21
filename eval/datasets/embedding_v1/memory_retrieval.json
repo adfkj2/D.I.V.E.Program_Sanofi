@@ -1,0 +1,103 @@
+{
+  "schema_version": "dive-embedding-memory-v1",
+  "license": "Project-owned controlled evaluation data",
+  "language_scope": ["zh", "en", "cross-lingual"],
+  "documents": [
+    {"id":"sem-1","category":"semantic_paraphrase","text":"After lunch, the user relaxes by taking a slow walk beside the river."},
+    {"id":"sem-2","category":"semantic_paraphrase","text":"用户在工作压力很大时会去游泳，让自己平静下来。"},
+    {"id":"sem-3","category":"semantic_paraphrase","text":"Before writing code, the user sketches the data flow on paper."},
+    {"id":"sem-4","category":"semantic_paraphrase","text":"为了集中注意力，用户会戴上降噪耳机并播放纯音乐。"},
+    {"id":"sem-5","category":"semantic_paraphrase","text":"The user usually eats fruit after dinner."},
+    {"id":"sem-6","category":"semantic_paraphrase","text":"用户周末会沿着山路骑自行车。"},
+
+    {"id":"pref-1","category":"preference_retrieval","text":"The user prefers lightly roasted oolong tea and avoids heavily smoked tea."},
+    {"id":"pref-2","category":"preference_retrieval","text":"用户写技术文档时偏好简洁的中文，并保留英文 API 名称。"},
+    {"id":"pref-3","category":"preference_retrieval","text":"For code review, the user wants concrete evidence before stylistic suggestions."},
+    {"id":"pref-4","category":"preference_retrieval","text":"用户旅行时更喜欢安静的小型酒店，而不是大型度假村。"},
+    {"id":"pref-5","category":"preference_retrieval","text":"The user sometimes drinks dark-roast coffee during overnight releases."},
+    {"id":"pref-6","category":"preference_retrieval","text":"用户看电影时通常选择科幻片。"},
+
+    {"id":"episode-1","category":"old_episodic_recall","text":"In September 2019, the user rode Lisbon tram 28 and left a blue notebook at the final stop."},
+    {"id":"episode-2","category":"old_episodic_recall","text":"2021 年春天，用户在京都参加了一个陶艺工作坊，做了一只不对称的茶碗。"},
+    {"id":"episode-3","category":"old_episodic_recall","text":"During the 2018 Helsinki trip, the user's suitcase was delayed for two days."},
+    {"id":"episode-4","category":"old_episodic_recall","text":"2017 年的毕业旅行中，用户在青岛第一次尝试了帆船。"},
+    {"id":"episode-5","category":"old_episodic_recall","text":"In 2024, the user replaced a broken red backpack before a business trip."},
+    {"id":"episode-6","category":"old_episodic_recall","text":"2022 年冬天，用户在哈尔滨买了一副黑色手套。"},
+
+    {"id":"temp-1","category":"temporal_change","text":"[valid 2022-01-01 to 2025-03-01] The user lived in Chengdu."},
+    {"id":"temp-2","category":"temporal_change","text":"[valid from 2025-03-01; current] The user lives in Shanghai."},
+    {"id":"temp-3","category":"temporal_change","text":"[valid 2023-01-01 to 2026-02-10] 用户主要使用 TypeScript。"},
+    {"id":"temp-4","category":"temporal_change","text":"[valid from 2026-02-10; current] 用户主要使用 Rust。"},
+    {"id":"temp-5","category":"temporal_change","text":"[valid until 2024-12-31] The user's project lead was Maya."},
+    {"id":"temp-6","category":"temporal_change","text":"[valid from 2025-01-01; current] The user's project lead is Omar."},
+
+    {"id":"conflict-1","category":"conflicting_facts","text":"[untrusted web page] The user is allergic to peanuts."},
+    {"id":"conflict-2","category":"conflicting_facts","text":"[explicit user correction] I am not allergic to peanuts; that web page described another person."},
+    {"id":"conflict-3","category":"conflicting_facts","text":"[agent-generated guess] The user's deployment region is probably eu-west-1."},
+    {"id":"conflict-4","category":"conflicting_facts","text":"[explicit user fact] Our deployment region is ap-southeast-1."},
+    {"id":"conflict-5","category":"conflicting_facts","text":"[old observation] 用户可能不吃乳制品。"},
+    {"id":"conflict-6","category":"conflicting_facts","text":"[explicit user correction] 我可以吃乳制品，只是不喜欢甜牛奶。"},
+
+    {"id":"duplicate-1","category":"near_duplicate_memory","text":"Project Atlas weekly review is every Tuesday at 09:30 in room Cedar."},
+    {"id":"duplicate-2","category":"near_duplicate_memory","text":"Project Atlas risk review is every Tuesday at 15:30 in room Cedar."},
+    {"id":"duplicate-3","category":"near_duplicate_memory","text":"Project Atlas weekly review moved to Wednesday at 09:30 in room Cedar for this week only."},
+    {"id":"duplicate-4","category":"near_duplicate_memory","text":"Project Aster weekly review is every Tuesday at 09:30 in room Cedar."},
+    {"id":"duplicate-5","category":"near_duplicate_memory","text":"项目北辰的周会每周二上午九点半在松木会议室。"},
+    {"id":"duplicate-6","category":"near_duplicate_memory","text":"项目北辰的风险复盘每周二下午三点半在松木会议室。"},
+
+    {"id":"entity-1","category":"entity_ambiguity","text":"Jordan Lee, the designer, owns the accessibility audit for the mobile app."},
+    {"id":"entity-2","category":"entity_ambiguity","text":"Jordan, the country, is part of the user's Middle East travel plan."},
+    {"id":"entity-3","category":"entity_ambiguity","text":"Apple Inc. supplies the team's mobile signing certificates."},
+    {"id":"entity-4","category":"entity_ambiguity","text":"The user buys green apples for the office kitchen."},
+    {"id":"entity-5","category":"entity_ambiguity","text":"Mercury is the codename of the billing migration project."},
+    {"id":"entity-6","category":"entity_ambiguity","text":"水星是用户最喜欢观察的行星之一。"},
+
+    {"id":"tail-1","category":"long_tail_facts","text":"The emergency rollback token for the paper drill is ORCHID-47B; it is not a credential."},
+    {"id":"tail-2","category":"long_tail_facts","text":"The prototype uses connector part QX-17-4A from the blue component drawer."},
+    {"id":"tail-3","category":"long_tail_facts","text":"用户把 2031 年 11 月 6 日定为‘银杏里程碑’的复审日期。"},
+    {"id":"tail-4","category":"long_tail_facts","text":"The archive box labeled KESTREL-902 contains the original consent forms."},
+    {"id":"tail-5","category":"long_tail_facts","text":"The retired test token was ORCHID-47D."},
+    {"id":"tail-6","category":"long_tail_facts","text":"The prototype's older connector was QX-17-4B."}
+  ],
+  "queries": [
+    {"id":"sem-q1","category":"semantic_paraphrase","text":"How do I unwind after my midday meal?","relevant_ids":["sem-1"]},
+    {"id":"sem-q2","category":"semantic_paraphrase","text":"What activity helps me calm down when work becomes overwhelming?","relevant_ids":["sem-2"]},
+    {"id":"sem-q3","category":"semantic_paraphrase","text":"在开始编程之前，我会先做什么？","relevant_ids":["sem-3"]},
+    {"id":"sem-q4","category":"semantic_paraphrase","text":"What do I use to block distractions and focus?","relevant_ids":["sem-4"]},
+
+    {"id":"pref-q1","category":"preference_retrieval","text":"What kind of tea should be chosen for me?","relevant_ids":["pref-1"]},
+    {"id":"pref-q2","category":"preference_retrieval","text":"我希望技术文档采用什么语言风格？","relevant_ids":["pref-2"]},
+    {"id":"pref-q3","category":"preference_retrieval","text":"How should feedback be prioritized in my code reviews?","relevant_ids":["pref-3"]},
+    {"id":"pref-q4","category":"preference_retrieval","text":"出行住宿时我更喜欢哪类酒店？","relevant_ids":["pref-4"]},
+
+    {"id":"episode-q1","category":"old_episodic_recall","text":"What did I misplace after riding a vintage tram in Portugal?","relevant_ids":["episode-1"]},
+    {"id":"episode-q2","category":"old_episodic_recall","text":"我在日本参加陶艺课时做了什么？","relevant_ids":["episode-2"]},
+    {"id":"episode-q3","category":"old_episodic_recall","text":"Which old trip involved my luggage arriving two days late?","relevant_ids":["episode-3"]},
+    {"id":"episode-q4","category":"old_episodic_recall","text":"哪次毕业旅行中我第一次学习了帆船？","relevant_ids":["episode-4"]},
+
+    {"id":"temp-q1","category":"temporal_change","text":"Where do I live now?","relevant_ids":["temp-2"]},
+    {"id":"temp-q2","category":"temporal_change","text":"2023 年我住在哪个城市？","relevant_ids":["temp-1"]},
+    {"id":"temp-q3","category":"temporal_change","text":"我现在主要使用哪种编程语言？","relevant_ids":["temp-4"]},
+    {"id":"temp-q4","category":"temporal_change","text":"Who leads my project currently?","relevant_ids":["temp-6"]},
+
+    {"id":"conflict-q1","category":"conflicting_facts","text":"Am I actually allergic to peanuts?","relevant_ids":["conflict-2"]},
+    {"id":"conflict-q2","category":"conflicting_facts","text":"Which deployment region did I explicitly specify?","relevant_ids":["conflict-4"]},
+    {"id":"conflict-q3","category":"conflicting_facts","text":"我能不能吃乳制品？","relevant_ids":["conflict-6"]},
+    {"id":"conflict-q4","category":"conflicting_facts","text":"Which statement corrects an untrusted source about my allergy?","relevant_ids":["conflict-2"]},
+
+    {"id":"duplicate-q1","category":"near_duplicate_memory","text":"When and where is the normal Atlas weekly review?","relevant_ids":["duplicate-1"]},
+    {"id":"duplicate-q2","category":"near_duplicate_memory","text":"What time is the Atlas risk meeting?","relevant_ids":["duplicate-2"]},
+    {"id":"duplicate-q3","category":"near_duplicate_memory","text":"What is the one-week exception to the Atlas meeting schedule?","relevant_ids":["duplicate-3"]},
+    {"id":"duplicate-q4","category":"near_duplicate_memory","text":"北辰项目的风险复盘是什么时间？","relevant_ids":["duplicate-6"]},
+
+    {"id":"entity-q1","category":"entity_ambiguity","text":"Which Jordan is responsible for the mobile accessibility audit?","relevant_ids":["entity-1"]},
+    {"id":"entity-q2","category":"entity_ambiguity","text":"Which Jordan appears in my travel plans?","relevant_ids":["entity-2"]},
+    {"id":"entity-q3","category":"entity_ambiguity","text":"Which Apple provides signing certificates?","relevant_ids":["entity-3"]},
+    {"id":"entity-q4","category":"entity_ambiguity","text":"Mercury 在账单项目里指什么？","relevant_ids":["entity-5"]},
+
+    {"id":"tail-q1","category":"long_tail_facts","text":"What exact non-secret token is used in the emergency rollback paper drill?","relevant_ids":["tail-1"]},
+    {"id":"tail-q2","category":"long_tail_facts","text":"Which precise connector part does the prototype use now?","relevant_ids":["tail-2"]},
+    {"id":"tail-q3","category":"long_tail_facts","text":"银杏里程碑安排在哪一天复审？","relevant_ids":["tail-3"]},
+    {"id":"tail-q4","category":"long_tail_facts","text":"Which archive identifier holds the original consent forms?","relevant_ids":["tail-4"]}
+  ]
+}

@@ -1,0 +1,370 @@
+{
+  "schema_version": "dive-postgres-concurrency-recovery-v1",
+  "run_id": "postgres-100k-concurrency-20260921-110255",
+  "status": "PASS",
+  "result": {
+    "branch": "branch_a",
+    "workers": 1,
+    "started_at": "2026-09-21T03:04:49.849262+00:00",
+    "finished_at": "2026-09-21T03:04:53.084931+00:00",
+    "duration_seconds": 0.4424921000027098,
+    "operations": [
+      {
+        "operation_id": "w0-q0-t18449",
+        "operation_type": "retrieval",
+        "latency_ms": 58.15419999998994,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_018449",
+          "mem_bench_092149",
+          "mem_bench_078349",
+          "mem_bench_003149",
+          "mem_bench_099949"
+        ],
+        "actual_ids": [
+          "mem_bench_018449",
+          "mem_bench_092149",
+          "mem_bench_078349",
+          "mem_bench_003149",
+          "mem_bench_099949"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q1-t22453",
+        "operation_type": "retrieval",
+        "latency_ms": 52.30400000073132,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_022453",
+          "mem_bench_054953",
+          "mem_bench_018753",
+          "mem_bench_044853",
+          "mem_bench_000253"
+        ],
+        "actual_ids": [
+          "mem_bench_022453",
+          "mem_bench_054953",
+          "mem_bench_018753",
+          "mem_bench_044853",
+          "mem_bench_000253"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q2-t45272",
+        "operation_type": "retrieval",
+        "latency_ms": 49.390200001653284,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_045272",
+          "mem_bench_015572",
+          "mem_bench_063272",
+          "mem_bench_062772",
+          "mem_bench_001472"
+        ],
+        "actual_ids": [
+          "mem_bench_045272",
+          "mem_bench_015572",
+          "mem_bench_063272",
+          "mem_bench_062772",
+          "mem_bench_001472"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q3-t14915",
+        "operation_type": "retrieval",
+        "latency_ms": 48.11420000260114,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_014915",
+          "mem_bench_030315",
+          "mem_bench_015815",
+          "mem_bench_024415",
+          "mem_bench_049115"
+        ],
+        "actual_ids": [
+          "mem_bench_014915",
+          "mem_bench_030315",
+          "mem_bench_015815",
+          "mem_bench_024415",
+          "mem_bench_049115"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q4-t38209",
+        "operation_type": "retrieval",
+        "latency_ms": 48.30429999856278,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_038209",
+          "mem_bench_056509",
+          "mem_bench_027509",
+          "mem_bench_074409",
+          "mem_bench_009809"
+        ],
+        "actual_ids": [
+          "mem_bench_038209",
+          "mem_bench_056509",
+          "mem_bench_027509",
+          "mem_bench_074409",
+          "mem_bench_009809"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q5-t73427",
+        "operation_type": "retrieval",
+        "latency_ms": 49.828200000774814,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_073427",
+          "mem_bench_076127",
+          "mem_bench_096227",
+          "mem_bench_008127",
+          "mem_bench_005727"
+        ],
+        "actual_ids": [
+          "mem_bench_073427",
+          "mem_bench_076127",
+          "mem_bench_096227",
+          "mem_bench_008127",
+          "mem_bench_005727"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q6-t15954",
+        "operation_type": "retrieval",
+        "latency_ms": 51.87070000101812,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_015954",
+          "mem_bench_067354",
+          "mem_bench_067554",
+          "mem_bench_008254",
+          "mem_bench_022254"
+        ],
+        "actual_ids": [
+          "mem_bench_015954",
+          "mem_bench_067354",
+          "mem_bench_067554",
+          "mem_bench_008254",
+          "mem_bench_022254"
+        ],
+        "error_class": null,
+        "raw_error": null
+      },
+      {
+        "operation_id": "w0-q7-t83572",
+        "operation_type": "retrieval",
+        "latency_ms": 48.182500002440065,
+        "success": true,
+        "correct": true,
+        "expected_ids": [
+          "mem_bench_083572",
+          "mem_bench_050872",
+          "mem_bench_013272",
+          "mem_bench_075372",
+          "mem_bench_049272"
+        ],
+        "actual_ids": [
+          "mem_bench_083572",
+          "mem_bench_050872",
+          "mem_bench_013272",
+          "mem_bench_075372",
+          "mem_bench_049272"
+        ],
+        "error_class": null,
+        "raw_error": null
+      }
+    ],
+    "throughput_operations_per_second": 18.079418818891927,
+    "retrieval_latency_ms": {
+      "count": 8,
+      "p50": 49.60920000121405,
+      "p95": 58.15419999998994,
+      "p99": 58.15419999998994,
+      "mean": 50.76853750097143,
+      "min": 48.11420000260114,
+      "max": 58.15419999998994,
+      "stddev": 3.1762798730931143
+    },
+    "overall_latency_ms": {
+      "count": 8,
+      "p50": 49.60920000121405,
+      "p95": 58.15419999998994,
+      "p99": 58.15419999998994,
+      "mean": 50.76853750097143,
+      "min": 48.11420000260114,
+      "max": 58.15419999998994,
+      "stddev": 3.1762798730931143
+    },
+    "ingest_latency_ms": {
+      "status": "NOT_APPLICABLE"
+    },
+    "correctness": {
+      "status": "PASS",
+      "expected_operations": 8,
+      "successful_operations": 8,
+      "failed_operations": 0,
+      "expected_inserts": 0,
+      "actual_inserts": 0,
+      "duplicate_violations": 0,
+      "idempotency_consistent": null,
+      "read_consistent": true,
+      "transaction_rollback_correct": null,
+      "unexpected_row_count_delta": 0,
+      "evidence": {
+        "main_memories_before": 100000,
+        "main_memories_after": 100000,
+        "main_vectors_before": 100000,
+        "main_vectors_after": 100000,
+        "idempotency": "NOT_APPLICABLE_RETRIEVAL_ONLY",
+        "transaction_rollback": "NOT_APPLICABLE_RETRIEVAL_ONLY"
+      }
+    },
+    "resources_before": {
+      "captured_at": "2026-09-21T03:04:49.818371+00:00",
+      "container_available": {
+        "status": "MEASURED",
+        "value": true,
+        "reason": null
+      },
+      "container_cpu_percent": {
+        "status": "MEASURED",
+        "value": 0.0,
+        "reason": null
+      },
+      "container_memory_percent": {
+        "status": "MEASURED",
+        "value": 1.98,
+        "reason": null
+      },
+      "container_memory_usage": {
+        "status": "MEASURED",
+        "value": "150.4MiB / 7.412GiB",
+        "reason": null
+      },
+      "shared_memory": {
+        "status": "MEASURED",
+        "value": {
+          "total_bytes": 536870912,
+          "used_bytes": 1077248,
+          "available_bytes": 535793664
+        },
+        "reason": null
+      },
+      "host_available_memory_bytes": {
+        "status": "MEASURED",
+        "value": 5509894144,
+        "reason": null
+      },
+      "client_rss_bytes": {
+        "status": "NOT_AVAILABLE",
+        "value": null,
+        "reason": "client RSS unavailable: ModuleNotFoundError"
+      },
+      "postgres_activity": {
+        "status": "MEASURED",
+        "value": {
+          "connections": 1,
+          "active_queries": 1,
+          "waiting": 0,
+          "ungranted_locks": 0,
+          "deadlocks_total": 0
+        },
+        "reason": null
+      },
+      "disk_free_bytes": {
+        "status": "MEASURED",
+        "value": 1021630922752,
+        "reason": null
+      }
+    },
+    "resources_after": {
+      "captured_at": "2026-09-21T03:04:52.902931+00:00",
+      "container_available": {
+        "status": "MEASURED",
+        "value": true,
+        "reason": null
+      },
+      "container_cpu_percent": {
+        "status": "MEASURED",
+        "value": 0.01,
+        "reason": null
+      },
+      "container_memory_percent": {
+        "status": "MEASURED",
+        "value": 1.98,
+        "reason": null
+      },
+      "container_memory_usage": {
+        "status": "MEASURED",
+        "value": "150.4MiB / 7.412GiB",
+        "reason": null
+      },
+      "shared_memory": {
+        "status": "MEASURED",
+        "value": {
+          "total_bytes": 536870912,
+          "used_bytes": 1077248,
+          "available_bytes": 535793664
+        },
+        "reason": null
+      },
+      "host_available_memory_bytes": {
+        "status": "MEASURED",
+        "value": 5536149504,
+        "reason": null
+      },
+      "client_rss_bytes": {
+        "status": "NOT_AVAILABLE",
+        "value": null,
+        "reason": "client RSS unavailable: ModuleNotFoundError"
+      },
+      "postgres_activity": {
+        "status": "MEASURED",
+        "value": {
+          "connections": 1,
+          "active_queries": 1,
+          "waiting": 0,
+          "ungranted_locks": 0,
+          "deadlocks_total": 0
+        },
+        "reason": null
+      },
+      "disk_free_bytes": {
+        "status": "MEASURED",
+        "value": 1021630922752,
+        "reason": null
+      }
+    },
+    "database_available": true,
+    "database_crashed": false,
+    "retries": 0,
+    "timeouts": 0,
+    "deadlocks": 0,
+    "stop_decision": {
+      "continue_run": true,
+      "reason": "CONTINUE",
+      "evidence": {}
+    },
+    "status": "PASS"
+  }
+}

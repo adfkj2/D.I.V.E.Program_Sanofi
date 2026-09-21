@@ -1,0 +1,37 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "checkpoint": "F",
+  "status": "COMPLETED",
+  "started_at": "2026-09-21T01:17:08.163302+00:00",
+  "finished_at": "2026-09-21T01:17:08.389707+00:00",
+  "last_successful_checkpoint": "E",
+  "fixture_namespace": "deletion-fixture-postgres-100k-20260921-084800",
+  "main_dataset_mutated": false,
+  "soft_delete_latency_ms": 16.284799999993993,
+  "hard_purge_latency_ms": 19.373399998585228,
+  "correctness": {
+    "soft_memory_retained_deleted_status": true,
+    "soft_embedding_removed": true,
+    "hard_memory_removed": true,
+    "hard_projection_residue_counts": {
+      "memory_vectors": 0,
+      "memory_sources": 0,
+      "memory_versions": 0,
+      "memory_keys": 0,
+      "memory_access": 0,
+      "memory_entities": 0,
+      "memory_relations": 0,
+      "memory_transitions": 0
+    },
+    "hard_all_projections_removed": true,
+    "audit_tombstones_count": 2,
+    "rollback_raised": true,
+    "rollback_preserved_row_count": true
+  },
+  "audit_behavior": "memory tombstones retained for soft and hard deletion",
+  "limitations": [
+    "deletion uses an isolated small fixture namespace",
+    "latency does not represent deleting from the main 100K namespace"
+  ]
+}

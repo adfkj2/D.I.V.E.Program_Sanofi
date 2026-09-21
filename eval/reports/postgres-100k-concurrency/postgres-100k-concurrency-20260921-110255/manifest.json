@@ -1,0 +1,134 @@
+{
+  "schema_version": "dive-postgres-concurrency-recovery-v1",
+  "run_id": "postgres-100k-concurrency-20260921-110255",
+  "status": "PENDING",
+  "created_at": "2026-09-21T03:02:55.353012+00:00",
+  "updated_at": "2026-09-21T03:34:55.303473+00:00",
+  "source_run": {
+    "run_id": "postgres-100k-20260921-084800",
+    "schema": "dive_postgres_100k_f3d888f630bd7ba8",
+    "immutable": true
+  },
+  "preregistration": {
+    "path": "docs/benchmark/postgres-100k-concurrency-rerun-plan.md",
+    "sha256": "61410744bff7b5e8563b15e3a95ab6f9704bc3d8f80cc9c09da5d05d745c9b29"
+  },
+  "config": {
+    "run_id": "postgres-100k-concurrency-20260921-110255",
+    "source_run_id": "postgres-100k-20260921-084800",
+    "source_schema": "dive_postgres_100k_f3d888f630bd7ba8",
+    "container": "dive-memory-postgres-100k-concurrency",
+    "worker_levels": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "include_16": false,
+    "operations_per_worker": 8,
+    "acceptable_failure_rate": 0.05,
+    "stop_failure_rate": 0.2,
+    "persistent_shm_errors": 3,
+    "host_available_bytes_min": 1000000000,
+    "disk_free_bytes_min": 2000000000,
+    "container_memory_percent_max": 90.0,
+    "query_seed": 20260960,
+    "dataset_size": 100000,
+    "expected_shm_bytes": 536870912
+  },
+  "checkpoints": {
+    "inspect": {
+      "status": "PASS",
+      "attempt_count": 1,
+      "artifact": "environment.json",
+      "started_at": "2026-09-21T03:03:57.568489+00:00",
+      "finished_at": "2026-09-21T03:04:01.231002+00:00",
+      "sha256": "c1b299c04cf841255aa223906e17c69af6c5934e8b25f038c0de05b2577f375c"
+    },
+    "smoke": {
+      "status": "PENDING",
+      "attempt_count": 0,
+      "artifact": "smoke.json"
+    },
+    "branch_a": {
+      "status": "PASS",
+      "workers": {
+        "1": {
+          "status": "PASS",
+          "attempt_count": 1,
+          "artifact": "worker-1.json",
+          "started_at": "2026-09-21T03:04:46.299657+00:00",
+          "finished_at": "2026-09-21T03:04:53.090918+00:00",
+          "sha256": "e1016af171b6d9b55995ad4b1bba86e676a6d9cc4f8301398a1aa097b00f8db1"
+        },
+        "2": {
+          "status": "PASS",
+          "attempt_count": 1,
+          "artifact": "worker-2.json",
+          "started_at": "2026-09-21T03:13:55.740497+00:00",
+          "finished_at": "2026-09-21T03:14:03.225947+00:00",
+          "sha256": "9bfa508625696330873025c2d643ee658d404de31441da175dfe06ba1aa46e8f"
+        },
+        "4": {
+          "status": "PASS",
+          "attempt_count": 1,
+          "artifact": "worker-4.json",
+          "started_at": "2026-09-21T03:20:45.603132+00:00",
+          "finished_at": "2026-09-21T03:20:55.285044+00:00",
+          "sha256": "29cd5e2b57bdc0a5c7e8e579acf45520c72489c6f5a75f6327e97a5d7d80b32f"
+        },
+        "8": {
+          "status": "PASS",
+          "attempt_count": 1,
+          "artifact": "worker-8.json",
+          "started_at": "2026-09-21T03:25:59.941975+00:00",
+          "finished_at": "2026-09-21T03:26:13.726009+00:00",
+          "sha256": "f0cd02849bc3f9ae59135adbe59b2a2d306028d50d2cc9b7471a80ea8c38095c"
+        }
+      }
+    },
+    "branch_b": {
+      "status": "PENDING",
+      "workers": {
+        "1": {
+          "status": "PASS",
+          "attempt_count": 1,
+          "artifact": "worker-1.json",
+          "started_at": "2026-09-21T03:34:48.634213+00:00",
+          "finished_at": "2026-09-21T03:34:55.303457+00:00",
+          "sha256": "74bb464c747dea2b4ed9b30a0fe2f5f988d01f939a54e8fa72e618a92f012f57"
+        },
+        "2": {
+          "status": "PENDING",
+          "attempt_count": 0,
+          "artifact": "worker-2.json"
+        },
+        "4": {
+          "status": "PENDING",
+          "attempt_count": 0,
+          "artifact": "worker-4.json"
+        },
+        "8": {
+          "status": "PENDING",
+          "attempt_count": 0,
+          "artifact": "worker-8.json"
+        }
+      }
+    },
+    "mixed_workload": {
+      "status": "PENDING",
+      "attempt_count": 0,
+      "artifact": "mixed-workload.json"
+    },
+    "integrity_audit": {
+      "status": "PENDING",
+      "attempt_count": 0,
+      "artifact": "integrity-audit.json"
+    },
+    "summary": {
+      "status": "PENDING",
+      "attempt_count": 0,
+      "artifact": "final-summary.json"
+    }
+  }
+}

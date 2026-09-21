@@ -1,0 +1,39 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "status": "PARTIAL",
+  "finished_at": "2026-09-21T01:22:35.115035+00:00",
+  "last_successful_checkpoint": "F",
+  "failed_checkpoint": "G",
+  "not_completed_checkpoint": "H",
+  "failure_mode": "PostgreSQL dynamic shared memory /dev/shm exhausted at 8 workers",
+  "final_integrity": {
+    "memories": 100000,
+    "vectors": 100000,
+    "min_dimensions": 96,
+    "max_dimensions": 96
+  },
+  "ann_indexes_present": false,
+  "answers": {
+    "1_10K_to_100K_exact_latency": "Observed 100K p50 156.12 ms versus 10K p50 167.18 ms (0.93×); this is not directly comparable.",
+    "2_is_scaling_linear": "No linear conclusion is supported: the observed ratio was not near 10× and the load/projection protocols and runtime state differ.",
+    "3_dominant_time_component": "Exact vector scan/sort plus service candidate hydration dominates the service path; representative plans are preserved.",
+    "4_metadata_filter_workload_reduction": "The 10% treatment reduced eligible candidates from 100,000 to 10,000 (90%); 1% and 50% treatments behaved consistently.",
+    "5_temporal_extra_cost": "Current-fact temporal SQL p50 was 301.25 ms versus exact service p50 156.12 ms; paths differ, so this is not a pure overhead ratio.",
+    "6_planner_behavior": "Observed plan node types: Bitmap Heap Scan, Bitmap Index Scan, Gather Merge, Hash, Hash Join, Index Scan, Limit, Nested Loop, Seq Scan, Sort; no ANN index existed.",
+    "7_bulk_vs_incremental": "COPY achieved 20279.41 rows/s while single-request service ingest achieved 57.49 memories/s; protocols are intentionally not equated.",
+    "8_concurrency_first_saturation": "Dynamic shared memory (/dev/shm), not the database volume, saturated first at 8 workers; 44/64 operations failed and the experiment stopped.",
+    "9_memory_footprint": "Final run schema size was 167550976 bytes (1675.5 bytes per main memory including schema/fixture overhead) for 96-d vectors.",
+    "10_current_largest_bottleneck": "At single-query load the dominant path is exact vector scan/sort and service hydration; under concurrency the hard bottleneck was the container's 64 MiB dynamic shared-memory mount."
+  },
+  "evidence_level": "executed A-F; failed G; H not executed by stop condition",
+  "what_this_proves": "observed exact, filter, temporal, ingest, delete and concurrency saturation behavior",
+  "what_this_does_not_prove": [
+    "semantic quality",
+    "successful mixed workload",
+    "true cold cache",
+    "ANN behavior",
+    "1M scalability",
+    "general PostgreSQL scalability"
+  ]
+}

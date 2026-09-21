@@ -1,0 +1,148 @@
+{
+  "schema_version": "dive-postgres-concurrency-recovery-v1",
+  "run_id": "postgres-100k-concurrency-20260921-110255",
+  "status": "PASS",
+  "captured_at": "2026-09-21T03:04:00.565582+00:00",
+  "source_run_id": "postgres-100k-20260921-084800",
+  "source_schema": "dive_postgres_100k_f3d888f630bd7ba8",
+  "postgres_version": "16.15 (Debian 16.15-1.pgdg12+2)",
+  "pgvector_version": "0.8.6",
+  "dataset": {
+    "status": "PASS",
+    "memories": 100000,
+    "vectors": 100000,
+    "expected_memories": 100000,
+    "expected_vectors": 100000,
+    "embedding_dimensions": [
+      96
+    ],
+    "expected_embedding_dimensions": 96,
+    "metadata_distribution": {
+      "cohort_1_percent": 1000,
+      "cohort_10_percent": 10000,
+      "cohort_50_percent": 50000
+    },
+    "expected_metadata_distribution": {
+      "cohort_1_percent": 1000,
+      "cohort_10_percent": 10000,
+      "cohort_50_percent": 50000
+    },
+    "seed_mismatch_count": 0
+  },
+  "container_inspect": {
+    "status": "MEASURED",
+    "value": {
+      "id": "b7aa07fd41b50d83d2c881148b019e92c0b1ef90d9d7904cae9c8183e2c4ce91",
+      "name": "/dive-memory-postgres-100k-concurrency",
+      "image": "pgvector/pgvector:pg16",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "RestartCount": null
+      },
+      "limits": {
+        "shm_size_bytes": 536870912,
+        "memory_bytes": 0,
+        "nano_cpus": 0
+      },
+      "mounts": [
+        {
+          "type": "volume",
+          "name": "d03185005e04541ce0ee9b2fb0bb7a145d3737c601c4c3fdd2e853cb625dd932",
+          "destination": "/var/lib/postgresql/data",
+          "rw": true
+        }
+      ],
+      "environment": "REDACTED_NOT_CAPTURED"
+    }
+  },
+  "resources": {
+    "captured_at": "2026-09-21T03:04:00.517759+00:00",
+    "container_available": {
+      "status": "MEASURED",
+      "value": true,
+      "reason": null
+    },
+    "container_cpu_percent": {
+      "status": "MEASURED",
+      "value": 0.03,
+      "reason": null
+    },
+    "container_memory_percent": {
+      "status": "MEASURED",
+      "value": 1.97,
+      "reason": null
+    },
+    "container_memory_usage": {
+      "status": "MEASURED",
+      "value": "149.5MiB / 7.412GiB",
+      "reason": null
+    },
+    "shared_memory": {
+      "status": "MEASURED",
+      "value": {
+        "total_bytes": 536870912,
+        "used_bytes": 1077248,
+        "available_bytes": 535793664
+      },
+      "reason": null
+    },
+    "host_available_memory_bytes": {
+      "status": "MEASURED",
+      "value": 5439258624,
+      "reason": null
+    },
+    "client_rss_bytes": {
+      "status": "NOT_AVAILABLE",
+      "value": null,
+      "reason": "client RSS unavailable: ModuleNotFoundError"
+    },
+    "postgres_activity": {
+      "status": "MEASURED",
+      "value": {
+        "connections": 1,
+        "active_queries": 1,
+        "waiting": 0,
+        "ungranted_locks": 0,
+        "deadlocks_total": 0
+      },
+      "reason": null
+    },
+    "disk_free_bytes": {
+      "status": "MEASURED",
+      "value": 1021630922752,
+      "reason": null
+    }
+  },
+  "code_baseline": {
+    "git_head": "16f213464aab60c3e14563ede4109087a14fcaf4",
+    "working_tree_dirty": true,
+    "git_status_sha256": "e8d7c0cf6337a1ee910417f0d6ba8fa06957a09ab7c50ae27a9f0bbf24500cd6",
+    "git_diff_sha256": "4c975a61bb23b483d7a5ca5b8695b9052b674440b327a5656f27d96e7125c23f",
+    "experiment_tree_sha256": "7771f31ef55237c8f826a57b87f6e5f747e013bf4c890e94083193b1dac8720c",
+    "experiment_tree_file_count": 88,
+    "scope": [
+      "src",
+      "tests",
+      "migrations",
+      "pyproject.toml",
+      "docs\\benchmark\\postgres-100k-concurrency-rerun-plan.md"
+    ]
+  },
+  "validation": {
+    "dataset": "PASS",
+    "container_available": true,
+    "shared_memory_matches_expected": true,
+    "expected_shm_bytes": 536870912,
+    "observed_shm_df_bytes": 536870912,
+    "observed_shm_inspect_bytes": 536870912,
+    "essential_resource_sampler_available": true,
+    "disk_space_safe": true,
+    "host_memory_safe": true,
+    "parallelism_unchanged_branch_a": true
+  },
+  "dsn_recorded": false
+}

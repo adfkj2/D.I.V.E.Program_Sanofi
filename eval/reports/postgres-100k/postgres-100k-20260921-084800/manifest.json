@@ -1,0 +1,280 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "status": "PARTIAL",
+  "created_at": "2026-09-21T01:08:01.868092+00:00",
+  "updated_at": "2026-09-21T01:22:35.120141+00:00",
+  "schema": "dive_postgres_100k_f3d888f630bd7ba8",
+  "config": {
+    "memory_count": 100000,
+    "seed": 20260920,
+    "namespace": "postgres-100k-main",
+    "embedding_dimensions": 96,
+    "synthetic_vectors": true,
+    "semantic_quality_claim": false,
+    "ann_indexes": false,
+    "exact_queries": 100,
+    "filtered_queries_per_selectivity": 100,
+    "temporal_queries_per_treatment": 100
+  },
+  "config_sha256": "08b8630e3f249d9f05ca6d93ec825066e939e5b9e5c96af4f6019cf7a3a1f36d",
+  "smoke_test": "PASS",
+  "current_checkpoint": null,
+  "last_successful_checkpoint": "F",
+  "checkpoints": {
+    "A": {
+      "status": "PASS",
+      "attempts": 1,
+      "artifact": "bulk-load.json",
+      "started_at": "2026-09-21T01:12:22.063305+00:00",
+      "finished_at": "2026-09-21T01:12:35.410599+00:00",
+      "sha256": "d48b8750ff43cbaf498f42cd3d3fea0635c42511b639261e10c32d3b17bb0d12",
+      "error": null
+    },
+    "B": {
+      "status": "PASS",
+      "attempts": 1,
+      "artifact": "retrieval-exact.json",
+      "started_at": "2026-09-21T01:13:21.649792+00:00",
+      "finished_at": "2026-09-21T01:13:40.344629+00:00",
+      "sha256": "958379477b4099068cb4472842823a96e9a36b8a5e71b5ed6b4e464ac605cd63",
+      "error": null
+    },
+    "C": {
+      "status": "PASS",
+      "attempts": 1,
+      "artifact": "retrieval-filtered.json",
+      "started_at": "2026-09-21T01:14:14.388312+00:00",
+      "finished_at": "2026-09-21T01:14:31.547307+00:00",
+      "sha256": "d42627f01d888996a692c88d10a9a9c20cf1b7c6abffecaf0f45c0c1c79c3336",
+      "error": null
+    },
+    "D": {
+      "status": "PASS",
+      "attempts": 1,
+      "artifact": "retrieval-temporal.json",
+      "started_at": "2026-09-21T01:15:07.676412+00:00",
+      "finished_at": "2026-09-21T01:15:47.050940+00:00",
+      "sha256": "abcb7f226dfaf5adf247179d610015b26ebef0741dcfd6b3284b63132d65be0e",
+      "error": null
+    },
+    "E": {
+      "status": "PASS",
+      "attempts": 1,
+      "artifact": "incremental-ingest.json",
+      "started_at": "2026-09-21T01:16:30.637963+00:00",
+      "finished_at": "2026-09-21T01:16:34.914354+00:00",
+      "sha256": "660e1c0d6e3a1b3a30a04f676bb6c57dc59fcc02bab88937eed43a85a588287f",
+      "error": null
+    },
+    "F": {
+      "status": "PASS",
+      "attempts": 1,
+      "artifact": "delete.json",
+      "started_at": "2026-09-21T01:17:08.159935+00:00",
+      "finished_at": "2026-09-21T01:17:08.389707+00:00",
+      "sha256": "aef963882d89f80d765f1db50b7fb253502cc018536dab552edc721953c44388",
+      "error": null
+    },
+    "G": {
+      "status": "FAILED",
+      "attempts": 1,
+      "artifact": "concurrency.json",
+      "started_at": "2026-09-21T01:17:43.633350+00:00",
+      "finished_at": "2026-09-21T01:22:34.880047+00:00",
+      "sha256": "94a9132a7592d9f4338137f7cd1a7b4166225c584bbc1179b5b6a2498ce7726a",
+      "error": "concurrency produced 44 sustained DiskFull errors in dynamic shared memory",
+      "preserved_attempt": "concurrency-attempt-1.json"
+    },
+    "H": {
+      "status": "NOT_COMPLETED",
+      "attempts": 0,
+      "artifact": "mixed-workload.json",
+      "sha256": "013bbbddb34edfb6351e35cf4957d28fa376193121c27ccb4462d290a9543609",
+      "error": "not run because Checkpoint G had sustained dynamic shared memory errors"
+    }
+  },
+  "safety": {
+    "formal_schema_is_persistent": true,
+    "drop_schema_on_failure": false,
+    "ann_indexes_allowed": false,
+    "max_automatic_retries": 0
+  },
+  "applied_migrations": [
+    "001_initial.sql",
+    "002_outbox_claims.sql",
+    "003_tombstone_namespace.sql",
+    "004_candidate_decisions.sql",
+    "005_memory_transitions.sql",
+    "006_embedding_generations.sql",
+    "007_memory_resolution_keys.sql"
+  ],
+  "database_size_before": {
+    "database_bytes": 10959895,
+    "relations": [
+      {
+        "relname": "embedding_generations",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "embedding_state",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "entities",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "events",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "jobs",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memories",
+        "table_bytes": 0,
+        "index_bytes": 40960,
+        "total_bytes": 49152,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_access",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_entities",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_keys",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_modes",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_relations",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_sources",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_transitions",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_vectors",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_versions",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "outbox",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "profiles",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "relations",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "schema_migrations",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "tombstones",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "write_decisions",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      }
+    ],
+    "schema_total_bytes": 557056,
+    "schema_table_bytes": 24576,
+    "schema_index_bytes": 360448,
+    "schema_toast_bytes": 172032
+  },
+  "smoke_test_artifact": "smoke-test.json",
+  "initialization_status": "PASS",
+  "terminal_reason": "PostgreSQL dynamic shared memory /dev/shm exhausted at 8 workers",
+  "closed_at": "2026-09-21T01:22:35.119118+00:00",
+  "ann_plan_status": "NOT_CREATED: exact experiment did not complete through H",
+  "final_artifacts": {
+    "query-plans.json": "952c773a5a013ec39f2d2ba6743160da3e403d9999bad1b35eb33c2437e49332",
+    "database-size.json": "f3288949e769926ab1a92e3e1ba7fa61dafb6e5e64f2fc9c28f731e4bcfb681d",
+    "resource-usage.json": "cafdee01d53b39c598860a45863e4faecb1dfdd616fe07caba3415c94864a425",
+    "final-summary.json": "4518310aa2299bc36ee5e8da3b55b30a65a8413a21d7207019b5981549c6ff29"
+  },
+  "report": "docs/benchmark/postgres-exact-100k-report.md"
+}

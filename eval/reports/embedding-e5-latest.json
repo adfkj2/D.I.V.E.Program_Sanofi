@@ -1,0 +1,5444 @@
+{
+  "schema_version": "dive-embedding-comparison-v1",
+  "status": "COMPLETED",
+  "started_at": "2026-09-20T12:53:07.526862+00:00",
+  "finished_at": "2026-09-20T12:53:27.334231+00:00",
+  "duration_seconds": 19.807369,
+  "manifest": {
+    "schema_version": "dive-eval-manifest-v1",
+    "run_id": "embedding-comparison-20260920T125307Z",
+    "dataset_name": "dive-embedding-memory-v1",
+    "dataset_version": "1",
+    "dataset_path": "C:\\Users\\Li peng\\Desktop\\长期交互式ai记忆系统\\D.I.V.E.Program_Sanofi\\eval\\datasets\\embedding_v1\\memory_retrieval.json",
+    "dataset_sha256": "10b8177e4203c60a6c2a1b693ab9d5e9441d627f41fbc97d2992e4124b6508d0",
+    "configuration": {
+      "models": [
+        "multilingual-e5-large-instruct"
+      ],
+      "model_specs": {
+        "multilingual-e5-large-instruct": {
+          "repo_id": "intfloat/multilingual-e5-large-instruct",
+          "revision": "274baa43b0e13e37fafa6428dbc7938e62e5c439",
+          "dimensions": 1024,
+          "query_instruction": "Given a user memory query, retrieve relevant passages that answer the query",
+          "trust_remote_code": false
+        }
+      },
+      "device": "cpu",
+      "batch_size": 8,
+      "normalization": "L2",
+      "similarity": "exact cosine via normalized dot product",
+      "corpus_shared_across_models": true,
+      "top_k": [
+        1,
+        5,
+        10
+      ]
+    },
+    "configuration_sha256": "d7fe4e60f07a13b789e92318d7d54342f60fc54de33d1e74070198e68cba012a",
+    "environment": {
+      "python": "3.12.14",
+      "implementation": "CPython",
+      "platform": "Windows-11-10.0.26100-SP0"
+    },
+    "git": {
+      "commit": "16f213464aab60c3e14563ede4109087a14fcaf4",
+      "branch": "main",
+      "dirty": true
+    }
+  },
+  "dataset": {
+    "documents": 48,
+    "queries": 32,
+    "categories": {
+      "semantic_paraphrase": 4,
+      "preference_retrieval": 4,
+      "old_episodic_recall": 4,
+      "temporal_change": 4,
+      "conflicting_facts": 4,
+      "near_duplicate_memory": 4,
+      "entity_ambiguity": 4,
+      "long_tail_facts": 4
+    },
+    "language_scope": [
+      "zh",
+      "en",
+      "cross-lingual"
+    ]
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "hf_endpoint": "https://hf-mirror.com",
+    "torch": "2.14.0+cpu",
+    "transformers": "4.39.1",
+    "sentence_transformers": "3.0.1",
+    "torch_cuda_build": null,
+    "cuda_available": false,
+    "cuda_device": null,
+    "logical_cpu_count": 16,
+    "physical_cpu_count": 8,
+    "system_memory_bytes": 16438382592
+  },
+  "results": {
+    "deterministic-sha256-v1": {
+      "status": "COMPLETED",
+      "provider": "deterministic-test",
+      "model": "deterministic-sha256-v1",
+      "revision": "v1",
+      "semantic": false,
+      "dimensions": 96,
+      "model_load_seconds": 0.0,
+      "embedding_throughput_per_second": 21393.234383042443,
+      "query_embedding_latency_ms": {
+        "samples": 32,
+        "p50": 0.041349998355144635,
+        "p95": 0.05660000169882551,
+        "p99": 0.060399994254112244,
+        "mean": 0.03777499955504027
+      },
+      "document_embedding_seconds": 0.0022437000006902963,
+      "embedding_storage_bytes_float32": 18432,
+      "model_storage_bytes": 0,
+      "cpu_rss_bytes_after_load": null,
+      "cpu_rss_bytes_peak_observed": null,
+      "gpu_peak_bytes": null,
+      "metrics": {
+        "cases": 32,
+        "evaluable_cases": 32,
+        "precision_at_k": {
+          "1": 0.34375,
+          "5": 0.08750000000000001,
+          "10": 0.043750000000000004
+        },
+        "recall_at_k": {
+          "1": 0.34375,
+          "5": 0.4375,
+          "10": 0.4375
+        },
+        "mrr": 0.3957462608809684,
+        "ndcg_at_k": {
+          "1": 0.34375,
+          "5": 0.389014347464981,
+          "10": 0.389014347464981
+        },
+        "slices": {
+          "conflicting_facts": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.25,
+              "5": 0.1,
+              "10": 0.05
+            },
+            "recall_at_k": {
+              "1": 0.25,
+              "5": 0.5,
+              "10": 0.5
+            },
+            "mrr": 0.33323365231259966,
+            "ndcg_at_k": {
+              "1": 0.25,
+              "5": 0.3576691395183483,
+              "10": 0.3576691395183483
+            }
+          },
+          "entity_ambiguity": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.5,
+              "5": 0.1,
+              "10": 0.05
+            },
+            "recall_at_k": {
+              "1": 0.5,
+              "5": 0.5,
+              "10": 0.5
+            },
+            "mrr": 0.5160256410256411,
+            "ndcg_at_k": {
+              "1": 0.5,
+              "5": 0.5,
+              "10": 0.5
+            }
+          },
+          "long_tail_facts": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.75,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 0.75,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 0.8,
+            "ndcg_at_k": {
+              "1": 0.75,
+              "5": 0.8467132018086354,
+              "10": 0.8467132018086354
+            }
+          },
+          "near_duplicate_memory": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.5,
+              "5": 0.1,
+              "10": 0.05
+            },
+            "recall_at_k": {
+              "1": 0.5,
+              "5": 0.5,
+              "10": 0.5
+            },
+            "mrr": 0.5274122807017544,
+            "ndcg_at_k": {
+              "1": 0.5,
+              "5": 0.5,
+              "10": 0.5
+            }
+          },
+          "old_episodic_recall": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.5,
+              "5": 0.1,
+              "10": 0.05
+            },
+            "recall_at_k": {
+              "1": 0.5,
+              "5": 0.5,
+              "10": 0.5
+            },
+            "mrr": 0.5242424242424243,
+            "ndcg_at_k": {
+              "1": 0.5,
+              "5": 0.5,
+              "10": 0.5
+            }
+          },
+          "preference_retrieval": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.25,
+              "5": 0.1,
+              "10": 0.05
+            },
+            "recall_at_k": {
+              "1": 0.25,
+              "5": 0.5,
+              "10": 0.5
+            },
+            "mrr": 0.39294871794871794,
+            "ndcg_at_k": {
+              "1": 0.25,
+              "5": 0.4077324383928644,
+              "10": 0.4077324383928644
+            }
+          },
+          "semantic_paraphrase": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": 0.0
+            },
+            "recall_at_k": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": 0.0
+            },
+            "mrr": 0.02715718965718966,
+            "ndcg_at_k": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": 0.0
+            }
+          },
+          "temporal_change": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": 0.0
+            },
+            "recall_at_k": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": 0.0
+            },
+            "mrr": 0.04495018115942029,
+            "ndcg_at_k": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": 0.0
+            }
+          }
+        },
+        "hit_rate_at_k": {
+          "1": 0.34375,
+          "5": 0.4375,
+          "10": 0.4375
+        },
+        "temporal_retrieval_accuracy_at_1": 0.0,
+        "contradiction_retrieval_accuracy_at_1": 0.25
+      },
+      "per_query": [
+        {
+          "query_id": "sem-q1",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-1"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-5",
+              "score": 0.2075841229265092
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.1813308916205186
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.178017248729078
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.15275741148057637
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.1414213562373095
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.13608276348795434
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.12909944487358055
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.12831622564368414
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.12019049345510291
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.10400628679223045
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q2",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-2"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-5",
+              "score": 0.2829311422758963
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.26028960314767674
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.24227808904183284
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.22223915924615767
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.21565250004183456
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.19879227818817055
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.1976487810496349
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.17813911176909758
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.17236129897667204
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.16564728911226984
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q3",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-3"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-5",
+              "score": 0.3098898934004561
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.22271770159368698
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.2192352285725609
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.19639610121239318
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.1781741612749496
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.17359126870735342
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.17009730222502492
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.16903085094570333
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.15936381457791918
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.1488351394468968
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q4",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-4"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 0.3000534140483179
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.18605210188381271
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.18605210188381271
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.15793491986899907
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.1353139281631037
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.13035898147917385
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.12559498126280016
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.10946345746736699
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.10232343558582008
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.10192256826100982
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q1",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-1"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-4",
+              "score": 0.1901597073139162
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.18298126367784998
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.1690308509457033
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.15315220682575376
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.14977418421021585
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.14491376746189438
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.13801311186847084
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.12001983962979583
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.11483385035264292
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.0903507902905251
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q2",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-2"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-2",
+              "score": 0.16666666666666669
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.13333333333333336
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.11189084777289189
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.11111111111111113
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.08219949365267866
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.07537783614444092
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.06537204504606135
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.06299407883487121
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.060633906259083256
+            },
+            {
+              "document_id": "pref-6",
+              "score": 0.055555555555555566
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q3",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-3"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-5",
+              "score": 0.3009850594849892
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.22917462425705282
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.1862745098039216
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.15469287137351068
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.14461119326300886
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.11946142052161603
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.11778571185788639
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.10516676765788634
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.08632673540927455
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.08447198054101247
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q4",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-4"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-6",
+              "score": 0.2004459314343183
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.1889822365046136
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.12687229593911026
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.1267731382092775
+            },
+            {
+              "document_id": "pref-6",
+              "score": 0.12598815766974242
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.12598815766974242
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.12556180058348068
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.12076147288491201
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.11904761904761907
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.11268723396380222
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q1",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-1"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-1",
+              "score": 0.3599221477103426
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.33802157507943226
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.20532878930509474
+            },
+            {
+              "document_id": "sem-1",
+              "score": 0.18207391493513364
+            },
+            {
+              "document_id": "pref-6",
+              "score": 0.158999682000954
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.13497080539137846
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.11242975334937921
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.10881194172217833
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.10270985034699506
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.1016023312127491
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q2",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-2"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-5",
+              "score": 0.17009730222502492
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.1460871774476944
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.12598815766974242
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.11101325894672148
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.11065666703449764
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.09078412990032037
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.07142857142857144
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.07142857142857144
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.0668153104781061
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.06338656910463875
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q3",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-3"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-3",
+              "score": 0.23062266407882206
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.15163507931514916
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.1344737247202764
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.13418626003042336
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.12001983962979582
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.11973018608653986
+            },
+            {
+              "document_id": "tail-4",
+              "score": 0.11532776166577345
+            },
+            {
+              "document_id": "entity-6",
+              "score": 0.11293848786315641
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.11293848786315641
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.10559273546969096
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q4",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-4"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-2",
+              "score": 0.21808918607248967
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.17588161767036214
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.13608276348795437
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.12247448713915891
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.11180339887498951
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.10416666666666669
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.09805806756909202
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.09186304243492509
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.0912870929175277
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.08980265101338748
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q1",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 0.32158794041257743
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.18812718625637184
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.1379728923974526
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.13678822577626595
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.11322770341445956
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.10809494906623501
+            },
+            {
+              "document_id": "tail-4",
+              "score": 0.10300524052492097
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.09392932715684627
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.06641806418489572
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.06405126152203486
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q2",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-1"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-6",
+              "score": 0.19364916731037085
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.16744367165578428
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.13693063937629155
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.13608276348795434
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.1299139604923262
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.12700012700019053
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.12617373467071
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.11973686801784997
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.10910894511799621
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.10502100630210075
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q3",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-4"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-6",
+              "score": 0.20000000000000004
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.18633899812498247
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.16431676725154987
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.158113883008419
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.14756081305138943
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.14756081305138943
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.1452368754827782
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.12452441171884354
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.11952286093343939
+            },
+            {
+              "document_id": "pref-4",
+              "score": 0.1118033988749895
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q4",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-6"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-4",
+              "score": 0.25717224993681986
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.20412414523193154
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.14400460822119582
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.12393251674795844
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.1165396453298259
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.09356014857063996
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.08183170883849714
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.06400204809830926
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.05858330335516624
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.058321184351980436
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q1",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 0.5416025603090642
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.30341364322535325
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.22631038253813782
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.17837651700316895
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.17232808737106586
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.1659765325773231
+            },
+            {
+              "document_id": "tail-4",
+              "score": 0.159019987177207
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.15731330124142318
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.14716573653773896
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.1199128223640836
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q2",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-4"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-4",
+              "score": 0.3136764784982261
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.27407548393101266
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.223606797749979
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.18425693279752223
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.12858612496840993
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.11185934253567073
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.10424379860368242
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.09525793444156803
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.0935139346144637
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.09041483013408166
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q3",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-6"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-4",
+              "score": 0.16366341767699433
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.14273133293149903
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.13501543121683046
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.125
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.10434798389121028
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.10350983390135315
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.07142857142857144
+            },
+            {
+              "document_id": "pref-4",
+              "score": 0.0668153104781061
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.0668153104781061
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.06299407883487121
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q4",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-2"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-3",
+              "score": 0.20084532931834778
+            },
+            {
+              "document_id": "sem-6",
+              "score": 0.1545334818572512
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.1381330253782045
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.12216944435630524
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.10134704989563609
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0751900952896712
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.07330166661378314
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.06108472217815262
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0570077155662953
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.04319342127906801
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q1",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-1"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-1",
+              "score": 0.5275999670799615
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.4748677455674102
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.44516247222371746
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.40548086853281295
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.4015287724417512
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.3564445574817219
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.2953466989601983
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.2870807606737256
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.2789038923324084
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.2766794298065627
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q2",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-2"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-2",
+              "score": 0.4717674188592426
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.4178897917725232
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.3935998562543059
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.39256028443366103
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.37880720420707903
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.3614031611621005
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.3431317581537581
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.3282995769794685
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.32589910405813366
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.31183151790385666
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q3",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-3"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-1",
+              "score": 0.41855865216798543
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.39783003135777617
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.3857097433117727
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.3558299974427442
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.3548664996278735
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.33756997551928847
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.3074977865321644
+            },
+            {
+              "document_id": "tail-4",
+              "score": 0.2948026129352049
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.28985890532701797
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.288455575370685
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q4",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-6"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-3",
+              "score": 0.25112360116696136
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.2351585405008862
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.23515854050088617
+            },
+            {
+              "document_id": "tail-4",
+              "score": 0.20261022461827694
+            },
+            {
+              "document_id": "pref-6",
+              "score": 0.18898223650461363
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.18782637100417848
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.1835557745535881
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.17094086468945693
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.16598500055174645
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.147481543202504
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q1",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-1"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-1",
+              "score": 0.5108910520108026
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.4269562819149833
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.41123646601744795
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.3880124165959998
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.3507361872061009
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.3314443158946595
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.32778114068761827
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.3003287202339133
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.29673273237950815
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.2941658344309233
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q2",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-2"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-1",
+              "score": 0.3139139705316125
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.26602875520116104
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.24445885613079663
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.24244760629816442
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.2354354778987094
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.1861976256462911
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.1353329904901917
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.13323467750529827
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.11701621489018063
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.11138026390170384
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q3",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-3"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-3",
+              "score": 0.2271554252121274
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.11894651701745164
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.11005109731001668
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.08000711205939975
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.06362847629757779
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.041391636158282626
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.012091270835166867
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "sem-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "episode-5",
+              "score": -0.013613319252933253
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q4",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-5"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-3",
+              "score": 0.30989770145300155
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.16448792373994228
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.1310356045902398
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.12626906806902635
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.11572751247156896
+            },
+            {
+              "document_id": "pref-4",
+              "score": 0.09449111825230681
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.08183170883849716
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.05050762722761054
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.044543540318737404
+            },
+            {
+              "document_id": "sem-6",
+              "score": 0.04225771273642583
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q1",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-1"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-1",
+              "score": 0.5800293498009127
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.3607270349000502
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.2708668960007357
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.25742076465277475
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.25277339543342753
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.24629094680887087
+            },
+            {
+              "document_id": "entity-3",
+              "score": 0.24383288305569176
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.23215623765931104
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.2297939958485705
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.19283080244566012
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q2",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-2"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-2",
+              "score": 0.5172966448908508
+            },
+            {
+              "document_id": "entity-3",
+              "score": 0.26287961323942677
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.2562196459141243
+            },
+            {
+              "document_id": "sem-1",
+              "score": 0.24607943495851864
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.24347862907949064
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.22841246922521763
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.21677608244153504
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.19418094920202283
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.18624807887188755
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.18015550210802955
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q3",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-3"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-5",
+              "score": 0.149071198499986
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.13344012817090595
+            },
+            {
+              "document_id": "sem-6",
+              "score": 0.105409255338946
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.09667364890456637
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.08219949365267866
+            },
+            {
+              "document_id": "entity-3",
+              "score": 0.0700140042014005
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.06327719971683327
+            },
+            {
+              "document_id": "entity-6",
+              "score": 0.06299407883487121
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.06299407883487121
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.05892556509887897
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q4",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-4"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-4",
+              "score": 0.5570860145311556
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.32204366351804103
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.22027551670157391
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.2193931022920578
+            },
+            {
+              "document_id": "entity-3",
+              "score": 0.21019754169815527
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.18187954468925668
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.16888814864002405
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.16641005886756877
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.15697460189796833
+            },
+            {
+              "document_id": "sem-1",
+              "score": 0.15545631755148026
+            }
+          ]
+        }
+      ]
+    },
+    "bm25-word-cjk-bigram-v1": {
+      "status": "COMPLETED",
+      "provider": "project-lexical-reference",
+      "model": "bm25-word-cjk-bigram-v1",
+      "revision": "v1",
+      "semantic": false,
+      "dimensions": null,
+      "model_load_seconds": 0.0,
+      "embedding_throughput_per_second": null,
+      "query_embedding_latency_ms": {
+        "samples": 32,
+        "p50": 0.09214999954565428,
+        "p95": 0.10769999789772555,
+        "p99": 0.11059999815188348,
+        "mean": 0.09110937480727443
+      },
+      "document_embedding_seconds": null,
+      "embedding_storage_bytes_float32": 0,
+      "model_storage_bytes": 0,
+      "cpu_rss_bytes_after_load": null,
+      "cpu_rss_bytes_peak_observed": null,
+      "gpu_peak_bytes": null,
+      "metrics": {
+        "cases": 32,
+        "evaluable_cases": 32,
+        "precision_at_k": {
+          "1": 0.65625,
+          "5": 0.16875,
+          "10": 0.084375
+        },
+        "recall_at_k": {
+          "1": 0.65625,
+          "5": 0.84375,
+          "10": 0.84375
+        },
+        "mrr": 0.7438118925446323,
+        "ndcg_at_k": {
+          "1": 0.65625,
+          "5": 0.7663662191964322,
+          "10": 0.7663662191964322
+        },
+        "slices": {
+          "conflicting_facts": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.5,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 0.5,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 0.75,
+            "ndcg_at_k": {
+              "1": 0.5,
+              "5": 0.8154648767857288,
+              "10": 0.8154648767857288
+            }
+          },
+          "entity_ambiguity": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "long_tail_facts": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "near_duplicate_memory": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.75,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 0.75,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 0.875,
+            "ndcg_at_k": {
+              "1": 0.75,
+              "5": 0.9077324383928644,
+              "10": 0.9077324383928644
+            }
+          },
+          "old_episodic_recall": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "preference_retrieval": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "semantic_paraphrase": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.0,
+              "5": 0.05,
+              "10": 0.025
+            },
+            "recall_at_k": {
+              "1": 0.0,
+              "5": 0.25,
+              "10": 0.25
+            },
+            "mrr": 0.10566603535353535,
+            "ndcg_at_k": {
+              "1": 0.0,
+              "5": 0.125,
+              "10": 0.125
+            }
+          },
+          "temporal_change": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.0,
+              "5": 0.1,
+              "10": 0.05
+            },
+            "recall_at_k": {
+              "1": 0.0,
+              "5": 0.5,
+              "10": 0.5
+            },
+            "mrr": 0.2198291050035236,
+            "ndcg_at_k": {
+              "1": 0.0,
+              "5": 0.2827324383928644,
+              "10": 0.2827324383928644
+            }
+          }
+        },
+        "hit_rate_at_k": {
+          "1": 0.65625,
+          "5": 0.84375,
+          "10": 0.84375
+        },
+        "temporal_retrieval_accuracy_at_1": 0.0,
+        "contradiction_retrieval_accuracy_at_1": 0.5
+      },
+      "per_query": [
+        {
+          "query_id": "sem-q1",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-1"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-5",
+              "score": 3.766493121818318
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 3.275769977183522
+            },
+            {
+              "document_id": "sem-1",
+              "score": 2.988336723623429
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q2",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q3",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-3"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q4",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-4"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 5.330737150486262
+            },
+            {
+              "document_id": "pref-1",
+              "score": 3.0949044522519022
+            },
+            {
+              "document_id": "episode-1",
+              "score": 2.5494133370447125
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 2.5473386757246943
+            },
+            {
+              "document_id": "temp-1",
+              "score": 2.5473386757246943
+            },
+            {
+              "document_id": "temp-3",
+              "score": 2.449520870576866
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 1.930580761803961
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q1",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-1"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-1",
+              "score": 5.121613080801099
+            },
+            {
+              "document_id": "entity-5",
+              "score": 3.465675035549967
+            },
+            {
+              "document_id": "entity-2",
+              "score": 2.988336723623429
+            },
+            {
+              "document_id": "entity-4",
+              "score": 2.3527665305263303
+            },
+            {
+              "document_id": "pref-3",
+              "score": 2.1787560629373255
+            },
+            {
+              "document_id": "entity-1",
+              "score": 2.101058967082206
+            },
+            {
+              "document_id": "episode-3",
+              "score": 1.9611826419505192
+            },
+            {
+              "document_id": "tail-1",
+              "score": 1.8980036038205699
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 1.7831181397809892
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q2",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-2"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-2",
+              "score": 8.463983698271875
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q3",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-3"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-3",
+              "score": 3.209353923521618
+            },
+            {
+              "document_id": "sem-3",
+              "score": 3.209353923521618
+            },
+            {
+              "document_id": "temp-1",
+              "score": 2.0403126359900985
+            },
+            {
+              "document_id": "temp-2",
+              "score": 2.0403126359900985
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "episode-5",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 1.5463151251324705
+            },
+            {
+              "document_id": "episode-1",
+              "score": 1.500890935410097
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q4",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-4"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-4",
+              "score": 7.568321031196995
+            },
+            {
+              "document_id": "entity-6",
+              "score": 2.5621915821507364
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 2.402262848804527
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q1",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-1"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-1",
+              "score": 6.533777916971628
+            },
+            {
+              "document_id": "sem-1",
+              "score": 5.386356854088346
+            },
+            {
+              "document_id": "episode-5",
+              "score": 5.1808293414014726
+            },
+            {
+              "document_id": "sem-5",
+              "score": 3.766493121818318
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 3.275769977183522
+            },
+            {
+              "document_id": "tail-1",
+              "score": 2.2435168200457007
+            },
+            {
+              "document_id": "temp-1",
+              "score": 2.0403126359900985
+            },
+            {
+              "document_id": "temp-2",
+              "score": 2.0403126359900985
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 1.7592939658967706
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q2",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-2"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-2",
+              "score": 7.256041525277673
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q3",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-3"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-3",
+              "score": 9.658485384700384
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 3.9047178128027578
+            },
+            {
+              "document_id": "episode-5",
+              "score": 2.988336723623429
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q4",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-4"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-4",
+              "score": 22.789549497476333
+            },
+            {
+              "document_id": "pref-4",
+              "score": 2.3429366663279305
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q1",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 3.275769977183522
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q2",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-1"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q3",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-4"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-3",
+              "score": 9.997779342554544
+            },
+            {
+              "document_id": "temp-4",
+              "score": 9.997779342554544
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q4",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-6"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-5",
+              "score": 2.186093334938192
+            },
+            {
+              "document_id": "temp-5",
+              "score": 2.102147350876565
+            },
+            {
+              "document_id": "temp-6",
+              "score": 2.02441000662227
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 1.884995831130349
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 1.884995831130349
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 1.884995831130349
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 1.6567996144991843
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q1",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 14.19810631254369
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 9.478688746824629
+            },
+            {
+              "document_id": "temp-1",
+              "score": 2.5473386757246943
+            },
+            {
+              "document_id": "temp-3",
+              "score": 2.449520870576866
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 1.930580761803961
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q2",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-4"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-4",
+              "score": 7.2196557932947325
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 6.665186228369696
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 3.275769977183522
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q3",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-6"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-5",
+              "score": 13.9024971553573
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 8.125633405847324
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q4",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-1",
+              "score": 4.060646643929657
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q1",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-1"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-1",
+              "score": 9.044393592876482
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 6.589698367682097
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 6.393977336447958
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 6.393977336447958
+            },
+            {
+              "document_id": "pref-1",
+              "score": 3.7742496114827673
+            },
+            {
+              "document_id": "episode-1",
+              "score": 3.3829580811875974
+            },
+            {
+              "document_id": "pref-3",
+              "score": 3.0634049865530253
+            },
+            {
+              "document_id": "tail-1",
+              "score": 2.996118674781222
+            },
+            {
+              "document_id": "entity-5",
+              "score": 2.83210541252902
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 2.5549264905580307
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q2",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-2"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-2",
+              "score": 7.698852643321964
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 4.197491620363968
+            },
+            {
+              "document_id": "tail-1",
+              "score": 2.996118674781222
+            },
+            {
+              "document_id": "entity-5",
+              "score": 2.83210541252902
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 2.5549264905580307
+            },
+            {
+              "document_id": "entity-2",
+              "score": 2.483000219948488
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 2.4568173133206024
+            },
+            {
+              "document_id": "temp-6",
+              "score": 2.365964284784863
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 2.3295588029390677
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 1.8688241397972345
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q3",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-3"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-1",
+              "score": 5.1022651662827245
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 4.260139564743029
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 4.197491620363968
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 4.197491620363968
+            },
+            {
+              "document_id": "temp-1",
+              "score": 3.3080696111030177
+            },
+            {
+              "document_id": "tail-1",
+              "score": 2.996118674781222
+            },
+            {
+              "document_id": "entity-5",
+              "score": 2.83210541252902
+            },
+            {
+              "document_id": "entity-2",
+              "score": 2.483000219948488
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 2.4568173133206024
+            },
+            {
+              "document_id": "temp-3",
+              "score": 2.449520870576866
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q4",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-6"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-6",
+              "score": 15.254694331585931
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 4.815886003157295
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q1",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-1"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-1",
+              "score": 16.655722554842136
+            },
+            {
+              "document_id": "entity-2",
+              "score": 5.471336943571917
+            },
+            {
+              "document_id": "tail-1",
+              "score": 4.894122278601792
+            },
+            {
+              "document_id": "entity-3",
+              "score": 4.22640597092829
+            },
+            {
+              "document_id": "entity-4",
+              "score": 3.3906763878756427
+            },
+            {
+              "document_id": "pref-3",
+              "score": 2.883223385221412
+            },
+            {
+              "document_id": "episode-3",
+              "score": 2.874667741176038
+            },
+            {
+              "document_id": "entity-5",
+              "score": 2.83210541252902
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 2.5549264905580307
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 2.4568173133206024
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q2",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-2"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-2",
+              "score": 6.489697746581426
+            },
+            {
+              "document_id": "entity-1",
+              "score": 3.0949044522519022
+            },
+            {
+              "document_id": "temp-1",
+              "score": 2.0403126359900985
+            },
+            {
+              "document_id": "temp-2",
+              "score": 2.0403126359900985
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "episode-5",
+              "score": 1.7592939658967706
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 1.5463151251324705
+            },
+            {
+              "document_id": "episode-1",
+              "score": 1.500890935410097
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q3",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-3"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-3",
+              "score": 12.181939931788971
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q4",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-5"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-5",
+              "score": 4.060646643929657
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 2.4079430015786474
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 2.2813479697322347
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q1",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-1"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-1",
+              "score": 18.415027791205695
+            },
+            {
+              "document_id": "tail-5",
+              "score": 4.801644590789985
+            },
+            {
+              "document_id": "sem-3",
+              "score": 4.193636576185498
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 3.306369329832214
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 3.306369329832214
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 3.306369329832214
+            },
+            {
+              "document_id": "entity-5",
+              "score": 2.83210541252902
+            },
+            {
+              "document_id": "temp-1",
+              "score": 2.801043571368422
+            },
+            {
+              "document_id": "temp-2",
+              "score": 2.801043571368422
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 2.5549264905580307
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q2",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-2"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-2",
+              "score": 10.612344423228734
+            },
+            {
+              "document_id": "tail-6",
+              "score": 8.35974807394834
+            },
+            {
+              "document_id": "entity-2",
+              "score": 3.9242615796364735
+            },
+            {
+              "document_id": "entity-1",
+              "score": 1.1124070368914165
+            },
+            {
+              "document_id": "entity-4",
+              "score": 1.0379098573493126
+            },
+            {
+              "document_id": "entity-5",
+              "score": 1.0379098573493126
+            },
+            {
+              "document_id": "tail-4",
+              "score": 1.0103851760494413
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.9842826526638799
+            },
+            {
+              "document_id": "sem-1",
+              "score": 0.9359248560130444
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.9134850992255189
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q3",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-3"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-3",
+              "score": 15.387444092066353
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.0
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.0
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.0
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q4",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-4"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-4",
+              "score": 16.629256427260472
+            },
+            {
+              "document_id": "entity-1",
+              "score": 1.1124070368914165
+            },
+            {
+              "document_id": "entity-4",
+              "score": 1.0379098573493126
+            },
+            {
+              "document_id": "entity-5",
+              "score": 1.0379098573493126
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.9842826526638799
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.9842826526638799
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.9359248560130444
+            },
+            {
+              "document_id": "sem-1",
+              "score": 0.9359248560130444
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.9134850992255189
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.892096179829019
+            }
+          ]
+        }
+      ]
+    },
+    "multilingual-e5-large-instruct": {
+      "status": "COMPLETED",
+      "provider": "sentence-transformers",
+      "model": "intfloat/multilingual-e5-large-instruct",
+      "revision": "274baa43b0e13e37fafa6428dbc7938e62e5c439",
+      "semantic": true,
+      "query_instruction": "Given a user memory query, retrieve relevant passages that answer the query",
+      "dimensions": 1024,
+      "device": "cpu",
+      "dtype": "float32",
+      "model_load_seconds": 3.3704761999979382,
+      "embedding_throughput_per_second": 24.86293143603941,
+      "query_batch_throughput_per_second": 16.18497074741149,
+      "query_embedding_latency_ms": {
+        "samples": 32,
+        "p50": 133.90680000156863,
+        "p95": 140.8757000026526,
+        "p99": 149.37609999469714,
+        "mean": 135.0108375002037
+      },
+      "document_embedding_seconds": 1.9305848999938462,
+      "embedding_storage_bytes_float32": 196608,
+      "model_storage_bytes": 1141981124,
+      "cpu_rss_bytes_after_load": 2793132032,
+      "cpu_rss_bytes_peak_observed": 2930458624,
+      "cpu_rss_bytes_before_load": 308121600,
+      "cpu_rss_bytes_peak_increment": 2622337024,
+      "gpu_peak_bytes": null,
+      "metrics": {
+        "cases": 32,
+        "evaluable_cases": 32,
+        "precision_at_k": {
+          "1": 0.96875,
+          "5": 0.2,
+          "10": 0.1
+        },
+        "recall_at_k": {
+          "1": 0.96875,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "mrr": 0.975,
+        "ndcg_at_k": {
+          "1": 0.96875,
+          "5": 0.9808391502260794,
+          "10": 0.9808391502260794
+        },
+        "slices": {
+          "conflicting_facts": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "entity_ambiguity": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "long_tail_facts": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "near_duplicate_memory": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "old_episodic_recall": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "preference_retrieval": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          },
+          "semantic_paraphrase": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 0.75,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 0.75,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 0.8,
+            "ndcg_at_k": {
+              "1": 0.75,
+              "5": 0.8467132018086354,
+              "10": 0.8467132018086354
+            }
+          },
+          "temporal_change": {
+            "cases": 4,
+            "evaluable_cases": 4,
+            "precision_at_k": {
+              "1": 1.0,
+              "5": 0.2,
+              "10": 0.1
+            },
+            "recall_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "mrr": 1.0,
+            "ndcg_at_k": {
+              "1": 1.0,
+              "5": 1.0,
+              "10": 1.0
+            }
+          }
+        },
+        "hit_rate_at_k": {
+          "1": 0.96875,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "temporal_retrieval_accuracy_at_1": 1.0,
+        "contradiction_retrieval_accuracy_at_1": 1.0
+      },
+      "per_query": [
+        {
+          "query_id": "sem-q1",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-1"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-1",
+              "score": 0.8234423398971558
+            },
+            {
+              "document_id": "sem-5",
+              "score": 0.8226708769798279
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.8013805150985718
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7895787954330444
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.781474232673645
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7802703976631165
+            },
+            {
+              "document_id": "pref-1",
+              "score": 0.7704355120658875
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7684683799743652
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.7673153877258301
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.763148307800293
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q2",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-2"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-2",
+              "score": 0.8330056667327881
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.7768070697784424
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7677491903305054
+            },
+            {
+              "document_id": "sem-1",
+              "score": 0.7670685648918152
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7654539346694946
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.7585503458976746
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.755382776260376
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.7537463903427124
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.7534674406051636
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.7504688501358032
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q3",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-3"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-2",
+              "score": 0.8323149681091309
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.829130232334137
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.8250776529312134
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7990487813949585
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.796903133392334
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.7965697050094604
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.7946524620056152
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.791943371295929
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7911155819892883
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.7847355008125305
+            }
+          ]
+        },
+        {
+          "query_id": "sem-q4",
+          "category": "semantic_paraphrase",
+          "relevant_ids": [
+            "sem-4"
+          ],
+          "top10": [
+            {
+              "document_id": "sem-4",
+              "score": 0.8149155378341675
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7732400298118591
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7724967002868652
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7695349454879761
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7649343013763428
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7638701796531677
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7620245814323425
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7575206756591797
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.7526609897613525
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.7505485415458679
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q1",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-1"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-1",
+              "score": 0.8494905829429626
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.7894928455352783
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7874435186386108
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7752963304519653
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7708437442779541
+            },
+            {
+              "document_id": "pref-5",
+              "score": 0.7703370451927185
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7689930200576782
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7639259696006775
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7625966668128967
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7583301663398743
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q2",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-2"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-2",
+              "score": 0.8928122520446777
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.8499734401702881
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.8389295339584351
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.805893063545227
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.8023238778114319
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.7973813414573669
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7916365265846252
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7910985946655273
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7910548448562622
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.7867909669876099
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q3",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-3"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-3",
+              "score": 0.8399867415428162
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7934284806251526
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7839662432670593
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7812516689300537
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.7791396975517273
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7774192690849304
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7735797166824341
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7705162763595581
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7688800096511841
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7687067985534668
+            }
+          ]
+        },
+        {
+          "query_id": "pref-q4",
+          "category": "preference_retrieval",
+          "relevant_ids": [
+            "pref-4"
+          ],
+          "top10": [
+            {
+              "document_id": "pref-4",
+              "score": 0.8925138711929321
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8107870817184448
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.8063936233520508
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.795946478843689
+            },
+            {
+              "document_id": "entity-6",
+              "score": 0.7915948033332825
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.78958660364151
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.7884501218795776
+            },
+            {
+              "document_id": "sem-4",
+              "score": 0.7833964824676514
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7813433408737183
+            },
+            {
+              "document_id": "pref-6",
+              "score": 0.7810328006744385
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q1",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-1"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-1",
+              "score": 0.8447315692901611
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7860055565834045
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.7797003984451294
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.7692839503288269
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7654317617416382
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.7633434534072876
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.7628567218780518
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7620402574539185
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.7620254755020142
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.7619909048080444
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q2",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-2"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-2",
+              "score": 0.8910092115402222
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.815339207649231
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8082970380783081
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7953047752380371
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.7950910329818726
+            },
+            {
+              "document_id": "episode-6",
+              "score": 0.7920666337013245
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7871955037117004
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7842444181442261
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.776344895362854
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7748144865036011
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q3",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-3"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-3",
+              "score": 0.8660830855369568
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.7870520949363708
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.7780981659889221
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.7613085508346558
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.7608609795570374
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7592625617980957
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.7591684460639954
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.7565935254096985
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.7563489675521851
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7531511187553406
+            }
+          ]
+        },
+        {
+          "query_id": "episode-q4",
+          "category": "old_episodic_recall",
+          "relevant_ids": [
+            "episode-4"
+          ],
+          "top10": [
+            {
+              "document_id": "episode-4",
+              "score": 0.9149264693260193
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.825273871421814
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8129032850265503
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.812461793422699
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.8103548884391785
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.8043785095214844
+            },
+            {
+              "document_id": "episode-6",
+              "score": 0.792704701423645
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7833981513977051
+            },
+            {
+              "document_id": "pref-4",
+              "score": 0.7787478566169739
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7767558097839355
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q1",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-2"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-2",
+              "score": 0.8335286378860474
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.8285844326019287
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.806589663028717
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7980608940124512
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7877616882324219
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7788068056106567
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7667228579521179
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7639214396476746
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7638568878173828
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.7535552382469177
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q2",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-1"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-1",
+              "score": 0.8503333926200867
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.8481390476226807
+            },
+            {
+              "document_id": "episode-6",
+              "score": 0.8373207449913025
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.8301535248756409
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8279814720153809
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.8252564668655396
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.8202869892120361
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.8200258016586304
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.81328284740448
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.8026801943778992
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q3",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-4"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-4",
+              "score": 0.8889425992965698
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.8740726709365845
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.8481827974319458
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.8004224896430969
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.7998258471488953
+            },
+            {
+              "document_id": "pref-6",
+              "score": 0.7990320920944214
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7963839769363403
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7960070371627808
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7942418456077576
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7922500371932983
+            }
+          ]
+        },
+        {
+          "query_id": "temp-q4",
+          "category": "temporal_change",
+          "relevant_ids": [
+            "temp-6"
+          ],
+          "top10": [
+            {
+              "document_id": "temp-6",
+              "score": 0.8676018118858337
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.846095860004425
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7983930110931396
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7861722111701965
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7840495109558105
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7831481099128723
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.782139003276825
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.7788102626800537
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.775710940361023
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.7725591659545898
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q1",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 0.8818420171737671
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.8784565925598145
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.8060417771339417
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7847503423690796
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7636796832084656
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7588427066802979
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7571827173233032
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7509618401527405
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7476401329040527
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7463194131851196
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q2",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-4"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-4",
+              "score": 0.8711335062980652
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.86128169298172
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.8048795461654663
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.8045650720596313
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.8011391758918762
+            },
+            {
+              "document_id": "temp-1",
+              "score": 0.7987726926803589
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7922502756118774
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7885153293609619
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7883203625679016
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.7880135774612427
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q3",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-6"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-6",
+              "score": 0.910690426826477
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.8815017938613892
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.7918479442596436
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.7857180833816528
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7813012599945068
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.7810695171356201
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7792854309082031
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7751505374908447
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7749559283256531
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.7719177603721619
+            }
+          ]
+        },
+        {
+          "query_id": "conflict-q4",
+          "category": "conflicting_facts",
+          "relevant_ids": [
+            "conflict-2"
+          ],
+          "top10": [
+            {
+              "document_id": "conflict-2",
+              "score": 0.8621194958686829
+            },
+            {
+              "document_id": "conflict-1",
+              "score": 0.8432282209396362
+            },
+            {
+              "document_id": "conflict-6",
+              "score": 0.7999046444892883
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7879756093025208
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7754418849945068
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7689424753189087
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7673665285110474
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7668059468269348
+            },
+            {
+              "document_id": "pref-3",
+              "score": 0.7665497064590454
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.7631144523620605
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q1",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-1"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-1",
+              "score": 0.8899815082550049
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.8575553894042969
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.8559223413467407
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.841755747795105
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.7825625538825989
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.7809058427810669
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7775114178657532
+            },
+            {
+              "document_id": "episode-1",
+              "score": 0.7695521116256714
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7684743404388428
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7664926052093506
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q2",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-2"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-2",
+              "score": 0.8839184045791626
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.8452809453010559
+            },
+            {
+              "document_id": "duplicate-3",
+              "score": 0.8313215970993042
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8183015584945679
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.8045885562896729
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.789905846118927
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7819713950157166
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7805474996566772
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7770445346832275
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7769482135772705
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q3",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-3"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-3",
+              "score": 0.8593176603317261
+            },
+            {
+              "document_id": "duplicate-1",
+              "score": 0.8406480550765991
+            },
+            {
+              "document_id": "duplicate-2",
+              "score": 0.8292196989059448
+            },
+            {
+              "document_id": "duplicate-4",
+              "score": 0.7994971871376038
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.7830475568771362
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7760746479034424
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7742876410484314
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.7725120782852173
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7708147764205933
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7680014967918396
+            }
+          ]
+        },
+        {
+          "query_id": "duplicate-q4",
+          "category": "near_duplicate_memory",
+          "relevant_ids": [
+            "duplicate-6"
+          ],
+          "top10": [
+            {
+              "document_id": "duplicate-6",
+              "score": 0.9433596134185791
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.8885425925254822
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.8446866273880005
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.8003550171852112
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7994384765625
+            },
+            {
+              "document_id": "episode-6",
+              "score": 0.7967618703842163
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.7871023416519165
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.7851471304893494
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7824973464012146
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7807135581970215
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q1",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-1"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-1",
+              "score": 0.8846470713615417
+            },
+            {
+              "document_id": "entity-2",
+              "score": 0.8202767372131348
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7850420475006104
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7846906781196594
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7682276964187622
+            },
+            {
+              "document_id": "entity-3",
+              "score": 0.7610461115837097
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7605166435241699
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7590354681015015
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7583110928535461
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7524553537368774
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q2",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-2"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-2",
+              "score": 0.9016526937484741
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.7888964414596558
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7665676474571228
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7653611898422241
+            },
+            {
+              "document_id": "conflict-3",
+              "score": 0.7645554542541504
+            },
+            {
+              "document_id": "conflict-2",
+              "score": 0.7621958255767822
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7610905170440674
+            },
+            {
+              "document_id": "temp-2",
+              "score": 0.7579676508903503
+            },
+            {
+              "document_id": "episode-5",
+              "score": 0.7574113607406616
+            },
+            {
+              "document_id": "episode-3",
+              "score": 0.7522475719451904
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q3",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-3"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-3",
+              "score": 0.891167163848877
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.768558144569397
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7627518177032471
+            },
+            {
+              "document_id": "entity-1",
+              "score": 0.7609080672264099
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7607196569442749
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7555018663406372
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7529749870300293
+            },
+            {
+              "document_id": "entity-4",
+              "score": 0.7525442838668823
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.7432299852371216
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7428926229476929
+            }
+          ]
+        },
+        {
+          "query_id": "entity-q4",
+          "category": "entity_ambiguity",
+          "relevant_ids": [
+            "entity-5"
+          ],
+          "top10": [
+            {
+              "document_id": "entity-5",
+              "score": 0.8513890504837036
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.8316022157669067
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.8275982141494751
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.821226954460144
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8197897672653198
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.8085557222366333
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.8072539567947388
+            },
+            {
+              "document_id": "sem-2",
+              "score": 0.7861765623092651
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7786282300949097
+            },
+            {
+              "document_id": "entity-6",
+              "score": 0.777661919593811
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q1",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-1"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-1",
+              "score": 0.920926570892334
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.8032898902893066
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7931323647499084
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7776517271995544
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.772061288356781
+            },
+            {
+              "document_id": "tail-4",
+              "score": 0.7714287042617798
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.7713102102279663
+            },
+            {
+              "document_id": "sem-3",
+              "score": 0.767839789390564
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7676920294761658
+            },
+            {
+              "document_id": "tail-3",
+              "score": 0.7639457583427429
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q2",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-2"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-2",
+              "score": 0.8896942734718323
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.8788200616836548
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7866429090499878
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.7772619128227234
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7697705030441284
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7674117684364319
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7671253085136414
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.7634079456329346
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7597044706344604
+            },
+            {
+              "document_id": "conflict-4",
+              "score": 0.7575763463973999
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q3",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-3"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-3",
+              "score": 0.9222322702407837
+            },
+            {
+              "document_id": "duplicate-6",
+              "score": 0.8750253319740295
+            },
+            {
+              "document_id": "duplicate-5",
+              "score": 0.853447437286377
+            },
+            {
+              "document_id": "episode-2",
+              "score": 0.8062409162521362
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.8041772246360779
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7987271547317505
+            },
+            {
+              "document_id": "episode-4",
+              "score": 0.7854979038238525
+            },
+            {
+              "document_id": "episode-6",
+              "score": 0.7833723425865173
+            },
+            {
+              "document_id": "pref-2",
+              "score": 0.7810003757476807
+            },
+            {
+              "document_id": "conflict-5",
+              "score": 0.7778421640396118
+            }
+          ]
+        },
+        {
+          "query_id": "tail-q4",
+          "category": "long_tail_facts",
+          "relevant_ids": [
+            "tail-4"
+          ],
+          "top10": [
+            {
+              "document_id": "tail-4",
+              "score": 0.898711085319519
+            },
+            {
+              "document_id": "tail-1",
+              "score": 0.8004847168922424
+            },
+            {
+              "document_id": "temp-6",
+              "score": 0.7742658257484436
+            },
+            {
+              "document_id": "temp-5",
+              "score": 0.7738240957260132
+            },
+            {
+              "document_id": "temp-4",
+              "score": 0.7734613418579102
+            },
+            {
+              "document_id": "tail-5",
+              "score": 0.7684190273284912
+            },
+            {
+              "document_id": "tail-2",
+              "score": 0.7677539587020874
+            },
+            {
+              "document_id": "temp-3",
+              "score": 0.7657843232154846
+            },
+            {
+              "document_id": "tail-6",
+              "score": 0.7640637159347534
+            },
+            {
+              "document_id": "entity-5",
+              "score": 0.7635712027549744
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [],
+  "limitations": [
+    "Project-owned controlled set: 32 queries and 48 documents; quality estimates have high uncertainty.",
+    "Exact in-memory cosine ranking measures model retrieval quality, not PostgreSQL latency.",
+    "Temporal/provenance words are present in documents; no separate metadata filter is applied.",
+    "CPU/GPU numbers describe this process and model runtime only, not a production server."
+  ]
+}

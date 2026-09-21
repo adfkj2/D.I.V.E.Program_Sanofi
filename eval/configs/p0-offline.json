@@ -1,0 +1,8 @@
+{
+  "schema_version": "dive-eval-config-v1",
+  "dataset": "internal-v1",
+  "embedding": "deterministic-sha256-v1",
+  "ks": [5, 10],
+  "ablation": "A-H",
+  "notes": "Offline deterministic regression only; not a semantic quality benchmark."
+}

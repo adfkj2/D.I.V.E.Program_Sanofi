@@ -1,0 +1,23 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "status": "COMPLETED",
+  "started_at": "2026-09-21T01:08:56.094233+00:00",
+  "formal_performance_claim": false,
+  "row_count": 1000,
+  "finished_at": "2026-09-21T01:08:56.704142+00:00",
+  "bulk": {
+    "dataset_generation_seconds": 0.0602865999990172,
+    "bulk_insert_seconds": 0.05142199999863806,
+    "total_seconds": 0.11170859999765526,
+    "rows_per_second": 19446.929330373878,
+    "generation_id": "embgen_299ee902165ce953feec97b0f0e03ed1"
+  },
+  "retrieval_nonempty": true,
+  "filtered_candidate_count": 100,
+  "hard_delete_verified": true,
+  "resume_manifest_readable": true,
+  "limitations": [
+    "smoke test only; no performance conclusion"
+  ]
+}

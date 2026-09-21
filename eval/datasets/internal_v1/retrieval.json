@@ -1,0 +1,18 @@
+{
+  "schema_version": "dive-internal-retrieval-v1",
+  "license": "Project-owned test data",
+  "events": [
+    {"key":"residence-old","namespace":"internal-u1","text":"我住在成都","explicit":true,"observed_at":"2025-01-01T00:00:00+00:00"},
+    {"key":"residence-new","namespace":"internal-u1","text":"我住在上海","explicit":true,"observed_at":"2026-01-01T00:00:00+00:00"},
+    {"key":"preference-tea","namespace":"internal-u1","text":"请记住我喜欢绿茶","explicit":true,"observed_at":"2026-01-02T00:00:00+00:00"},
+    {"key":"tool-vscode","namespace":"internal-u1","text":"请记住我现在主要使用 VS Code","explicit":true,"observed_at":"2026-01-03T00:00:00+00:00"}
+  ],
+  "queries": [
+    {"case_id":"current-residence","namespace":"internal-u1","question":"我现在住在哪里","query_type":"temporal","expected_event_keys":["residence-new"]},
+    {"case_id":"historical-residence","namespace":"internal-u1","question":"2025年我住在哪里","query_type":"temporal","expected_event_keys":["residence-old"]},
+    {"case_id":"preference","namespace":"internal-u1","question":"我喜欢什么","query_type":"preference","expected_event_keys":["preference-tea"]},
+    {"case_id":"tool","namespace":"internal-u1","question":"我使用什么工具","query_type":"factual","expected_event_keys":["tool-vscode"]},
+    {"case_id":"multi-hop","namespace":"internal-u1","question":"与成都关联的记忆","query_type":"multi-hop","expected_event_keys":["residence-old","preference-tea"]},
+    {"case_id":"negative","namespace":"internal-u1","question":"火星上的项目是什么","query_type":"negative","expected_event_keys":[],"should_abstain":true}
+  ]
+}

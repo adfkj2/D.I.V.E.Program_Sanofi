@@ -1,0 +1,46 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "captured_at": "2026-09-21T01:08:02.259739+00:00",
+  "os": "Windows-11-10.0.26100-SP0",
+  "python": "3.14.0",
+  "cpu_count": 16,
+  "host_memory": {
+    "available": true,
+    "load_percent": 62,
+    "total_bytes": 16438382592,
+    "available_bytes": 6124208128
+  },
+  "disk_free_bytes": null,
+  "postgres": {
+    "version": "16.15 (Debian 16.15-1.pgdg12+2)",
+    "settings": {
+      "shared_buffers": "128MB",
+      "work_mem": "4MB",
+      "effective_cache_size": "4GB",
+      "max_connections": "100",
+      "track_io_timing": "off"
+    }
+  },
+  "pgvector": {
+    "server_extension_version": "0.8.6"
+  },
+  "docker_version": {
+    "available": true,
+    "returncode": 0,
+    "stdout": "client=29.1.3 server=29.1.3",
+    "stderr": ""
+  },
+  "container": {
+    "available": true,
+    "returncode": 0,
+    "stdout": "\"pgvector/pgvector:pg16\"|c75e72e6a2a1b29887bb24e938e6a738f0e32c64e5b2843b8ae99818d200d396|[{\"Destination\":\"/var/lib/postgresql/data\",\"Driver\":\"local\",\"Mode\":\"\",\"Name\":\"d03185005e04541ce0ee9b2fb0bb7a145d3737c601c4c3fdd2e853cb625dd932\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/d03185005e04541ce0ee9b2fb0bb7a145d3737c601c4c3fdd2e853cb625dd932/_data\",\"Type\":\"volume\"}]",
+    "stderr": ""
+  },
+  "stop_guardrails": {
+    "disk_free_bytes_min": 2000000000,
+    "host_available_bytes_min": 1000000000,
+    "sustained_errors": 3
+  },
+  "dsn_recorded": false
+}

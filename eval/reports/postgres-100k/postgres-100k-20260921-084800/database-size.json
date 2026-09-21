@@ -1,0 +1,180 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "status": "COMPLETED",
+  "captured_at": "2026-09-21T01:22:35.108744+00:00",
+  "database_bytes": 178158615,
+  "relations": [
+    {
+      "relname": "embedding_generations",
+      "table_bytes": 8192,
+      "index_bytes": 16384,
+      "total_bytes": 32768,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "embedding_state",
+      "table_bytes": 8192,
+      "index_bytes": 16384,
+      "total_bytes": 32768,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "entities",
+      "table_bytes": 16384,
+      "index_bytes": 98304,
+      "total_bytes": 147456,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "events",
+      "table_bytes": 57344,
+      "index_bytes": 49152,
+      "total_bytes": 139264,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "jobs",
+      "table_bytes": 0,
+      "index_bytes": 16384,
+      "total_bytes": 24576,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memories",
+      "table_bytes": 63094784,
+      "index_bytes": 26771456,
+      "total_bytes": 89915392,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_access",
+      "table_bytes": 65536,
+      "index_bytes": 32768,
+      "total_bytes": 131072,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_entities",
+      "table_bytes": 40960,
+      "index_bytes": 16384,
+      "total_bytes": 90112,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_keys",
+      "table_bytes": 49152,
+      "index_bytes": 57344,
+      "total_bytes": 139264,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_modes",
+      "table_bytes": 0,
+      "index_bytes": 8192,
+      "total_bytes": 16384,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_relations",
+      "table_bytes": 8192,
+      "index_bytes": 16384,
+      "total_bytes": 32768,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_sources",
+      "table_bytes": 32768,
+      "index_bytes": 57344,
+      "total_bytes": 122880,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_transitions",
+      "table_bytes": 57344,
+      "index_bytes": 73728,
+      "total_bytes": 163840,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_vectors",
+      "table_bytes": 58597376,
+      "index_bytes": 17309696,
+      "total_bytes": 75956224,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "memory_versions",
+      "table_bytes": 81920,
+      "index_bytes": 49152,
+      "total_bytes": 163840,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "outbox",
+      "table_bytes": 40960,
+      "index_bytes": 32768,
+      "total_bytes": 114688,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "profiles",
+      "table_bytes": 8192,
+      "index_bytes": 16384,
+      "total_bytes": 32768,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "relations",
+      "table_bytes": 8192,
+      "index_bytes": 49152,
+      "total_bytes": 65536,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "schema_migrations",
+      "table_bytes": 8192,
+      "index_bytes": 16384,
+      "total_bytes": 32768,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "tombstones",
+      "table_bytes": 8192,
+      "index_bytes": 49152,
+      "total_bytes": 65536,
+      "toast_bytes": 8192
+    },
+    {
+      "relname": "write_decisions",
+      "table_bytes": 81920,
+      "index_bytes": 16384,
+      "total_bytes": 131072,
+      "toast_bytes": 8192
+    }
+  ],
+  "schema_total_bytes": 167550976,
+  "schema_table_bytes": 122273792,
+  "schema_index_bytes": 44769280,
+  "schema_toast_bytes": 172032,
+  "bytes_per_main_memory": 1675.50976,
+  "dimension_basis": 96,
+  "calculated_estimates": {
+    "768": {
+      "label": "CALCULATED ESTIMATE",
+      "vector_payload_scale_only_bytes_per_memory": 3072
+    },
+    "1024": {
+      "label": "CALCULATED ESTIMATE",
+      "vector_payload_scale_only_bytes_per_memory": 4096
+    },
+    "1536": {
+      "label": "CALCULATED ESTIMATE",
+      "vector_payload_scale_only_bytes_per_memory": 6144
+    }
+  },
+  "limitations": [
+    "includes small fixture namespaces in the run schema",
+    "dimension estimates are not benchmark results"
+  ]
+}

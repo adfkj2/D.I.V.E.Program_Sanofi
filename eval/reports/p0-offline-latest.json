@@ -1,0 +1,979 @@
+{
+  "dataset_schema": "dive-internal-retrieval-v1",
+  "cases": 6,
+  "ablation": {
+    "A": {
+      "configuration": {
+        "name": "A",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_10": 0.0,
+      "temporal_accuracy": 0.0,
+      "abstention_f1": 0.2857142857142857,
+      "latency_ms": {
+        "p50": 0.17870000010589138,
+        "p95": 0.6135999974503648,
+        "p99": 0.6135999974503648
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        }
+      }
+    },
+    "B": {
+      "configuration": {
+        "name": "B",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "dense"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_10": 0.0,
+      "temporal_accuracy": 0.0,
+      "abstention_f1": 0.2857142857142857,
+      "latency_ms": {
+        "p50": 0.1694999991741497,
+        "p95": 0.2375999974901788,
+        "p99": 0.2375999974901788
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        }
+      }
+    },
+    "C": {
+      "configuration": {
+        "name": "C",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25",
+          "dense"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_10": 0.0,
+      "temporal_accuracy": 0.0,
+      "abstention_f1": 0.2857142857142857,
+      "latency_ms": {
+        "p50": 0.1923000017995946,
+        "p95": 0.26529999740887433,
+        "p99": 0.26529999740887433
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        }
+      }
+    },
+    "D": {
+      "configuration": {
+        "name": "D",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25",
+          "dense",
+          "predicate"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.8,
+      "precision_at_5": 0.16,
+      "mrr": 0.8,
+      "ndcg_at_10": 0.8,
+      "temporal_accuracy": 1.0,
+      "abstention_f1": 0.6666666666666666,
+      "latency_ms": {
+        "p50": 0.20170000061625615,
+        "p95": 0.2746999998635147,
+        "p99": 0.2746999998635147
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        }
+      }
+    },
+    "E": {
+      "configuration": {
+        "name": "E",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25",
+          "dense",
+          "predicate",
+          "temporal"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.8,
+      "precision_at_5": 0.16,
+      "mrr": 0.8,
+      "ndcg_at_10": 0.8,
+      "temporal_accuracy": 1.0,
+      "abstention_f1": 0.6666666666666666,
+      "latency_ms": {
+        "p50": 0.207199998840224,
+        "p95": 0.3533000017341692,
+        "p99": 0.3533000017341692
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        }
+      }
+    },
+    "F": {
+      "configuration": {
+        "name": "F",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25",
+          "dense",
+          "entity",
+          "predicate",
+          "relation",
+          "temporal"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.8,
+      "precision_at_5": 0.16,
+      "mrr": 0.8,
+      "ndcg_at_10": 0.8,
+      "temporal_accuracy": 1.0,
+      "abstention_f1": 0.6666666666666666,
+      "latency_ms": {
+        "p50": 0.21469999774126336,
+        "p95": 0.3088000012212433,
+        "p99": 0.3088000012212433
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        }
+      }
+    },
+    "G": {
+      "configuration": {
+        "name": "G",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25",
+          "dense",
+          "entity",
+          "multi_hop",
+          "predicate",
+          "relation",
+          "temporal"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.9,
+      "precision_at_5": 0.2,
+      "mrr": 1.0,
+      "ndcg_at_10": 0.9226294385530917,
+      "temporal_accuracy": 1.0,
+      "abstention_f1": 1.0,
+      "latency_ms": {
+        "p50": 0.21879999985685572,
+        "p95": 0.2978000011353288,
+        "p99": 0.2978000011353288
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 0.6131471927654584,
+            "10": 0.6131471927654584
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        }
+      }
+    },
+    "H": {
+      "configuration": {
+        "name": "H",
+        "version": "retrieval-config-v1",
+        "channels": [
+          "bm25",
+          "dense",
+          "entity",
+          "multi_hop",
+          "predicate",
+          "relation",
+          "temporal"
+        ],
+        "rrf_k": 60,
+        "weights": {},
+        "depths": {}
+      },
+      "recall_at_5": 0.9,
+      "precision_at_5": 0.2,
+      "mrr": 1.0,
+      "ndcg_at_10": 0.9226294385530917,
+      "temporal_accuracy": 1.0,
+      "abstention_f1": 1.0,
+      "latency_ms": {
+        "p50": 0.21940000078757294,
+        "p95": 0.2549999990151264,
+        "p99": 0.2549999990151264
+      },
+      "cost": {
+        "api_calls": 0,
+        "usd": 0.0,
+        "note": "provider cost not reported by local core"
+      },
+      "slices": {
+        "factual": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "multi-hop": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 0.6131471927654584,
+            "10": 0.6131471927654584
+          }
+        },
+        "negative": {
+          "cases": 1,
+          "evaluable_cases": 0,
+          "precision_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0,
+          "ndcg_at_k": {
+            "5": 0.0,
+            "10": 0.0
+          }
+        },
+        "preference": {
+          "cases": 1,
+          "evaluable_cases": 1,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        },
+        "temporal": {
+          "cases": 2,
+          "evaluable_cases": 2,
+          "precision_at_k": {
+            "5": 0.2,
+            "10": 0.1
+          },
+          "recall_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0,
+          "ndcg_at_k": {
+            "5": 1.0,
+            "10": 1.0
+          }
+        }
+      }
+    }
+  },
+  "manifest": {
+    "schema_version": "dive-eval-manifest-v1",
+    "run_id": "internal-p0-offline",
+    "dataset_name": "internal-v1",
+    "dataset_version": "1",
+    "dataset_path": "C:\\Users\\Li peng\\Desktop\\长期交互式ai记忆系统\\D.I.V.E.Program_Sanofi\\eval\\datasets\\internal_v1\\retrieval.json",
+    "dataset_sha256": "2208dbc6bce37ffce4949caec2927d847f0ce3aa131c7142b3cd3b823b4805b7",
+    "configuration": {
+      "schema_version": "dive-eval-config-v1",
+      "dataset": "internal-v1",
+      "embedding": "deterministic-sha256-v1",
+      "ks": [
+        5,
+        10
+      ],
+      "ablation": "A-H",
+      "notes": "Offline deterministic regression only; not a semantic quality benchmark."
+    },
+    "configuration_sha256": "7ff5f5668b5f88ce8294b1db6d8bd54c8bcfa2376a8cd17b24a0e1bb19c997aa",
+    "environment": {
+      "python": "3.14.0",
+      "implementation": "CPython",
+      "platform": "Windows-11-10.0.26100-SP0"
+    },
+    "git": {
+      "commit": "16f213464aab60c3e14563ede4109087a14fcaf4",
+      "branch": "main",
+      "dirty": true
+    }
+  }
+}

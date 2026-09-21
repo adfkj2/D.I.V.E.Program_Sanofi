@@ -1,0 +1,346 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "checkpoint": "G",
+  "status": "COMPLETED",
+  "started_at": "2026-09-21T01:17:43.636780+00:00",
+  "finished_at": "2026-09-21T01:17:55.996344+00:00",
+  "last_successful_checkpoint": "F",
+  "protocol": {
+    "queries_per_worker": 8,
+    "connection_model": "one connection per worker",
+    "worker_levels": [
+      1,
+      4,
+      8
+    ]
+  },
+  "levels": [
+    {
+      "workers": 1,
+      "operation_count": 8,
+      "duration_seconds": 0.42278499999883934,
+      "throughput_queries_per_second": 18.922147190704404,
+      "latency_ms": {
+        "count": 8,
+        "p50": 45.61299999932089,
+        "p95": 50.62920000091253,
+        "p99": 50.62920000091253,
+        "mean": 46.58603749999202,
+        "min": 44.712900000376976,
+        "max": 50.62920000091253,
+        "stddev": 1.9156350397878443
+      },
+      "error_count": 0,
+      "errors": [],
+      "postgres_activity": {
+        "connections": 1,
+        "waiting": 0,
+        "ungranted_locks": 0
+      },
+      "resources": {
+        "before": {
+          "timestamp": "2026-09-21T01:17:45.678706+00:00",
+          "host_memory": {
+            "available": true,
+            "load_percent": 68,
+            "total_bytes": 16438382592,
+            "available_bytes": 5158322176
+          },
+          "benchmark_client": {
+            "available": false,
+            "reason": "GetProcessMemoryInfo failed"
+          },
+          "docker_container": {
+            "available": true,
+            "returncode": 0,
+            "stdout": "{\"BlockIO\":\"48.2MB / 746MB\",\"CPUPerc\":\"0.51%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.43%\",\"MemUsage\":\"260.6MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.1MB / 10.3MB\",\"PIDs\":\"6\"}",
+            "stderr": "",
+            "parsed": {
+              "BlockIO": "48.2MB / 746MB",
+              "CPUPerc": "0.51%",
+              "Container": "dive-memory-phase3-pg-20260920",
+              "ID": "c75e72e6a2a1",
+              "MemPerc": "3.43%",
+              "MemUsage": "260.6MiB / 7.412GiB",
+              "Name": "dive-memory-phase3-pg-20260920",
+              "NetIO": "98.1MB / 10.3MB",
+              "PIDs": "6"
+            }
+          }
+        },
+        "after": {
+          "timestamp": "2026-09-21T01:17:47.698312+00:00",
+          "host_memory": {
+            "available": true,
+            "load_percent": 68,
+            "total_bytes": 16438382592,
+            "available_bytes": 5121642496
+          },
+          "benchmark_client": {
+            "available": false,
+            "reason": "GetProcessMemoryInfo failed"
+          },
+          "docker_container": {
+            "available": true,
+            "returncode": 0,
+            "stdout": "{\"BlockIO\":\"48.2MB / 746MB\",\"CPUPerc\":\"0.01%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.44%\",\"MemUsage\":\"261.1MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.2MB / 10.3MB\",\"PIDs\":\"6\"}",
+            "stderr": "",
+            "parsed": {
+              "BlockIO": "48.2MB / 746MB",
+              "CPUPerc": "0.01%",
+              "Container": "dive-memory-phase3-pg-20260920",
+              "ID": "c75e72e6a2a1",
+              "MemPerc": "3.44%",
+              "MemUsage": "261.1MiB / 7.412GiB",
+              "Name": "dive-memory-phase3-pg-20260920",
+              "NetIO": "98.2MB / 10.3MB",
+              "PIDs": "6"
+            }
+          }
+        }
+      }
+    },
+    {
+      "workers": 4,
+      "operation_count": 32,
+      "duration_seconds": 0.5317864999997255,
+      "throughput_queries_per_second": 60.1745249268579,
+      "latency_ms": {
+        "count": 32,
+        "p50": 56.925699999737844,
+        "p95": 66.51860000056331,
+        "p99": 80.99249999941094,
+        "mean": 58.31565000011096,
+        "min": 49.11019999963173,
+        "max": 80.99249999941094,
+        "stddev": 6.471628835193059
+      },
+      "error_count": 0,
+      "errors": [],
+      "postgres_activity": {
+        "connections": 1,
+        "waiting": 0,
+        "ungranted_locks": 0
+      },
+      "resources": {
+        "before": {
+          "timestamp": "2026-09-21T01:17:49.720016+00:00",
+          "host_memory": {
+            "available": true,
+            "load_percent": 68,
+            "total_bytes": 16438382592,
+            "available_bytes": 5122469888
+          },
+          "benchmark_client": {
+            "available": false,
+            "reason": "GetProcessMemoryInfo failed"
+          },
+          "docker_container": {
+            "available": true,
+            "returncode": 0,
+            "stdout": "{\"BlockIO\":\"48.2MB / 746MB\",\"CPUPerc\":\"0.00%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.44%\",\"MemUsage\":\"260.9MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.2MB / 10.3MB\",\"PIDs\":\"6\"}",
+            "stderr": "",
+            "parsed": {
+              "BlockIO": "48.2MB / 746MB",
+              "CPUPerc": "0.00%",
+              "Container": "dive-memory-phase3-pg-20260920",
+              "ID": "c75e72e6a2a1",
+              "MemPerc": "3.44%",
+              "MemUsage": "260.9MiB / 7.412GiB",
+              "Name": "dive-memory-phase3-pg-20260920",
+              "NetIO": "98.2MB / 10.3MB",
+              "PIDs": "6"
+            }
+          }
+        },
+        "after": {
+          "timestamp": "2026-09-21T01:17:51.746517+00:00",
+          "host_memory": {
+            "available": true,
+            "load_percent": 69,
+            "total_bytes": 16438382592,
+            "available_bytes": 5059579904
+          },
+          "benchmark_client": {
+            "available": false,
+            "reason": "GetProcessMemoryInfo failed"
+          },
+          "docker_container": {
+            "available": true,
+            "returncode": 0,
+            "stdout": "{\"BlockIO\":\"48.2MB / 746MB\",\"CPUPerc\":\"0.00%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.45%\",\"MemUsage\":\"261.6MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.2MB / 10.3MB\",\"PIDs\":\"6\"}",
+            "stderr": "",
+            "parsed": {
+              "BlockIO": "48.2MB / 746MB",
+              "CPUPerc": "0.00%",
+              "Container": "dive-memory-phase3-pg-20260920",
+              "ID": "c75e72e6a2a1",
+              "MemPerc": "3.45%",
+              "MemUsage": "261.6MiB / 7.412GiB",
+              "Name": "dive-memory-phase3-pg-20260920",
+              "NetIO": "98.2MB / 10.3MB",
+              "PIDs": "6"
+            }
+          }
+        }
+      }
+    },
+    {
+      "workers": 8,
+      "operation_count": 64,
+      "duration_seconds": 0.4772467000002507,
+      "throughput_queries_per_second": 134.1025511542906,
+      "latency_ms": {
+        "count": 64,
+        "p50": 33.50904999933846,
+        "p95": 82.02170000004116,
+        "p99": 94.1277000001719,
+        "mean": 37.8097234372774,
+        "min": 2.181999998356332,
+        "max": 118.12210000061896,
+        "stddev": 25.542399238806404
+      },
+      "error_count": 44,
+      "errors": [
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3937340568\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3191343964\" to 4194304 bytes: No space left on device\nCONTEXT:  parallel worker",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2909975280\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.4190251660\" to 1048576 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.816409512\" to 1048576 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1155822884\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3678269724\" to 4194304 bytes: No space left on device\nCONTEXT:  parallel worker",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3382176560\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1573483100\" to 4194304 bytes: No space left on device\nCONTEXT:  parallel worker",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3059994004\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.273540278\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1992483978\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2818437566\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3479317726\" to 1048576 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3817472238\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2386834590\" to 1048576 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.550011810\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1251657032\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.4284594540\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3003421968\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3026496530\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.960427986\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.682712612\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2534750910\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.4171364938\" to 4194304 bytes: No space left on device\nCONTEXT:  parallel worker",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.4259429770\" to 4194304 bytes: No space left on device\nCONTEXT:  parallel worker",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3242745890\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.4225271166\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2209547996\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1139320410\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2445009918\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1182812278\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3577652808\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2261885732\" to 1048576 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1414232276\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3283962568\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1742405124\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.101680016\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.22499630\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.368780260\" to 4194304 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.1771246448\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.3464777950\" to 1048576 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2683630910\" to 2097152 bytes: No space left on device",
+        "DiskFull: could not resize shared memory segment \"/PostgreSQL.2085279610\" to 4194304 bytes: No space left on device"
+      ],
+      "postgres_activity": {
+        "connections": 1,
+        "waiting": 0,
+        "ungranted_locks": 0
+      },
+      "resources": {
+        "before": {
+          "timestamp": "2026-09-21T01:17:53.773695+00:00",
+          "host_memory": {
+            "available": true,
+            "load_percent": 68,
+            "total_bytes": 16438382592,
+            "available_bytes": 5099761664
+          },
+          "benchmark_client": {
+            "available": false,
+            "reason": "GetProcessMemoryInfo failed"
+          },
+          "docker_container": {
+            "available": true,
+            "returncode": 0,
+            "stdout": "{\"BlockIO\":\"48.2MB / 746MB\",\"CPUPerc\":\"0.00%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.43%\",\"MemUsage\":\"260.7MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.2MB / 10.3MB\",\"PIDs\":\"6\"}",
+            "stderr": "",
+            "parsed": {
+              "BlockIO": "48.2MB / 746MB",
+              "CPUPerc": "0.00%",
+              "Container": "dive-memory-phase3-pg-20260920",
+              "ID": "c75e72e6a2a1",
+              "MemPerc": "3.43%",
+              "MemUsage": "260.7MiB / 7.412GiB",
+              "Name": "dive-memory-phase3-pg-20260920",
+              "NetIO": "98.2MB / 10.3MB",
+              "PIDs": "6"
+            }
+          }
+        },
+        "after": {
+          "timestamp": "2026-09-21T01:17:55.803399+00:00",
+          "host_memory": {
+            "available": true,
+            "load_percent": 69,
+            "total_bytes": 16438382592,
+            "available_bytes": 5041483776
+          },
+          "benchmark_client": {
+            "available": false,
+            "reason": "GetProcessMemoryInfo failed"
+          },
+          "docker_container": {
+            "available": true,
+            "returncode": 0,
+            "stdout": "{\"BlockIO\":\"48.5MB / 746MB\",\"CPUPerc\":\"0.00%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.44%\",\"MemUsage\":\"261.5MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.3MB / 10.4MB\",\"PIDs\":\"6\"}",
+            "stderr": "",
+            "parsed": {
+              "BlockIO": "48.5MB / 746MB",
+              "CPUPerc": "0.00%",
+              "Container": "dive-memory-phase3-pg-20260920",
+              "ID": "c75e72e6a2a1",
+              "MemPerc": "3.44%",
+              "MemUsage": "261.5MiB / 7.412GiB",
+              "Name": "dive-memory-phase3-pg-20260920",
+              "NetIO": "98.3MB / 10.4MB",
+              "PIDs": "6"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "saturation_stop_reason": "stopped after 8 workers because errors appeared",
+  "skip_locked_correctness": {
+    "worker_claims": [
+      [
+        "evt_skip_locked_postgres-100k-20260921-084800_0",
+        "evt_skip_locked_postgres-100k-20260921-084800_5",
+        "evt_skip_locked_postgres-100k-20260921-084800_6",
+        "evt_skip_locked_postgres-100k-20260921-084800_7"
+      ],
+      [
+        "evt_skip_locked_postgres-100k-20260921-084800_1",
+        "evt_skip_locked_postgres-100k-20260921-084800_2",
+        "evt_skip_locked_postgres-100k-20260921-084800_3",
+        "evt_skip_locked_postgres-100k-20260921-084800_4"
+      ]
+    ],
+    "claimed_count": 8,
+    "disjoint": true,
+    "all_fixture_events_claimed": true
+  },
+  "deadlocks": 0,
+  "retry_count": 0,
+  "limitations": [
+    "short local concurrency treatment",
+    "Docker stats are point snapshots rather than a high-frequency time series"
+  ]
+}

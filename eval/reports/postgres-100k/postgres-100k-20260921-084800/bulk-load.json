@@ -1,0 +1,412 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "checkpoint": "A",
+  "status": "COMPLETED",
+  "started_at": "2026-09-21T01:12:22.066460+00:00",
+  "finished_at": "2026-09-21T01:12:35.410599+00:00",
+  "last_successful_checkpoint": null,
+  "scope": "100K synthetic vector infrastructure benchmark",
+  "bulk": {
+    "dataset_generation_seconds": 5.690347199999451,
+    "bulk_insert_seconds": 4.931109299999662,
+    "total_seconds": 10.621456499999113,
+    "rows_per_second": 20279.412585725255,
+    "generation_id": "embgen_299ee902165ce953feec97b0f0e03ed1"
+  },
+  "transaction_strategy": "single transaction via temporary COPY staging table",
+  "batch_size": 100000,
+  "loaded_tables": [
+    "memories",
+    "memory_vectors"
+  ],
+  "row_count_verification": {
+    "memories": 100000,
+    "vectors": 100000,
+    "min_dims": 96,
+    "max_dims": 96,
+    "empty_content": 0
+  },
+  "database_size_before": {
+    "database_bytes": 11156503,
+    "relations": [
+      {
+        "relname": "embedding_generations",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "embedding_state",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "entities",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "events",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "jobs",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memories",
+        "table_bytes": 0,
+        "index_bytes": 40960,
+        "total_bytes": 49152,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_access",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_entities",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_keys",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_modes",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_relations",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_sources",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_transitions",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_vectors",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_versions",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "outbox",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "profiles",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "relations",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "schema_migrations",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "tombstones",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "write_decisions",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      }
+    ],
+    "schema_total_bytes": 557056,
+    "schema_table_bytes": 24576,
+    "schema_index_bytes": 360448,
+    "schema_toast_bytes": 172032
+  },
+  "database_size_after": {
+    "database_bytes": 176716823,
+    "relations": [
+      {
+        "relname": "embedding_generations",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "embedding_state",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "entities",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "events",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "jobs",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memories",
+        "table_bytes": 63021056,
+        "index_bytes": 26738688,
+        "total_bytes": 89800704,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_access",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_entities",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_keys",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_modes",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_relations",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_sources",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_transitions",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_vectors",
+        "table_bytes": 58515456,
+        "index_bytes": 17276928,
+        "total_bytes": 75833344,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "memory_versions",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "outbox",
+        "table_bytes": 0,
+        "index_bytes": 16384,
+        "total_bytes": 24576,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "profiles",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "relations",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "schema_migrations",
+        "table_bytes": 8192,
+        "index_bytes": 16384,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "tombstones",
+        "table_bytes": 0,
+        "index_bytes": 24576,
+        "total_bytes": 32768,
+        "toast_bytes": 8192
+      },
+      {
+        "relname": "write_decisions",
+        "table_bytes": 0,
+        "index_bytes": 8192,
+        "total_bytes": 16384,
+        "toast_bytes": 8192
+      }
+    ],
+    "schema_total_bytes": 166117376,
+    "schema_table_bytes": 121561088,
+    "schema_index_bytes": 44318720,
+    "schema_toast_bytes": 172032
+  },
+  "size_delta_bytes": 165560320,
+  "postgres_version": "16.15 (Debian 16.15-1.pgdg12+2)",
+  "pgvector_version": "0.8.6",
+  "resources": {
+    "before": {
+      "timestamp": "2026-09-21T01:12:23.249892+00:00",
+      "host_memory": {
+        "available": true,
+        "load_percent": 62,
+        "total_bytes": 16438382592,
+        "available_bytes": 6098493440
+      },
+      "benchmark_client": {
+        "available": false,
+        "reason": "GetProcessMemoryInfo failed"
+      },
+      "docker_container": {
+        "available": true,
+        "returncode": 0,
+        "stdout": "{\"BlockIO\":\"47.8MB / 6.63MB\",\"CPUPerc\":\"0.00%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"0.70%\",\"MemUsage\":\"52.83MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"1.04MB / 144kB\",\"PIDs\":\"6\"}",
+        "stderr": "",
+        "parsed": {
+          "BlockIO": "47.8MB / 6.63MB",
+          "CPUPerc": "0.00%",
+          "Container": "dive-memory-phase3-pg-20260920",
+          "ID": "c75e72e6a2a1",
+          "MemPerc": "0.70%",
+          "MemUsage": "52.83MiB / 7.412GiB",
+          "Name": "dive-memory-phase3-pg-20260920",
+          "NetIO": "1.04MB / 144kB",
+          "PIDs": "6"
+        }
+      }
+    },
+    "after": {
+      "timestamp": "2026-09-21T01:12:35.410378+00:00",
+      "host_memory": {
+        "available": true,
+        "load_percent": 66,
+        "total_bytes": 16438382592,
+        "available_bytes": 5426089984
+      },
+      "benchmark_client": {
+        "available": false,
+        "reason": "GetProcessMemoryInfo failed"
+      },
+      "docker_container": {
+        "available": true,
+        "returncode": 0,
+        "stdout": "{\"BlockIO\":\"47.8MB / 460MB\",\"CPUPerc\":\"0.55%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"2.49%\",\"MemUsage\":\"188.9MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"95MB / 338kB\",\"PIDs\":\"6\"}",
+        "stderr": "",
+        "parsed": {
+          "BlockIO": "47.8MB / 460MB",
+          "CPUPerc": "0.55%",
+          "Container": "dive-memory-phase3-pg-20260920",
+          "ID": "c75e72e6a2a1",
+          "MemPerc": "2.49%",
+          "MemUsage": "188.9MiB / 7.412GiB",
+          "Name": "dive-memory-phase3-pg-20260920",
+          "NetIO": "95MB / 338kB",
+          "PIDs": "6"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "bulk COPY is not production ingest throughput",
+    "bulk fixture omits service-path event/provenance projections",
+    "96-dimensional synthetic vectors; no semantic quality claim"
+  ]
+}

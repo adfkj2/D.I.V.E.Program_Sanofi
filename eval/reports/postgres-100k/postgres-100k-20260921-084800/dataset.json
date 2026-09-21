@@ -1,0 +1,35 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "name": "postgres-100k-synthetic-v1",
+  "sample_count": 100000,
+  "seed": 20260920,
+  "namespace_count": 1,
+  "user_count": 100,
+  "embedding": {
+    "provider": "postgres-benchmark-fixture",
+    "model": "benchmark-hash-v1",
+    "revision": "v1",
+    "dimensions": 96,
+    "dtype": "float32-compatible",
+    "synthetic": true,
+    "semantic_quality_claim": false
+  },
+  "metadata_distribution": {
+    "cohort_1_percent": 1000,
+    "cohort_10_percent": 10000,
+    "cohort_50_percent": 50000
+  },
+  "temporal_distribution": {
+    "span_days": 1825,
+    "closed_window_fraction": 0.2
+  },
+  "payload": {
+    "type": "deterministic synthetic text/jsonb",
+    "real_data": false
+  },
+  "limitations": [
+    "synthetic vector infrastructure benchmark",
+    "does not measure embedding quality, semantic memory accuracy, or real-world recall"
+  ]
+}

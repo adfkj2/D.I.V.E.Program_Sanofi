@@ -1,0 +1,28 @@
+{
+  "schema_version": "dive-postgres-concurrency-recovery-v1",
+  "run_id": "postgres-100k-concurrency-20260921-110255",
+  "status": "PASS",
+  "branch_a": {
+    "max_parallel_workers": "8",
+    "max_parallel_workers_per_gather": "2",
+    "max_worker_processes": "8",
+    "work_mem": "4MB",
+    "shared_buffers": "128MB",
+    "effective_cache_size": "4GB",
+    "max_connections": "100",
+    "statement_timeout": "0",
+    "lock_timeout": "0"
+  },
+  "branch_b_session": {
+    "max_parallel_workers": "8",
+    "max_parallel_workers_per_gather": "0",
+    "max_worker_processes": "8",
+    "work_mem": "4MB",
+    "shared_buffers": "128MB",
+    "effective_cache_size": "4GB",
+    "max_connections": "100",
+    "statement_timeout": "0",
+    "lock_timeout": "0"
+  },
+  "branch_b_change_scope": "SESSION_ONLY"
+}

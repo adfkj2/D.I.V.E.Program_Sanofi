@@ -62,6 +62,13 @@ CREATE TABLE IF NOT EXISTS memory_access (
   used boolean NOT NULL DEFAULT false,
   accessed_at timestamptz NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS memory_keys (
+  memory_id text PRIMARY KEY REFERENCES memories(id) ON DELETE CASCADE,
+  namespace text NOT NULL,
+  subject_key text NOT NULL,
+  predicate_key text NOT NULL,
+  value_key text NOT NULL
+);
 CREATE TABLE IF NOT EXISTS memory_versions (
   id bigserial PRIMARY KEY,
   memory_id text NOT NULL REFERENCES memories(id),
@@ -71,6 +78,23 @@ CREATE TABLE IF NOT EXISTS memory_versions (
   source_event_id text REFERENCES events(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE(memory_id, version)
+);
+CREATE TABLE IF NOT EXISTS memory_transitions (
+  id text PRIMARY KEY,
+  namespace text NOT NULL,
+  from_memory_id text,
+  to_memory_id text,
+  relationship text NOT NULL CHECK (relationship IN (
+    'unrelated','duplicate','reinforcement','refinement','correction',
+    'temporal_update','contradiction','supersession'
+  )),
+  action text NOT NULL CHECK (action IN ('CREATE','MERGE_PROVENANCE','REINFORCE','SUPERSEDE','COEXIST')),
+  confidence real NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+  reason text NOT NULL,
+  source_event_id text NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  resolver_version text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(namespace, from_memory_id, to_memory_id, relationship, source_event_id)
 );
 CREATE TABLE IF NOT EXISTS write_decisions (
   event_id text NOT NULL REFERENCES events(id) ON DELETE CASCADE,
@@ -82,15 +106,41 @@ CREATE TABLE IF NOT EXISTS write_decisions (
   durability text NOT NULL,
   reason text NOT NULL,
   extractor_version text NOT NULL,
+  outcome_code text NOT NULL DEFAULT 'COMMITTED',
+  features_json jsonb NOT NULL DEFAULT '{}',
+  policy_version text NOT NULL DEFAULT 'utility-baseline-v1',
+  prompt_version text,
+  model_version text,
+  schema_version text,
   processed_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY(event_id, candidate_index)
 );
-CREATE TABLE IF NOT EXISTS memory_vectors (
-  memory_id text PRIMARY KEY REFERENCES memories(id),
-  embedding vector NOT NULL,
+CREATE TABLE IF NOT EXISTS embedding_generations (
+  id text PRIMARY KEY,
+  provider text NOT NULL,
   model text NOT NULL,
+  revision text NOT NULL,
   dimensions integer NOT NULL,
-  updated_at timestamptz NOT NULL DEFAULT now()
+  status text NOT NULL CHECK (status IN ('PENDING','READY','ACTIVE','RETIRED')),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  activated_at timestamptz
+);
+CREATE TABLE IF NOT EXISTS embedding_state (
+  id boolean PRIMARY KEY DEFAULT true CHECK (id),
+  active_generation text REFERENCES embedding_generations(id),
+  previous_generation text REFERENCES embedding_generations(id)
+);
+CREATE TABLE IF NOT EXISTS memory_vectors (
+  memory_id text NOT NULL REFERENCES memories(id),
+  generation_id text NOT NULL REFERENCES embedding_generations(id),
+  embedding vector NOT NULL,
+  provider text NOT NULL,
+  model text NOT NULL,
+  revision text NOT NULL,
+  dimensions integer NOT NULL,
+  degraded boolean NOT NULL DEFAULT false,
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY(memory_id, generation_id)
 );
 CREATE TABLE IF NOT EXISTS tombstones (
   object_type text NOT NULL,
@@ -155,7 +205,11 @@ CREATE INDEX IF NOT EXISTS memories_scope_status_idx ON memories(namespace, stat
 CREATE INDEX IF NOT EXISTS memories_valid_window_gist ON memories USING gist(valid_window);
 CREATE INDEX IF NOT EXISTS memories_search_document_idx ON memories USING gin(search_document);
 CREATE INDEX IF NOT EXISTS memory_sources_event_idx ON memory_sources(event_id);
+CREATE INDEX IF NOT EXISTS memory_keys_lookup_idx
+  ON memory_keys(namespace, subject_key, predicate_key, value_key);
+CREATE INDEX IF NOT EXISTS memory_vectors_generation_idx ON memory_vectors(generation_id, memory_id);
 CREATE INDEX IF NOT EXISTS memory_versions_memory_idx ON memory_versions(memory_id, version);
+CREATE INDEX IF NOT EXISTS memory_transitions_scope_idx ON memory_transitions(namespace, created_at);
 CREATE INDEX IF NOT EXISTS outbox_pending_idx ON outbox(status, created_at) WHERE status IN ('PENDING', 'FAILED');
 CREATE INDEX IF NOT EXISTS tombstones_deleted_at_idx ON tombstones(deleted_at);
 CREATE INDEX IF NOT EXISTS tombstones_scope_deleted_idx ON tombstones(namespace, deleted_at);

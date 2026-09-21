@@ -1,0 +1,278 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "status": "PARTIAL",
+  "captured_at": "2026-09-21T01:22:35.112001+00:00",
+  "checkpoints": {
+    "A": {
+      "before": {
+        "timestamp": "2026-09-21T01:12:23.249892+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 62,
+          "total_bytes": 16438382592,
+          "available_bytes": 6098493440
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"47.8MB / 6.63MB\",\"CPUPerc\":\"0.00%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"0.70%\",\"MemUsage\":\"52.83MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"1.04MB / 144kB\",\"PIDs\":\"6\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "47.8MB / 6.63MB",
+            "CPUPerc": "0.00%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "0.70%",
+            "MemUsage": "52.83MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "1.04MB / 144kB",
+            "PIDs": "6"
+          }
+        }
+      },
+      "after": {
+        "timestamp": "2026-09-21T01:12:35.410378+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 66,
+          "total_bytes": 16438382592,
+          "available_bytes": 5426089984
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"47.8MB / 460MB\",\"CPUPerc\":\"0.55%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"2.49%\",\"MemUsage\":\"188.9MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"95MB / 338kB\",\"PIDs\":\"6\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "47.8MB / 460MB",
+            "CPUPerc": "0.55%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "2.49%",
+            "MemUsage": "188.9MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "95MB / 338kB",
+            "PIDs": "6"
+          }
+        }
+      }
+    },
+    "B": {
+      "before": {
+        "timestamp": "2026-09-21T01:13:23.369596+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 66,
+          "total_bytes": 16438382592,
+          "available_bytes": 5485629440
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"47.8MB / 627MB\",\"CPUPerc\":\"0.21%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"2.55%\",\"MemUsage\":\"193.9MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"95.1MB / 534kB\",\"PIDs\":\"7\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "47.8MB / 627MB",
+            "CPUPerc": "0.21%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "2.55%",
+            "MemUsage": "193.9MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "95.1MB / 534kB",
+            "PIDs": "7"
+          }
+        }
+      },
+      "after": {
+        "timestamp": "2026-09-21T01:13:40.254268+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 66,
+          "total_bytes": 16438382592,
+          "available_bytes": 5493514240
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"47.8MB / 640MB\",\"CPUPerc\":\"0.17%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"2.56%\",\"MemUsage\":\"194.7MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"96.7MB / 9.41MB\",\"PIDs\":\"7\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "47.8MB / 640MB",
+            "CPUPerc": "0.17%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "2.56%",
+            "MemUsage": "194.7MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "96.7MB / 9.41MB",
+            "PIDs": "7"
+          }
+        }
+      }
+    },
+    "C": {
+      "before": {
+        "timestamp": "2026-09-21T01:14:16.541077+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 68,
+          "total_bytes": 16438382592,
+          "available_bytes": 5133680640
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"47.9MB / 657MB\",\"CPUPerc\":\"0.18%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"2.52%\",\"MemUsage\":\"191.1MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"96.7MB / 9.43MB\",\"PIDs\":\"6\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "47.9MB / 657MB",
+            "CPUPerc": "0.18%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "2.52%",
+            "MemUsage": "191.1MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "96.7MB / 9.43MB",
+            "PIDs": "6"
+          }
+        }
+      },
+      "after": {
+        "timestamp": "2026-09-21T01:14:31.547087+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 68,
+          "total_bytes": 16438382592,
+          "available_bytes": 5140152320
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"47.9MB / 679MB\",\"CPUPerc\":\"0.43%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"2.54%\",\"MemUsage\":\"192.5MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"97MB / 9.67MB\",\"PIDs\":\"6\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "47.9MB / 679MB",
+            "CPUPerc": "0.43%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "2.54%",
+            "MemUsage": "192.5MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "97MB / 9.67MB",
+            "PIDs": "6"
+          }
+        }
+      }
+    },
+    "D": {
+      "available": false
+    },
+    "E": {
+      "before": {
+        "timestamp": "2026-09-21T01:16:31.889741+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 68,
+          "total_bytes": 16438382592,
+          "available_bytes": 5232238592
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"48.2MB / 742MB\",\"CPUPerc\":\"0.08%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.43%\",\"MemUsage\":\"260.3MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"97.4MB / 9.95MB\",\"PIDs\":\"6\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "48.2MB / 742MB",
+            "CPUPerc": "0.08%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "3.43%",
+            "MemUsage": "260.3MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "97.4MB / 9.95MB",
+            "PIDs": "6"
+          }
+        }
+      },
+      "after": {
+        "timestamp": "2026-09-21T01:16:34.914123+00:00",
+        "host_memory": {
+          "available": true,
+          "load_percent": 68,
+          "total_bytes": 16438382592,
+          "available_bytes": 5221683200
+        },
+        "benchmark_client": {
+          "available": false,
+          "reason": "GetProcessMemoryInfo failed"
+        },
+        "docker_container": {
+          "available": true,
+          "returncode": 0,
+          "stdout": "{\"BlockIO\":\"48.2MB / 744MB\",\"CPUPerc\":\"0.08%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.43%\",\"MemUsage\":\"260.5MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.1MB / 10.3MB\",\"PIDs\":\"6\"}",
+          "stderr": "",
+          "parsed": {
+            "BlockIO": "48.2MB / 744MB",
+            "CPUPerc": "0.08%",
+            "Container": "dive-memory-phase3-pg-20260920",
+            "ID": "c75e72e6a2a1",
+            "MemPerc": "3.43%",
+            "MemUsage": "260.5MiB / 7.412GiB",
+            "Name": "dive-memory-phase3-pg-20260920",
+            "NetIO": "98.1MB / 10.3MB",
+            "PIDs": "6"
+          }
+        }
+      }
+    },
+    "F": {
+      "available": false
+    },
+    "G": {
+      "available": false
+    },
+    "H": {
+      "available": false
+    }
+  },
+  "observed_failure": "PostgreSQL dynamic shared memory /dev/shm exhausted at 8 workers",
+  "naming": [
+    "host_memory",
+    "docker_container",
+    "benchmark_client"
+  ],
+  "limitations": [
+    "point snapshots",
+    "PostgreSQL measured through Docker container"
+  ]
+}

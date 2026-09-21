@@ -1,0 +1,13 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "checkpoint": "H",
+  "status": "NOT_COMPLETED",
+  "timestamp": "2026-09-21T01:22:34.884479+00:00",
+  "error": "not run because Checkpoint G had sustained dynamic shared memory errors",
+  "last_successful_checkpoint": "F",
+  "operation_count": 0,
+  "workload_definition": {
+    "planned": "70% retrieval / 20% ingest / 10% update-delete"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "schema_version": "dive-postgres-100k-checkpoints-v1",
+  "run_id": "postgres-100k-20260921-084800",
+  "checkpoint": "E",
+  "status": "COMPLETED",
+  "started_at": "2026-09-21T01:16:30.641523+00:00",
+  "finished_at": "2026-09-21T01:16:34.914354+00:00",
+  "last_successful_checkpoint": "D",
+  "protocol": {
+    "path": "MemoryService.ingest production service path",
+    "bulk_copy_included": false,
+    "namespace": "incremental-postgres-100k-20260921-084800"
+  },
+  "single_request": {
+    "operation_count": 20,
+    "latency_ms": {
+      "count": 20,
+      "p50": 15.99755000006553,
+      "p95": 25.640100000600796,
+      "p99": 35.805099998469814,
+      "mean": 17.394324999986566,
+      "min": 14.644500000940752,
+      "max": 35.805099998469814,
+      "stddev": 4.78683342758879
+    },
+    "memories_per_second": 57.49001470311566,
+    "transaction_failures": 0,
+    "retry_count": 0
+  },
+  "small_batch": {
+    "batch_count": 10,
+    "items_per_batch": 5,
+    "batch_latency_ms": {
+      "count": 10,
+      "p50": 60.9496000006402,
+      "p95": 68.94060000013269,
+      "p99": 68.94060000013269,
+      "mean": 62.12679000036587,
+      "min": 58.14429999918502,
+      "max": 68.94060000013269,
+      "stddev": 3.8703750535202435
+    },
+    "per_item_latency_ms": {
+      "count": 10,
+      "p50": 12.18992000012804,
+      "p95": 13.788120000026538,
+      "p99": 13.788120000026538,
+      "mean": 12.425358000073174,
+      "min": 11.628859999837005,
+      "max": 13.788120000026538,
+      "stddev": 0.7740750107040486
+    },
+    "transaction_strategy": "five service ingests in one outer transaction"
+  },
+  "concurrent_writers": {
+    "workers": 4,
+    "operation_count": 40,
+    "duration_seconds": 0.22559840000030817,
+    "memories_per_second": 177.30622202970127,
+    "latency_ms": {
+      "count": 40,
+      "p50": 16.737949999878765,
+      "p95": 26.973799998813774,
+      "p99": 28.207999999722233,
+      "mean": 18.120867499965243,
+      "min": 15.746699998999247,
+      "max": 28.207999999722233,
+      "stddev": 3.335886421014082
+    },
+    "transaction_failures": 0,
+    "errors": [],
+    "retry_count": 0
+  },
+  "idempotency": {
+    "correct": true,
+    "first_accepted": true,
+    "second_accepted": false,
+    "same_event": true
+  },
+  "database_counts": {
+    "memories": 111,
+    "events": 111,
+    "keys": 111
+  },
+  "resources": {
+    "before": {
+      "timestamp": "2026-09-21T01:16:31.889741+00:00",
+      "host_memory": {
+        "available": true,
+        "load_percent": 68,
+        "total_bytes": 16438382592,
+        "available_bytes": 5232238592
+      },
+      "benchmark_client": {
+        "available": false,
+        "reason": "GetProcessMemoryInfo failed"
+      },
+      "docker_container": {
+        "available": true,
+        "returncode": 0,
+        "stdout": "{\"BlockIO\":\"48.2MB / 742MB\",\"CPUPerc\":\"0.08%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.43%\",\"MemUsage\":\"260.3MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"97.4MB / 9.95MB\",\"PIDs\":\"6\"}",
+        "stderr": "",
+        "parsed": {
+          "BlockIO": "48.2MB / 742MB",
+          "CPUPerc": "0.08%",
+          "Container": "dive-memory-phase3-pg-20260920",
+          "ID": "c75e72e6a2a1",
+          "MemPerc": "3.43%",
+          "MemUsage": "260.3MiB / 7.412GiB",
+          "Name": "dive-memory-phase3-pg-20260920",
+          "NetIO": "97.4MB / 9.95MB",
+          "PIDs": "6"
+        }
+      }
+    },
+    "after": {
+      "timestamp": "2026-09-21T01:16:34.914123+00:00",
+      "host_memory": {
+        "available": true,
+        "load_percent": 68,
+        "total_bytes": 16438382592,
+        "available_bytes": 5221683200
+      },
+      "benchmark_client": {
+        "available": false,
+        "reason": "GetProcessMemoryInfo failed"
+      },
+      "docker_container": {
+        "available": true,
+        "returncode": 0,
+        "stdout": "{\"BlockIO\":\"48.2MB / 744MB\",\"CPUPerc\":\"0.08%\",\"Container\":\"dive-memory-phase3-pg-20260920\",\"ID\":\"c75e72e6a2a1\",\"MemPerc\":\"3.43%\",\"MemUsage\":\"260.5MiB / 7.412GiB\",\"Name\":\"dive-memory-phase3-pg-20260920\",\"NetIO\":\"98.1MB / 10.3MB\",\"PIDs\":\"6\"}",
+        "stderr": "",
+        "parsed": {
+          "BlockIO": "48.2MB / 744MB",
+          "CPUPerc": "0.08%",
+          "Container": "dive-memory-phase3-pg-20260920",
+          "ID": "c75e72e6a2a1",
+          "MemPerc": "3.43%",
+          "MemUsage": "260.5MiB / 7.412GiB",
+          "Name": "dive-memory-phase3-pg-20260920",
+          "NetIO": "98.1MB / 10.3MB",
+          "PIDs": "6"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "fixture uses deterministic synthetic embeddings",
+    "small batch is an outer transaction over service calls, not a native batch API"
+  ]
+}

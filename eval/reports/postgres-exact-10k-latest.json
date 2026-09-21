@@ -1,0 +1,51 @@
+{
+  "schema_version": "dive-postgres-exact-benchmark-v1",
+  "started_at": "2026-09-20T10:55:19.498020+00:00",
+  "backend": "postgresql-pgvector",
+  "server_version": "16.15 (Debian 16.15-1.pgdg12+2)",
+  "pgvector_version": "0.8.6",
+  "search_mode": "exact-cosine-dense-only",
+  "embedding": {
+    "provider": "postgres-benchmark-fixture",
+    "model": "benchmark-hash-v1",
+    "dimensions": 96,
+    "quality_claim": false
+  },
+  "memory_count": 10000,
+  "query_iterations": 20,
+  "applied_migrations": [
+    "001_initial.sql",
+    "002_outbox_claims.sql",
+    "003_tombstone_namespace.sql",
+    "004_candidate_decisions.sql",
+    "005_memory_transitions.sql",
+    "006_embedding_generations.sql",
+    "007_memory_resolution_keys.sql"
+  ],
+  "ingest_ms": {
+    "p50": 25.540849997923942,
+    "p95": 30.95239999674959,
+    "p99": 34.210099998745136
+  },
+  "ingest_total_seconds": 258.93991090000054,
+  "ingest_per_second": 38.61899838168199,
+  "retrieve_ms": {
+    "p50": 167.17830000197864,
+    "p95": 176.7785999982152,
+    "p99": 179.36370000097668
+  },
+  "exact_query_top1_rate": 1.0,
+  "storage_bytes": 55951360,
+  "index_bytes": 22773760,
+  "trace_backend": "postgres-pgvector-exact-cosine",
+  "environment": {
+    "python": "3.14.0",
+    "platform": "Windows-11-10.0.26100-SP0"
+  },
+  "limitations": [
+    "synthetic hash vectors; no semantic quality claim",
+    "dense-only exact search; no ANN index",
+    "single client and single namespace",
+    "container RSS not captured"
+  ]
+}

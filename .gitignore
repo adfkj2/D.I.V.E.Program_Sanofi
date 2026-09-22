@@ -2,9 +2,11 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .pytest-*/
+.pt-tmp/
 *.egg-info/
 .venv/
 .venv-models/
+.venv-gpu/
 *.db
 *.sqlite
 *.sqlite3

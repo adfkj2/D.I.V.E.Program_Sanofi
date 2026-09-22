@@ -85,14 +85,83 @@ is a plumbing/performance result, not semantic-model or ANN evidence. See
 and [`ops/postgres/README.md`](ops/postgres/README.md).
 
 The strict LongMemEval-cleaned adapter is implemented and tested against a
-small synthetic fixture. No official LongMemEval score is claimed; see
-[`docs/benchmark/longmemeval-methodology.md`](docs/benchmark/longmemeval-methodology.md).
+small synthetic fixture, and a full **retrieval-stage** run over all 500 official
+`LongMemEval_S` cases is committed. That run completed with 0 case errors and 0
+timeouts, and it is reported as a retrieval result only:
 
-Still unverified: official LongMemEval, real BGE-M3/e5/GTE comparison, reader
-QA with the production tokenizer, PostgreSQL RLS/backup erasure, concurrent
-load, replay/reindex/job/event-delete/export parity, and 100K/1M
-exact-versus-HNSW/IVFFlat experiments. The repository must not be described as
-production-ready until those applicable release gates pass.
+| Stage | Status |
+|---|---|
+| Official dataset adapter, 500 cases | `COMPLETED` |
+| D.I.V.E formation + retrieval | `COMPLETED` (500/500 rows, 0 errors, 6,850 s = 1.90 h; formation coverage 739/896 = 82.48%) |
+| Reader answer generation | `NOT COMPLETED` |
+| Official GPT-4o judge | `NOT COMPLETED` |
+
+**No official LongMemEval score is claimed.** See
+[`docs/benchmark/longmemeval-methodology.md`](docs/benchmark/longmemeval-methodology.md)
+for the evidence boundary and
+[`docs/benchmark/longmemeval-report.md`](docs/benchmark/longmemeval-report.md)
+for the measured numbers.
+
+### Semantic write gate
+
+The default write gate is the rule-based `utility-baseline-v1`. A calibrated
+semantic gate (`semantic-utility-v2.1`, nearest-anchor margin scoring over real
+`bge-m3` vectors) is implemented and raises gold evidence-turn formation
+**offline at the gate** from 6.14% to ~84.82% (82.48% on the full corpus), and
+reduces false accepts in the false-memory suite **from 12 to 0**. Both figures
+are gate-level measurements, not end-to-end answer quality. See
+[`docs/diagnosis-formation-gate-2026-09-21.md`](docs/diagnosis-formation-gate-2026-09-21.md)
+and [`docs/fix-write-gate-semantic-2026-09-21.md`](docs/fix-write-gate-semantic-2026-09-21.md).
+
+The gate encoder is the dominant cost of a full benchmark sweep, so the runner
+exposes `--device`:
+
+```powershell
+$env:HF_HOME = "eval/external/huggingface"
+$env:HF_HUB_OFFLINE = "1"; $env:TRANSFORMERS_OFFLINE = "1"   # required: see below
+$py = ".venv-gpu\Scripts\python.exe"                          # torch +cu126
+& $py -m dive_memory.longmemeval_benchmark eval/external/longmemeval/longmemeval_s_cleaned.json `
+      --output eval/reports/longmemeval-s-retrieval-gpu.json --gate semantic --device cuda
+```
+
+Measured on this workstation, from the **completed full run** (500/500 cases):
+the GPU finished in **6,850 s = 1.90 h at 13.70 s/case**, against a CPU
+projection of 20.5 h — an end-to-end **10.78×**. An earlier 4-case sample gave
+13.47× / 1.52 h; the full corpus showed that estimate to be **25% optimistic**,
+so cite 1.90 h. GPU and CPU gate decisions are equivalent — the same probe set
+yields identical accept/skip/review actions and reason codes, with scores
+differing by at most 1.08e-7. Full profile and the projection-error analysis:
+[`docs/benchmark/longmemeval-500case-profiling.md`](docs/benchmark/longmemeval-500case-profiling.md).
+
+> `transformers` probes the Hub for a PEFT adapter even when the checkpoint is
+> fully cached, so a local-model run must set `HF_HUB_OFFLINE=1` and
+> `TRANSFORMERS_OFFLINE=1` or it will fail with `httpx.ProxyError: 502`.
+
+Still unverified: reader QA with the production tokenizer and the official
+GPT-4o judge, the preregistered P4-P0-2 embedding comparison on the frozen
+project corpus, PostgreSQL RLS/backup erasure, replay/reindex/job/event-delete/
+export parity, and the ANN (HNSW/IVFFlat), mixed-workload and 1M experiments.
+100K **exact** retrieval *is* measured (p50 156.12 ms) and concurrency is
+partially characterized (branch A at 1/2/4/8 workers, 0 failed ops) — but that
+concurrency run is unfinished, so it is not a completed result. The repository
+must not be described as production-ready until those applicable release gates
+pass.
+
+**Phase 4 P0 results are consolidated in
+[`docs/20-phase-4-results.md`](docs/20-phase-4-results.md)** — every experiment
+with its status, artifact-contract compliance, Wilson intervals for the
+false-memory rates, the failure/correction record, and the explicit list of what
+Phase 4 does not establish.
+
+Phase 4 is closed as an evaluation milestone. The closure set is
+[`docs/21-phase-4-architecture-review.md`](docs/21-phase-4-architecture-review.md)
+(14 architecture questions answered from executed evidence),
+[`docs/22-phase-4-production-gap-analysis.md`](docs/22-phase-4-production-gap-analysis.md)
+(18 readiness domains) and
+[`docs/23-phase-4-readiness-checklist.md`](docs/23-phase-4-readiness-checklist.md)
+(70 item-level verdicts). **The readiness verdict is `NOT READY`** — 12 of 70
+items earn `PASS`, and Phase 4 completion does not imply production readiness.
+`docs/22` §5 lists the statements the current evidence does not support.
 
 The HTTP adapter uses strict request schemas and idempotency keys for event and
 correction writes. `StaticTokenAuthorizer` provides a service-token namespace

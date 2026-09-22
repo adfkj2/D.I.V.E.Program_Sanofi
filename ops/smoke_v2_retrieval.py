@@ -27,7 +27,7 @@ def main() -> None:
     from dive_memory.longmemeval_benchmark import run_longmemeval_retrieval
 
     out: dict[str, object] = {}
-    for label, gate_name in (("v1", "utility-baseline-v1"), ("v2", "semantic-utility-v2")):
+    for label, gate_name in (("v1", "utility-baseline-v1"), ("v2", "semantic-utility-v2.1")):
         try:
             gate = None
             if label == "v2":

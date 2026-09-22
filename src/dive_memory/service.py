@@ -482,7 +482,9 @@ class MemoryService:
 
     @_synchronized
     def correct_memory(self, memory_id: str, content: str, *, namespace: str | None = None,
-                       idempotency_key: str | None = None) -> dict:
+                       idempotency_key: str | None = None,
+                       observed_at: str | None = None,
+                       source_type: str | None = "user_correction") -> dict:
         old = self.get_memory(memory_id)
         if old is None:
             raise KeyError(memory_id)
@@ -494,7 +496,8 @@ class MemoryService:
         if old.status not in {MemoryStatus.ACTIVE, MemoryStatus.REINFORCED, MemoryStatus.ARCHIVED}:
             raise ValueError(f"memory in {old.status.value} state cannot be corrected")
         return self.ingest(old.namespace, content, explicit=True, event_type="memory_correction",
-                           supersedes_memory_id=old.id, idempotency_key=idempotency_key)
+                           supersedes_memory_id=old.id, idempotency_key=idempotency_key,
+                           observed_at=observed_at, source_type=source_type)
 
     @_synchronized
     def memory_versions(self, memory_id: str) -> list[dict]:

@@ -24,7 +24,7 @@ SENSITIVE_PATTERNS = (
 
 
 POLICY_V1 = "utility-baseline-v1"
-POLICY_SEMANTIC = "semantic-utility-v2"
+POLICY_SEMANTIC = "semantic-utility-v2.1"
 
 
 @dataclass(slots=True)

@@ -1,7 +1,7 @@
 """Calibrate the v2 accept threshold on a *held-out* probe set, with intervals.
 
 The original threshold (0.495) was picked as the midpoint of a gap measured on
-19 hand-written probes — the same probes the weights were chosen from. That is
+22 hand-written probes — the same probes the weights were chosen from. That is
 in-sample calibration and cannot support a confidence claim, which the report
 already flags as ``calibrated-but-provisional``.
 

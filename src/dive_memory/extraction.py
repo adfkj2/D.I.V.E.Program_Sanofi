@@ -126,16 +126,82 @@ def extract_candidates(text: str, *, explicit: bool = False, observed_at: str | 
                        gate: GatePolicy | None = None,
                        source_type: str | None = None) -> list[Candidate]:
     policy = gate or decide
+    decision = _gate_decision(policy, text, explicit=explicit, source_type=source_type)
+    if decision.accepted:
+        content, structured, kind = _fact_from_text(text)
+        return [Candidate(content, kind, "FACT", structured, decision, _explicit_date(text) or observed_at)]
+
+    # A conversational turn frequently contains a durable assertion followed
+    # by a question ("I graduated in 2020. Do you have any advice?"). Applying
+    # the speech-act floor to the whole turn discards the supported assertion.
+    # SemanticGate opts into bounded assertion recovery; the v1 policy and all
+    # third-party gates retain their exact one-turn/one-decision behaviour.
+    if not getattr(policy, "segment_assertions", False):
+        return []
+    if decision.reason_code not in {"NON_ASSERTIVE_SPEECH_ACT", "UNASSERTED_CLAIM"}:
+        return []
+
+    candidates: list[Candidate] = []
+    for segment in assertion_segments(text):
+        segment_decision = _gate_decision(
+            policy, segment, explicit=explicit, source_type=source_type,
+        )
+        if not segment_decision.accepted:
+            continue
+        content, structured, kind = _fact_from_text(segment)
+        candidates.append(Candidate(
+            content,
+            kind,
+            "FACT",
+            structured,
+            segment_decision,
+            _explicit_date(segment) or observed_at,
+        ))
+    return candidates
+
+
+_FIRST_PERSON = re.compile(
+    r"(?:^|[^\w])(?:i|i'm|i've|i'd|i'll|my|mine|we|we're|we've|our|ours)(?:[^\w]|$)|"
+    r"我|我的|我们|本人|咱们",
+    re.I,
+)
+_SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?。！？])\s+|[\r\n]+")
+
+
+def assertion_segments(text: str, *, limit: int = 4) -> list[str]:
+    """Return a small, ordered set of first-person assertion spans.
+
+    This is deliberately not a general sentence extractor. It exists only to
+    recover explicit personal statements from mixed statement+request turns,
+    while bounding both memory amplification and semantic-model work.
+    """
+    if limit <= 0:
+        return []
+    output: list[str] = []
+    seen: set[str] = set()
+    for raw in _SENTENCE_BOUNDARY.split(text):
+        segment = raw.strip()
+        if not segment or segment == text.strip() or len(segment) < 4:
+            continue
+        if segment.endswith(("?", "？")) or not _FIRST_PERSON.search(segment):
+            continue
+        normalized = segment.casefold()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        output.append(segment)
+        if len(output) >= limit:
+            break
+    return output
+
+
+def _gate_decision(policy: GatePolicy, text: str, *, explicit: bool,
+                   source_type: str | None) -> GateDecision:
     # ``source_type`` is only forwarded to policies that accept it; the v1
     # ``decide`` has no such parameter and must keep working unchanged.
     if _accepts_source_type(policy):
-        decision = policy(text, explicit=explicit, source_type=source_type)
-    else:
-        decision = policy(text, explicit=explicit)
-    if not decision.accepted:
-        return []
-    content, structured, kind = _fact_from_text(text)
-    return [Candidate(content, kind, "FACT", structured, decision, _explicit_date(text) or observed_at)]
+        return policy(text, explicit=explicit, source_type=source_type)
+    return policy(text, explicit=explicit)
 
 
 def _accepts_source_type(policy: GatePolicy) -> bool:

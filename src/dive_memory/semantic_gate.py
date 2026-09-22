@@ -25,7 +25,14 @@ Design constraints (all deliberate)
 4. **Safety floor is untouched.** Sensitive data and temporary intent are
    decided *before* the semantic layer is ever consulted, so relaxing recall
    cannot relax those two rejections.
-5. **Additive interface.** ``decide`` keeps its signature, its default
+5. **Single-valued facts cannot be created by a derived source.** A summary or
+   agent turn may restate a preference (preferences accumulate), but it may not
+   assert a *single-valued* user fact — ``residence`` / ``primary_tool`` /
+   ``goal`` — because those carry overwrite semantics and would silently
+   displace a directly supplied user statement. This is a provenance rule, not
+   a content score: the text in question is a textbook durable fact and outranks
+   the write threshold by a wide margin.
+6. **Additive interface.** ``decide`` keeps its signature, its default
    behaviour, and its ``policy_version`` for v1 callers. v2 is opt-in via
    ``policy='semantic'`` (or the ``SemanticGate`` wrapper).
 
@@ -35,6 +42,7 @@ so every accept/reject can be explained by naming the features that moved.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from inspect import signature
 from typing import TYPE_CHECKING, Any, Sequence
 
 from .gate import (
@@ -45,11 +53,13 @@ from .gate import (
     _features,
     _sensitive,
 )
+from .extraction import SUBJECT_USER, _fact_from_text
+from .relations import is_single_valued
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .embeddings import EmbeddingProvider
 
-POLICY_VERSION = "semantic-utility-v2"
+POLICY_VERSION = "semantic-utility-v2.1"
 
 # ---------------------------------------------------------------------------
 # Source trust
@@ -81,6 +91,27 @@ def _source_tier(source_type: str | None) -> str:
     if normalized in CONDITIONAL_SOURCES:
         return "conditional"
     return "untrusted"
+
+
+def _is_single_valued_user_fact(text: str) -> bool:
+    """Whether ``text`` asserts a single-valued fact about the *current user*.
+
+    Delegates the predicate decision to the shared extractor and the shared
+    ``relations.is_single_valued`` set, so the gate and the resolver cannot
+    drift apart about which predicates overwrite. ``residence`` /
+    ``primary_tool`` / ``goal`` are single-valued; ``preference`` and
+    ``statement`` accumulate.
+
+    The subject test matters: a third party's residence ("Alice lives in
+    Shanghai") is an entity fact, not an overwrite of the user's profile, and
+    the suite scores it as ``memory_expected=True``.
+    """
+    _, structured, _ = _fact_from_text(text)
+    if not isinstance(structured, dict):
+        return False
+    if structured.get("subject") != SUBJECT_USER:
+        return False
+    return is_single_valued(structured.get("predicate"))
 
 # ---------------------------------------------------------------------------
 # Prototype anchors
@@ -206,16 +237,19 @@ class PrototypeIndex:
     # via ``cache_size`` so a pre-encoded batch is not recomputed one string at
     # a time; the bound keeps memory flat on a 250k-turn corpus.
     cache_size: int = 0
+    encode_batch_size: int = 8
     _cache: dict[str, tuple[float, ...]] | None = None
 
     @classmethod
-    def build(cls, encoder: Any, *, cache_size: int = 0) -> "PrototypeIndex":
+    def build(cls, encoder: Any, *, cache_size: int = 0,
+              encode_batch_size: int = 8) -> "PrototypeIndex":
         return cls(
             encoder,
             tuple(_embed_one(encoder, text) for text in DURABLE_ANCHORS),
             tuple(_embed_one(encoder, text) for text in TRANSIENT_ANCHORS),
             tuple(_embed_one(encoder, text) for text in WORLD_KNOWLEDGE_ANCHORS),
             cache_size=max(0, int(cache_size)),
+            encode_batch_size=max(1, int(encode_batch_size)),
         )
 
     def score(self, text: str) -> dict[str, float]:
@@ -239,14 +273,38 @@ class PrototypeIndex:
             return []
         materialized = list(texts)
         if self.cache_size:
-            # Only the misses reach the encoder; the rest are answered from cache.
-            pending = [text for text in materialized if self._cached(text) is None]
+            # Resolve every input to a vector held in a *local* dict. The cache
+            # is a bounded FIFO shared by the whole run, so any read that goes
+            # back to it after the stores below can return ``None``: a text that
+            # was a hit when ``pending`` was computed can be evicted moments
+            # later by this very call's own stores. Reading the cache lazily in
+            # the final comprehension therefore crashed ``_score_vector`` with
+            # ``TypeError: 'NoneType' object is not iterable`` -- reproduced
+            # deterministically once enough earlier blocks had filled the cache
+            # (see ``docs/benchmark/longmemeval-500case-profiling.md``).
+            #
+            # Snapshotting the hits here makes this call independent of eviction
+            # pressure: it never touches ``_cache`` again after ``pending``.
+            fresh: dict[str, tuple[float, ...]] = {}
+            pending: list[str] = []
+            for text in materialized:
+                if text in fresh:
+                    continue
+                cached = self._cached(text)
+                if cached is None:
+                    pending.append(text)
+                else:
+                    fresh[text] = cached
             if pending:
-                for text, vector in zip(pending, _embed_many(self.encoder, pending)):
+                for text, vector in zip(
+                    pending,
+                    _embed_many(self.encoder, pending, batch_size=self.encode_batch_size),
+                ):
+                    fresh[text] = vector
                     self._store(text, vector)
-            vectors = [self._cached(text) for text in materialized]
+            vectors = [fresh[text] for text in materialized]
         else:
-            vectors = _embed_many(self.encoder, materialized)
+            vectors = _embed_many(self.encoder, materialized, batch_size=self.encode_batch_size)
         return [self._score_vector(vector) for vector in vectors]
 
     def _cached(self, text: str) -> tuple[float, ...] | None:
@@ -282,15 +340,129 @@ def _margin(positive: float, negative: float) -> float:
     return max(0.0, min(1.0, (positive - negative + 1.0) / 2.0))
 
 
-def _embed_many(encoder: Any, texts: list[str]) -> list[tuple[float, ...]]:
-    raw = encoder.encode(texts, normalize_embeddings=True)
+def _embed_many(encoder: Any, texts: list[str], *, batch_size: int = 8) -> list[tuple[float, ...]]:
+    """Encode safely on both real sentence-transformers and tiny test doubles.
+
+    BGE-M3 advertises an 8192-token context. Letting sentence-transformers put
+    several multi-thousand-token LongMemEval turns in one attention batch can
+    request more than 100 GiB of RAM. The local gate therefore pins a bounded
+    sequence length and this helper pins the encoder's internal batch size.
+    Test encoders intentionally expose only the minimal ``encode`` signature,
+    so optional keywords are forwarded only when advertised.
+    """
+    parameters = signature(encoder.encode).parameters
+    kwargs: dict[str, Any] = {"normalize_embeddings": True}
+    if "batch_size" in parameters:
+        kwargs["batch_size"] = max(1, int(batch_size))
+    if "show_progress_bar" in parameters:
+        kwargs["show_progress_bar"] = False
+    prepared = [_prepare_gate_text(encoder, text) for text in texts]
+    raw = encoder.encode(prepared, **kwargs)
     return [_normalise([float(value) for value in row]) for row in raw]
 
 
 def _embed_one(encoder: Any, text: str) -> tuple[float, ...]:
-    raw = encoder.encode([text], normalize_embeddings=True)
+    raw = encoder.encode([_prepare_gate_text(encoder, text)], normalize_embeddings=True)
     values = raw[0] if hasattr(raw, "__getitem__") else raw
     return _normalise([float(value) for value in values])
+
+
+def _prepare_gate_text(encoder: Any, text: str) -> str:
+    """Bound attention cost while preserving both ends of a long turn.
+
+    Sentence-transformers normally truncates only the tail. Conversational
+    turns often put the durable fact at either the beginning or after a long
+    quoted document, so the gate keeps a head and tail token window instead.
+    Short inputs take the zero-overhead path.
+
+    The tokenizer is asked for a *bounded* encoding. Calling
+    ``tokenizer.encode(text, truncation=False)`` on a 76,560-character turn
+    materialises every one of its ~14,700 tokens even though only a few hundred
+    can ever reach the model; for adversarial or pasted-document inputs that is
+    unbounded work per turn and the first place an ingest can blow up. Both the
+    head slice and the tail slice are therefore taken as separate, bounded
+    encodes and concatenated, which needs no full-length token list at all.
+    """
+    raw_limit = getattr(encoder, "max_seq_length", None)
+    if isinstance(raw_limit, bool) or not isinstance(raw_limit, int) or raw_limit <= 8:
+        return text
+    # Characters are a cheap lower bound on tokens for any real tokenizer, so a
+    # text no longer than the token budget cannot exceed it. This skips a second
+    # tokenization for the overwhelmingly common short-turn path.
+    if len(text) <= raw_limit:
+        return text
+    budget = raw_limit - 4
+    if budget <= 0:
+        return text[:raw_limit]
+    head_budget = budget // 2
+    tail_budget = budget - head_budget
+    tokenizer = getattr(encoder, "tokenizer", None)
+    if tokenizer is not None and hasattr(tokenizer, "encode") and hasattr(tokenizer, "decode"):
+        # Each window is capped at budget * chars-per-token characters. If the
+        # head and tail windows together cover the whole text then nothing can
+        # have been dropped and the original is returned unmarked. This is
+        # decided purely on window extents so a lossy decode cannot mask
+        # truncation.
+        window_span = (head_budget + tail_budget) * _CHARS_PER_TOKEN_WINDOW
+        if window_span >= len(text):
+            return text
+        head_ids = _bounded_encode(tokenizer, text, head_budget)
+        tail_ids = _bounded_encode(tokenizer, text, tail_budget, from_end=True)
+        first = tokenizer.decode(head_ids, skip_special_tokens=True)
+        last = tokenizer.decode(tail_ids, skip_special_tokens=True)
+        return f"{first}\n{_TRUNCATION_MARKER}\n{last}"
+    # Tiny test doubles and non-HF encoders may not expose a tokenizer. A
+    # character head+tail bound is conservative for CJK and still deterministic.
+    return f"{text[:head_budget]}\n{_TRUNCATION_MARKER_ASCII}\n{text[-tail_budget:]}"
+
+
+_TRUNCATION_MARKER = "[...truncated for memory gate...]"
+_TRUNCATION_MARKER_ASCII = "[...truncated...]"
+
+
+def _bounded_encode(tokenizer: Any, text: str, limit: int, *, from_end: bool = False) -> list[int]:
+    """Encode at most ``limit`` tokens without materialising the whole text.
+
+    A tokenizer emits at most one token per input character, so a window of
+    ``limit`` characters is already enough to *reach* the limit for a
+    character-level tokenizer. Real byte-level BPE often packs several
+    characters per token (bge-m3 averages ~5 on English prose), so the window
+    is widened by a safety factor that still keeps the work proportional to
+    ``limit`` rather than to the length of ``text``.
+
+    For the tail window ``truncation`` would keep the *leftmost* tokens of the
+    slice, which is the wrong end, so the slice is encoded in full and the last
+    ``limit`` tokens are taken explicitly. The slice is bounded either way, so
+    no full-length token list is ever built.
+    """
+    if limit <= 0:
+        return []
+    # Window is strictly bounded by ``limit`` and never scales with ``text``.
+    window = limit * _CHARS_PER_TOKEN_WINDOW
+    candidate = text[-window:] if from_end else text[:window]
+    if from_end:
+        try:
+            encoded = tokenizer.encode(candidate, add_special_tokens=False)
+        except TypeError:
+            encoded = tokenizer.encode(candidate)
+        return list(encoded)[-limit:]
+    try:
+        encoded = tokenizer.encode(
+            candidate,
+            add_special_tokens=False,
+            truncation=True,
+            max_length=limit,
+        )
+    except TypeError:
+        # Minimal test doubles may not accept the truncation keywords.
+        encoded = tokenizer.encode(candidate, add_special_tokens=False)
+    return list(encoded)
+
+
+# Upper bound on characters per token for the window. bge-m3 measures ~5.2
+# chars/token on repeated English prose, so 8 is a safe margin that cannot
+# truncate a turn that genuinely fits.
+_CHARS_PER_TOKEN_WINDOW = 8
 
 
 def _normalise(values: Sequence[float]) -> tuple[float, ...]:
@@ -307,7 +479,7 @@ def _cosine(left: Sequence[float], right: Sequence[float]) -> float:
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True, slots=True)
 class SemanticWeights:
-    """Calibrated on 19 hand-labelled probes against real bge-m3 vectors.
+    """Calibrated on 22 hand-labelled probes against real bge-m3 vectors.
 
     The calibration run (2026-09-21, ``ops/semantic_gate_probe.py``) measured
     nearest-anchor margins as:
@@ -417,6 +589,35 @@ def _semantic_decide(
             durability="ephemeral", reason="untrusted source cannot create a user fact",
             action=GateAction.SKIP, reason_code="UNTRUSTED_SOURCE", features=features,
             policy_version=POLICY_VERSION,
+        )
+
+    # --- single-valued overwrite floor --------------------------------------
+    # A derived source may *restate* a multi-valued fact: preferences
+    # accumulate, so a faithful summary of "我喜欢绿茶" is harmless and the
+    # suite's duplicate control explicitly expects it to be accepted.
+    #
+    # It must not, however, *create* a single-valued user fact. ``residence``,
+    # ``primary_tool`` and ``goal`` carry overwrite semantics
+    # (``relations.SINGLE_VALUED_PREDICATES``), so a generated summary asserting
+    # one silently displaces a directly supplied user statement -- the user says
+    # "我住在成都" and a summary says "我住在北京". The suite's
+    # ``sd-summary-overwrites-user`` is exactly this case, and its
+    # ``supersede_check`` requires the summary to supersede nothing.
+    #
+    # This is a provenance floor, not a content judgment: the text is a
+    # textbook durable personal fact and scores above the write threshold, which
+    # is why the previous ``effective *= 0.9`` damping could not stop it.
+    if tier != "trusted" and _is_single_valued_user_fact(text):
+        features = _features(text, explicit=explicit, requested=requested, ephemeral=False,
+                             source_reliability=source_reliability, importance=0.0, sensitive=False)
+        features["source_trust"] = {"trusted": 1.0, "conditional": 0.6}.get(tier, 0.0)
+        features["single_valued_overwrite_risk"] = 1.0
+        return GateDecision(
+            accepted=False, importance=0.0, confidence=source_reliability, salience=0.2,
+            durability="ephemeral",
+            reason="non-user source cannot assert a single-valued user fact",
+            action=GateAction.SKIP, reason_code="UNTRUSTED_SINGLE_VALUED_OVERWRITE",
+            features=features, policy_version=POLICY_VERSION,
         )
 
     # --- assertion-strength floors ------------------------------------------
@@ -580,14 +781,29 @@ class SemanticGate:
     """
 
     def __init__(self, encoder: Any, *, weights: SemanticWeights = DEFAULT_WEIGHTS,
-                 cache_size: int = 0) -> None:
-        self.index = PrototypeIndex.build(encoder, cache_size=cache_size)
+                 cache_size: int = 0, encode_batch_size: int = 8,
+                 max_sequence_length: int | None = None) -> None:
+        if max_sequence_length is not None:
+            if isinstance(max_sequence_length, bool) or int(max_sequence_length) <= 0:
+                raise ValueError("max_sequence_length must be a positive integer")
+            if hasattr(encoder, "max_seq_length"):
+                encoder.max_seq_length = int(max_sequence_length)
+        self.index = PrototypeIndex.build(
+            encoder,
+            cache_size=cache_size,
+            encode_batch_size=encode_batch_size,
+        )
         self.weights = weights
         self.policy_version = POLICY_VERSION
+        self.max_sequence_length = max_sequence_length
+        self.encode_batch_size = max(1, int(encode_batch_size))
         # Advertised so ``extraction.extract_candidates`` knows it may forward
         # the ``source_type`` keyword; the v1 ``decide`` function does not set
         # this and therefore keeps its original signature.
         self.supports_source_type = True
+        # Opt in to assertion-span recovery in ``extraction.extract_candidates``.
+        # Other policies, including v1, retain whole-turn semantics.
+        self.segment_assertions = True
 
     def __call__(self, text: str, *, explicit: bool = False,
                  source_reliability: float = 0.8,
@@ -597,6 +813,27 @@ class SemanticGate:
             source_reliability=source_reliability, weights=self.weights,
             source_type=source_type,
         )
+
+    def requires_encoding(self, text: str, *, explicit: bool = False,
+                          source_type: str | None = None) -> bool:
+        """Whether the real decision path reaches the semantic encoder."""
+        baseline = decide_v1(text, explicit=explicit)
+        if baseline.reason_code in {"EMPTY", "SENSITIVE_DATA"}:
+            return False
+        normalized = text.strip().lower()
+        requested = explicit or any(marker in normalized for marker in EXPLICIT_MARKERS)
+        if _source_tier(source_type) == "untrusted":
+            return False
+        # A conditional source asserting a single-valued user fact is refused by
+        # the overwrite floor before scoring, so it never reaches the encoder.
+        if (_source_tier(source_type) == "conditional"
+                and _is_single_valued_user_fact(text)):
+            return False
+        if _is_hedged_or_delegated(normalized) or _is_negated(normalized):
+            return False
+        if not requested and _is_question_or_request(text):
+            return False
+        return True
 
     def warm(self, texts: Sequence[str]) -> int:
         """Pre-encode a batch in one inference call.
@@ -616,7 +853,9 @@ class SemanticGate:
 def load_local_gate(*, model: str = "BAAI/bge-m3",
                     revision: str = "5617a9f61b028005a4858fdac845db406aefb181",
                     device: str | None = None,
-                    cache_size: int = 0) -> SemanticGate:
+                    cache_size: int = 0,
+                    encode_batch_size: int = 8,
+                    max_sequence_length: int = 512) -> SemanticGate:
     """Build the production gate from the pinned local bge-m3 checkpoint.
 
     ``cache_size`` opts into a bounded vector cache. Long sweeps should set it
@@ -628,4 +867,9 @@ def load_local_gate(*, model: str = "BAAI/bge-m3",
     provider = LocalSentenceTransformerEmbeddingProvider.load(
         model=model, revision=revision, device=device,
     )
-    return SemanticGate(provider.encoder, cache_size=cache_size)
+    return SemanticGate(
+        provider.encoder,
+        cache_size=cache_size,
+        encode_batch_size=encode_batch_size,
+        max_sequence_length=max_sequence_length,
+    )

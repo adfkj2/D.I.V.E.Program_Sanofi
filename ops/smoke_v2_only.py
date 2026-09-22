@@ -22,7 +22,7 @@ def main() -> None:
         from dive_memory.semantic_gate import POLICY_VERSION, load_local_gate
         from dive_memory.longmemeval_benchmark import run_longmemeval_retrieval
 
-        gate = load_local_gate(cache_size=8192)
+        gate = load_local_gate(cache_size=1024, encode_batch_size=8, max_sequence_length=512)
         payload["index_built"] = True
         report = run_longmemeval_retrieval(
             DATASET, max_cases=MAX_CASES, limit=10,

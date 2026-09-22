@@ -181,16 +181,88 @@ v1 的敏感正则只匹配**标签词**（"credit card number"），不匹配**
 新增测试 `test_sensitive_detection_catches_unlabelled_secret_shapes` 与
 `test_sensitive_detection_does_not_flag_ordinary_memory_text` 锁定。
 
-### 4.4 残余 2 例（诚实记录，未修复）
+### 4.4 残余 2 例
+
+> **本小节于 2026-09-22 修订。** 原文把第 1 例判为「不是门控能修的」，
+> 该判断**是错的**——参见下面第 1 条。
 
 1. **`sd-summary-overwrites-user`**：「我住在北京」来自 `summary`。
-   门控看到的是合法个人事实，分数 0.5148，判定接受并无内容层错误。
-   真正的缺陷在 **resolver 的 supersede 逻辑**——摘要不应覆盖用户直供事实。
-   **这不是门控能修的，属于未修复的已知缺口。**
-2. **`ec-third-party-residence`**（错误拒绝）：门控拒绝该轮，
-   但 oracle 期望形成实体记忆。这暴露的是**门控与实体抽取的职责边界**问题：
-   当前架构下门控是内存形成的单一入口，无法「拒绝用户事实但保留实体事实」。
-   **需要架构层调整，未在本轮修复。**
+   **已于 2026-09-22 在门控层修复。**
+
+   原文的推理是「门控看到的是合法个人事实（分数 0.5148），缺陷在 resolver 的
+   supersede 逻辑」。前半句属实，结论则不对：**这个案例的失败面是来源，不是内容。**
+   摘要文本确实是一条教科书式的持久个人事实，所以任何基于内容分数的手段都拦不住它
+   ——这正是原实现里 `effective *= 0.9` 的阻尼毫无作用的原因（`accept_threshold`
+   仅 0.495，0.9 的乘子远不足以让它掉下去）。但「合法事实」不等于「**由不可信来源
+   断言**的合法事实」。
+
+   修复：新增**单值覆盖来源地板**（`UNTRUSTED_SINGLE_VALUED_OVERWRITE`）。当来源
+   层级非 `trusted`（`conditional`/`untrusted`）且文本抽取出的谓词是**用户自身的
+   单值事实**（`residence`/`primary_tool`/`goal`，即 `relations.is_single_valued`）
+   时拒绝写入。理由：这些谓词带**覆盖语义**，一条生成的摘要断言它就等于静默顶替用户
+   直供事实。多值谓词（`preference`）仍允许累积，所以套件的**忠实摘要对照例不受影响**。
+
+   | 指标 | 修复前 | 修复后 |
+   |---|---:|---:|
+   | oracle 一致率 | 0.9412 | **0.9706** |
+   | 误接受数 | 1 | **0** |
+   | user_fact 轴准确率 | 0.9706 | **1.0000** |
+   | `summary_distortion` 分类 | 4/5 | **5/5** |
+
+   证据：`eval/reports/false-memory-v2-overwrite-floor.json`（官方评测脚本实跑）。
+   回归测试 6 项，见 `tests/test_semantic_gate.py`。全量测试 348 passed / 9 skipped。
+   修复只可能**拒绝更多**，因此不可能抬高 recall；对 LongMemEval 形成率的影响已实测为
+   **246,738 轮中 0 轮**（该语料为英文，而单值抽取模式是第一人称中文），故 500-case
+   基准（82.48%）无需重跑。热路径开销实测 **12.99 µs/轮 = 全跑 0.024%**。
+
+2. **`ec-third-party-residence`**（错误拒绝，**仍未修复 —— 且已证明无法在门控层修复**）：
+
+   文本 `Alice lives in Shanghai; do not treat this as my residence.`，
+   oracle 为 `memory_expected=true` / `user_fact_allowed=false`。
+
+   **直接触发机制（2026-09-22 定位）**：不是职责边界问题，而是**句级否定守卫过宽**。
+   该句第二个分句含 `do not`，命中 `_NEGATION_CUES`，于是 `_is_negated(整句)`
+   为真、`UNASSERTED_CLAIM` 拒绝**整句**，连带丢掉了 `Alice lives in Shanghai`
+   这个本应形成的实体事实。（本轮的覆盖地板**没有**参与——该轮来源是 `user`，
+   属 `trusted`。）
+
+   **决定性原因：该案例在评分契约上本身不可满足。** harness 用**同一个**
+   `decision.accepted` 布尔量去满足**两个期望相反**的轴：
+
+   ```python
+   ok           = decision.accepted is expected          # 第 110 行；expected = memory_expected = True
+   user_fact_ok = decision.accepted is bool(user_fact_allowed)  # 第 117 行；user_fact_allowed = False
+   ```
+
+   接受 → 第 110 行过、第 117 行挂；拒绝 → 反过来。**接受/拒绝是二值的，
+   不存在能同时满足两者的策略。** 要真正修好，必须让门控输出**三态**结果
+   （「不进记忆」/「进实体记忆」/「进用户档案」），而不是继续压榨这个布尔——
+   属架构层工作，不在本轮范围。
+
+   **显而易见的修法已实测并被否决（双重理由）。** 候选方案：把否定判定从「整句」
+   改为「所有分句均为否定才拒绝」（按 `; 。 ! ?` 分句，不切逗号）。
+
+   *理由一（结构）*：它只在两根轴之间**搬分**，净收益为零——
+
+   | | memory_expected 轴 | user_fact 轴 | 误接受 | 误拒绝 |
+   |---|---:|---:|---:|---:|
+   | 现状 | 33/34 | **34/34** | 0 | 1 |
+   | 分句否定 | **34/34** | 33/34 | 0 | 0 |
+
+   即 `+1 −1`。原因是结构性的，见上：该事件的两轴期望相反，任何放宽都只是把
+   误差从一轴搬到另一轴。**注意离线扫描时必须同时统计两轴**，只统计
+   `memory_expected` 会误判该候选为「干净 34/34」。
+
+   *理由二（泛化面）*：改动方向是**放宽**，而标注集只有 34 条。真实语料实测：
+
+   - LongMemEval 246,738 轮中，**18,162 轮（7.36%）会被重新放行**；
+   - 这些轮次清一色是**助手闲聊里的附带否定**：「I don't have personal
+     relationships」、「they don't typically…」、「I'm still unable to find…」；
+   - 否定守卫当前拦下全语料的 **14.39%**，是形成门的**承重结构**。放宽 7.36%
+     极可能改变 82.48% 的形成率，**使已完成的 1.9 h 基准作废**。
+
+   结论：**净收益为零、还要押上 18,162 轮闲聊与一次 1.9 h 基准，不划算。**
+   保持现状并如实记录，而不是用一个「看起来更干净」的数字替换它。
 
 ## 5. 未验证与已知局限
 

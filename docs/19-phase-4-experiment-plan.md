@@ -4,6 +4,60 @@ Plan date: 2026-09-20
 Baseline commit: `16f213464aab60c3e14563ede4109087a14fcaf4` plus the preserved dirty Phase 3 worktree  
 Principle: **Evidence > Feature Count**
 
+> ## Execution log (2026-09-21)
+>
+> Status of each preregistered experiment, with the artifact that carries it.
+> A row is only `DONE` if the *whole* experiment in this plan ran; partial runs
+> keep the label of the stage that actually completed.
+>
+> | Experiment | Status | Artifact / note |
+> |---|---|---|
+> | P4-P0-1 Official LongMemEval | Retrieval stage `DONE` on all 500 cases; reader + official judge `NOT_COMPLETED` | `eval/reports/longmemeval-s-retrieval-gpu.json` (semantic v2 gate, `device=cuda`, **500/500 rows, 0 errors, 6,850 s = 1.90 h**); `eval/reports/longmemeval-s-retrieval-latest.json` (v1 gate); `docs/benchmark/longmemeval-report.md` |
+> | P4-P0-2 Embedding comparison | `PARTIAL` | 3 models pinned and compared regionally; the frozen project corpus (split by user/session, contradiction and near-duplicate slices) was **not** used, so the preregistered protocol is unmet |
+> | P4-P0-3 PostgreSQL 100K | **`PARTIAL`** (corrected 2026-09-22 — an earlier revision of this log said `NOT STARTED`, which was wrong) | Main run `postgres-100k-20260921-084800`: checkpoints A–F `PASS`, **G `FAILED`** (`/dev/shm` exhausted at 8 workers, 44/64 ops), **H `NOT_COMPLETED`**. See `docs/benchmark/postgres-exact-100k-report.md`. Recovery run `postgres-100k-concurrency-20260921-110255`: branch A `PASS` at 1/2/4/8 workers, **0 failed ops**, 62.1 ops/s and p50 87.1 ms at 8 workers — but the run itself is **unfinished** (`smoke`, `branch_b` 2/4/8, mixed workload, integrity audit and summary are all `PENDING`; no final summary artifact) |
+> | P4-P0-4 False Memory Test Suite | `DONE` (suite exists, both policies run; v2 false accepts closed) | `false-memory-v1.json`, `false-memory-v2-rerun.json`, **`false-memory-v2-overwrite-floor.json`**; v2 now **agreement 0.9706, 0 false accepts, user-fact accuracy 1.0000** (was 0.9412 / 1 / 0.9706) |
+> | GPU feasibility + full 500-case run (enabling work, not a preregistered experiment) | `DONE` | **Full run completed 2026-09-22**: 500/500 rows, 6,850 s = **1.90 h**, **13.70 s/case**, end-to-end **10.78×** vs the CPU projection, formation coverage **739/896 = 82.48%**. Recorded in `docs/benchmark/longmemeval-500case-profiling.md` §0/§10 |
+>
+> Two defects found by these runs were fixed and pinned with tests:
+> `PrototypeIndex.score_many` lost its own results to cache eviction (it crashed
+> the 500-case sweep), and the reader-side wiring gap. Both are linked from
+> `docs/18-phase-4-evidence-gap-analysis.md` §5. No benchmark-specific answer,
+> query or mutation behaviour was added.
+>
+> Two further findings are recorded but **not** fixed, because they are
+> instrumentation/reporting issues rather than correctness defects:
+>
+> 1. `ops/longmemeval_profile.py` records per-stage timers that **overlap**, so
+>    `per_case_mean_ms.warm` and `.ingest` cannot be summed
+>    (`longmemeval-500case-profiling.md` §3a). Do not derive per-stage shares
+>    from them.
+> 2. The pre-run projection of 1.52 h was **25% too optimistic**; the measured
+>    figure is 1.90 h, and per-case latency is **not** predictable from turn
+>    count (R² = 0.03). The leading (unconfirmed) explanation is FIFO cache
+>    saturation late in the corpus — see §10 for the falsification test.
+>
+> **What P4-P0-1 still does not have:** any QA/quality number. Reader is
+> `NOT_EVALUATED`, QA generation and the official judge are `NOT_COMPLETED`,
+> abstention is `NOT_EVALUATED`. The retrieval block is a memory-level ranking
+> summary, not the official turn/session baseline.
+>
+> **Consolidated report:** `docs/20-phase-4-results.md` collects all P0 results
+> with their artifact-contract compliance, Wilson intervals for the false-memory
+> rates, the full failure/correction record, and the explicit list of what Phase 4
+> does not establish. Where this log and that report disagree, the report is
+> newer; where either disagrees with `eval/reports/**`, the artifact wins.
+>
+> **Closure status (2026-09-22).** All four documents §6 requires are published:
+> `docs/20-phase-4-results.md` (results),
+> `docs/21-phase-4-architecture-review.md` (14 architecture questions answered
+> from executed evidence),
+> `docs/22-phase-4-production-gap-analysis.md` (18 readiness domains),
+> `docs/23-phase-4-readiness-checklist.md` (70 item-level verdicts).
+> The checklist's overall verdict is **`NOT READY`** — Phase 4 completion is a
+> research/evaluation milestone, not a production readiness statement
+> (this plan's §P4-P2-3). **Phase 4 stops here; Phase 5 does not start
+> automatically.**
+
 ## 1. Execution rules
 
 Experiments execute in the order below. Only one resource-heavy benchmark runs

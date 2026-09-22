@@ -2,6 +2,23 @@
 
 Date: 2026-09-20
 
+> **Scope note, added 2026-09-22.** This report documents the run made with the
+> **default `utility-baseline-v1` keyword write gate**
+> (`eval/reports/longmemeval-s-retrieval-latest.json`). Its headline negative
+> result — only **55/896 = 6.14%** of gold evidence turns formed a memory — is
+> **specific to that gate**, not a property of the current system.
+>
+> A later run with the calibrated **`semantic-utility-v2.1`** gate over the same
+> 500 cases (GPU) raises gold evidence-turn formation to **739/896 = 82.48%**,
+> with 0 case errors in 6,850 s. See
+> [`longmemeval-500case-profiling.md`](longmemeval-500case-profiling.md) §0 and
+> the artifact `eval/reports/longmemeval-s-retrieval-gpu.json`.
+>
+> Both runs remain **retrieval-stage only**: no answer was generated and the
+> official GPT-4o judge was not invoked, so **neither carries an official
+> LongMemEval score**. The formation-coverage difference is measured at the
+> write gate, not at answer quality.
+
 Overall artifact status: `PARTIAL`
 
 Retrieval stage: `COMPLETED` — 500/500 cases

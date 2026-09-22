@@ -10,13 +10,33 @@ from statistics import median
 from time import perf_counter
 from typing import Any, Iterable, Sequence
 
+from .answering import AnswerStatus, GroundedReader, decide_grounded_answer
 from .eval_adapters.longmemeval import LongMemEvalAdapter, LongMemEvalCase
 from .eval_manifest import build_run_manifest
+from .extraction import assertion_segments
 from .retrieval import RetrievalConfig
 from .service import MemoryService
 
 
 _WARM_BATCH = 32  # measured sweet spot on CPU bge-m3; see ops/gate_batch_probe.py
+
+
+def _gate_device(gate: Any) -> str | None:
+    """Report the encoder's real torch device so a run is auditable.
+
+    GPU and CPU runs of the same configuration are not interchangeable: the
+    measured per-case wall clock differs by more than an order of magnitude
+    (see ``docs/benchmark/longmemeval-500case-profiling.md``). Recording the
+    device in the artifact prevents a fast GPU run from being compared against
+    a slow CPU run without that difference being visible.
+    """
+    encoder = getattr(getattr(gate, "index", None), "encoder", None)
+    if encoder is None:
+        return None
+    device = getattr(encoder, "device", None)
+    if device is None:
+        return None
+    return str(device)
 
 
 def _percentile(values: Sequence[float], quantile: float) -> float:
@@ -94,7 +114,8 @@ def _role_source_type(turn_role: str) -> str:
 
 
 def _evaluate_case(case: LongMemEvalCase, *, limit: int,
-                   gate: Any | None = None) -> tuple[dict[str, Any], dict[str, float | int]]:
+                   gate: Any | None = None,
+                   reader: GroundedReader | None = None) -> tuple[dict[str, Any], dict[str, float | int]]:
     service = MemoryService(gate=gate)
     turn_to_event: dict[str, str] = {}
     event_to_session: dict[str, str] = {}
@@ -102,39 +123,48 @@ def _evaluate_case(case: LongMemEvalCase, *, limit: int,
     evidence_memories: set[str] = set()
     formed_memories: set[str] = set()
     nonempty_turns = 0
-    # Warm the encoder with batched calls before the per-turn loop. The gate is
-    # called one turn at a time (that is the real ingest contract), so without
-    # this every turn pays a separate single-string inference. Measured in
-    # ops/gate_batch_probe.py: 99 ms/string alone vs 21 ms/string batched. The
-    # gate must also be built with a cache for the warmed vectors to be reused.
+    # Warm one bounded turn block immediately before ingesting that same block.
+    # This keeps a small cache hot, includes assertion spans used by the mixed
+    # turn fallback, and prevents a whole-case warm-up from evicting its own
+    # earliest vectors before ingestion begins.
     warm = getattr(gate, "warm", None)
-    if callable(warm):
-        pending = [turn.content for turn in case.turns if turn.content.strip()]
-        for start in range(0, len(pending), _WARM_BATCH):
-            warm(pending[start:start + _WARM_BATCH])
+    requires_encoding = getattr(gate, "requires_encoding", None)
+    nonempty = [turn for turn in case.turns if turn.content.strip()]
     ingest_started = perf_counter()
     try:
-        for turn in case.turns:
-            if not turn.content.strip():
-                continue
-            nonempty_turns += 1
-            result = service.ingest(
-                case.namespace,
-                turn.content,
-                event_type=f"longmemeval_{turn.role.casefold()}",
-                explicit=False,
-                observed_at=turn.occurred_at_iso,
-                idempotency_key=f"longmemeval:{case.question_id}:{turn.ref}",
-                source_message_id=turn.ref,
-                source_type=_role_source_type(turn.role),
-            )
-            event_id = result["event_id"]
-            turn_to_event[turn.ref] = event_id
-            event_to_session[event_id] = turn.session_id
-            session_to_events[turn.session_id].add(event_id)
-            formed_memories.update(result["memory_ids"])
-            if turn.has_answer:
-                evidence_memories.update(result["memory_ids"])
+        for start in range(0, len(nonempty), _WARM_BATCH):
+            turn_batch = nonempty[start:start + _WARM_BATCH]
+            if callable(warm):
+                pending: list[str] = []
+                for turn in turn_batch:
+                    source_type = _role_source_type(turn.role)
+                    values = [turn.content, *assertion_segments(turn.content)]
+                    pending.extend(
+                        value for value in values
+                        if not callable(requires_encoding) or requires_encoding(
+                            value, explicit=False, source_type=source_type,
+                        )
+                    )
+                warm(pending)
+            for turn in turn_batch:
+                nonempty_turns += 1
+                result = service.ingest(
+                    case.namespace,
+                    turn.content,
+                    event_type=f"longmemeval_{turn.role.casefold()}",
+                    explicit=False,
+                    observed_at=turn.occurred_at_iso,
+                    idempotency_key=f"longmemeval:{case.question_id}:{turn.ref}",
+                    source_message_id=turn.ref,
+                    source_type=_role_source_type(turn.role),
+                )
+                event_id = result["event_id"]
+                turn_to_event[turn.ref] = event_id
+                event_to_session[event_id] = turn.session_id
+                session_to_events[turn.session_id].add(event_id)
+                formed_memories.update(result["memory_ids"])
+                if turn.has_answer:
+                    evidence_memories.update(result["memory_ids"])
         ingest_ms = (perf_counter() - ingest_started) * 1000
 
         gold_turn_events = {
@@ -154,6 +184,15 @@ def _evaluate_case(case: LongMemEvalCase, *, limit: int,
             config=config,
         )
         retrieve_ms = (perf_counter() - retrieve_started) * 1000
+        answer_decision = (
+            decide_grounded_answer(
+                reader,
+                case.question,
+                result.items,
+                as_of=case.question_date_iso,
+            )
+            if reader is not None else None
+        )
 
         returned_sources: list[set[str]] = [set(item.source_refs) for item in result.items]
         turn_relevant_units = [sorted(sources & gold_turn_events) for sources in returned_sources]
@@ -179,7 +218,11 @@ def _evaluate_case(case: LongMemEvalCase, *, limit: int,
             "session_relevant_units_by_rank": session_relevant_units,
             "returned_memory_ids": [item.memory.id for item in result.items],
             "returned_source_counts": [len(sources) for sources in returned_sources],
-            "predicted_abstain": not bool(result.items),
+            "retrieval_empty": not bool(result.items),
+            "predicted_abstain": (
+                answer_decision.status is AnswerStatus.ABSTAIN if answer_decision is not None else None
+            ),
+            "answer_decision": answer_decision.to_dict() if answer_decision is not None else None,
             "ingest_ms": ingest_ms,
             "retrieve_ms": retrieve_ms,
             "executed_channels": result.trace["executed_channels"],
@@ -216,6 +259,8 @@ def run_longmemeval_retrieval(
     repository_root: str | Path = ".",
     gate: Any | None = None,
     gate_name: str = "utility-baseline-v1",
+    reader: GroundedReader | None = None,
+    reader_name: str | None = None,
 ) -> dict[str, Any]:
     cases = LongMemEvalAdapter.load(dataset_path)
     if max_cases is not None:
@@ -226,7 +271,7 @@ def run_longmemeval_retrieval(
     totals: dict[str, int] = defaultdict(int)
     for case in cases:
         try:
-            row, counts = _evaluate_case(case, limit=limit, gate=gate)
+            row, counts = _evaluate_case(case, limit=limit, gate=gate, reader=reader)
             rows.append(row)
             for key, value in counts.items():
                 totals[key] += int(value)
@@ -240,16 +285,29 @@ def run_longmemeval_retrieval(
     completed = datetime.now(timezone.utc)
     answerable = [row for row in rows if not row["should_abstain"]]
     abstention = [row for row in rows if row["should_abstain"]]
+    reader_name = reader_name or (
+        str(getattr(reader, "policy_version", type(reader).__name__)) if reader is not None else None
+    )
     configuration = {
         "adapter": "longmemeval-adapter-v2",
         "formation": "core heuristic provider; explicit=false; empty turns preserved by adapter and skipped by runner",
         "write_gate": gate_name,
+        "write_gate_runtime": {
+            "max_sequence_length": getattr(gate, "max_sequence_length", None),
+            "encode_batch_size": getattr(gate, "encode_batch_size", None),
+            "cache_size": getattr(getattr(gate, "index", None), "cache_size", None),
+            "device": _gate_device(gate),
+        },
         "source_type_policy": "user turns -> 'user'; assistant/system turns -> 'assistant'",
         "retrieval": "full channels except multi-hop; deterministic vectors excluded from semantic dense scoring",
         "limit": limit,
         "max_cases": max_cases,
         "gold_visibility": "question/answer/type/evidence labels evaluation-only; writer sees role/content/session/time",
-        "qa_stage": "NOT_COMPLETED: no configured official judge or reader model credentials",
+        "reader": reader_name or "NOT_CONFIGURED",
+        "qa_stage": (
+            "NON_OFFICIAL_READER_CONFIGURED" if reader is not None
+            else "NOT_COMPLETED: no configured reader model credentials"
+        ),
     }
     manifest = build_run_manifest(
         run_id=f"longmemeval-retrieval-{started.strftime('%Y%m%dT%H%M%SZ')}",
@@ -260,7 +318,7 @@ def run_longmemeval_retrieval(
         repository_root=repository_root,
     ).to_dict()
     report: dict[str, Any] = {
-        "schema_version": "dive-longmemeval-retrieval-v1",
+        "schema_version": "dive-longmemeval-retrieval-v2",
         "status": "PARTIAL",
         "started_at": started.isoformat(),
         "finished_at": completed.isoformat(),
@@ -269,9 +327,14 @@ def run_longmemeval_retrieval(
         "official_scope": {
             "dataset_cases": len(cases),
             "retrieval_stage": "COMPLETED" if len(rows) == len(cases) else "PARTIAL",
-            "qa_generation": "NOT_COMPLETED",
+            "reader_stage": "COMPLETED_NON_OFFICIAL" if reader is not None else "NOT_EVALUATED",
+            "qa_generation": "COMPLETED_NON_OFFICIAL" if reader is not None else "NOT_COMPLETED",
             "official_qa_judge": "NOT_COMPLETED",
-            "reason": "No configured reader/judge model credentials; these are retrieval-stage results only.",
+            "reason": (
+                "A non-official grounded reader was evaluated; the official judge was not invoked."
+                if reader is not None else
+                "No configured reader/judge model credentials; these are retrieval-stage results only."
+            ),
         },
         "formation": {
             **totals,
@@ -289,10 +352,7 @@ def run_longmemeval_retrieval(
             "latency_ms": _latency([float(row["retrieve_ms"]) for row in rows]),
             "answerable_cases": len(answerable),
         },
-        "abstention": {
-            "cases": len(abstention),
-            "accuracy": _mean(float(row["predicted_abstain"]) for row in abstention),
-        },
+        "abstention": _abstention_summary(rows, reader_configured=reader is not None),
         "ingest": {
             "case_latency_ms": _latency([float(row["ingest_ms"]) for row in rows]),
         },
@@ -300,7 +360,11 @@ def run_longmemeval_retrieval(
         "timeouts": [],
         "rows": rows,
         "limitations": [
-            "No reader generation or official GPT-4o judge was run; no official overall QA score is claimed.",
+            (
+                "A non-official reader ran, but the official GPT-4o judge did not; no official overall QA score is claimed."
+                if reader is not None else
+                "No reader generation or official GPT-4o judge was run; semantic abstention is NOT_EVALUATED."
+            ),
             "The core heuristic extractor and non-semantic deterministic embedding are retained as-is.",
             "Memory-level rankings differ from the official raw turn/session retrieval baselines.",
             "Official same-calendar-day randomized clock times are treated as day-precision cutoff data.",
@@ -320,6 +384,64 @@ def run_longmemeval_retrieval(
     return report
 
 
+def _abstention_summary(rows: Sequence[dict[str, Any]], *, reader_configured: bool) -> dict[str, Any]:
+    negatives = [row for row in rows if row["should_abstain"]]
+    answerable = [row for row in rows if not row["should_abstain"]]
+    retrieval_empty = sum(bool(row["retrieval_empty"]) for row in rows)
+    base: dict[str, Any] = {
+        "status": "EVALUATED" if reader_configured else "NOT_EVALUATED",
+        "cases": len(negatives),
+        "retrieval_empty_cases": retrieval_empty,
+        "retrieval_empty_rate": retrieval_empty / len(rows) if rows else 0.0,
+    }
+    if not reader_configured:
+        return {
+            **base,
+            "accuracy": None,
+            "precision": None,
+            "recall": None,
+            "f1": None,
+            "false_abstention_rate": None,
+            "answer_coverage": None,
+            "error_rate": None,
+            "note": "Candidate absence is not semantic abstention; configure a grounded reader to evaluate it.",
+        }
+
+    evaluated = [row for row in rows if row["answer_decision"]["status"] != AnswerStatus.ERROR.value]
+    errors = len(rows) - len(evaluated)
+    true_positive = sum(
+        row["should_abstain"] and row["predicted_abstain"] is True for row in evaluated
+    )
+    false_positive = sum(
+        not row["should_abstain"] and row["predicted_abstain"] is True for row in evaluated
+    )
+    false_negative = sum(
+        row["should_abstain"] and row["predicted_abstain"] is False for row in evaluated
+    )
+    true_negative = sum(
+        not row["should_abstain"] and row["predicted_abstain"] is False for row in evaluated
+    )
+    precision = true_positive / (true_positive + false_positive) if true_positive + false_positive else 0.0
+    recall = true_positive / (true_positive + false_negative) if true_positive + false_negative else 0.0
+    return {
+        **base,
+        "accuracy": recall,
+        "precision": precision,
+        "recall": recall,
+        "f1": 2 * precision * recall / (precision + recall) if precision + recall else 0.0,
+        "false_abstention_rate": false_positive / len(answerable) if answerable else 0.0,
+        "answer_coverage": (true_negative + false_negative) / len(rows) if rows else 0.0,
+        "error_rate": errors / len(rows) if rows else 0.0,
+        "confusion": {
+            "true_abstain": true_positive,
+            "false_abstain": false_positive,
+            "missed_abstain": false_negative,
+            "true_answer": true_negative,
+            "errors": errors,
+        },
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the D.I.V.E retrieval stage on official LongMemEval")
     parser.add_argument("dataset")
@@ -328,15 +450,26 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=10)
     parser.add_argument("--gate", choices=("v1", "semantic"), default="v1",
                         help="v1 keeps the keyword baseline; semantic loads the local bge-m3 v2 gate")
-    parser.add_argument("--gate-cache", type=int, default=8192,
+    parser.add_argument("--gate-cache", type=int, default=1024,
                         help="bounded vector cache for the semantic gate (0 disables)")
+    parser.add_argument("--gate-batch-size", type=int, default=8,
+                        help="safe internal sentence-transformer batch size")
+    parser.add_argument("--gate-max-sequence-length", type=int, default=512,
+                        help="truncate gate inputs to this many model tokens")
+    parser.add_argument("--device", default="cpu",
+                        help="torch device for the semantic gate encoder, e.g. 'cpu' or 'cuda'")
     args = parser.parse_args()
     gate: Any | None = None
     gate_name = "utility-baseline-v1"
     if args.gate == "semantic":
         from .semantic_gate import load_local_gate, POLICY_VERSION
 
-        gate = load_local_gate(cache_size=args.gate_cache)
+        gate = load_local_gate(
+            cache_size=args.gate_cache,
+            encode_batch_size=max(1, args.gate_batch_size),
+            max_sequence_length=max(1, args.gate_max_sequence_length),
+            device=None if args.device == "cpu" else args.device,
+        )
         gate_name = POLICY_VERSION
     report = run_longmemeval_retrieval(
         args.dataset,

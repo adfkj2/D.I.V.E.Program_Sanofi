@@ -6,6 +6,7 @@ fastapi = pytest.importorskip("fastapi")
 httpx = pytest.importorskip("httpx")
 
 from dive_memory.api import create_app
+from dive_memory.answering import AnswerStatus, EvidenceCitation, GroundedAnswerDecision
 from dive_memory.auth import StaticTokenAuthorizer
 
 
@@ -219,3 +220,37 @@ def test_http_rejects_invalid_query_bounds_and_mixed_projection_reindex():
     assert response.status_code == 400
     assert "by itself" in response.json()["detail"]
     assert request(app, "POST", "/v1/jobs/reindex", json={"indexes": []}).status_code == 400
+
+
+def test_http_answer_requires_reader_and_returns_grounded_decision():
+    missing = create_app(":memory:")
+    assert request(missing, "POST", "/v1/answer", json={
+        "namespace": "u1", "query": "我喜欢什么？",
+    }).status_code == 503
+
+    class Reader:
+        policy_version = "api-reader-v1"
+
+        def answer(self, question, items, *, as_of=None):
+            item = items[0]
+            return GroundedAnswerDecision(
+                AnswerStatus.ANSWER,
+                "绿茶",
+                "SUPPORTED",
+                (EvidenceCitation(item.memory.id, item.memory.content, tuple(item.source_refs)),),
+                policy_version=self.policy_version,
+            )
+
+    app = create_app(":memory:", reader=Reader())
+    request(app, "POST", "/v1/events", json={
+        "namespace": "u1", "text": "请记住我喜欢绿茶", "explicit": True,
+        "idempotency_key": "answer-1",
+    })
+    response = request(app, "POST", "/v1/answer", json={
+        "namespace": "u1", "query": "我喜欢什么？",
+    })
+
+    assert response.status_code == 200
+    assert response.json()["decision"]["status"] == "ANSWER"
+    assert response.json()["decision"]["answer"] == "绿茶"
+    assert response.json()["decision"]["citations"][0]["source_refs"]

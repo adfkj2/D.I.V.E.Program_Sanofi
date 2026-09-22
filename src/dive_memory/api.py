@@ -1,5 +1,6 @@
 from typing import Any
 
+from .answering import decide_grounded_answer
 from .auth import NamespaceAuthorizer
 from .context import pack_context
 from .config import RuntimeConfig
@@ -40,7 +41,8 @@ def memory_payload(memory: Memory) -> dict[str, Any]:
 
 def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: Any = None,
                authorizer: NamespaceAuthorizer | None = None,
-               runtime_config: RuntimeConfig | None = None) -> Any:
+               runtime_config: RuntimeConfig | None = None,
+               reader: Any = None) -> Any:
     """Create the optional FastAPI adapter.
 
     The domain/service layer deliberately does not require FastAPI. Install
@@ -94,6 +96,9 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
     class ContextRequest(RetrieveRequest):
         pass
 
+    class AnswerRequest(RetrieveRequest):
+        pass
+
     class CorrectionRequest(RequestModel):
         content: str = Field(min_length=1)
         namespace: str | None = Field(default=None, min_length=1)
@@ -129,6 +134,7 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
     service = MemoryService(db_path, extractor=extractor, embedder=embedder)
     app.state.memory_service = service
     app.state.runtime_config = runtime_config
+    app.state.grounded_reader = reader
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(_request: Any, exc: RequestValidationError) -> JSONResponse:
@@ -212,6 +218,32 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
     @app.post("/v1/search")
     def search(body: RetrieveRequest, authorization: str | None = Header(default=None)) -> dict[str, Any]:
         return retrieve(body, authorization)
+
+    @app.post("/v1/answer")
+    def answer(body: AnswerRequest, authorization: str | None = Header(default=None)) -> dict[str, Any]:
+        check_scope(body.namespace, authorization, "memories:read")
+        if reader is None:
+            raise HTTPException(503, "grounded reader is not configured")
+        try:
+            result = service.retrieve(
+                body.namespace,
+                body.query,
+                limit=body.limit,
+                as_of=body.as_of,
+                observed_as_of=body.observed_as_of,
+                intent=body.intent,
+                token_budget=body.token_budget,
+            )
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        decision = decide_grounded_answer(reader, body.query, result.items, as_of=body.as_of)
+        return {
+            "decision": decision.to_dict(),
+            "retrieval_empty": not bool(result.items),
+            "retrieved_memory_ids": [item.memory.id for item in result.items],
+            "plan": result.plan,
+            "degraded": result.degraded,
+        }
 
     @app.post("/v1/context")
     def context(body: ContextRequest, authorization: str | None = Header(default=None)) -> dict[str, Any]:

@@ -1,0 +1,58 @@
+{
+  "gate": "semantic-utility-v2.1",
+  "cases": 3,
+  "dataset": "eval/external/longmemeval/longmemeval_s_cleaned.json",
+  "wall_clock_seconds": 37.897,
+  "per_case_mean_ms": {
+    "ingest_ms": 1807.77,
+    "retrieve_ms": 12.19,
+    "segment_ms": 48.48,
+    "total_ms": 12632.42,
+    "warm_ms": 10761.75
+  },
+  "per_case_total_ms": {
+    "ingest_ms": 5423.32,
+    "retrieve_ms": 36.58,
+    "segment_ms": 145.43,
+    "total_ms": 37897.26,
+    "warm_ms": 32285.25
+  },
+  "throughput_cases_per_second": 0.0792,
+  "mean_nonempty_turns": 521.3,
+  "mean_formed_memories": 183.3,
+  "rows": [
+    {
+      "segment_ms": 43.12610000488348,
+      "warm_ms": 11769.86439999746,
+      "ingest_ms": 1935.1949999982025,
+      "retrieve_ms": 12.993099997402169,
+      "nonempty_turns": 550,
+      "formed_memories": 178,
+      "returned_items": 10,
+      "case_id": "e47becba",
+      "total_ms": 13763.760599998932
+    },
+    {
+      "segment_ms": 52.406900002097245,
+      "warm_ms": 9606.90220000106,
+      "ingest_ms": 1625.9452999947825,
+      "retrieve_ms": 11.871599999722093,
+      "nonempty_turns": 485,
+      "formed_memories": 186,
+      "returned_items": 10,
+      "case_id": "118b2229",
+      "total_ms": 11299.345999999787
+    },
+    {
+      "segment_ms": 49.89280000154395,
+      "warm_ms": 10908.485799998743,
+      "ingest_ms": 1862.1824000001652,
+      "retrieve_ms": 11.716000000888016,
+      "nonempty_turns": 529,
+      "formed_memories": 186,
+      "returned_items": 10,
+      "case_id": "51a45a95",
+      "total_ms": 12834.153600000718
+    }
+  ]
+}

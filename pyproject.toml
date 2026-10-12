@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dive-memory"
-version = "0.2.0"
+version = "0.3.0"
 description = "Event-sourced long-term interactive AI memory service"
 requires-python = ">=3.11"
 dependencies = []
@@ -12,9 +12,12 @@ dependencies = []
 [project.optional-dependencies]
 api = ["fastapi>=0.110", "uvicorn>=0.29"]
 dev = ["pytest>=8", "httpx>=0.28"]
+models = ["sentence-transformers>=3.0"]
 postgres = ["psycopg[binary]>=3.2", "pgvector>=0.4"]
 
 [project.scripts]
+dive-memory = "dive_memory.cli:main"
+dive-memory-oracle = "dive_memory.application.oracle_run:main"
 dive-memory-benchmark = "dive_memory.benchmark:main"
 
 [tool.pytest.ini_options]
@@ -23,3 +26,13 @@ testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+dive_memory = ["static/*.html", "static/*.css", "static/*.js", "static/*.json", "static/*.svg"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "BLE001", "RUF012"]

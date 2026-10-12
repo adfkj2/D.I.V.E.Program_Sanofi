@@ -46,6 +46,24 @@ def test_multi_hop_is_default_off_and_requires_query_intent_plus_opt_in():
     assert "multi_hop" in returned[preference["memory_ids"][0]].channels
 
 
+def test_explicit_intent_override_controls_multi_hop_execution():
+    service = MemoryService()
+    residence = service.ingest("u1", "我住在成都", explicit=True)
+    preference = service.ingest("u1", "我喜欢绿茶", explicit=True)
+    config = RetrievalConfig.full(include_multi_hop=True)
+
+    regular = service.retrieve("u1", "成都", limit=10, config=config)
+    diagnostic = service.retrieve(
+        "u1", "成都", limit=10, intent="multi_hop", config=config,
+    )
+
+    assert "multi_hop" not in regular.trace["executed_channels"]
+    returned = {item.memory.id: item for item in diagnostic.items}
+    assert set(returned) == {residence["memory_ids"][0], preference["memory_ids"][0]}
+    assert "multi_hop" in returned[preference["memory_ids"][0]].channels
+    assert diagnostic.plan["intent"] == "multi_hop"
+
+
 def test_scope_deletion_and_time_filters_remain_hard_boundaries():
     service = MemoryService()
     own = service.ingest("u1", "请记住我喜欢绿茶", explicit=True)

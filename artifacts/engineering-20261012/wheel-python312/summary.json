@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "import_file": "${REPOSITORY}\\eval\\reports\\engineering-delivery-20261012\\wheel-python312\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "cwd": "${REPOSITORY}\\eval\\reports\\engineering-delivery-20261012\\wheel-python312",
+  "package_assets": 5,
+  "persistence_restart": true,
+  "cli_api": true,
+  "wheel": "dive_memory-0.3.0-py3-none-any.whl",
+  "wheel_sha256": "369cf11060c880b3ecd8f134f281d4ac8d51fe7dd36424080c33fe94a607223c",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "source_path_injected": false
+}

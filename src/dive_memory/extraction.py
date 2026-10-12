@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 from .gate import GateDecision, decide
+from .models import DOCUMENT_ASSERTION, DOCUMENT_PREDICATE
 
 # A gate is any callable matching ``decide``'s keyword-only signature. The
 # default stays the v1 keyword policy; v2 (``semantic_gate.SemanticGate``) can
@@ -136,28 +137,87 @@ def extract_candidates(text: str, *, explicit: bool = False, observed_at: str | 
     # the speech-act floor to the whole turn discards the supported assertion.
     # SemanticGate opts into bounded assertion recovery; the v1 policy and all
     # third-party gates retain their exact one-turn/one-decision behaviour.
-    if not getattr(policy, "segment_assertions", False):
-        return []
-    if decision.reason_code not in {"NON_ASSERTIVE_SPEECH_ACT", "UNASSERTED_CLAIM"}:
-        return []
-
+    #
+    # This recovery is a *step*, not a gate on the function: the document branch
+    # below must stay reachable for every turn the semantic path refused.
+    # Returning here instead cost 33 of the 56 assistant gold turns -- measured,
+    # see ``docs/benchmark/oracle-formation-v2.md``.
     candidates: list[Candidate] = []
-    for segment in assertion_segments(text):
-        segment_decision = _gate_decision(
-            policy, segment, explicit=explicit, source_type=source_type,
-        )
-        if not segment_decision.accepted:
-            continue
-        content, structured, kind = _fact_from_text(segment)
-        candidates.append(Candidate(
-            content,
-            kind,
-            "FACT",
-            structured,
-            segment_decision,
-            _explicit_date(segment) or observed_at,
-        ))
+    if (getattr(policy, "segment_assertions", False)
+            and decision.reason_code in {"NON_ASSERTIVE_SPEECH_ACT", "UNASSERTED_CLAIM"}):
+        for segment in assertion_segments(text):
+            segment_decision = _gate_decision(
+                policy, segment, explicit=explicit, source_type=source_type,
+            )
+            if not segment_decision.accepted:
+                continue
+            content, structured, kind = _fact_from_text(segment)
+            candidates.append(Candidate(
+                content,
+                kind,
+                "FACT",
+                structured,
+                segment_decision,
+                _explicit_date(segment) or observed_at,
+            ))
+    if candidates:
+        return candidates
+
+    # A long non-trusted *deliverable* -- the table, plan or recommendation an
+    # assistant produced -- is refused by the semantic score because its length
+    # dilutes it, and ``assertion_segments`` cannot recover it because that
+    # recovery is first-person only. `SemanticGate.admit_document` is the opt-in
+    # door for that case; the policy lives in the gate, so it is reached by duck
+    # typing rather than by importing ``semantic_gate`` (which imports this
+    # module). Policies that do not expose it -- v1 ``decide`` and every
+    # third-party gate -- are unaffected.
+    admit = getattr(policy, "admit_document", None)
+    document_policy = getattr(policy, "document_admission", None)
+    if callable(admit) and getattr(document_policy, "enabled", False):
+        document_decision = admit(text, source_type=source_type)
+        if document_decision.accepted:
+            return [_document_candidate(text, document_decision, source_type, observed_at)]
     return candidates
+
+
+#: ``DOCUMENT_PREDICATE`` / ``DOCUMENT_ASSERTION`` live in ``models`` because
+#: the store, the conflict detector and this extractor all have to agree on
+#: them. The predicate is not a scalar slot: ``store.find_related_memory`` will
+#: only match another document on an identical value, so repeated deliverables
+#: coexist instead of superseding each other.
+
+
+def _document_candidate(
+    text: str,
+    decision: GateDecision,
+    source_type: str | None,
+    observed_at: str | None,
+) -> Candidate:
+    """Build the document memory for an admitted non-trusted deliverable.
+
+    Stored as ``episode`` (an existing, allowed memory kind: the record of an
+    episode of interaction) with ``EvidenceState.OBSERVATION`` -- it is an
+    observation of what was produced, not an asserted fact. The structured
+    record carries no ``value``/``normalized_value``, so no scalar slot exists
+    for the resolver or the conflict detector to act on.
+    """
+
+    stripped = text.strip()
+    subject = str(source_type or "unknown").casefold()
+    return Candidate(
+        content=stripped,
+        kind="episode",
+        evidence_state="OBSERVATION",
+        structured_content={
+            "subject": subject,
+            "predicate": DOCUMENT_PREDICATE,
+            "assertion": DOCUMENT_ASSERTION,
+            "role": subject,
+            "document_chars": len(stripped),
+        },
+        decision=decision,
+        valid_from=observed_at,
+    )
 
 
 _FIRST_PERSON = re.compile(

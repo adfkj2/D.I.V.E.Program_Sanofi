@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "checks": [
+    "real demo input renders confirmed/proposed/rejected separately",
+    "historical cutoff restores old budget",
+    "UI correction persists through real API",
+    "real evidence retrieval and trace export; no model answer claimed",
+    "hard erasure removes visible preference and invalidates answer",
+    "server persists edits across page reload",
+    "390px layout has no horizontal overflow"
+  ],
+  "consoleErrors": [],
+  "externalRequests": 0,
+  "browser": "155.0.4283.45",
+  "viewports": [
+    [
+      1440,
+      1050
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "actualApi": true
+}

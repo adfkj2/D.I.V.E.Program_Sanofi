@@ -108,6 +108,14 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
         namespace: str = Field(min_length=1)
         enabled: bool = Field(strict=True)
 
+    class ProfileReviewRequest(RequestModel):
+        approve: bool = Field(strict=True)
+        reason: str = Field(min_length=1, max_length=1000)
+
+    class ProfileRollbackRequest(RequestModel):
+        revision: int = Field(ge=1, strict=True)
+        reason: str = Field(min_length=1, max_length=1000)
+
     class ReinforceRequest(RequestModel):
         namespace: str | None = Field(default=None, min_length=1)
 
@@ -319,6 +327,38 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
         check_scope(namespace, authorization, "memories:read")
         return service.profile(namespace)
 
+    @app.get("/v1/users/{namespace}/hot-profile")
+    def hot_profile(namespace: str, authorization: str | None = Header(default=None)) -> dict[str, Any]:
+        check_scope(namespace, authorization, "memories:read")
+        return service.hot_profile(namespace)
+
+    @app.post("/v1/users/{namespace}/hot-profile/proposals")
+    def propose_hot_profile(namespace: str, authorization: str | None = Header(default=None)) -> dict[str, Any]:
+        check_scope(namespace, authorization, "memories:write")
+        return service.propose_hot_profile(namespace)
+
+    @app.post("/v1/users/{namespace}/hot-profile/proposals/{proposal_id}/review")
+    def review_hot_profile(namespace: str, proposal_id: str, body: ProfileReviewRequest,
+                           authorization: str | None = Header(default=None)) -> dict[str, Any]:
+        check_scope(namespace, authorization, "memories:write")
+        try:
+            return service.review_hot_profile(namespace, proposal_id, approve=body.approve, reason=body.reason)
+        except KeyError:
+            raise HTTPException(404, "proposal not found in namespace") from None
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
+    @app.post("/v1/users/{namespace}/hot-profile/rollback")
+    def rollback_hot_profile(namespace: str, body: ProfileRollbackRequest,
+                             authorization: str | None = Header(default=None)) -> dict[str, Any]:
+        check_scope(namespace, authorization, "memories:write")
+        try:
+            return service.rollback_hot_profile(namespace, body.revision, reason=body.reason)
+        except KeyError:
+            raise HTTPException(404, "revision not found in namespace") from None
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
     @app.delete("/v1/memories/{memory_id}")
     def forget(memory_id: str, hard: bool = Query(default=False),
                authorization: str | None = Header(default=None)) -> dict[str, Any]:
@@ -378,7 +418,8 @@ def create_app(db_path: str = "memory.db", *, extractor: Any = None, embedder: A
         check_scope(body.namespace, authorization, "jobs:write")
         report = service.consolidate(body.namespace, dry_run=body.dry_run)
         return {"namespace": report.namespace, "examined": report.examined, "merged": report.merged,
-                "archived": report.archived, "dry_run": report.dry_run}
+                "archived": report.archived, "dry_run": report.dry_run,
+                "changes": [change.to_dict() for change in report.changes]}
 
     @app.post("/v1/jobs/decay")
     def decay(body: DecayRequest, authorization: str | None = Header(default=None)) -> dict[str, Any]:

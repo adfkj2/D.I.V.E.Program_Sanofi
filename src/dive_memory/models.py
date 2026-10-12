@@ -11,6 +11,19 @@ ALLOWED_MEMORY_KINDS = frozenset({
     "procedural", "resource", "temporal_event", "relation", "inference",
 })
 
+#: Predicate carried by a *document* memory: a long deliverable from a
+#: non-trusted source (an assistant's table, plan or recommendation) stored
+#: verbatim. It is deliberately not a scalar slot -- it has no
+#: ``normalized_value`` -- so it never participates in supersession
+#: (``relations.SINGLE_VALUED_PREDICATES``) or in conflict detection
+#: (``oracle.evidence.DOCUMENT_PREDICATES``). Defined here rather than in the
+#: extractor because the store also has to recognise it.
+DOCUMENT_PREDICATE = "artifact_document"
+
+#: Structured-content annotation marking a memory whose value is a whole
+#: document rather than an asserted fact.
+DOCUMENT_ASSERTION = "unstructured_document"
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>续研 · DIVE 项目记忆</title>
+    <link rel="stylesheet" href="/assets/app.css" />
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="续研主页"
+        ><span class="brand-mark">D</span
+        ><span>续研<small>DIVE PROJECT MEMORY</small></span></a
+      >
+      <div class="project-control">
+        <label for="project">当前项目</label>
+        <div class="project-row">
+          <input id="project" value="my-research" maxlength="120" /><button
+            id="open-project"
+            aria-label="打开项目"
+          >
+            ↗
+          </button>
+        </div>
+      </div>
+      <nav aria-label="工作台">
+        <button data-tab="brief" class="nav-item selected" aria-current="page">
+          <span>01</span>继续工作</button
+        ><button data-tab="timeline" class="nav-item">
+          <span>02</span>记忆时间线</button
+        ><button data-tab="evidence" class="nav-item">
+          <span>03</span>回答与证据</button
+        ><button data-tab="verify" class="nav-item">
+          <span>04</span>验证报告
+        </button>
+      </nav>
+      <div class="sidebar-note">
+        <span class="small-title">EVERY DECISION HAS A SOURCE</span>
+        <p>保留决定的依据，<br />继续尚未完成的工作。</p>
+        <button id="load-demo" class="quiet">载入合成演示 ↗</button
+        ><small>演示数值均为构造数据</small>
+      </div>
+      <details class="access">
+        <summary>本地访问设置</summary>
+        <label for="access-token">访问令牌（如已配置）</label
+        ><input id="access-token" type="password" autocomplete="off" /><button
+          id="apply-token"
+        >
+          应用
+        </button>
+        <p>仅保存在当前页面内存。</p>
+      </details>
+    </aside>
+    <main>
+      <header class="topbar">
+        <span
+          >研究工作台 <span class="separator">/</span>
+          <span id="project-label">my-research</span></span
+        ><span class="mode" id="mode">连接中</span>
+      </header>
+      <div id="message" role="status" aria-live="polite" hidden></div>
+      <section id="brief" class="page">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p>
+            <h1>接着上次，继续。</h1>
+            <p class="lede">先确认现在有效的决定，再开始下一步。</p>
+          </div>
+          <button class="primary" id="add-record">＋ 记录新信息</button>
+        </div>
+        <div class="viewbar">
+          <label for="as-of">查看时间</label
+          ><input id="as-of" type="datetime-local" /><button id="apply-time">
+            查看该时点</button
+          ><button class="text-button" id="now">回到当前</button
+          ><span id="time-label">当前有效状态</span>
+        </div>
+        <div class="notice" id="conflicts" hidden></div>
+        <div id="empty" class="empty">
+          <div class="empty-mark">↗</div>
+          <h2>让下一次会话有据可循</h2>
+          <p>记录一条约束、决定或结果。它会保留来源，也可以被更新和纠正。</p>
+          <button id="empty-add">添加第一条记录</button>
+        </div>
+        <div class="brief-grid">
+          <div class="main-column">
+            <div class="section-title">
+              <h2>已确认的工作状态</h2>
+              <span id="confirmed-count"></span>
+            </div>
+            <div id="confirmed" class="record-list"></div>
+          </div>
+          <div class="side-column">
+            <div class="section-title"><h2>待确认与未采用</h2></div>
+            <div id="pending" class="record-list"></div>
+            <div class="principle">
+              <span class="small-title">记忆边界</span>
+              <p>提出一个方案，不代表已经采纳。实验分数，也不代替你的决定。</p>
+            </div>
+          </div>
+        </div>
+        <div class="lookup-box">
+          <div>
+            <h2>核查一条确认记录</h2>
+            <p>按记录名称精确查询；冲突或缺失时保持未知。</p>
+          </div>
+          <form id="lookup-form">
+            <label class="sr-only" for="lookup-key">记录名称</label
+            ><input
+              id="lookup-key"
+              placeholder="例如：预算上限"
+              required
+            /><button type="submit">核查 →</button>
+          </form>
+          <div id="lookup-result" aria-live="polite"></div>
+        </div>
+      </section>
+      <section id="timeline" class="page" hidden>
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">A HISTORY YOU CAN INSPECT</p>
+            <h1>决定如何走到今天。</h1>
+            <p class="lede">旧版本保留来路，明确的更新才改变当前状态。</p>
+          </div>
+        </div>
+        <div id="timeline-list" class="timeline"></div>
+      </section>
+      <section id="evidence" class="page" hidden>
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">FOLLOW THE EVIDENCE</p>
+            <h1>每个回答，都有来处。</h1>
+            <p class="lede" id="reader-description">
+              检索当前项目的记忆，检查实际进入回答的片段。
+            </p>
+          </div>
+        </div>
+        <form id="ask-form" class="ask-box">
+          <label for="question">你希望接着了解什么？</label
+          ><textarea
+            id="question"
+            rows="3"
+            placeholder="哪些记录支持当前采用的方案？"
+            required
+            maxlength="4000"
+          ></textarea>
+          <div class="ask-footer">
+            <span>沿用「继续工作」中选定的查看时间</span
+            ><button type="submit" class="primary">查找证据 →</button>
+          </div>
+        </form>
+        <div id="trace-empty" class="empty compact">
+          <p>提交问题后，这里展示真实检索、来源引用和回答状态。</p>
+        </div>
+        <div id="trace-result" hidden>
+          <div class="answer-card">
+            <span class="small-title" id="answer-status"></span>
+            <p id="answer-text"></p>
+            <div id="answer-citations"></div>
+          </div>
+          <div class="section-title">
+            <h2>本次可见证据</h2>
+            <span id="evidence-budget"></span>
+          </div>
+          <div id="evidence-list"></div>
+          <details class="technical">
+            <summary>检查检索与装包过程</summary>
+            <pre id="trace-detail"></pre>
+          </details>
+          <button id="download-trace" class="text-button">
+            导出本次验证记录 ↓
+          </button>
+        </div>
+      </section>
+      <section id="verify" class="page" hidden>
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">EVIDENCE BEFORE CLAIMS</p>
+            <h1>结果与边界，一起呈现。</h1>
+            <p class="lede">工程检查、构造任务和公开基准分别记录。</p>
+          </div>
+        </div>
+        <div id="verification"></div>
+      </section>
+      <footer>
+        续研 · 长期交互式 AI 记忆系统 <span>本地研究原型 · 单进程持久化</span>
+      </footer>
+    </main>
+    <dialog id="record-dialog">
+      <form id="record-form">
+        <div class="dialog-heading">
+          <h2 id="record-heading">记录新信息</h2>
+          <button
+            type="button"
+            class="close"
+            data-close="record-dialog"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="input-mode">
+          <label
+            ><input
+              type="radio"
+              name="input-mode"
+              value="record"
+              checked
+            />明确记录</label
+          ><label
+            ><input
+              type="radio"
+              name="input-mode"
+              value="text"
+            />自然文本</label
+          >
+        </div>
+        <p class="form-note" id="input-note">
+          由你明确确认字段和状态，系统保留原始输入及版本。
+        </p>
+        <div id="record-fields">
+          <label
+            >记录名称<input
+              id="record-key"
+              required
+              maxlength="120"
+              placeholder="例如：当前基线" /></label
+          ><label
+            >内容<textarea
+              id="record-value"
+              required
+              rows="3"
+              maxlength="6000"
+            ></textarea>
+          </label>
+          <div class="form-grid">
+            <label
+              >类型<select id="record-category">
+                <option value="constraint">约束</option>
+                <option value="decision">决定</option>
+                <option value="result">实验结果</option>
+                <option value="preference">偏好</option>
+                <option value="note">其他事实</option>
+              </select></label
+            ><label
+              >状态<select id="record-disposition">
+                <option value="confirmed">已确认</option>
+                <option value="proposed">仅提议</option>
+                <option value="rejected">未采用</option>
+              </select></label
+            >
+          </div>
+          <label
+            >依据或原因<textarea
+              id="record-reason"
+              rows="2"
+              maxlength="2000"
+            ></textarea>
+          </label>
+        </div>
+        <div id="text-fields" hidden>
+          <label
+            >原始文本<textarea
+              id="event-text"
+              rows="5"
+              maxlength="12000"
+            ></textarea></label
+          ><label class="checkbox"
+            ><input
+              id="event-explicit"
+              type="checkbox"
+            />我明确要求保留这条信息</label
+          >
+        </div>
+        <div class="form-grid">
+          <label
+            >会话名称<input
+              id="record-session"
+              value="session-1"
+              required
+              maxlength="120" /></label
+          ><label
+            >记录时间<input id="record-date" type="datetime-local" required
+          /></label>
+        </div>
+        <input id="replaces" type="hidden" />
+        <div class="dialog-footer">
+          <button type="button" data-close="record-dialog">取消</button
+          ><button type="submit" class="primary">保存记录</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="source-dialog">
+      <div class="dialog-heading">
+        <h2>来源与版本</h2>
+        <button class="close" data-close="source-dialog" aria-label="关闭">
+          ×
+        </button>
+      </div>
+      <div id="source-content"></div>
+    </dialog>
+    <dialog id="forget-dialog">
+      <form id="forget-form">
+        <div class="dialog-heading">
+          <h2>遗忘这条来源</h2>
+          <button
+            type="button"
+            class="close"
+            data-close="forget-dialog"
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <p>
+          这会移除该记忆及其来源事件，清除依赖它的检索内容和本项目的回答追踪。此操作不能撤销。
+        </p>
+        <p id="forget-label"></p>
+        <input id="forget-id" type="hidden" />
+        <div class="dialog-footer">
+          <button type="button" data-close="forget-dialog">保留</button
+          ><button type="submit" class="danger">确认遗忘</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

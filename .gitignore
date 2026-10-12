@@ -12,3 +12,16 @@ __pycache__/
 *.sqlite3
 .env
 eval/external/
+# Historical raw evidence remains local; the portable kit and hash index are in artifacts/.
+eval/reports/**
+build/
+dist/
+.venv-wheel*/
+node_modules/
+.npm-cache/
+eval/reports/**/environment/
+.mypy_cache/
+.ruff_cache/
+*.db-wal
+*.db-shm
+eval/reports/**/pytest-*/

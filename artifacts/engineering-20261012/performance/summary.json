@@ -1,0 +1,76 @@
+{
+  "started_utc": "2026-10-12T11:51:44.824618+00:00",
+  "python": "3.14.0",
+  "platform": "Windows-11-10.0.26100-SP0",
+  "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+  "logical_cpus": 16,
+  "provider": "deterministic hash embedding; no model/network calls",
+  "workload": "unique explicit records in one project, SQLite file, serialized writes, 30 distinct queries",
+  "timing": "wall clock; includes persistence; not human task time; no concurrent load",
+  "runs": [
+    {
+      "events": 1000,
+      "ingest_seconds": 18.44555229999969,
+      "ingest": {
+        "n": 1000,
+        "p50_ms": 19.158700004481943,
+        "p95_ms": 23.121099999116268
+      },
+      "query": {
+        "n": 30,
+        "p50_ms": 539.2677000054391,
+        "p95_ms": 567.3764000021038
+      },
+      "stages": {
+        "retrieve": {
+          "n": 30,
+          "p50_ms": 536.5697999986878,
+          "p95_ms": 565.0915000005625
+        },
+        "pack": {
+          "n": 30,
+          "p50_ms": 2.5394000003871042,
+          "p95_ms": 3.0441999988397583
+        },
+        "total": {
+          "n": 30,
+          "p50_ms": 539.2390500019246,
+          "p95_ms": 567.349800003285
+        }
+      },
+      "database_bytes": 8388608
+    },
+    {
+      "events": 10000,
+      "ingest_seconds": 212.6788852000027,
+      "ingest": {
+        "n": 10000,
+        "p50_ms": 20.454900004551746,
+        "p95_ms": 23.777100002916995
+      },
+      "query": {
+        "n": 30,
+        "p50_ms": 4783.044099996914,
+        "p95_ms": 5726.774900002056
+      },
+      "stages": {
+        "retrieve": {
+          "n": 30,
+          "p50_ms": 4781.439650003449,
+          "p95_ms": 5724.670200004766
+        },
+        "pack": {
+          "n": 30,
+          "p50_ms": 1.7461499992350582,
+          "p95_ms": 2.551999998104293
+        },
+        "total": {
+          "n": 30,
+          "p50_ms": 4783.023500003765,
+          "p95_ms": 5726.74890000053
+        }
+      },
+      "database_bytes": 81149952
+    }
+  ]
+}

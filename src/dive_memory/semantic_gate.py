@@ -42,7 +42,10 @@ so every accept/reject can be explained by naming the features that moved.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from hashlib import sha256
 from inspect import signature
+import json
+import re
 from typing import TYPE_CHECKING, Any, Sequence
 
 from .gate import (
@@ -112,6 +115,173 @@ def _is_single_valued_user_fact(text: str) -> bool:
     if structured.get("subject") != SUBJECT_USER:
         return False
     return is_single_valued(structured.get("predicate"))
+
+
+# ---------------------------------------------------------------------------
+# Document admission for non-trusted deliverables
+# ---------------------------------------------------------------------------
+# The semantic score answers "would this text be useful as a durable *personal
+# fact*?". Its prototype anchors are first-person statements, so a long assistant
+# deliverable -- a table, a plan, a recommendation -- scores near "world
+# knowledge" and is refused. Measured on the 500-question oracle corpus, that
+# cost is severe and one-sided:
+#
+#   * 51 of the 56 ``single-session-assistant`` questions have their gold
+#     evidence in an *assistant* turn (median 1181 characters), and the questions
+#     read "remind me what you recommended";
+#   * the write gate formed a memory for 3 of 57 sampled assistant turns (5.3%)
+#     against 22 of 57 user turns (38.6%), and the refusals were score-band
+#     refusals (SEMANTIC_REVIEW_BAND 19, UNASSERTED_CLAIM 15,
+#     SEMANTIC_LOW_FUTURE_UTILITY 11), not provenance refusals.
+#
+# A long text dilutes its own semantic score. That is a scoring artefact, not a
+# content judgment, and the gate should not silently turn it into "the system
+# cannot remember what it told the user". So a non-trusted *deliverable* may be
+# admitted as a **document memory** -- but only as a document:
+#
+#   * it is stored with ``subject=<source type>`` and no scalar slot, so it can
+#     never create or overwrite a *user* fact, and it is excluded from conflict
+#     detection (``oracle.evidence.DOCUMENT_PREDICATES``);
+#   * every hard floor still applies: sensitive data, empty input, a
+#     single-valued user fact, and non-document shape are all refused;
+#   * only ``conditional`` sources qualify. ``untrusted`` provenance (a scraped
+#     page, a CRM record) keeps the v1 refusal exactly, and ``user`` turns keep
+#     the semantic score, which is what actually separates a durable user fact
+#     from chatter.
+#
+# Cost, measured before the rule was written: a ``min_chars=200`` document rule
+# admits 5,446 of 10,960 non-empty corpus turns (49.7%) and covers the gold turn
+# of 50 of the 56 assistant questions. Two cheaper structural alternatives were
+# measured and rejected: "one document per session" (948 memories, 8.7%) covers
+# only 24/56, and containment-based restatement supersession collapses
+# 5,446 -> 5,443 because a revised deliverable rewrites its body rather than
+# appending to it. There is no cheap selective rule for this corpus; the choice
+# is this rule or an unanswerable question type, and it is reported either way.
+DOCUMENT_ADMISSION_MODES = ("off", "all")
+
+
+@dataclass(frozen=True, slots=True)
+class DocumentAdmissionPolicy:
+    """Whether a non-trusted deliverable may become a document memory."""
+
+    mode: str = "off"
+    min_chars: int = 200
+    max_chars: int = 8000
+    importance: float = 0.25
+
+    def __post_init__(self) -> None:
+        if self.mode not in DOCUMENT_ADMISSION_MODES:
+            raise ValueError(
+                f"document admission mode must be one of {DOCUMENT_ADMISSION_MODES!r}, "
+                f"got {self.mode!r}"
+            )
+        if self.min_chars < 1:
+            raise ValueError("min_chars must be positive")
+        if self.max_chars < self.min_chars:
+            raise ValueError("max_chars must not be below min_chars")
+        if not 0.0 <= self.importance <= 1.0:
+            raise ValueError("importance must be within [0, 1]")
+
+    @property
+    def enabled(self) -> bool:
+        return self.mode != "off"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "mode": self.mode,
+            "min_chars": self.min_chars,
+            "max_chars": self.max_chars,
+            "importance": self.importance,
+        }
+
+    def fingerprint(self) -> str:
+        encoded = json.dumps(self.to_dict(), sort_keys=True, separators=(",", ":")).encode("utf-8")
+        return sha256(encoded).hexdigest()
+
+
+#: A deliverable is multi-sentence or multi-line. One long *sentence* -- however
+#: long -- is a remark, and a remark is exactly what the semantic score is for.
+#: The test reads punctuation and line structure only; it never reads the words,
+#: so it cannot degrade into a keyword rule.
+_SENTENCE_TERMINATOR_FOLLOWED_BY_TEXT = re.compile(r"[.!?。！？]\s+\S")
+
+
+def _is_deliverable_shape(text: str) -> bool:
+    stripped = text.strip()
+    if "\n" in stripped:
+        return True
+    return bool(_SENTENCE_TERMINATOR_FOLLOWED_BY_TEXT.search(stripped))
+
+
+def admit_document(
+    text: str,
+    *,
+    source_type: str | None,
+    policy: DocumentAdmissionPolicy,
+) -> GateDecision:
+    """Decide whether ``text`` is admissible as a document memory.
+
+    Returns a full :class:`GateDecision` so the verdict is recorded in the same
+    write-decision audit trail as every other accept/reject, with its own
+    ``reason_code`` and the feature vector that produced it.
+    """
+
+    stripped = text.strip()
+    tier = _source_tier(source_type)
+    features = _features(
+        text, explicit=False, requested=False, ephemeral=False,
+        source_reliability=0.8, importance=0.0, sensitive=False,
+    )
+    features["source_trust"] = {"trusted": 1.0, "conditional": 0.6}.get(tier, 0.0)
+    features["document_chars"] = float(len(stripped))
+    features["document_shape"] = 1.0 if _is_deliverable_shape(stripped) else 0.0
+
+    def refuse(code: str, reason: str) -> GateDecision:
+        return GateDecision(
+            accepted=False, importance=0.0, confidence=0.8, salience=0.1,
+            durability="ephemeral", reason=reason, action=GateAction.SKIP,
+            reason_code=code, features=features, policy_version=POLICY_VERSION,
+        )
+
+    if not policy.enabled:
+        return refuse("DOCUMENT_ADMISSION_DISABLED",
+                      "document admission is off, so the semantic score decides")
+    if tier != "conditional":
+        # A trusted source already has the semantic path; an untrusted one keeps
+        # the v1 refusal. Neither may reach a memory through this door.
+        return refuse("DOCUMENT_SOURCE_NOT_CONDITIONAL",
+                      "only a delegated (conditional) source may create a document memory")
+    if len(stripped) < policy.min_chars:
+        return refuse("DOCUMENT_TOO_SHORT",
+                      "text is shorter than the document threshold")
+    if len(stripped) > policy.max_chars:
+        return refuse("DOCUMENT_TOO_LONG",
+                      "text exceeds the document size ceiling")
+    baseline = decide_v1(stripped, explicit=False, source_reliability=0.8)
+    if baseline.reason_code in {"EMPTY", "SENSITIVE_DATA"}:
+        # The v1 safety floor is never overridden by an admission policy.
+        return replace(baseline, policy_version=POLICY_VERSION)
+    if not _is_deliverable_shape(stripped):
+        return refuse("DOCUMENT_NOT_DELIVERABLE_SHAPE",
+                      "text is not multi-sentence or multi-line, so it is not a deliverable")
+    if _is_single_valued_user_fact(stripped):
+        # The provenance floor survives: this door leads to a document memory,
+        # never to a user fact, so the floor is checked anyway to keep the two
+        # paths from drifting.
+        return refuse("UNTRUSTED_SINGLE_VALUED_OVERWRITE",
+                      "non-user source cannot assert a single-valued user fact")
+    return GateDecision(
+        accepted=True,
+        importance=policy.importance,
+        confidence=0.8,
+        salience=min(1.0, policy.importance + 0.1),
+        durability="long_term",
+        reason="non-trusted deliverable admitted as a document memory",
+        action=GateAction.WRITE,
+        reason_code="DOCUMENT_FROM_NON_TRUSTED_SOURCE",
+        features=features,
+        policy_version=POLICY_VERSION,
+    )
 
 # ---------------------------------------------------------------------------
 # Prototype anchors
@@ -782,7 +952,8 @@ class SemanticGate:
 
     def __init__(self, encoder: Any, *, weights: SemanticWeights = DEFAULT_WEIGHTS,
                  cache_size: int = 0, encode_batch_size: int = 8,
-                 max_sequence_length: int | None = None) -> None:
+                 max_sequence_length: int | None = None,
+                 document_admission: DocumentAdmissionPolicy | None = None) -> None:
         if max_sequence_length is not None:
             if isinstance(max_sequence_length, bool) or int(max_sequence_length) <= 0:
                 raise ValueError("max_sequence_length must be a positive integer")
@@ -804,6 +975,21 @@ class SemanticGate:
         # Opt in to assertion-span recovery in ``extraction.extract_candidates``.
         # Other policies, including v1, retain whole-turn semantics.
         self.segment_assertions = True
+        # Opt in to document admission for non-trusted deliverables. Defaults to
+        # ``off`` so every existing caller and test keeps the whole-turn semantic
+        # verdict; the oracle runner turns it on explicitly and records the
+        # choice in the run manifest.
+        self.document_admission = document_admission or DocumentAdmissionPolicy()
+
+    def admit_document(self, text: str, *, source_type: str | None = None) -> GateDecision:
+        """The document-admission verdict for ``text``.
+
+        Exposed as a method so ``extraction.extract_candidates`` can reach it by
+        duck typing: that module must not import this one, because this one
+        already imports it.
+        """
+
+        return admit_document(text, source_type=source_type, policy=self.document_admission)
 
     def __call__(self, text: str, *, explicit: bool = False,
                  source_reliability: float = 0.8,
@@ -855,7 +1041,8 @@ def load_local_gate(*, model: str = "BAAI/bge-m3",
                     device: str | None = None,
                     cache_size: int = 0,
                     encode_batch_size: int = 8,
-                    max_sequence_length: int = 512) -> SemanticGate:
+                    max_sequence_length: int = 512,
+                    document_admission: DocumentAdmissionPolicy | None = None) -> SemanticGate:
     """Build the production gate from the pinned local bge-m3 checkpoint.
 
     ``cache_size`` opts into a bounded vector cache. Long sweeps should set it
@@ -872,4 +1059,5 @@ def load_local_gate(*, model: str = "BAAI/bge-m3",
         cache_size=cache_size,
         encode_batch_size=encode_batch_size,
         max_sequence_length=max_sequence_length,
+        document_admission=document_admission,
     )

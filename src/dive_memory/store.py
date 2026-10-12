@@ -7,12 +7,22 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from time import perf_counter
 
+from typing import Any, Mapping
+
 from . import lexical, temporal
 from .ids import cosine, stable_id
 from .embeddings import DeterministicEmbeddingProvider, EmbeddingProvider, embed_with_metadata
-from .models import Event, EvidenceState, Memory, MemoryStatus, utc_now
+from .document_chunks import DocumentChunkHit, split_document
+from .models import (
+    DOCUMENT_PREDICATE,
+    Event,
+    EvidenceState,
+    Memory,
+    MemoryStatus,
+    utc_now,
+)
 from .normalization import normalize_text
-from .retrieval import RetrievalConfig
+from .retrieval import RetrievalConfig, ScoringPolicy
 
 
 SCHEMA = """
@@ -89,6 +99,13 @@ CREATE TABLE IF NOT EXISTS embedding_vector_staging (
   PRIMARY KEY(memory_id, generation_id)
 );
 CREATE VIRTUAL TABLE IF NOT EXISTS memory_fts USING fts5(memory_id UNINDEXED, content, structured_content);
+CREATE TABLE IF NOT EXISTS document_chunks (
+  chunk_id TEXT PRIMARY KEY, memory_id TEXT NOT NULL, namespace TEXT NOT NULL,
+  ordinal INTEGER NOT NULL, char_start INTEGER NOT NULL, char_end INTEGER NOT NULL,
+  content TEXT NOT NULL, UNIQUE(memory_id, ordinal)
+);
+CREATE INDEX IF NOT EXISTS document_chunks_memory_idx ON document_chunks(memory_id);
+CREATE VIRTUAL TABLE IF NOT EXISTS document_chunk_fts USING fts5(chunk_id UNINDEXED, content);
 CREATE TABLE IF NOT EXISTS tombstones (object_type TEXT NOT NULL, object_id TEXT PRIMARY KEY,
   reason TEXT NOT NULL, deleted_at TEXT NOT NULL, namespace TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS memory_access (
@@ -121,6 +138,21 @@ CREATE TABLE IF NOT EXISTS profiles (
   current_json TEXT NOT NULL, generated_from_version INTEGER NOT NULL DEFAULT 0,
   updated_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS profile_revisions (
+  namespace TEXT NOT NULL, revision INTEGER NOT NULL, schema_version INTEGER NOT NULL DEFAULT 1,
+  current_json TEXT NOT NULL, provenance_json TEXT NOT NULL DEFAULT '{}', source_digest TEXT NOT NULL,
+  reason TEXT NOT NULL, created_at TEXT NOT NULL,
+  PRIMARY KEY(namespace, revision)
+);
+CREATE TABLE IF NOT EXISTS profile_proposals (
+  id TEXT PRIMARY KEY, namespace TEXT NOT NULL, base_revision INTEGER NOT NULL,
+  proposed_json TEXT NOT NULL, provenance_json TEXT NOT NULL, source_digest TEXT NOT NULL,
+  diff_json TEXT NOT NULL, generator_version TEXT NOT NULL,
+  status TEXT NOT NULL CHECK(status IN ('PENDING','APPROVED','REJECTED','STALE')),
+  created_at TEXT NOT NULL, reviewed_at TEXT, review_reason TEXT
+);
+CREATE INDEX IF NOT EXISTS profile_proposals_scope_idx
+  ON profile_proposals(namespace, created_at);
 CREATE TABLE IF NOT EXISTS memory_modes (
   namespace TEXT PRIMARY KEY, enabled INTEGER NOT NULL, updated_at TEXT NOT NULL
 );
@@ -388,13 +420,29 @@ class SQLiteStore:
         return {"attempts": attempts, "status": str(row["status"]) if row else "MISSING",
                 "retryable": bool(row and attempts < 3)}
 
-    def _memory(self, row: sqlite3.Row) -> Memory:
-        sources = [r[0] for r in self.db.execute("SELECT event_id FROM memory_sources WHERE memory_id=?", (row["id"],))]
+    def _memory(self, row: sqlite3.Row, *, source_event_ids: list[str] | None = None) -> Memory:
+        sources = source_event_ids if source_event_ids is not None else [
+            r[0] for r in self.db.execute("SELECT event_id FROM memory_sources WHERE memory_id=?", (row["id"],))]
         return Memory(row["id"], row["namespace"], row["kind"], EvidenceState(row["evidence_state"]), row["content"],
                       json.loads(row["structured_content"]), MemoryStatus(row["status"]), row["importance"], row["confidence"],
                       row["salience"], row["durability"], row["valid_from"], row["valid_to"], row["observed_at"],
                       row["created_at"], row["updated_at"], row["version"], sources, row["supersedes_id"],
                       row["contradicts_id"], row["model_version"], row["extractor_version"])
+
+    def _sources_for_namespace(self, namespace: str) -> dict[str, list[str]]:
+        """Batch provenance hydration, preserving primary-key source order."""
+        result: dict[str, list[str]] = {}
+        for row in self.db.execute(
+            "SELECT s.memory_id,s.event_id FROM memory_sources s "
+            "JOIN memories m ON m.id=s.memory_id WHERE m.namespace=? "
+            "ORDER BY s.memory_id,s.event_id", (namespace,),
+        ):
+            result.setdefault(row["memory_id"], []).append(row["event_id"])
+        return result
+
+    def write_decisions_for_event(self, event_id: str) -> list[dict]:
+        return [dict(row) for row in self.db.execute(
+            "SELECT * FROM write_decisions WHERE event_id=? ORDER BY candidate_index", (event_id,))]
 
     def get_memory(self, memory_id: str) -> Memory | None:
         row = self.db.execute("SELECT * FROM memories WHERE id=?", (memory_id,)).fetchone()
@@ -454,6 +502,8 @@ class SQLiteStore:
         self.db.execute("INSERT INTO memory_fts VALUES (?,?,?)",
                         (memory.id, lexical.index_document(memory.content),
                          lexical.structured_document(memory.structured_content)))
+        if _is_document_memory(memory):
+            self._index_document_chunks(memory.id, memory.namespace, memory.content)
         snapshot = {
             "namespace": memory.namespace,
             "kind": memory.kind,
@@ -480,6 +530,82 @@ class SQLiteStore:
              memory.source_event_ids[0] if memory.source_event_ids else None, memory.created_at),
         )
         self._commit()
+
+    def _index_document_chunks(self, memory_id: str, namespace: str, content: str) -> None:
+        """Build the disposable passage index from a canonical document memory."""
+
+        for chunk in split_document(content):
+            chunk_id = stable_id("docchunk", memory_id, str(chunk.index))
+            self.db.execute(
+                "INSERT INTO document_chunks(chunk_id,memory_id,namespace,ordinal,char_start,char_end,content) "
+                "VALUES (?,?,?,?,?,?,?)",
+                (chunk_id, memory_id, namespace, chunk.index, chunk.start, chunk.end, chunk.content),
+            )
+            self.db.execute(
+                "INSERT INTO document_chunk_fts(chunk_id,content) VALUES (?,?)",
+                (chunk_id, lexical.index_document(chunk.content)),
+            )
+
+    def search_document_chunks(
+        self,
+        namespace: str,
+        query: str,
+        *,
+        limit: int = 20,
+        as_of: str | None = None,
+        observed_as_of: str | None = None,
+        include_history: bool = False,
+    ) -> list[DocumentChunkHit]:
+        """Opt-in FTS search over exact passages of canonical document memories.
+
+        The returned parent id is the provenance bridge; callers should obtain
+        source event ids from that memory.  Tenant, status, valid-time and
+        observation-time constraints are checked before a hit leaves the store.
+        This method does not alter the default ``search`` ranking or results.
+        """
+
+        if limit <= 0:
+            return []
+        expression = lexical.match_expression(query)
+        if not expression:
+            return []
+        status_clause = (
+            "m.status NOT IN ('DELETED','MERGED')" if include_history
+            else "m.status IN ('ACTIVE','REINFORCED')"
+        )
+        try:
+            rows = self.db.execute(
+                "SELECT c.memory_id,c.ordinal,c.char_start,c.char_end,c.content,"
+                "m.valid_from,m.valid_to,m.observed_at FROM document_chunk_fts f "
+                "JOIN document_chunks c ON c.chunk_id=f.chunk_id "
+                "JOIN memories m ON m.id=c.memory_id "
+                "WHERE document_chunk_fts MATCH ? AND c.namespace=? AND m.namespace=? "
+                "AND " + status_clause + " ORDER BY bm25(document_chunk_fts),c.memory_id,c.ordinal",
+                (expression, namespace, namespace),
+            )
+            observed_cutoff = temporal.parse_instant(observed_as_of)
+            hits: list[DocumentChunkHit] = []
+            for row in rows:
+                if as_of is not None and not temporal.visible_at(row["valid_from"], row["valid_to"], as_of):
+                    continue
+                observed = temporal.parse_instant(row["observed_at"])
+                if observed_cutoff is not None and observed is not None and observed > observed_cutoff:
+                    continue
+                hits.append(DocumentChunkHit(
+                    parent_memory_id=row["memory_id"],
+                    index=int(row["ordinal"]),
+                    start=int(row["char_start"]),
+                    end=int(row["char_end"]),
+                    content=row["content"],
+                    score=1.0 / (1.0 + len(hits)),
+                ))
+                if len(hits) >= limit:
+                    break
+            return hits
+        except sqlite3.OperationalError:
+            # A malformed or unsupported FTS expression must not bypass the
+            # normal retrieval path or expose a different tenant's passages.
+            return []
 
     def add_memory_source(self, memory_id: str, event_id: str) -> None:
         self.db.execute("INSERT OR IGNORE INTO memory_sources(memory_id,event_id) VALUES (?,?)",
@@ -636,10 +762,11 @@ class SQLiteStore:
         with self.transaction():
             if namespace is None:
                 self.db.execute("DELETE FROM memory_fts")
+                self.db.execute("DELETE FROM document_chunk_fts")
                 for table in ("memory_access", "memory_transitions", "memory_relations", "relations", "memory_entities", "entities",
                               "memory_vectors", "memory_vector_state", "embedding_vector_staging",
-                              "memory_sources", "memory_versions", "memory_keys", "write_decisions",
-                              "memories", "profiles"):
+                              "memory_sources", "memory_versions", "memory_keys", "write_decisions", "document_chunks",
+                              "memories", "profile_proposals", "profile_revisions", "profiles"):
                     self.db.execute(f"DELETE FROM {table}")
                 self.db.execute(
                     "UPDATE outbox SET status='PENDING', attempts=0, last_error=NULL, claimed_at=NULL, processed_at=NULL "
@@ -652,6 +779,12 @@ class SQLiteStore:
             if memory_ids:
                 placeholders = ",".join("?" for _ in memory_ids)
                 self.db.execute("DELETE FROM memory_transitions WHERE namespace=?", (namespace,))
+                self.db.execute(
+                    "DELETE FROM document_chunk_fts WHERE chunk_id IN "
+                    "(SELECT chunk_id FROM document_chunks WHERE memory_id IN (" + placeholders + "))",
+                    memory_ids,
+                )
+                self.db.execute("DELETE FROM document_chunks WHERE memory_id IN (" + placeholders + ")", memory_ids)
                 for table, column in (("memory_fts", "memory_id"), ("memory_access", "memory_id"),
                                       ("memory_relations", "memory_id"), ("memory_entities", "memory_id"),
                                       ("memory_vectors", "memory_id"), ("memory_vector_state", "memory_id"),
@@ -661,6 +794,8 @@ class SQLiteStore:
                     self.db.execute(f"DELETE FROM {table} WHERE {column} IN ({placeholders})", memory_ids)
             self.db.execute("DELETE FROM relations WHERE namespace=?", (namespace,))
             self.db.execute("DELETE FROM entities WHERE namespace=?", (namespace,))
+            self.db.execute("DELETE FROM profile_proposals WHERE namespace=?", (namespace,))
+            self.db.execute("DELETE FROM profile_revisions WHERE namespace=?", (namespace,))
             self.db.execute("DELETE FROM profiles WHERE namespace=?", (namespace,))
             self.db.execute(
                 "DELETE FROM write_decisions WHERE event_id IN (SELECT id FROM events WHERE namespace=?)",
@@ -682,7 +817,7 @@ class SQLiteStore:
         """
         clause = "WHERE namespace=? AND status != 'DELETED'" if namespace else "WHERE status != 'DELETED'"
         params = (namespace,) if namespace else ()
-        rows = self.db.execute("SELECT id, content, structured_content FROM memories " + clause, params).fetchall()
+        rows = self.db.execute("SELECT id, namespace, content, structured_content FROM memories " + clause, params).fetchall()
         documents = [(row["id"], lexical.index_document(row["content"]),
                       lexical.structured_document(json.loads(row["structured_content"]))) for row in rows]
         with self.transaction():
@@ -691,10 +826,18 @@ class SQLiteStore:
             if namespace:
                 self.db.execute("DELETE FROM memory_fts WHERE memory_id IN "
                                 "(SELECT id FROM memories WHERE namespace=?)", (namespace,))
+                self.db.execute("DELETE FROM document_chunk_fts WHERE chunk_id IN "
+                                "(SELECT chunk_id FROM document_chunks WHERE namespace=?)", (namespace,))
+                self.db.execute("DELETE FROM document_chunks WHERE namespace=?", (namespace,))
             else:
                 self.db.execute("DELETE FROM memory_fts")
+                self.db.execute("DELETE FROM document_chunk_fts")
+                self.db.execute("DELETE FROM document_chunks")
             for document in documents:
                 self.db.execute("INSERT INTO memory_fts VALUES (?,?,?)", document)
+            for row in rows:
+                if json.loads(row["structured_content"]).get("predicate") == DOCUMENT_PREDICATE:
+                    self._index_document_chunks(row["id"], row["namespace"], row["content"])
         return len(rows)
 
     def reindex_vectors(self, namespace: str | None = None) -> int:
@@ -840,7 +983,7 @@ class SQLiteStore:
         trace.setdefault("channels", {})
         trace.setdefault("exclusions", {"temporal": 0, "model_generation": 0, "deletion_status": 0})
         executed = [channel for channel in (
-            "bm25", "dense", "predicate", "temporal", "entity", "relation", "multi_hop"
+            "bm25", "document_chunk", "dense", "predicate", "temporal", "entity", "relation", "multi_hop"
         ) if channel in enabled and (channel != "multi_hop" or multi_hop)]
         trace["executed_channels"] = executed
 
@@ -880,6 +1023,26 @@ class SQLiteStore:
             trace["channels"]["bm25"] = {
                 "candidate_count": len(lexical_scores),
                 "latency_ms": (perf_counter() - bm25_started) * 1000,
+            }
+        chunk_scores: dict[str, float] = {}
+        best_chunk_spans: dict[str, tuple[int, int]] = {}
+        if "document_chunk" in enabled:
+            chunk_started = perf_counter()
+            chunk_hits = self.search_document_chunks(
+                namespace, query,
+                limit=max(20, config.depth("document_chunk") * 6),
+                as_of=as_of, observed_as_of=observed_as_of,
+                include_history=include_history,
+            )
+            for hit in chunk_hits:
+                if hit.parent_memory_id in chunk_scores:
+                    continue
+                chunk_scores[hit.parent_memory_id] = 1.0 / (1.0 + len(chunk_scores))
+                best_chunk_spans[hit.parent_memory_id] = (hit.start, hit.end)
+            trace["channels"]["document_chunk"] = {
+                "candidate_count": len(chunk_scores),
+                "passage_hits": len(chunk_hits),
+                "latency_ms": (perf_counter() - chunk_started) * 1000,
             }
         rows = self.db.execute(
             "SELECT m.*, v.vector, COALESCE(s.degraded,0) AS vector_degraded,s.generation_id FROM memories m "
@@ -947,8 +1110,9 @@ class SQLiteStore:
         ).fetchone()[0]
         candidates: list[dict] = []
         temporal_started = perf_counter()
+        sources = self._sources_for_namespace(namespace)
         for row in rows:
-            memory = self._memory(row)
+            memory = self._memory(row, source_event_ids=sources.get(row["id"], []))
             if "temporal" in enabled and not temporal.visible_at(memory.valid_from, memory.valid_to, as_of):
                 trace["exclusions"]["temporal"] += 1
                 continue
@@ -957,7 +1121,7 @@ class SQLiteStore:
             if "temporal" in enabled and observed_cutoff is not None and observed_at is not None and observed_at > observed_cutoff:
                 trace["exclusions"]["temporal"] += 1
                 continue
-            stored_vector = json.loads(row["vector"])
+            stored_vector = json.loads(row["vector"]) if dense_enabled else []
             generation_matches = row["generation_id"] in {None, active_generation}
             if "dense" in enabled and not generation_matches:
                 trace["exclusions"]["model_generation"] += 1
@@ -967,6 +1131,7 @@ class SQLiteStore:
             ) else 0.0
             sparse = lexical_scores.get(memory.id, 0.0)
             candidates.append({"memory": memory, "dense": dense, "bm25": sparse,
+                               "document_chunk": chunk_scores.get(memory.id, 0.0),
                                "entity": memory.id in entity_matches,
                                "relation": memory.id in relation_matches,
                                "multi_hop": memory.id in multi_hop_matches,
@@ -992,7 +1157,7 @@ class SQLiteStore:
         # Each channel ranks the candidates it actually supports; a single weak
         # deterministic-vector collision is filtered before fusion.
         ranks: dict[str, dict[str, int]] = {}
-        for channel in ("dense", "bm25"):
+        for channel in ("dense", "bm25", "document_chunk"):
             if channel not in enabled:
                 ranks[channel] = {}
                 continue
@@ -1014,7 +1179,7 @@ class SQLiteStore:
         scored: list[tuple[Memory, float, list[str]]] = []
         for candidate in candidates:
             memory = candidate["memory"]
-            channels = [channel for channel in ("dense", "bm25", "entity", "relation", "multi_hop", "predicate")
+            channels = [channel for channel in ("dense", "bm25", "document_chunk", "entity", "relation", "multi_hop", "predicate")
                         if memory.id in ranks[channel]]
             if not channels:
                 continue
@@ -1024,11 +1189,12 @@ class SQLiteStore:
                 if candidate["dense"] < (0.15 / 0.55):
                     continue
             rrf = sum(config.weight(channel) / (config.rrf_k + ranks[channel][memory.id]) for channel in channels)
-            # Lightweight deterministic rerank. RRF remains dominant while
-            # evidence quality breaks close ties without mixing raw channel
-            # scales back into the fusion score.
-            quality = 0.8 + 0.1 * memory.importance + 0.1 * memory.confidence
-            score = rrf * quality
+            # Lightweight deterministic rerank. RRF remains dominant while the
+            # configured quality term breaks close ties without mixing raw
+            # channel scales back into the fusion score. ``ScoringPolicy.legacy()``
+            # reproduces the historical formula term for term, so changing a
+            # component is always a visible configuration change.
+            score = rrf * _scoring_quality(memory, candidate, config.scoring, as_of)
             scored.append((memory, score, channels))
         if temporal_mode in {"earliest", "latest"}:
             def time_key(item: tuple[Memory, float, list[str]]) -> datetime:
@@ -1044,8 +1210,10 @@ class SQLiteStore:
         final_scores = {memory.id: score for memory, score, _channels in final}
         trace["candidates"] = [{
             "memory_id": candidate["memory"].id,
-            "raw_scores": {channel: candidate[channel] for channel in ("dense", "bm25")
+            "raw_scores": {channel: candidate[channel] for channel in ("dense", "bm25", "document_chunk")
                            if channel in enabled},
+            **({"document_chunk_span": best_chunk_spans.get(candidate["memory"].id)}
+               if "document_chunk" in enabled else {}),
             "matches": {channel: bool(candidate[channel])
                         for channel in ("entity", "relation", "multi_hop", "predicate")
                         if channel in enabled and (channel != "multi_hop" or multi_hop)},
@@ -1071,6 +1239,11 @@ class SQLiteStore:
 
     def _delete_memory_projections(self, memory_id: str) -> None:
         self.db.execute("DELETE FROM memory_fts WHERE memory_id=?", (memory_id,))
+        self.db.execute(
+            "DELETE FROM document_chunk_fts WHERE chunk_id IN "
+            "(SELECT chunk_id FROM document_chunks WHERE memory_id=?)", (memory_id,),
+        )
+        self.db.execute("DELETE FROM document_chunks WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM memory_vectors WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM memory_vector_state WHERE memory_id=?", (memory_id,))
         self.db.execute("DELETE FROM embedding_vector_staging WHERE memory_id=?", (memory_id,))
@@ -1199,4 +1372,93 @@ class SQLiteStore:
         rows = self.db.execute(
             "SELECT * FROM memories WHERE namespace=?" + clause + " ORDER BY observed_at, created_at, id",
             (namespace,)).fetchall()
-        return [self._memory(row) for row in rows]
+        sources = self._sources_for_namespace(namespace)
+        return [self._memory(row, source_event_ids=sources.get(row["id"], [])) for row in rows]
+
+
+# --------------------------------------------------------------------------- #
+# Retrieval re-rank
+# --------------------------------------------------------------------------- #
+
+
+def _is_document_memory(memory: Memory) -> bool:
+    return str((memory.structured_content or {}).get("predicate", "")) == DOCUMENT_PREDICATE
+
+
+def _recency_factor(memory: Memory, as_of: str | None, half_life_days: float) -> float:
+    """A half-life decay on the memory's anchor instant, relative to ``as_of``.
+
+    Returns a neutral ``1.0`` when the age cannot be computed (no ``as_of``, no
+    anchor, an unparseable timestamp). Neutral is the honest value: a missing
+    clock is not evidence that a memory is either fresh or stale.
+    """
+
+    if not as_of:
+        return 1.0
+    anchor = memory.valid_from or memory.observed_at
+    anchor_instant = temporal.parse_instant(anchor) if anchor else None
+    reference = temporal.parse_instant(as_of)
+    if anchor_instant is None or reference is None:
+        return 1.0
+    age_days = (reference - anchor_instant).total_seconds() / 86400.0
+    if age_days <= 0:
+        return 1.0
+    return 0.5 ** (age_days / half_life_days)
+
+
+def _temporal_fit(memory: Memory, as_of: str | None) -> float:
+    """Whether the memory's validity window covers the query instant.
+
+    A closed window is penalised, not dropped: the reader must still be able to
+    see it when the question asks what used to be true.
+    """
+
+    if not as_of:
+        return 1.0
+    reference = temporal.parse_instant(as_of)
+    if reference is None:
+        return 1.0
+    start = temporal.parse_instant(memory.valid_from) if memory.valid_from else None
+    end = temporal.parse_instant(memory.valid_to) if memory.valid_to else None
+    if start is not None and reference < start:
+        return 0.0
+    if end is not None and reference > end:
+        return 0.0
+    return 1.0
+
+
+def _scoring_quality(
+    memory: Memory,
+    candidate: Mapping[str, Any],
+    policy: ScoringPolicy,
+    as_of: str | None,
+) -> float:
+    """The quality term of the retrieval re-rank, from the configured policy.
+
+    Split out of ``SQLiteStore.search`` so every named component is visible in
+    one place and testable without a database.
+    """
+
+    quality = policy.base_quality
+    quality += policy.importance_weight * float(memory.importance or 0.0)
+    quality += policy.confidence_weight * float(memory.confidence or 0.0)
+    if policy.semantic_weight:
+        quality += policy.semantic_weight * min(1.0, max(0.0, float(candidate.get("dense") or 0.0)))
+    if policy.keyword_weight:
+        quality += policy.keyword_weight * min(1.0, max(0.0, float(candidate.get("bm25") or 0.0)))
+    if policy.recency_weight:
+        quality += policy.recency_weight * _recency_factor(
+            memory, as_of, policy.recency_half_life_days
+        )
+    if policy.temporal_weight:
+        quality += policy.temporal_weight * _temporal_fit(memory, as_of)
+    state = str(getattr(memory.status, "value", memory.status))
+    if state == "SUPERSEDED":
+        quality *= policy.superseded_factor
+    elif state in {"ARCHIVED", "DELETED", "MERGED"}:
+        quality *= policy.archived_factor
+    if policy.document_weight != 1.0:
+        structured = memory.structured_content or {}
+        if str(structured.get("predicate", "")) == DOCUMENT_PREDICATE:
+            quality *= policy.document_weight
+    return quality

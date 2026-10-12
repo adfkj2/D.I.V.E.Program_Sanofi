@@ -1,0 +1,70 @@
+{
+  "started_utc": "2026-10-12T14:23:17.035137+00:00",
+  "python": "3.14.0",
+  "platform": "Windows-11-10.0.26100-SP0",
+  "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+  "logical_cpus": 16,
+  "provider": "deterministic hash embedding; no model/network calls",
+  "workload": "unique explicit records in one project, SQLite file, serialized writes, 30 distinct queries",
+  "timing": "wall clock; includes persistence; not human task time; no concurrent load",
+  "runs": [
+    {
+      "events": 1000,
+      "ingest_seconds": null,
+      "ingest": null,
+      "query": {
+        "n": 30,
+        "p50_ms": 35.622600003989646,
+        "p95_ms": 47.991200000979006
+      },
+      "reused_input": true,
+      "stages": {
+        "retrieve": {
+          "n": 30,
+          "p50_ms": 34.33220000079018,
+          "p95_ms": 45.988000005309004
+        },
+        "pack": {
+          "n": 30,
+          "p50_ms": 1.0635500002535991,
+          "p95_ms": 1.5203000002657063
+        },
+        "total": {
+          "n": 30,
+          "p50_ms": 35.60625000318396,
+          "p95_ms": 47.969899998861365
+        }
+      },
+      "database_bytes": 8433664
+    },
+    {
+      "events": 10000,
+      "ingest_seconds": null,
+      "ingest": null,
+      "query": {
+        "n": 30,
+        "p50_ms": 522.3388999984309,
+        "p95_ms": 582.9977999965195
+      },
+      "reused_input": true,
+      "stages": {
+        "retrieve": {
+          "n": 30,
+          "p50_ms": 521.0598500016204,
+          "p95_ms": 580.9291000041412
+        },
+        "pack": {
+          "n": 30,
+          "p50_ms": 1.0701500032155309,
+          "p95_ms": 1.5829000039957464
+        },
+        "total": {
+          "n": 30,
+          "p50_ms": 522.2771000044304,
+          "p95_ms": 582.9735000006622
+        }
+      },
+      "database_bytes": 81195008
+    }
+  ]
+}

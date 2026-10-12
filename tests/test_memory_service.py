@@ -116,14 +116,63 @@ def test_consolidation_is_dry_run_before_mutation():
     report = service.consolidate("u1", dry_run=True)
     assert report.examined == 2
     assert report.merged == 1
+    assert len(report.changes) == 1
+    assert report.changes[0].survivor_id == first["memory_ids"][0]
+    assert report.changes[0].duplicate_id == duplicate.id
     assert service.get_memory(duplicate.id).status.value == "ACTIVE"
-    service.consolidate("u1", dry_run=False)
+    dry_run_job = service.jobs("u1")[0]
+    assert dry_run_job["dry_run"] is True
+    assert dry_run_job["output_summary"]["changes"][0]["duplicate_id"] == duplicate.id
+
+    committed = service.consolidate("u1", dry_run=False)
     assert service.get_memory(duplicate.id).status.value == "MERGED"
+    assert committed.changes == report.changes
+    commit_job = service.jobs("u1")[0]
+    assert commit_job["dry_run"] is False
+    assert commit_job["output_summary"]["changes"] == [committed.changes[0].to_dict()]
     survivor = service.get_memory(first["memory_ids"][0])
     assert set(survivor.source_event_ids) == {first["event_id"], "evt-legacy-duplicate"}
     assert service.store.db.execute(
         "SELECT 1 FROM memory_vectors WHERE memory_id=?", (duplicate.id,),
     ).fetchone() is None
+
+
+def test_consolidation_does_not_merge_different_subjects_with_the_same_value():
+    service = MemoryService()
+    alice = service.ingest("u1", "Alice lives in Shanghai", explicit=True, source_type="user")
+    bob = service.ingest("u1", "Bob lives in Shanghai", explicit=True, source_type="user")
+
+    report = service.consolidate("u1", dry_run=False)
+
+    assert report.merged == 0
+    assert report.changes == ()
+    assert service.get_memory(alice["memory_ids"][0]).status.value == "ACTIVE"
+    assert service.get_memory(bob["memory_ids"][0]).status.value == "ACTIVE"
+
+
+def test_consolidation_does_not_merge_distinct_validity_windows():
+    service = MemoryService()
+    first = service.ingest("u1", "请记住我喜欢绿茶", explicit=True)
+    original = service.get_memory(first["memory_ids"][0])
+    service.store.close_validity(original.id, "2025-02-01T00:00:00+00:00")
+    service.store.update_status(original.id, original.status)
+    historical = service.get_memory(original.id)
+    later = replace(
+        historical,
+        id="mem-later-validity",
+        valid_from="2025-02-01T00:00:00+00:00",
+        valid_to=None,
+        source_event_ids=["evt-later-validity"],
+        created_at="2025-02-01T00:00:00+00:00",
+        updated_at="2025-02-01T00:00:00+00:00",
+    )
+    service.store.add_memory(later)
+
+    report = service.consolidate("u1", dry_run=False)
+
+    assert report.merged == 0
+    assert service.get_memory(original.id).status.value == "ACTIVE"
+    assert service.get_memory(later.id).status.value == "ACTIVE"
 
 
 def test_context_builder_obeys_budget_and_planner_intent():

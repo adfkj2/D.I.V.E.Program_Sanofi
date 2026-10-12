@@ -37,6 +37,28 @@ def test_http_event_retrieve_and_idempotency():
     assert result.json()["items"][0]["memory"]["content"] == "preference: 咖啡"
 
 
+def test_hot_profile_review_routes_require_explicit_review_and_scope():
+    app = create_app(":memory:", authorizer=StaticTokenAuthorizer({"token-u1": {"u1"}}))
+    service = app.state.memory_service
+    service.ingest("u1", "我住在上海", explicit=True, source_type="user")
+    headers = {"Authorization": "Bearer token-u1"}
+    base = "/v1/users/u1/hot-profile"
+    proposal = request(app, "POST", base + "/proposals", headers=headers)
+    assert proposal.status_code == 200
+    assert request(app, "GET", base, headers=headers).json()["fields"] == {}
+    pid = proposal.json()["proposal_id"]
+    reviewed = request(app, "POST", base + f"/proposals/{pid}/review", headers=headers,
+                       json={"approve": True, "reason": "verified source"})
+    assert reviewed.status_code == 200
+    assert reviewed.json()["status"] == "APPROVED"
+    assert request(app, "GET", base, headers=headers).json()["fields"] == {"residence": "上海"}
+    assert request(app, "POST", f"/v1/users/u2/hot-profile/proposals/{pid}/review", headers=headers,
+                   json={"approve": True, "reason": "cross scope"}).status_code == 403
+    rolled = request(app, "POST", base + "/rollback", headers=headers,
+                     json={"revision": 1, "reason": "reviewed rollback"})
+    assert rolled.json()["revision"] == 2
+
+
 def test_http_deferred_job_context_and_delete_contracts():
     app = create_app(":memory:")
     created = request(app, "POST", "/v1/events", json={

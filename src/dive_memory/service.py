@@ -11,6 +11,7 @@ from .ids import new_id, stable_id
 from .lifecycle import ConsolidationReport, archive_expired, consolidate
 from .models import Event, EvidenceState, Memory, MemoryStatus, RetrievalItem, RetrievalResult, utc_now
 from . import temporal
+from . import hot_memory
 from .context import pack_context
 from .planner import plan_query
 from .llm import ExtractionOutcome, ExtractionOutcomeCode, ExtractionProvider, HeuristicExtractionProvider
@@ -55,13 +56,17 @@ def _extractor_source_kwargs(extractor: Any, source_type: str | None) -> dict[st
 class MemoryService:
     def __init__(self, db_path: str = ":memory:", extractor: ExtractionProvider | None = None,
                  embedder: EmbeddingProvider | None = None, store: Any | None = None,
-                 gate: Any | None = None) -> None:
+                 gate: Any | None = None, deterministic_ids: bool = False,
+                 episodic_policy: Any | None = None) -> None:
         self.store = store or SQLiteStore(db_path, embedder=embedder)
+        self.deterministic_ids = deterministic_ids
         self._lock = threading.RLock()
         # ``gate`` is opt-in: passing a gate (e.g. ``semantic_gate.SemanticGate``)
         # selects the v2 policy; omitting it keeps the v1 keyword provider that
         # every existing call site expects.
-        self.extractor = extractor or HeuristicExtractionProvider(gate=gate)
+        if extractor is not None and episodic_policy is not None:
+            raise ValueError("episodic_policy requires the built-in extraction provider")
+        self.extractor = extractor or HeuristicExtractionProvider(gate=gate, episodic_policy=episodic_policy)
         self.resolver = RelationshipResolver()
 
     @_synchronized
@@ -84,7 +89,9 @@ class MemoryService:
             payload["source_type"] = str(source_type)
         if supersedes_memory_id:
             payload["supersedes_memory_id"] = supersedes_memory_id
-        event = Event(new_id("evt"), namespace, event_type, payload, observed_at,
+        event_id = (stable_id("evt", namespace, idempotency_key)
+                    if self.deterministic_ids and idempotency_key else new_id("evt"))
+        event = Event(event_id, namespace, event_type, payload, observed_at,
                       occurred_from=occurred_from, occurred_to=occurred_to,
                       source_message_id=source_message_id, idempotency_key=idempotency_key)
         accepted = self.store.append_event(event)
@@ -290,7 +297,7 @@ class MemoryService:
             rows = self.store.search(namespace, query, limit=limit, as_of=as_of,
                                      include_history=include_history, predicates=query_plan.predicates,
                                      temporal_mode=query_plan.temporal_mode, observed_as_of=observed_as_of,
-                                     multi_hop=query_plan.intent == "multi_hop", config=config, trace=trace)
+                                     multi_hop=intent == "multi_hop", config=config, trace=trace)
             items = [RetrievalItem(memory, score, channels, memory.source_event_ids) for memory, score, channels in rows]
             with self.store.transaction():
                 accessed_at = utc_now()
@@ -332,6 +339,7 @@ class MemoryService:
             self.store.purge_memory(memory_id, reason, utc_now())
         else:
             self.store.tombstone_memory(memory_id, reason, utc_now())
+        hot_memory.redact(self.store, memory.namespace)
         self._refresh_profile(memory.namespace)
 
     @_synchronized
@@ -343,6 +351,7 @@ class MemoryService:
         namespaces.add(event.namespace)
         deleted = self.store.tombstone_event(event_id, reason, utc_now(), hard=hard)
         for namespace in namespaces:
+            hot_memory.redact(self.store, namespace)
             self._refresh_profile(namespace)
         return deleted
 
@@ -437,6 +446,22 @@ class MemoryService:
     @_synchronized
     def profile(self, namespace: str) -> dict:
         return self.store.get_profile(namespace) or {"_meta": {"schema_version": 1, "generated_from_version": 0}}
+
+    @_synchronized
+    def hot_profile(self, namespace: str) -> dict:
+        return hot_memory.current(self, namespace)
+
+    @_synchronized
+    def propose_hot_profile(self, namespace: str) -> dict:
+        return hot_memory.propose(self, namespace)
+
+    @_synchronized
+    def review_hot_profile(self, namespace: str, proposal_id: str, *, approve: bool, reason: str) -> dict:
+        return hot_memory.review(self, namespace, proposal_id, approve=approve, reason=reason)
+
+    @_synchronized
+    def rollback_hot_profile(self, namespace: str, revision: int, *, reason: str) -> dict:
+        return hot_memory.rollback(self, namespace, revision, reason=reason)
 
     def _refresh_profile(self, namespace: str) -> None:
         # For a single-valued predicate the profile must pick by *provenance*
@@ -568,6 +593,7 @@ class MemoryService:
             raise
         self.store.finish_job(job_id, "DONE", {
             "examined": report.examined, "merged": report.merged, "archived": report.archived,
+            "changes": [change.to_dict() for change in report.changes],
         }, utc_now())
         return report
 

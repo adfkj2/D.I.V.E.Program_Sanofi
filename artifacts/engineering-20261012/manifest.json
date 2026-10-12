@@ -1,0 +1,63 @@
+{
+  "schema": "dive-engineering-delivery-v1",
+  "date": "2026-10-12",
+  "original_reports_retained": true,
+  "public_transformation": "absolute repository paths and test hostname redacted; numerical results unchanged",
+  "new_model_calls": 0,
+  "new_model_cost_cny": "0",
+  "official_score": "NOT_EVALUATED",
+  "external_pending": [
+    "organizer rule interpretation",
+    "official judge",
+    "real user task observation",
+    "independent natural-language holdout",
+    "remote CI including PostgreSQL"
+  ],
+  "evidence": [
+    {
+      "file": "portable-replay.json",
+      "original_sha256": "51d3d036c8a22416d62bcaf1dc86c6cd62ce83ed23a7f287adedb72995f7fd61",
+      "public_sha256": "002c2a5f93197995968e72a425e8de795fc1433b3429fd7e508d68269f5811bf"
+    },
+    {
+      "file": "replay-bundle.json",
+      "original_sha256": "64d28454c9294628d0b758ac6d22ea2d4dca8716c7d0e00b10a8570dd623fd9e",
+      "public_sha256": "4cc1f63b3cdaddab605ea011c2c3f0d6743236d099c3bb5e10e8b022c9ef7a1c"
+    },
+    {
+      "file": "structured-validation/summary.json",
+      "original_sha256": "6e15429572d92c60d406f0e7ed253d3a014f011b87cd573125affd64a3ffcfea",
+      "public_sha256": "6e15429572d92c60d406f0e7ed253d3a014f011b87cd573125affd64a3ffcfea"
+    },
+    {
+      "file": "structured-validation/results.json",
+      "original_sha256": "b71a6bef56c0f82b3d94f584e22b4bf15f3b380bec9067e310837f34931268cf",
+      "public_sha256": "b71a6bef56c0f82b3d94f584e22b4bf15f3b380bec9067e310837f34931268cf"
+    },
+    {
+      "file": "structured-validation/failures.json",
+      "original_sha256": "2f0dae7414f46eeb6a60560f84cc6f5f869ecd66efc3ca187fe6a5e10b5aa975",
+      "public_sha256": "2f0dae7414f46eeb6a60560f84cc6f5f869ecd66efc3ca187fe6a5e10b5aa975"
+    },
+    {
+      "file": "performance/summary.json",
+      "original_sha256": "dd6497e174416db3d40bfba89c3ece001a5e4b7ad88cc90465a4852669873eb2",
+      "public_sha256": "5516d27b0ca41980029c5c410ff76db1e874a25b347abfda1c03abdd037d7fe3"
+    },
+    {
+      "file": "performance-batched/summary.json",
+      "original_sha256": "e50e97926d812a4c7cad34728f7819d848733a8c05a1da0f099b89df6e7dda5a",
+      "public_sha256": "d02aede9852e8518cc97dfd5da4332cb81c34563c5fb3d7729fb70e9bf93fb6d"
+    },
+    {
+      "file": "ui-final/summary.json",
+      "original_sha256": "4e7d8ee39a78cd8ca0971761b2ef154486552792b42e09900acd2c12e1e05632",
+      "public_sha256": "3944b3a07b9780c70a9e209082f177b428f312a971feeda44e11181008ac5c27"
+    },
+    {
+      "file": "wheel-python312/summary.json",
+      "original_sha256": "9ffc8b1e6caf3e03186dce857d43ff7473e3833aaebb5c8748f57b88fbbf1149",
+      "public_sha256": "e461b2cd1610719115dcce5bbbd5a0a546369525ba6c6572e7d7a3337fe22b50"
+    }
+  ]
+}

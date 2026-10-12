@@ -1,191 +1,69 @@
-# D.I.V.E.Program_Sanofi
-首届 _SCU X Sanofi_ 菲凡极客项目 
+# 续研 · DIVE 项目记忆
 
-Long-term interactive AI memory system. Research and design documents live in
-[`docs/`](docs/). The first local MVP implements an event-sourced memory
-service with selective writing, provenance, temporal-aware projections,
-lexical/structured retrieval, deterministic test vectors, deletion, and a
-layered evaluation harness. Phase 3 design and evidence are in
-[`docs/15-phase-3-architecture-review.md`](docs/15-phase-3-architecture-review.md),
-[`docs/16-phase-3-design-options.md`](docs/16-phase-3-design-options.md), and
-[`docs/17-phase-3-roadmap.md`](docs/17-phase-3-roadmap.md).
+为持续数周实验、反复与 AI 协作的学生和初级研发工程师，保留**当前有效的约束、采纳决定、未采用原因与来源**。每次新会话开始前，先核查“现在依据什么继续工作”。
 
-## Local development
+本项目是可运行的本地研究原型。用户需求是待验证假设；没有宣称已服务药企或提高真实研发效率。赛诺菲/DIVE 的背景体现在可靠性、可追溯性与工程判断上。
 
-```powershell
-python -m pytest
+![真实工作台：当前状态、提议、来源与历史](docs/assets/workbench-current.png)
+
+## 五分钟运行
+
+推荐 Python 3.12。在本仓库根目录创建并激活虚拟环境，然后：
+
+```text
+python -m pip install -r requirements/runtime.lock
+python -m pip install --no-deps .
+dive-memory --db memory.db serve --port 8765
 ```
 
-The core package is dependency-free. The optional HTTP adapter can be enabled
-with `pip install -e ".[api]"` and served with `uvicorn` after creating an app
-from `dive_memory.api:create_app`.
+打开 <http://127.0.0.1:8765/>，点“载入合成演示”。默认**无密钥、无模型调用，只浏览真实证据**。四个视图连接同一持久化应用：继续工作、记忆时间线、回答与证据、验证报告。
 
-## MVP status
+演示中 A 已采纳，B 虽有更高的构造分数但未采用，C 只是提议；预算从 20 更新为 40。可以现场改值、回看旧日期、打开来源、添加矛盾、核查未知结果并遗忘偏好。数字均为合成数据，明确字段录入不冒充自动 NLP 抽取。
 
-The local MVP now covers event sourcing, atomic and retryable outbox projection,
-selective/deferred extraction, persisted write decisions, provenance, version
-chains and deterministic replay, bitemporal filters, profiles, entities and
-traceable channel retrieval and configurable RRF, context packing, consolidation,
-reinforcement/decay, recoverable and hard deletion, export, persistent user
-controls, optional namespace authorization, strict candidate validation,
-eight-way immutable memory transitions, generation-aware embedding cutover,
-five evaluation baselines, and smoke/load benchmarks:
+[完整安装、在线模式、CLI/API 与恢复说明](docs/29-runbook.md) · [实际架构](docs/25-delivery-architecture.md)
 
-```powershell
-$env:PYTHONPATH = "src"
-python -m dive_memory.smoke
-python -m dive_memory.benchmark --memories 10000 --queries 20
+## 当前证据
+
+| 检查 | 结果 | 边界 |
+|---|---|---|
+| Oracle 开发自评 R40 | **451/500，90.2%** | 同家族 judge、全 500 题已暴露、含缓存复用；官方未评估 |
+| 独立 reader 工厂对照 | 500/500 输出一致，1110 次缓存命中 | 精确回放，0 新请求；不是新答题成绩 |
+| 全部本地回归 | 1124 通过、9 跳过 | PG 服务与真实语义模型检查有环境缺口 |
+| 结构化状态任务 | 120/120 | 完整事件扫描基线也为 120/120，不证明产品优势 |
+| 1 万条记录查询中位时间 | 4.78 秒 → 0.52 秒 | 同机器与输入、来源批量化前后测量；非 LLM 或并发性能 |
+| 浏览器 | 桌面/手机真实操作通过 | 不是用户研究；安装与 UI 证据见交付 manifest |
+
+[完整验证与全部失败](docs/26-verification.md) · [R42 执行报告](docs/oracle/40-engineering-delivery-20261012.md)
+
+**规则审查尚未关闭。** 未发现题号或参考答案硬编码的直接证据，但多轮完整评测反馈和规则选择仍有 F.1.1/F.1.4 风险，须向项目组披露并确认。90.2% 不能标为官方成绩或合规认证。[规则审查](docs/oracle/39-compliance-audit-20261012.md) · [提交披露材料](docs/28-submission-and-review.md)
+
+## 复现，而不依赖历史工作目录
+
+```text
+python -m pip install -r requirements/dev.lock
+python -m pip install --no-deps -e .
+python -m pytest -q
+python eval/run_project_validation.py --output artifacts/my-structured-run
+python audit_tools/replay_bundle.py --verify artifacts/r40-reader-replay.zip --report artifacts/my-replay.json
+python -m build --wheel
+python tools/verify_wheel.py --wheel-dir dist --output artifacts/my-wheel-check
 ```
 
-The API adapter and integration tests use the optional development environment:
+约 4 MB 的 [R40 reader 回放包](artifacts/r40-reader-replay.zip)包含精确请求响应、逐文件哈希和冻结源码；校验程序不具备网络传输能力。原始提交 SHA-256 为 `3b4b5950b9ff93e189250d4dfea57d8683aba094de63dbb33986d7e2a3cb6eb0`。原始历史文件继续保留，另有 [历史哈希索引](artifacts/history-index.json.gz)。
 
-```powershell
-python -m venv .venv
-.venv\Scripts\python -m pip install -e ".[api,dev]"
-.venv\Scripts\python -m pytest -q
-```
+`dive-memory-oracle --dataset 数据路径 --output 新目录` 默认只打印冷运行计划。真正运行需要显式执行参数、请求/token 上限、已缓存语义模型、密钥及预算核对；本轮没有发起新付费生成。冷入口不读取旧答案或判分文件。
 
-Embeddings are supplied through a provider interface. The default is the
-offline deterministic **test** provider and does not contribute semantic dense
-scores. `OpenAICompatibleEmbeddingProvider` and the lazy local
-`LocalSentenceTransformerEmbeddingProvider` return explicit model/revision and
-degraded metadata; fallback vectors are never scored as semantic. The local
-`EmbeddingLifecycle` supports staged, complete backfill, atomic cutover and
-rollback. BGE-M3 is a provisional production candidate—not a benchmark-proven
-default. A deployment must configure and validate a semantic provider.
+## 为什么可能值得用，也为什么可能不值得
 
-Retrieval defaults to BM25 + predicate + temporal + entity/relation signals;
-dense contributes only with a healthy semantic provider. Multi-hop is
-default-off because the current user-hub topology has not shown adequate
-evidence recall. The offline A–H output is committed at
-[`eval/reports/p0-offline-latest.json`](eval/reports/p0-offline-latest.json),
-with interpretation in
-[`docs/benchmark/p0-offline-report.md`](docs/benchmark/p0-offline-report.md).
-It is a six-case harness regression, not a quality leaderboard.
+价值假设是减少重新交代背景、误用旧约束和重复失败方案。当前强基线与系统的结构化正确率相同，因此必须进一步比较**正确恢复时间和维护负担**，不能靠功能列表证明需求。
 
-The SQLite adapter remains the local/default CI backend. `PostgresStore` is an
-opt-in PostgreSQL + pgvector adapter for the online ingest, retrieve and
-memory-delete path of the same domain service. Eight real
-PostgreSQL integration tests now cover clean/idempotent migrations, concurrent
-`SKIP LOCKED` claims, stale retry limits, projection rollback, concurrent
-idempotency, namespace isolation, temporal transitions, hard-purge residue and
-the exact pgvector cosine operator:
+[3–5 人任务观察材料](docs/27-user-study-kit.md)已准备，尚无真实参与者结果。如果一份事件摘要以相近成本完成任务，项目就收缩为记忆模块与摘要助手。
 
-```powershell
-.venv\Scripts\python -m pip install -e ".[postgres,dev]"
-$env:DIVE_TEST_POSTGRES_DSN = "postgresql://dive:dive_test_password@127.0.0.1:55432/dive_test?connect_timeout=5"
-.venv\Scripts\python -m pytest -q tests\integration\postgres --basetemp .pytest-postgres
-```
+## 开发与资料
 
-The measured 10K dense-only exact baseline is ingest 38.62 memories/s and
-retrieval p50/p95/p99 167.18/176.78/179.36 ms with 96-d synthetic vectors. It
-is a plumbing/performance result, not semantic-model or ANN evidence. See
-[`docs/benchmark/postgres-exact-10k-report.md`](docs/benchmark/postgres-exact-10k-report.md),
-[`docs/adr/ADR-012-postgresql-pgvector.md`](docs/adr/ADR-012-postgresql-pgvector.md)
-and [`ops/postgres/README.md`](ops/postgres/README.md).
+- 生产应用：`src/dive_memory/application/`；工作台：`web.py` 与 `static/`；核心：事件、记忆版本、来源、检索与 SQLite。
+- `ops/` / `audit_tools/` / `eval/` 分别保留历史实验、审计和评测，不进入工作台的生成依赖。
+- CI 配置包含 Python 3.12/3.14、wheel 安装、可选 PG 服务；远程执行尚待推送触发，不能用配置存在冒充通过。
+- [工程实施计划](docs/24-engineering-delivery-plan.md)、[迭代总账 R1–R42](docs/oracle/ITERATION_LOG.md)、[历史 README](docs/history/README-before-engineering-20261012.md)、[第三方说明](THIRD_PARTY_NOTICES.md)。
 
-The strict LongMemEval-cleaned adapter is implemented and tested against a
-small synthetic fixture, and a full **retrieval-stage** run over all 500 official
-`LongMemEval_S` cases is committed. That run completed with 0 case errors and 0
-timeouts, and it is reported as a retrieval result only:
-
-| Stage | Status |
-|---|---|
-| Official dataset adapter, 500 cases | `COMPLETED` |
-| D.I.V.E formation + retrieval | `COMPLETED` (500/500 rows, 0 errors, 6,850 s = 1.90 h; formation coverage 739/896 = 82.48%) |
-| Reader answer generation | `NOT COMPLETED` |
-| Official GPT-4o judge | `NOT COMPLETED` |
-
-**No official LongMemEval score is claimed.** See
-[`docs/benchmark/longmemeval-methodology.md`](docs/benchmark/longmemeval-methodology.md)
-for the evidence boundary and
-[`docs/benchmark/longmemeval-report.md`](docs/benchmark/longmemeval-report.md)
-for the measured numbers.
-
-### Semantic write gate
-
-The default write gate is the rule-based `utility-baseline-v1`. A calibrated
-semantic gate (`semantic-utility-v2.1`, nearest-anchor margin scoring over real
-`bge-m3` vectors) is implemented and raises gold evidence-turn formation
-**offline at the gate** from 6.14% to ~84.82% (82.48% on the full corpus), and
-reduces false accepts in the false-memory suite **from 12 to 0**. Both figures
-are gate-level measurements, not end-to-end answer quality. See
-[`docs/diagnosis-formation-gate-2026-09-21.md`](docs/diagnosis-formation-gate-2026-09-21.md)
-and [`docs/fix-write-gate-semantic-2026-09-21.md`](docs/fix-write-gate-semantic-2026-09-21.md).
-
-The gate encoder is the dominant cost of a full benchmark sweep, so the runner
-exposes `--device`:
-
-```powershell
-$env:HF_HOME = "eval/external/huggingface"
-$env:HF_HUB_OFFLINE = "1"; $env:TRANSFORMERS_OFFLINE = "1"   # required: see below
-$py = ".venv-gpu\Scripts\python.exe"                          # torch +cu126
-& $py -m dive_memory.longmemeval_benchmark eval/external/longmemeval/longmemeval_s_cleaned.json `
-      --output eval/reports/longmemeval-s-retrieval-gpu.json --gate semantic --device cuda
-```
-
-Measured on this workstation, from the **completed full run** (500/500 cases):
-the GPU finished in **6,850 s = 1.90 h at 13.70 s/case**, against a CPU
-projection of 20.5 h — an end-to-end **10.78×**. An earlier 4-case sample gave
-13.47× / 1.52 h; the full corpus showed that estimate to be **25% optimistic**,
-so cite 1.90 h. GPU and CPU gate decisions are equivalent — the same probe set
-yields identical accept/skip/review actions and reason codes, with scores
-differing by at most 1.08e-7. Full profile and the projection-error analysis:
-[`docs/benchmark/longmemeval-500case-profiling.md`](docs/benchmark/longmemeval-500case-profiling.md).
-
-> `transformers` probes the Hub for a PEFT adapter even when the checkpoint is
-> fully cached, so a local-model run must set `HF_HUB_OFFLINE=1` and
-> `TRANSFORMERS_OFFLINE=1` or it will fail with `httpx.ProxyError: 502`.
-
-Still unverified: reader QA with the production tokenizer and the official
-GPT-4o judge, the preregistered P4-P0-2 embedding comparison on the frozen
-project corpus, PostgreSQL RLS/backup erasure, replay/reindex/job/event-delete/
-export parity, and the ANN (HNSW/IVFFlat), mixed-workload and 1M experiments.
-100K **exact** retrieval *is* measured (p50 156.12 ms) and concurrency is
-partially characterized (branch A at 1/2/4/8 workers, 0 failed ops) — but that
-concurrency run is unfinished, so it is not a completed result. The repository
-must not be described as production-ready until those applicable release gates
-pass.
-
-**Phase 4 P0 results are consolidated in
-[`docs/20-phase-4-results.md`](docs/20-phase-4-results.md)** — every experiment
-with its status, artifact-contract compliance, Wilson intervals for the
-false-memory rates, the failure/correction record, and the explicit list of what
-Phase 4 does not establish.
-
-Phase 4 is closed as an evaluation milestone. The closure set is
-[`docs/21-phase-4-architecture-review.md`](docs/21-phase-4-architecture-review.md)
-(14 architecture questions answered from executed evidence),
-[`docs/22-phase-4-production-gap-analysis.md`](docs/22-phase-4-production-gap-analysis.md)
-(18 readiness domains) and
-[`docs/23-phase-4-readiness-checklist.md`](docs/23-phase-4-readiness-checklist.md)
-(70 item-level verdicts). **The readiness verdict is `NOT READY`** — 12 of 70
-items earn `PASS`, and Phase 4 completion does not imply production readiness.
-`docs/22` §5 lists the statements the current evidence does not support.
-
-The HTTP adapter uses strict request schemas and idempotency keys for event and
-correction writes. `StaticTokenAuthorizer` provides a service-token namespace
-boundary; deployments can supply an IAM-backed implementation of the same
-protocol.
-
-## Review status
-
-`docs/13-code-review-and-fixes.md` records a full review of this MVP: eleven
-defects (silent supersession of unrelated facts, lexicographic `as_of`
-comparison, false abstention on natural questions, unretrievable CJK runs,
-a `decay` timezone crash, dry-run side effects, a degenerate bm25 mapping, a
-missing transaction rollback, and a cross-namespace correction hole), each with
-the evidence that reproduced it and the test that now pins it.
-
-Two helpers back those fixes: `temporal.py` normalises wall-clock input such as
-`2025` / `2025-06` / `2025年6月2日` before comparison, and `lexical.py` indexes
-CJK character bigrams so memories written without punctuation stay retrievable.
-`SQLiteStore.reindex_lexical()` rebuilds the FTS projection, which a database
-written before that change needs once.
-
-On Windows hosts whose `%LOCALAPPDATA%\Temp` is not writable, point pytest at a
-project-local directory:
-
-```powershell
-.venv\Scripts\python -m pytest -q --basetemp .pytest-tmp
-```
+本机原型采用单进程 SQLite。默认启发式抽取与非语义 hash embedding 不等于 Oracle 的语义模型配置；结构化字段核查不等于自由问答。正式 judge、规则认定、自然语言保留集和用户观察仍待完成。

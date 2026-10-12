@@ -45,10 +45,11 @@ class HeuristicExtractionProvider:
     # extractors keep their original signatures.
     supports_source_type = True
 
-    def __init__(self, gate: GatePolicy | None = None) -> None:
+    def __init__(self, gate: GatePolicy | None = None, episodic_policy=None) -> None:
         # ``gate`` is optional so every existing call site keeps the v1
         # keyword policy; pass a ``SemanticGate`` to enable v2.
         self.gate: GatePolicy = gate or decide
+        self.episodic_policy = episodic_policy
 
     def extract_outcome(
         self, text: str, *, observed_at: str | None = None, explicit: bool = False,
@@ -56,6 +57,9 @@ class HeuristicExtractionProvider:
     ) -> ExtractionOutcome:
         candidates = tuple(extract_candidates(text, explicit=explicit, observed_at=observed_at,
                                               gate=self.gate, source_type=source_type))
+        if self.episodic_policy is not None:
+            candidates += tuple(self.episodic_policy.candidates(
+                text, source_type=source_type, observed_at=observed_at, existing=list(candidates)))
         if candidates:
             code = ExtractionOutcomeCode.COMMITTED
             reason = "heuristic candidates accepted"

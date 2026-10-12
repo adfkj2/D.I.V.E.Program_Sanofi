@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from hashlib import sha256
 import json
+import importlib.metadata
 from pathlib import Path
 import platform
 import subprocess
@@ -24,11 +25,28 @@ def _canonical_sha256(value: Mapping[str, Any]) -> str:
     return sha256(encoded).hexdigest()
 
 
+def code_snapshot(repository_root: Path) -> dict[str, Any]:
+    """Fingerprint actual Python sources, including uncommitted/new modules."""
+    root = repository_root.resolve()
+    paths = [p for folder in (root / "src", root / "ops") for p in folder.rglob("*.py")]
+    if (root / "pyproject.toml").is_file():
+        paths.append(root / "pyproject.toml")
+    files = {p.relative_to(root).as_posix(): sha256_file(p) for p in sorted(paths)}
+    dependencies = {}
+    for name in ("torch", "numpy", "sentence-transformers", "transformers", "huggingface-hub"):
+        try:
+            dependencies[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            dependencies[name] = None
+    identity = {"files": files, "python": platform.python_version(), "dependencies": dependencies}
+    return {"sha256": _canonical_sha256(identity), **identity}
+
+
 def _git(repository_root: Path) -> dict[str, str | bool | None]:
     def run(*args: str) -> str | None:
         try:
             completed = subprocess.run(
-                ["git", "-C", str(repository_root), *args],
+                ["git", "-c", f"safe.directory={repository_root.as_posix()}", "-C", str(repository_root), *args],
                 check=True,
                 capture_output=True,
                 text=True,

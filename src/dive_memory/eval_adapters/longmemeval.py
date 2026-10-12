@@ -28,12 +28,29 @@ def _instant(value: str) -> datetime | None:
         return None
 
 
+def parse_instant(value: str) -> datetime:
+    """Parse an official timestamp into an aware ``datetime``.
+
+    Public counterpart of ``_instant``. Callers that need to *order* sessions
+    must use this rather than comparing the raw strings: the official releases
+    mix ISO-8601 with ``2023/04/10 (Mon) 23:07``, and lexical comparison is
+    correct for neither across formats.
+    """
+
+    parsed = _instant(value)
+    if parsed is None:
+        raise LongMemEvalSchemaError(f"unsupported timestamp: {value!r}")
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
 def _after_cutoff(session_value: str, question_value: str) -> bool:
     session_time = _instant(session_value)
     cutoff = _instant(question_value)
     if session_time is None or cutoff is None:
         return False
-    if "/" in session_value and "/" in question_value:
+    if "/" in question_value:
         # The official generator randomizes clock times independently for
         # several temporal tasks.  In the cleaned release 65 sessions are
         # later by clock time but none are on a later calendar day.  Treat the
@@ -75,6 +92,11 @@ class LongMemEvalTurn:
     content: str
     occurred_at: str
     has_answer: bool = False
+    # Position in the flattened haystack order published by the official
+    # release. It is *not* chronological: 34 of the 500 Oracle rows list an
+    # earlier session after a later one. It is only used as a stable tie-break
+    # when two turns share a timestamp.
+    haystack_index: int = 0
 
     @property
     def ref(self) -> str:
@@ -83,12 +105,7 @@ class LongMemEvalTurn:
 
     @property
     def occurred_at_iso(self) -> str:
-        value = _instant(self.occurred_at)
-        if value is None:
-            raise LongMemEvalSchemaError(f"unsupported timestamp: {self.occurred_at!r}")
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=timezone.utc)
-        return value.isoformat()
+        return parse_instant(self.occurred_at).isoformat()
 
 
 @dataclass(frozen=True, slots=True)
@@ -107,12 +124,43 @@ class LongMemEvalCase:
 
     @property
     def question_date_iso(self) -> str:
-        value = _instant(self.question_date)
-        if value is None:
-            raise LongMemEvalSchemaError(f"unsupported timestamp: {self.question_date!r}")
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=timezone.utc)
-        return value.isoformat()
+        return parse_instant(self.question_date).isoformat()
+
+    @property
+    def visibility_cutoff_iso(self) -> str:
+        """Last instant visible to the reader under the dataset's time precision.
+
+        The published slash-formatted dates randomize clock times independently
+        for temporal questions. Their haystack is visible through the end of
+        the question's calendar day; ISO timestamps retain instant precision.
+        This must match ``_after_cutoff`` used by the loader.
+        """
+
+        cutoff = parse_instant(self.question_date)
+        if "/" in self.question_date:
+            cutoff = cutoff.replace(hour=23, minute=59, second=59, microsecond=999999)
+        return cutoff.isoformat()
+
+    @property
+    def chronological_turns(self) -> tuple[LongMemEvalTurn, ...]:
+        """Turns ordered by real time, not by the published haystack position.
+
+        The official Oracle release publishes sessions in an order that is
+        *nearly* chronological but not exactly: 34 of 500 rows place an earlier
+        session after a later one, and one row inverts 7 session pairs. Ingest
+        order decides supersession, so a pipeline that trusts the published
+        order silently replays part of the history backwards. Ties on the same
+        timestamp keep the published order via ``haystack_index``.
+        """
+
+        return tuple(sorted(
+            self.turns,
+            key=lambda turn: (parse_instant(turn.occurred_at), turn.haystack_index),
+        ))
+
+    @property
+    def haystack_is_chronological(self) -> bool:
+        return self.chronological_turns == self.turns
 
     @property
     def evidence_refs(self) -> tuple[str, ...]:
@@ -228,6 +276,7 @@ class LongMemEvalAdapter:
                     content=content,
                     occurred_at=occurred_at,
                     has_answer=turn.get("has_answer") is True,
+                    haystack_index=len(turns),
                 ))
 
         evidence = raw.get("answer_session_ids", [])

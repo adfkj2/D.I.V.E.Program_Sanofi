@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import math
 import urllib.request
 from dataclasses import dataclass
@@ -152,14 +153,38 @@ class LocalSentenceTransformerEmbeddingProvider:
 
     @classmethod
     def load(cls, *, model: str = "BAAI/bge-m3", revision: str,
-             dimensions: int = 1024, device: str | None = None) -> "LocalSentenceTransformerEmbeddingProvider":
+             dimensions: int = 1024, device: str | None = None,
+             local_files_only: bool = True) -> "LocalSentenceTransformerEmbeddingProvider":
         if not revision or revision == "unpinned":
             raise ValueError("a pinned model revision is required")
+        checkpoint = model
+        if local_files_only:
+            local_path = Path(model)
+            if local_path.is_dir():
+                checkpoint = str(local_path.resolve())
+            else:
+                try:
+                    from huggingface_hub import try_to_load_from_cache
+                except ImportError as exc:
+                    raise RuntimeError("install huggingface-hub to locate a pinned local checkpoint") from exc
+                cached = try_to_load_from_cache(model, "modules.json", revision=revision)
+                if not isinstance(cached, str) or not Path(cached).is_file():
+                    raise RuntimeError(
+                        f"pinned local checkpoint {model}@{revision} is not cached; "
+                        "no download was attempted"
+                    )
+                checkpoint = str(Path(cached).parent)
         try:
             from sentence_transformers import SentenceTransformer  # type: ignore[import-not-found]
         except ImportError as exc:
             raise RuntimeError("install sentence-transformers in the optional model environment") from exc
-        encoder = SentenceTransformer(model, revision=revision, device=device)
+        if local_files_only:
+            # A repo id can issue an HTTP HEAD for optional adapter files even
+            # when its weights are cached. An absolute snapshot path and the
+            # runtime flag make a missing file fail locally instead.
+            encoder = SentenceTransformer(checkpoint, device=device, local_files_only=True)
+        else:
+            encoder = SentenceTransformer(model, revision=revision, device=device)
         return cls(encoder, model=model, revision=revision, dimensions=dimensions)
 
     def embed_result(self, text: str) -> EmbeddingResult:

@@ -1,8 +1,14 @@
 import pytest
 import json
 import urllib.request
+import sys
+from types import SimpleNamespace
 
-from dive_memory.embeddings import DeterministicEmbeddingProvider, OpenAICompatibleEmbeddingProvider
+from dive_memory.embeddings import (
+    DeterministicEmbeddingProvider,
+    LocalSentenceTransformerEmbeddingProvider,
+    OpenAICompatibleEmbeddingProvider,
+)
 from dive_memory.service import MemoryService
 
 
@@ -12,6 +18,36 @@ class TinyEmbedder:
 
     def embed(self, text: str) -> list[float]:
         return [1.0, 0.0] if "咖啡" in text else [0.0, 1.0]
+
+
+def test_local_encoder_load_uses_snapshot_path_and_forbids_network(monkeypatch, tmp_path):
+    calls = []
+
+    def fake_sentence_transformer(path, **kwargs):
+        calls.append((path, kwargs))
+        return object()
+
+    monkeypatch.setitem(sys.modules, "sentence_transformers",
+                        SimpleNamespace(SentenceTransformer=fake_sentence_transformer))
+    provider = LocalSentenceTransformerEmbeddingProvider.load(
+        model=str(tmp_path), revision="pinned-revision", dimensions=2,
+    )
+
+    assert provider.model == str(tmp_path)
+    assert calls == [(str(tmp_path.resolve()), {"device": None, "local_files_only": True})]
+
+
+def test_local_encoder_missing_cache_fails_before_model_loader(monkeypatch):
+    monkeypatch.setitem(sys.modules, "huggingface_hub",
+                        SimpleNamespace(try_to_load_from_cache=lambda *_args, **_kwargs: None))
+    monkeypatch.setitem(sys.modules, "sentence_transformers",
+                        SimpleNamespace(SentenceTransformer=lambda *_args, **_kwargs:
+                                        (_ for _ in ()).throw(AssertionError("must not load"))))
+
+    with pytest.raises(RuntimeError, match="no download was attempted"):
+        LocalSentenceTransformerEmbeddingProvider.load(
+            model="not-cached/example", revision="pinned-revision", dimensions=2,
+        )
 
 
 def test_custom_embedding_provider_is_used_for_write_and_query():

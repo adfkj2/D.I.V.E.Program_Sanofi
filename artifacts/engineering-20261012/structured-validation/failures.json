@@ -1,0 +1,1712 @@
+[
+  {
+    "story": "story-01",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "without_updates",
+    "expected": "40 元",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_9025e871f510f073b202b6fb24a38911",
+      "mem_179a69868d3ca66f2fb3b90aaf4d129a"
+    ],
+    "elapsed_ms": 0.20740000036312267
+  },
+  {
+    "story": "story-01",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "recent_session",
+    "expected": "40 元",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.010700001439545304
+  },
+  {
+    "story": "story-01",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "lexical_top_one",
+    "expected": "40 元",
+    "actual": "unconfirmed",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0033999967854470015
+  },
+  {
+    "story": "story-01",
+    "family": "updates",
+    "language": "zh",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "20 元",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0035000048228539526
+  },
+  {
+    "story": "story-01",
+    "family": "updates",
+    "language": "zh",
+    "task": "historical",
+    "arm": "rolling_summary",
+    "expected": "20 元",
+    "actual": "40 元",
+    "correct": false,
+    "sources": [
+      "update"
+    ],
+    "elapsed_ms": 0.0034000040614046156
+  },
+  {
+    "story": "story-01",
+    "family": "updates",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "检索课程实验",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0032999960239976645
+  },
+  {
+    "story": "story-02",
+    "family": "updates",
+    "language": "en",
+    "task": "current",
+    "arm": "without_updates",
+    "expected": "15 seconds",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_ee197a65745d1ca89bede852888e3f62",
+      "mem_662c83d472a11fb3c9382def6c1251f1"
+    ],
+    "elapsed_ms": 0.204100004339125
+  },
+  {
+    "story": "story-02",
+    "family": "updates",
+    "language": "en",
+    "task": "current",
+    "arm": "recent_session",
+    "expected": "15 seconds",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.00689999433234334
+  },
+  {
+    "story": "story-02",
+    "family": "updates",
+    "language": "en",
+    "task": "current",
+    "arm": "lexical_top_one",
+    "expected": "15 seconds",
+    "actual": "unconfirmed",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0029999937396496534
+  },
+  {
+    "story": "story-02",
+    "family": "updates",
+    "language": "en",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "60 seconds",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0033999967854470015
+  },
+  {
+    "story": "story-02",
+    "family": "updates",
+    "language": "en",
+    "task": "historical",
+    "arm": "rolling_summary",
+    "expected": "60 seconds",
+    "actual": "15 seconds",
+    "correct": false,
+    "sources": [
+      "update"
+    ],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-02",
+    "family": "updates",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Weather dashboard",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0033999967854470015
+  },
+  {
+    "story": "story-03",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "without_updates",
+    "expected": "12 轮",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_fc868482b55cd9accb34acf979248ac3",
+      "mem_f2557c4c84ec5e154fc441a38d211650"
+    ],
+    "elapsed_ms": 0.20039999799337238
+  },
+  {
+    "story": "story-03",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "recent_session",
+    "expected": "12 轮",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.005800000508315861
+  },
+  {
+    "story": "story-03",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "lexical_top_one",
+    "expected": "12 轮",
+    "actual": "unconfirmed",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-03",
+    "family": "updates",
+    "language": "zh",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "8 轮",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0035999983083456755
+  },
+  {
+    "story": "story-03",
+    "family": "updates",
+    "language": "zh",
+    "task": "historical",
+    "arm": "rolling_summary",
+    "expected": "8 轮",
+    "actual": "12 轮",
+    "correct": false,
+    "sources": [
+      "update"
+    ],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-03",
+    "family": "updates",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "图像分类作业",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0034000040614046156
+  },
+  {
+    "story": "story-04",
+    "family": "updates",
+    "language": "en",
+    "task": "current",
+    "arm": "without_updates",
+    "expected": "Python 3.12",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_9b27b3e4ec3a312e17ca59a70dbb1c21",
+      "mem_26cd858e8aa0b518fa6a3be837e56985"
+    ],
+    "elapsed_ms": 0.1956999985850416
+  },
+  {
+    "story": "story-04",
+    "family": "updates",
+    "language": "en",
+    "task": "current",
+    "arm": "recent_session",
+    "expected": "Python 3.12",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006000002031214535
+  },
+  {
+    "story": "story-04",
+    "family": "updates",
+    "language": "en",
+    "task": "current",
+    "arm": "lexical_top_one",
+    "expected": "Python 3.12",
+    "actual": "unconfirmed",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-04",
+    "family": "updates",
+    "language": "en",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "Python 3.11",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0033000032999552786
+  },
+  {
+    "story": "story-04",
+    "family": "updates",
+    "language": "en",
+    "task": "historical",
+    "arm": "rolling_summary",
+    "expected": "Python 3.11",
+    "actual": "Python 3.12",
+    "correct": false,
+    "sources": [
+      "update"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-04",
+    "family": "updates",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Compiler class",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0037999998312443495
+  },
+  {
+    "story": "story-05",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "without_updates",
+    "expected": "11 月 9 日",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_5cd0c648c292b0178c716fe84beec87f",
+      "mem_2e6046abd542fd4a58257e045cfcb03c"
+    ],
+    "elapsed_ms": 0.23180000425782055
+  },
+  {
+    "story": "story-05",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "recent_session",
+    "expected": "11 月 9 日",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006499998562503606
+  },
+  {
+    "story": "story-05",
+    "family": "updates",
+    "language": "zh",
+    "task": "current",
+    "arm": "lexical_top_one",
+    "expected": "11 月 9 日",
+    "actual": "unconfirmed",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-05",
+    "family": "updates",
+    "language": "zh",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "11 月 2 日",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0032999960239976645
+  },
+  {
+    "story": "story-05",
+    "family": "updates",
+    "language": "zh",
+    "task": "historical",
+    "arm": "rolling_summary",
+    "expected": "11 月 2 日",
+    "actual": "11 月 9 日",
+    "correct": false,
+    "sources": [
+      "update"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-05",
+    "family": "updates",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "校园地图",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-06",
+    "family": "proposals",
+    "language": "en",
+    "task": "adoption",
+    "arm": "recent_session",
+    "expected": "small-v2",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006800000846851617
+  },
+  {
+    "story": "story-06",
+    "family": "proposals",
+    "language": "en",
+    "task": "adoption",
+    "arm": "lexical_top_one",
+    "expected": "small-v2",
+    "actual": "large-v3",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.002800006768666208
+  },
+  {
+    "story": "story-06",
+    "family": "proposals",
+    "language": "en",
+    "task": "rejection-is-not-fact",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "not adopted",
+    "correct": false,
+    "sources": [
+      "reject"
+    ],
+    "elapsed_ms": 0.0020000006770715117
+  },
+  {
+    "story": "story-06",
+    "family": "proposals",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Audio transcription",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0031999952625483274
+  },
+  {
+    "story": "story-07",
+    "family": "proposals",
+    "language": "zh",
+    "task": "adoption",
+    "arm": "recent_session",
+    "expected": "Dijkstra",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.012099997547920793
+  },
+  {
+    "story": "story-07",
+    "family": "proposals",
+    "language": "zh",
+    "task": "adoption",
+    "arm": "lexical_top_one",
+    "expected": "Dijkstra",
+    "actual": "A-star",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0030000010156072676
+  },
+  {
+    "story": "story-07",
+    "family": "proposals",
+    "language": "zh",
+    "task": "rejection-is-not-fact",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "not adopted",
+    "correct": false,
+    "sources": [
+      "reject"
+    ],
+    "elapsed_ms": 0.0019999934011138976
+  },
+  {
+    "story": "story-07",
+    "family": "proposals",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "路径规划",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0034000040614046156
+  },
+  {
+    "story": "story-08",
+    "family": "proposals",
+    "language": "en",
+    "task": "adoption",
+    "arm": "recent_session",
+    "expected": "BM25",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006300004315562546
+  },
+  {
+    "story": "story-08",
+    "family": "proposals",
+    "language": "en",
+    "task": "adoption",
+    "arm": "lexical_top_one",
+    "expected": "BM25",
+    "actual": "hybrid",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-08",
+    "family": "proposals",
+    "language": "en",
+    "task": "rejection-is-not-fact",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "not adopted",
+    "correct": false,
+    "sources": [
+      "reject"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-08",
+    "family": "proposals",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Public library search",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.004900000931229442
+  },
+  {
+    "story": "story-09",
+    "family": "proposals",
+    "language": "zh",
+    "task": "adoption",
+    "arm": "recent_session",
+    "expected": "每分钟",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006900001608300954
+  },
+  {
+    "story": "story-09",
+    "family": "proposals",
+    "language": "zh",
+    "task": "adoption",
+    "arm": "lexical_top_one",
+    "expected": "每分钟",
+    "actual": "每秒",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-09",
+    "family": "proposals",
+    "language": "zh",
+    "task": "rejection-is-not-fact",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "not adopted",
+    "correct": false,
+    "sources": [
+      "reject"
+    ],
+    "elapsed_ms": 0.0018999999156221747
+  },
+  {
+    "story": "story-09",
+    "family": "proposals",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "节能传感器",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0031999952625483274
+  },
+  {
+    "story": "story-10",
+    "family": "proposals",
+    "language": "en",
+    "task": "adoption",
+    "arm": "recent_session",
+    "expected": "local voice",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006200003554113209
+  },
+  {
+    "story": "story-10",
+    "family": "proposals",
+    "language": "en",
+    "task": "adoption",
+    "arm": "lexical_top_one",
+    "expected": "local voice",
+    "actual": "cloud voice",
+    "correct": false,
+    "sources": [
+      "proposal"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-10",
+    "family": "proposals",
+    "language": "en",
+    "task": "rejection-is-not-fact",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "not adopted",
+    "correct": false,
+    "sources": [
+      "reject"
+    ],
+    "elapsed_ms": 0.0018999999156221747
+  },
+  {
+    "story": "story-10",
+    "family": "proposals",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Accessibility reader",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0032999960239976645
+  },
+  {
+    "story": "story-11",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "unresolved",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "可重复读",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.004499997885432094
+  },
+  {
+    "story": "story-11",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "unresolved",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "可重复读",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0024999972083605826
+  },
+  {
+    "story": "story-11",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "before-conflict",
+    "arm": "recent_session",
+    "expected": "读已提交",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-11",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "before-conflict",
+    "arm": "rolling_summary",
+    "expected": "读已提交",
+    "actual": "可重复读",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-11",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "数据库实验",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0031000017770566046
+  },
+  {
+    "story": "story-12",
+    "family": "conflicts",
+    "language": "en",
+    "task": "unresolved",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "3 m/s",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.007800001185387373
+  },
+  {
+    "story": "story-12",
+    "family": "conflicts",
+    "language": "en",
+    "task": "unresolved",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "3 m/s",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0024999972083605826
+  },
+  {
+    "story": "story-12",
+    "family": "conflicts",
+    "language": "en",
+    "task": "before-conflict",
+    "arm": "recent_session",
+    "expected": "2 m/s",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.004399997123982757
+  },
+  {
+    "story": "story-12",
+    "family": "conflicts",
+    "language": "en",
+    "task": "before-conflict",
+    "arm": "rolling_summary",
+    "expected": "2 m/s",
+    "actual": "3 m/s",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0036999990697950125
+  },
+  {
+    "story": "story-12",
+    "family": "conflicts",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Robot simulation",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0037999998312443495
+  },
+  {
+    "story": "story-13",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "unresolved",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "远程区域",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0040000013541430235
+  },
+  {
+    "story": "story-13",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "unresolved",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "远程区域",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0023999964469112456
+  },
+  {
+    "story": "story-13",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "before-conflict",
+    "arm": "recent_session",
+    "expected": "本地区域",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0030000010156072676
+  },
+  {
+    "story": "story-13",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "before-conflict",
+    "arm": "rolling_summary",
+    "expected": "本地区域",
+    "actual": "远程区域",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-13",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "微服务课程",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006599999323952943
+  },
+  {
+    "story": "story-14",
+    "family": "conflicts",
+    "language": "en",
+    "task": "unresolved",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "every 20 frames",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0043000036384910345
+  },
+  {
+    "story": "story-14",
+    "family": "conflicts",
+    "language": "en",
+    "task": "unresolved",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "every 20 frames",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-14",
+    "family": "conflicts",
+    "language": "en",
+    "task": "before-conflict",
+    "arm": "recent_session",
+    "expected": "every 10 frames",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0027999994927085936
+  },
+  {
+    "story": "story-14",
+    "family": "conflicts",
+    "language": "en",
+    "task": "before-conflict",
+    "arm": "rolling_summary",
+    "expected": "every 10 frames",
+    "actual": "every 20 frames",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0025000044843181968
+  },
+  {
+    "story": "story-14",
+    "family": "conflicts",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Video annotation",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0031000017770566046
+  },
+  {
+    "story": "story-15",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "unresolved",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "删除记录",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.004499997885432094
+  },
+  {
+    "story": "story-15",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "unresolved",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "删除记录",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0027999994927085936
+  },
+  {
+    "story": "story-15",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "before-conflict",
+    "arm": "recent_session",
+    "expected": "保留空值",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0031000017770566046
+  },
+  {
+    "story": "story-15",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "before-conflict",
+    "arm": "rolling_summary",
+    "expected": "保留空值",
+    "actual": "删除记录",
+    "correct": false,
+    "sources": [
+      "conflict"
+    ],
+    "elapsed_ms": 0.0026000052457675338
+  },
+  {
+    "story": "story-15",
+    "family": "conflicts",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "公共数据清洗",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0027999994927085936
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "without_source_gate",
+    "expected": "2025 release",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_6ea03e7f3c0e57c83cec58eda47a93dd",
+      "mem_35c999f8ba3e45dc8f42c0b806bbcc20"
+    ],
+    "elapsed_ms": 0.17980000120587647
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "recent_session",
+    "expected": "2025 release",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.00549999822396785
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "lexical_top_one",
+    "expected": "2025 release",
+    "actual": "2026 preview",
+    "correct": false,
+    "sources": [
+      "assistant"
+    ],
+    "elapsed_ms": 0.0024999972083605826
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "assistant-not-user",
+    "arm": "without_source_gate",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "mem_50bcba5b110ca3a590cf5c4c12a60150"
+    ],
+    "elapsed_ms": 0.1564999984111637
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "assistant-not-user",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "assistant-only"
+    ],
+    "elapsed_ms": 0.001700005668681115
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Public transport study",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0037999998312443495
+  },
+  {
+    "story": "story-16",
+    "family": "roles",
+    "language": "en",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "2025 release",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "user-source",
+    "arm": "without_source_gate",
+    "expected": "英语",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_6956675ac08b88291c62595adbc02213",
+      "mem_525d1eedbe7d35d46def203c6508efed"
+    ],
+    "elapsed_ms": 0.2738999974098988
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "user-source",
+    "arm": "recent_session",
+    "expected": "英语",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.00809999619377777
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "user-source",
+    "arm": "lexical_top_one",
+    "expected": "英语",
+    "actual": "德语",
+    "correct": false,
+    "sources": [
+      "assistant"
+    ],
+    "elapsed_ms": 0.0042000028770416975
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "assistant-not-user",
+    "arm": "without_source_gate",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "mem_821b2651458b797d199874efe0912333"
+    ],
+    "elapsed_ms": 0.22560000070370734
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "assistant-not-user",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "assistant-only"
+    ],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "开源翻译实验",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0030999945010989904
+  },
+  {
+    "story": "story-17",
+    "family": "roles",
+    "language": "zh",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "英语",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0029999937396496534
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "without_source_gate",
+    "expected": "MIT only",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_4cb6f19148a800b5f135d3c465cec578",
+      "mem_c25b4b4c327f466042db8a7a9811146a"
+    ],
+    "elapsed_ms": 0.2021000036620535
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "recent_session",
+    "expected": "MIT only",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.006400005077011883
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "lexical_top_one",
+    "expected": "MIT only",
+    "actual": "all licenses",
+    "correct": false,
+    "sources": [
+      "assistant"
+    ],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "assistant-not-user",
+    "arm": "without_source_gate",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "mem_9d038413853694840bf66ad4c91375a1"
+    ],
+    "elapsed_ms": 0.1514999967184849
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "assistant-not-user",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "assistant-only"
+    ],
+    "elapsed_ms": 0.0018999999156221747
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Source code analyzer",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-18",
+    "family": "roles",
+    "language": "en",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "MIT only",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0025000044843181968
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "user-source",
+    "arm": "without_source_gate",
+    "expected": "macro F1",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_70bac2ed597306d25121450231b2982d",
+      "mem_1e39eee6c5a8e25a684681549f0c6f86"
+    ],
+    "elapsed_ms": 0.19050000264542177
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "user-source",
+    "arm": "recent_session",
+    "expected": "macro F1",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.005699999746866524
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "user-source",
+    "arm": "lexical_top_one",
+    "expected": "macro F1",
+    "actual": "accuracy",
+    "correct": false,
+    "sources": [
+      "assistant"
+    ],
+    "elapsed_ms": 0.0024999972083605826
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "assistant-not-user",
+    "arm": "without_source_gate",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "mem_b8f0824a715fb4ca9d0401a7cc0f88bb"
+    ],
+    "elapsed_ms": 0.15409999468829483
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "assistant-not-user",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "assistant-only"
+    ],
+    "elapsed_ms": 0.0017999991541728377
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "可解释分类",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0032000025385059416
+  },
+  {
+    "story": "story-19",
+    "family": "roles",
+    "language": "zh",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "macro F1",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0035999983083456755
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "without_source_gate",
+    "expected": "fixed seed 42",
+    "actual": null,
+    "correct": false,
+    "sources": [
+      "mem_142ac8e321a7292de4fa8c3869427eaf",
+      "mem_1520a1b1a0ae33e110fd0ac44f083cf9"
+    ],
+    "elapsed_ms": 0.19530000281520188
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "recent_session",
+    "expected": "fixed seed 42",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.005900001269765198
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "user-source",
+    "arm": "lexical_top_one",
+    "expected": "fixed seed 42",
+    "actual": "random seed",
+    "correct": false,
+    "sources": [
+      "assistant"
+    ],
+    "elapsed_ms": 0.0025999979698099196
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "assistant-not-user",
+    "arm": "without_source_gate",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "mem_5130c0673725407cd006124bfbb99bce"
+    ],
+    "elapsed_ms": 0.1511999944341369
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "assistant-not-user",
+    "arm": "lexical_top_one",
+    "expected": null,
+    "actual": "unsupported",
+    "correct": false,
+    "sources": [
+      "assistant-only"
+    ],
+    "elapsed_ms": 0.0020000006770715117
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Notebook reproducibility",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0030999945010989904
+  },
+  {
+    "story": "story-20",
+    "family": "roles",
+    "language": "en",
+    "task": "historical",
+    "arm": "recent_session",
+    "expected": "fixed seed 42",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.002800006768666208
+  },
+  {
+    "story": "story-21",
+    "family": "forget",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "个人阅读实验",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0024999972083605826
+  },
+  {
+    "story": "story-22",
+    "family": "forget",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Study planner",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.005900001269765198
+  },
+  {
+    "story": "story-23",
+    "family": "forget",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "公开演讲练习",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0026999987312592566
+  },
+  {
+    "story": "story-24",
+    "family": "forget",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Open source onboarding",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.002700006007216871
+  },
+  {
+    "story": "story-25",
+    "family": "forget",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "键盘布局实验",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0025000044843181968
+  },
+  {
+    "story": "story-26",
+    "family": "temporal",
+    "language": "en",
+    "task": "before-observation",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "10 meters",
+    "correct": false,
+    "sources": [
+      "later"
+    ],
+    "elapsed_ms": 0.004499997885432094
+  },
+  {
+    "story": "story-26",
+    "family": "temporal",
+    "language": "en",
+    "task": "before-start",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "30 meters",
+    "correct": false,
+    "sources": [
+      "initial"
+    ],
+    "elapsed_ms": 0.0024000037228688598
+  },
+  {
+    "story": "story-26",
+    "family": "temporal",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Satellite image class",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0029000002541579306
+  },
+  {
+    "story": "story-27",
+    "family": "temporal",
+    "language": "zh",
+    "task": "before-observation",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "每分钟",
+    "correct": false,
+    "sources": [
+      "later"
+    ],
+    "elapsed_ms": 0.004900000931229442
+  },
+  {
+    "story": "story-27",
+    "family": "temporal",
+    "language": "zh",
+    "task": "before-start",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "每小时",
+    "correct": false,
+    "sources": [
+      "initial"
+    ],
+    "elapsed_ms": 0.0026000052457675338
+  },
+  {
+    "story": "story-27",
+    "family": "temporal",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "空气质量展示",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0027999994927085936
+  },
+  {
+    "story": "story-28",
+    "family": "temporal",
+    "language": "en",
+    "task": "before-observation",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "stable-2",
+    "correct": false,
+    "sources": [
+      "later"
+    ],
+    "elapsed_ms": 0.0042000028770416975
+  },
+  {
+    "story": "story-28",
+    "family": "temporal",
+    "language": "en",
+    "task": "before-start",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "stable-1",
+    "correct": false,
+    "sources": [
+      "initial"
+    ],
+    "elapsed_ms": 0.0024999972083605826
+  },
+  {
+    "story": "story-28",
+    "family": "temporal",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Static site generation",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0022999956854619086
+  },
+  {
+    "story": "story-29",
+    "family": "temporal",
+    "language": "zh",
+    "task": "before-observation",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "一万条",
+    "correct": false,
+    "sources": [
+      "later"
+    ],
+    "elapsed_ms": 0.0043000036384910345
+  },
+  {
+    "story": "story-29",
+    "family": "temporal",
+    "language": "zh",
+    "task": "before-start",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "一千条",
+    "correct": false,
+    "sources": [
+      "initial"
+    ],
+    "elapsed_ms": 0.0023999964469112456
+  },
+  {
+    "story": "story-29",
+    "family": "temporal",
+    "language": "zh",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "算法复杂度实验",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0027999994927085936
+  },
+  {
+    "story": "story-30",
+    "family": "temporal",
+    "language": "en",
+    "task": "before-observation",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "one week",
+    "correct": false,
+    "sources": [
+      "later"
+    ],
+    "elapsed_ms": 0.00429999636253342
+  },
+  {
+    "story": "story-30",
+    "family": "temporal",
+    "language": "en",
+    "task": "before-start",
+    "arm": "rolling_summary",
+    "expected": null,
+    "actual": "one day",
+    "correct": false,
+    "sources": [
+      "initial"
+    ],
+    "elapsed_ms": 0.0022000021999701858
+  },
+  {
+    "story": "story-30",
+    "family": "temporal",
+    "language": "en",
+    "task": "stable-control",
+    "arm": "recent_session",
+    "expected": "Energy forecasting",
+    "actual": null,
+    "correct": false,
+    "sources": [],
+    "elapsed_ms": 0.0023999964469112456
+  }
+]

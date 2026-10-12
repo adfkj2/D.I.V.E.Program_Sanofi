@@ -66,7 +66,19 @@ def test_checkpoint_cannot_change_question_or_reader_identity():
         x.validate_checkpoint('expected',{'question_id':'different','reader':{'spec':{}}},{},{'reader_spec':{}})
 
 
-def test_budget_scope_includes_pending_historical_ledger():
-    paths=x.e.budget_ledgers(x.OUTPUT)
-    assert any('oracle-contextual-reader-20261010' in str(p) for p in paths)
-    assert x.OUTPUT/'api-cache/ledger.json' in paths
+def test_budget_scope_includes_pending_historical_ledger(tmp_path, monkeypatch):
+    # Exercise scope discovery without relying on an untracked developer ledger.
+    reports = tmp_path / 'eval/reports'
+    historical = reports / 'oracle-contextual-reader-20261010'
+    historical.joinpath('api-cache').mkdir(parents=True)
+    reports.joinpath('oracle-road-to-90-budget.json').write_text(
+        json.dumps({'scope': 'fixture-shared-budget'}), encoding='utf-8')
+    historical.joinpath('frozen-plan.json').write_text(
+        json.dumps({'aggregate_budget': {'scope': 'fixture-shared-budget'}}), encoding='utf-8')
+    pending = historical / 'api-cache/ledger.json'
+    pending.write_text(json.dumps({'calls': [{'status': 'pending', 'charged_budget': 2048}]}), encoding='utf-8')
+    monkeypatch.setitem(x.e.budget_ledgers.__globals__, 'ROOT', tmp_path)
+    current = reports / 'new-run'
+    paths = x.e.budget_ledgers(current)
+    assert pending in paths
+    assert current / 'api-cache/ledger.json' in paths

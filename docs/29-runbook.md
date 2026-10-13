@@ -18,7 +18,7 @@ python -m pip install --no-deps .
 dive-memory --db memory.db serve --port 8765
 ```
 
-打开 <http://127.0.0.1:8765/>，点“载入合成演示”。默认不下载模型、不需要密钥、不调用 LLM。离线生成安装包须事先下载依赖；首次 pip 安装需要网络。当前远程仓库只有推送后才能取得本轮提交，工作区先验证本地交付。
+打开 <http://127.0.0.1:8765/>，点“载入真实项目案例”；也可选择合成机制沙盒。默认不下载模型、不需要密钥、不调用 LLM。离线生成安装包须事先下载依赖；首次 pip 安装需要网络。当前远程仓库只有推送后才能取得本轮提交，工作区先验证本地交付。
 
 `requirements/*.lock` 是确切版本约束，不宣称是带 wheel 哈希的供应链锁。Python 3.12 的实际安装结果由独立 wheel 检查保存。构建使用 setuptools；GPU/真实语义模型环境与默认原型分离，历史冻结环境仍按 R40 记录复现。
 
@@ -75,3 +75,18 @@ python audit_tools/replay_bundle.py --verify artifacts/r40-reader-replay.zip --r
 投影异常：停止写入，备份 DB，运行 `recover`，每次最多 100 个待处理事件，核心重试次数有限；保留错误记录后定位根因，不循环强制重试。导出不包含供应商密钥，但可能含用户输入；公开分享前应由使用者确认内容。
 
 停止服务后复制 DB 是此单机版本最简单的一致备份方式。需要运行中备份时使用 SQLite backup API。不要仅拷贝一个仍在写入的 WAL 数据库主文件。没有承诺多人权限、远程部署、HA 或数据备份服务。
+
+## 0.4 项目恢复入口
+
+默认从工作台载入真实项目案例，或在同一数据库使用下面的命令。案例为人工整理的仓库来源，核查和简报不调用模型。
+
+```text
+dive-memory --db memory.db casebook --project research-case
+dive-memory --db memory.db brief --project research-case --format markdown
+dive-memory --db memory.db brief --project research-case --since 2026-10-10 --format markdown
+dive-memory --db memory.db consult --project research-case "官方成绩"
+```
+
+`brief` 可用 `--as-of` 查看历史状态，用 `--since` 明确比较起点；未指定比较起点时不会猜测用户上次何时工作。`consult` 支持受控项目任务或记录名称，对提议、未采用和冲突保留状态。`ask` 仍是独立的检索/模型入口。界面可复制或下载同一简报；刷新页面通过 URL 保留选定项目，不将访问令牌写入浏览器存储。
+
+原文摘录是载入时保存的来源快照，附路径和冻结哈希。新增或改写记录会使用新来源事件，不能借用旧报告哈希为自己的改动背书。日期只有日精度的案例明确采用日末归一化，并不表示真实发生时分秒。更多任务见[案例说明](30-project-resumption-demo.md)。

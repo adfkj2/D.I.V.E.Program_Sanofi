@@ -16,10 +16,11 @@ jobs:
       - run: python -m pip install -r requirements/dev.lock
       - run: python -m pip install --no-deps -e .
       - run: python -m pytest -q --junitxml=artifacts/tests.xml
-      - run: python -m ruff check src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py tests/test_application_delivery.py tests/test_delivery_cold_run.py
-      - run: python -m ruff format --check src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py tests/test_application_delivery.py tests/test_delivery_cold_run.py
+      - run: python -m ruff check src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py tests/test_application_delivery.py tests/test_delivery_cold_run.py tests/test_project_briefing.py tests/test_project_resumption_cli.py tools/build_project_casebook.py
+      - run: python -m ruff format --check src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py tests/test_application_delivery.py tests/test_delivery_cold_run.py tests/test_project_briefing.py tests/test_project_resumption_cli.py tools/build_project_casebook.py
       - run: python -m mypy src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py --follow-imports skip --ignore-missing-imports
       - run: python eval/run_project_validation.py --output artifacts/structured
+      - run: python tools/build_project_casebook.py --check
       - run: python -m build --wheel
       - run: python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel
       - uses: actions/upload-artifact@v4

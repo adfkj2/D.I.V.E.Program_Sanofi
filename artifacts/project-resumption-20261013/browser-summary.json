@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "checks": [
+    "real demo input renders confirmed/proposed/rejected separately",
+    "historical cutoff restores old budget",
+    "UI correction persists through real API",
+    "successive corrections preserve timestamp precision and create valid replacements",
+    "real evidence retrieval and trace export; no model answer claimed",
+    "hard erasure removes visible preference and invalidates answer",
+    "server persists edits across page reload",
+    "repository case loads through live record API with adoption separated",
+    "local answer opens stored verbatim repository excerpt and provenance",
+    "rejected decision stays rejected and unsupported prediction produces no invented answer",
+    "historical brief and explicit comparison keep old and new full results distinct",
+    "downloaded handoff carries actual project state, caveats and source references",
+    "clipboard handoff matches the downloaded current-state markdown",
+    "page URL restores selected project after reload",
+    "390px layout has no horizontal overflow",
+    "mobile local consult completes without horizontal overflow",
+    "manual case correction keeps its actual time and does not inherit the frozen report citation"
+  ],
+  "consoleErrors": [],
+  "externalRequests": 0,
+  "browser": "155.0.4283.45",
+  "viewports": [
+    [
+      1440,
+      1050
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "actualApi": true
+}

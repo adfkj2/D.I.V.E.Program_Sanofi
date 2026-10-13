@@ -6,6 +6,7 @@ automatic natural-language extraction quality.
 """
 
 import json
+import re
 from dataclasses import asdict, dataclass
 
 from ..extraction import Candidate
@@ -25,6 +26,10 @@ class ProjectRecord:
     disposition: str = "confirmed"
     reason: str = ""
     session: str = "default"
+    source_title: str = ""
+    source_path: str = ""
+    source_excerpt: str = ""
+    source_sha256: str = ""
 
     def __post_init__(self):
         for name, maximum in (
@@ -32,17 +37,32 @@ class ProjectRecord:
             ("value", 6000),
             ("reason", 2000),
             ("session", 120),
+            ("source_title", 300),
+            ("source_path", 1000),
+            ("source_excerpt", 12000),
+            ("source_sha256", 64),
         ):
             value = getattr(self, name)
             if not isinstance(value, str) or len(value) > maximum:
                 raise ValueError(f"{name} must be text of at most {maximum} characters")
-            if name != "reason" and not value.strip():
+            if name in {"key", "value", "session"} and not value.strip():
                 raise ValueError(f"{name} must not be empty")
         if self.category not in CATEGORIES or self.disposition not in DISPOSITIONS:
             raise ValueError("unknown category or disposition")
+        if self.source_sha256 and not re.fullmatch(
+            r"[a-fA-F0-9]{64}", self.source_sha256
+        ):
+            raise ValueError("source_sha256 must be a 64-character hexadecimal digest")
 
     def encode(self) -> str:
-        return PREFIX + json.dumps(asdict(self), ensure_ascii=False, sort_keys=True)
+        # Preserve the original bytes/idempotency contract when optional source
+        # metadata is absent. These are user-supplied references, not verified files.
+        values = {
+            key: value
+            for key, value in asdict(self).items()
+            if not key.startswith("source_") or value
+        }
+        return PREFIX + json.dumps(values, ensure_ascii=False, sort_keys=True)
 
 
 class ProjectExtractionProvider:

@@ -47,15 +47,22 @@ from dive_memory.web import create_workbench
 from fastapi.testclient import TestClient
 assert "site-packages" in dive_memory.__file__
 assert main(["--db","fresh.db","demo","--project","fresh"]) == 0
+assert main(["--db","fresh.db","casebook","--project","casebook"]) == 0
 runtime = MemoryApplication("fresh.db")
 assert runtime.lookup("fresh", "预算上限")["value"] == "40 元"
+brief = runtime.brief("casebook")
+assert "451/500" in brief["markdown"]
+assert "未评估" in brief["markdown"]
+assert runtime.consult("casebook", "R27 推广决定")["status"] == "ANSWER"
 with TestClient(create_workbench(runtime)) as client:
     assert client.get("/").status_code == 200
     for asset in ("app.js", "app.css", "icon.svg"):
         assert client.get("/assets/" + asset).status_code == 200
     assert client.get("/api/verification").status_code == 200
+    assert client.get("/api/brief", params={"project":"casebook"}).status_code == 200
+    assert client.post("/api/consult",json={"project":"casebook","question":"官方成绩"}).json()["mode"] == "local_records"
     assert client.post("/api/answer",json={"project":"fresh","question":"预算上限"}).json()["status"] == "EVIDENCE_ONLY"
-Path("smoke.json").write_text(json.dumps({"passed":True,"import_file":dive_memory.__file__,"cwd":str(Path.cwd()),"package_assets":5,"persistence_restart":True,"cli_api":True},indent=2),encoding="utf8")
+Path("smoke.json").write_text(json.dumps({"passed":True,"import_file":dive_memory.__file__,"cwd":str(Path.cwd()),"package_assets":6,"persistence_restart":True,"cli_api":True,"packaged_casebook":True,"local_consult":True,"handoff_markdown":True},indent=2),encoding="utf8")
 '''
     result = subprocess.run([str(python), "-c", smoke], cwd=out, env=env, capture_output=True, text=True, encoding="utf-8")
     (out / "smoke-output.txt").write_text(result.stdout + result.stderr, encoding="utf-8")

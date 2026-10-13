@@ -1,0 +1,308 @@
+{
+  "schema": "dive-project-casebook-v1",
+  "id": "dive-research-history-20261012-v2",
+  "title": "本项目的真实研发交接：分数、决定与尚未完成的工作",
+  "notice": "仓库真实记录，人工整理映射；不是自动抽取或用户验证。本包为选摘快照，只代表已整理记录，不覆盖完整项目历史。",
+  "frozen_at": "2026-10-13T05:46:03+00:00",
+  "as_of_date": "2026-10-12",
+  "time_notice": "来源只可靠地记录到日期。observed_at 按 Asia/Shanghai 当日日末归一化（day-end normalized），不是实际事件时分秒；案例截至 2026-10-12。完整开发成绩已核对 10 月 8—12 日的日末状态，不声称还原日内顺序。",
+  "source_hash_scope": "SHA-256 of the original file bytes at frozen_at, not just the excerpt",
+  "source_lf_hash_scope": "SHA-256 of entire source with CRLF normalized to LF; permits Git checkout newline conversion only",
+  "published": false,
+  "records": [
+    {
+      "id": "r26-full",
+      "key": "最新完整开发自评",
+      "value": "R26：422/500（84.4%），非官方开发自评。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "R26 全量确认结果；日期归一化后可回看这个旧版本。",
+      "session": "repo-casebook-r26-full",
+      "observed_at": "2026-10-08T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R26：限定新增锚点的陈述状态",
+      "source_path": "docs/oracle/24-asserted-detail-anchors-20261008.md:3",
+      "source_lines": [
+        3
+      ],
+      "source_excerpt": "**最终结果（2026-10-08）：422/500（84.4%）非官方自评，较R21的397净增25题；29改善、4退步，不可答28/30。500题全部判分并通过独立审计，含1道原样保留、计错的本地写入失败。新生成与精确缓存复用结合，并非500题全新独立采样。新增保守费用¥6.236672，累计¥23.408646/¥30；90%还需净增28题。以下计划与中断记录按发生顺序保留，最终状态及纠正见文末。**",
+      "source_sha256": "8c062dbac1df1447f2b24522f5c2a1b9ef40d64f36b80a57bff61b363797b745",
+      "source_lf_sha256": "ba090eeed352709380f9c86c7ed38538fd0bb7906f94ee57e2715a84c654402e"
+    },
+    {
+      "id": "r26-cost",
+      "key": "累计开发费用",
+      "value": "截至 R26，保守累计 ¥23.408646；累计授权 ¥30。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "这是多轮开发累计，不是 R26 单轮或一次冷启动成本。",
+      "session": "repo-casebook-r26-cost",
+      "observed_at": "2026-10-08T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R26：限定新增锚点的陈述状态",
+      "source_path": "docs/oracle/24-asserted-detail-anchors-20261008.md:110",
+      "source_lines": [
+        110
+      ],
+      "source_excerpt": "新增593次请求（阅读474、判分119），新增保守费用 **¥6.236672**，累计3148次请求、**¥23.408646/¥30**。规划线¥29，剩余规划额¥5.591354，另保留¥1结算余量；原历史未知请求预留1824 token仍计入。续跑前208次请求、续跑新增385次；两者相加为593，不能再重复累计。复用缓存及离线审计均无新增付费。",
+      "source_sha256": "8c062dbac1df1447f2b24522f5c2a1b9ef40d64f36b80a57bff61b363797b745",
+      "source_lf_sha256": "ba090eeed352709380f9c86c7ed38538fd0bb7906f94ee57e2715a84c654402e"
+    },
+    {
+      "id": "r27-screen",
+      "key": "R27 筛选结果",
+      "value": "73/80（91.25%），重复使用的开发筛选集；不能代表 500 题全量成绩。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "91.25% 由 73÷80 确定性换算；分母与 R40 的 500 题不同。",
+      "session": "repo-casebook-r27-screen",
+      "observed_at": "2026-10-09T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R27：精确匹配意向词形，避免误挡原句",
+      "source_path": "docs/oracle/25-precise-modality-terms-20261008.md:5",
+      "source_lines": [
+        5
+      ],
+      "source_excerpt": "固定80题由R26的71/80提高至 **73/80**，可答43→45/50，不可答保持28/30；2改善、0退步。两道改善均属时间推理，错误拒答5→3。这是重复使用的开发筛选集，73/80不能代表500题已达90%。全量确认成绩仍为422/500（84.4%）。未达到可答净增3的预设门槛，不推广、不追加全量。",
+      "source_sha256": "c9d74acdfb9be3ec1fe0f68d3fd295c9152c13eb5ca0bd3a578a02c20ef0cf09",
+      "source_lf_sha256": "c9d74acdfb9be3ec1fe0f68d3fd295c9152c13eb5ca0bd3a578a02c20ef0cf09"
+    },
+    {
+      "id": "r27-decision",
+      "key": "R27 推广决定",
+      "value": "不推广、不追加全量；可答净增 2，未达到预设净增 3 的门槛。",
+      "category": "decision",
+      "disposition": "rejected",
+      "reason": "结果提高不等于已采用；该轮记录明确保留推广门槛。",
+      "session": "repo-casebook-r27-decision",
+      "observed_at": "2026-10-09T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R27：精确匹配意向词形，避免误挡原句",
+      "source_path": "docs/oracle/25-precise-modality-terms-20261008.md:5",
+      "source_lines": [
+        5
+      ],
+      "source_excerpt": "固定80题由R26的71/80提高至 **73/80**，可答43→45/50，不可答保持28/30；2改善、0退步。两道改善均属时间推理，错误拒答5→3。这是重复使用的开发筛选集，73/80不能代表500题已达90%。全量确认成绩仍为422/500（84.4%）。未达到可答净增3的预设门槛，不推广、不追加全量。",
+      "source_sha256": "c9d74acdfb9be3ec1fe0f68d3fd295c9152c13eb5ca0bd3a578a02c20ef0cf09",
+      "source_lf_sha256": "c9d74acdfb9be3ec1fe0f68d3fd295c9152c13eb5ca0bd3a578a02c20ef0cf09"
+    },
+    {
+      "id": "r36-full",
+      "key": "最新完整开发自评",
+      "value": "R36：439/500（87.8%），非官方开发自评；可答 411/470、不可答 28/30。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "10 月 11 日日末已完成全量；更新 R26 日末快照。当天更早的 R33 结果未单独展开，不还原日内顺序。",
+      "session": "repo-casebook-r36-full",
+      "observed_at": "2026-10-11T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R36：限定时间问题的最终拒答复核",
+      "source_path": "docs/oracle/34-temporal-refusal-review-20261011.md:13",
+      "source_lines": [
+        13,
+        15
+      ],
+      "source_excerpt": "## 全量结果：439/500（87.8%），无退步\n\n500题全部判分，相对R33改善13/退步0，可答411/470、不可答28/30。剩余61错题为29误拒、31误答、1格式失败；格式失败保留计错，没有改回父拒答或删除。超过90%至少451/500，仍差12题。31题触发时间复核，其余469题原结果保持；486题最终假设不变，14题改变。该结果为真实新增阶段加精确缓存的组合评测，非500题独立新采样，非官方同模型家族自评。",
+      "source_sha256": "a819f87e38f06ea3dfa22e336451361e1b2159ab9159958815c3615a746c87e8",
+      "source_lf_sha256": "a819f87e38f06ea3dfa22e336451361e1b2159ab9159958815c3615a746c87e8",
+      "replaces_key": "最新完整开发自评",
+      "replaces_id": "r26-full"
+    },
+    {
+      "id": "r40-full",
+      "key": "最新完整开发自评",
+      "value": "R40：451/500（90.2%），非官方开发自评；可答 423/470、不可答 28/30。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "明确更新 R36 日末全量快照；不把筛选、工程测试或缓存回放当作新准确率。",
+      "session": "repo-casebook-r40-full",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R40：多日期当前属性的独立复核",
+      "source_path": "docs/oracle/38-current-state-review-20261012.md:19",
+      "source_lines": [
+        19
+      ],
+      "source_excerpt": "2026-10-12，**451/500（90.2%）**，全部500题判分完整，达到“超过90%”的451题门槛。可答423/470（90.0%）、不可答28/30（93.33%）。对R39改善2、退步0；新增正确为最新迁居地点及周六起床习惯。13题触发独立当前状态复核、487题不复核；494最终假设与R39完全相同、6不同。剩49错仍保留：22误拒、26误答、1引用格式失败，不剔除、不调整标准答案或judge。",
+      "source_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76",
+      "source_lf_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76",
+      "replaces_key": "最新完整开发自评",
+      "replaces_id": "r36-full"
+    },
+    {
+      "id": "r40-status",
+      "key": "官方成绩",
+      "value": "未评估（NOT_EVALUATED）；90.2% 不能称为官方成绩、盲测成绩或泛化准确率。",
+      "category": "note",
+      "disposition": "confirmed",
+      "reason": "同一公开开发集、同家族 judge，混合缓存与新阶段生成；没有新的独立 500 题采样。",
+      "session": "repo-casebook-r40-status",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R40：多日期当前属性的独立复核",
+      "source_path": "docs/oracle/38-current-state-review-20261012.md:32",
+      "source_lines": [
+        32
+      ],
+      "source_excerpt": "本结果是同一公开开发集、同模型家族judge的**非官方自评**，`official_score=NOT_EVALUATED`。含精确缓存和新阶段生成，不是500题全新独立采样，也不是未暴露盲测。只宣称本次冻结策略在该完整500题与原judge下达标，不宣称其他数据集上的90%泛化。",
+      "source_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76",
+      "source_lf_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76"
+    },
+    {
+      "id": "r40-cost",
+      "key": "累计开发费用",
+      "value": "截至 R40，保守累计 ¥31.456754；累计授权 ¥40，规划余 ¥7.543246。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "更新 R26 的历史累计值；只表示报告当时的费用快照，不是实时余额。",
+      "session": "repo-casebook-r40-cost",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R40：多日期当前属性的独立复核",
+      "source_path": "docs/oracle/38-current-state-review-20261012.md:21",
+      "source_lines": [
+        21
+      ],
+      "source_excerpt": "全量阶段新增8阅读+2判分=10请求，费用¥0.168902；含筛选本轮16请求、¥0.276516。共享累计3916请求、保守费用**¥31.456754**，规划余**¥7.543246**，总授权¥40、规划线¥39及¥1结算余量不变，历史22649不确定token预留仍计入。",
+      "source_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76",
+      "source_lf_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76",
+      "replaces_key": "累计开发费用",
+      "replaces_id": "r26-cost"
+    },
+    {
+      "id": "r40-round-cost",
+      "key": "R40 本轮费用",
+      "value": "含筛选共新增 16 次请求，保守增量 ¥0.276516。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "单轮增量与累计开发费用分别记录，不能互相替代。",
+      "session": "repo-casebook-r40-round-cost",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R40：多日期当前属性的独立复核",
+      "source_path": "docs/oracle/38-current-state-review-20261012.md:21",
+      "source_lines": [
+        21
+      ],
+      "source_excerpt": "全量阶段新增8阅读+2判分=10请求，费用¥0.168902；含筛选本轮16请求、¥0.276516。共享累计3916请求、保守费用**¥31.456754**，规划余**¥7.543246**，总授权¥40、规划线¥39及¥1结算余量不变，历史22649不确定token预留仍计入。",
+      "source_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76",
+      "source_lf_sha256": "c37de26d49b88ea5d3ae9032c0b2fdc9cbc9f14d8741f91768608ea1932bab76"
+    },
+    {
+      "id": "cold-cost",
+      "key": "独立冷启动费用",
+      "value": "尚未实测；¥31.456754 和 ¥0.276516 都不是独立冷启动完整 500 题成本。",
+      "category": "note",
+      "disposition": "confirmed",
+      "reason": "不从累计开发费用或混合阶段计时推测一次冷运行成本。",
+      "session": "repo-casebook-cold-cost",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R41：90.2% 的规则审查与工程交付规划",
+      "source_path": "docs/oracle/39-compliance-audit-20261012.md:94",
+      "source_lines": [
+        94
+      ],
+      "source_excerpt": "这支持“固定策略下复用相同请求结果”的解释，不支持“500 次全新生成”。当前累计 ¥31.456754 是多轮开发费用，R40 ¥0.276516 是增量费用；两者都不是独立冷启动完整 500 题的成本。全量模型调用次数、生成 token、端到端时间仍需按统一运行口径形成报告，不能直接累加混合阶段计时当作一次实测。",
+      "source_sha256": "e5958acdc3f9c087d808fb2e9e7431944819a7da8c1657c8a7de7908e7eb92be",
+      "source_lf_sha256": "e5958acdc3f9c087d808fb2e9e7431944819a7da8c1657c8a7de7908e7eb92be"
+    },
+    {
+      "id": "rule-review",
+      "key": "规则审查",
+      "value": "尚未全部通过；公开 500 题多轮用于分析和策略选择，F.1.4 过拟合调参风险未关闭。",
+      "category": "note",
+      "disposition": "confirmed",
+      "reason": "没有发现按题号填答案，不等于项目组已认可合规。",
+      "session": "repo-casebook-rule-review",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R41：90.2% 的规则审查与工程交付规划",
+      "source_path": "docs/oracle/39-compliance-audit-20261012.md:9",
+      "source_lines": [
+        9
+      ],
+      "source_excerpt": "现有结果不是空口宣称，也没有在本次检查中发现按题号填答案的实现。但“运行时不泄漏答案”“缓存能重放”“符合比赛诚信要求”是三个不同判断。手册附录 F.1.4 明确包含“对测试集过拟合调参，缺乏通用设计”；当前公开 Oracle 500 题已被多轮错误分析和策略选择使用，不能重新称为盲测集。需要通用性验证及项目组对该边界的解释。",
+      "source_sha256": "e5958acdc3f9c087d808fb2e9e7431944819a7da8c1657c8a7de7908e7eb92be",
+      "source_lf_sha256": "e5958acdc3f9c087d808fb2e9e7431944819a7da8c1657c8a7de7908e7eb92be"
+    },
+    {
+      "id": "r42-delivery",
+      "key": "R42 工程交付",
+      "value": "共用运行时、CLI/API、SQLite 持久化与四视图工作台；确认、提议、拒绝和冲突分别保留。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "明确字段录入仍由人确认；自然文本使用启发式抽取，不能称为自动理解所有项目文档。",
+      "session": "repo-casebook-r42-delivery",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R42：通用运行时、工程交付与可视化验证",
+      "source_path": "docs/oracle/40-engineering-delivery-20261012.md:21",
+      "source_lines": [
+        21
+      ],
+      "source_excerpt": "新增应用用例层、明确业务记录 schema、独立 reader 工厂、安装式 CLI、FastAPI 工作台及四视图网页。SQLite 共用事件/版本/来源核心，显式区分确认、提议、拒绝与冲突；更新/遗忘使项目临时回答追踪失效。自然文本仍为原启发式抽取，结构化录入不冒充 NLP。生产入口不导入历史实验脚本或读取评测答案；在线模式显式配置，无密钥默认只展示证据。",
+      "source_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6",
+      "source_lf_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6"
+    },
+    {
+      "id": "r42-performance",
+      "key": "R42 查询性能",
+      "value": "1 万条记录查询 p50 从 4783ms 降至 522ms；同机器、同输入，不是模型延迟或并发 SLA。",
+      "category": "result",
+      "disposition": "confirmed",
+      "reason": "后值来自来源批量化后的 30 问/规模测量，前值来自同报告的性能修复前登记。",
+      "session": "repo-casebook-r42-performance",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R42：通用运行时、工程交付与可视化验证",
+      "source_path": "docs/oracle/40-engineering-delivery-20261012.md:17",
+      "source_lines": [
+        17,
+        36
+      ],
+      "source_excerpt": "执行中补充（性能修复前登记）：初次固定 1K/10K SQLite 工作负载完成。1K 查询 p50 539ms/p95 567ms；10K p50 4783ms/p95 5727ms。10K profile 定位到 `_memory` 为每条候选单独查询来源（约 10019 次 SQL execute），不是模型延迟。拟仅将来源读取批量化、非语义模式跳过无用向量 JSON 解码；保留排序、评分、来源集合与原始结果，新增来源一致性和 SQL 查询数量检查，再对同一持久化数据重测。不得把此改动称为准确率提升。\n\n| 来源批量化后查询 | 1K p50/p95 35.6/48.0ms，10K 522/583ms；同机器、同持久化输入，30 问/规模；非隔离负载性能实验 |",
+      "source_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6",
+      "source_lf_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6"
+    },
+    {
+      "id": "value-evidence",
+      "key": "用户价值验证",
+      "value": "构造结构化任务 120/120，完整事件扫描基线也为 120/120；尚不能据此证明真实用户效率提高。",
+      "category": "note",
+      "disposition": "confirmed",
+      "reason": "需要继续比较正确恢复时间及维护负担，没有参与者观察结果。",
+      "session": "repo-casebook-value-evidence",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R42：通用运行时、工程交付与可视化验证",
+      "source_path": "docs/oracle/40-engineering-delivery-20261012.md:35",
+      "source_lines": [
+        35,
+        40
+      ],
+      "source_excerpt": "| 结构化任务 | 30 个领域故事、6 个机制模板、120 题；全系统 120，事件扫描 120，滚动摘要95，词面首条90，最近会话60，去更新115，去来源门110 |\n\n结果未以测试条数换算手册分数。结构化事件扫描与系统并列，说明用户价值需要在恢复时间和维护成本上继续验证。中文/英文只代表文字语言，不是双语自然语言泛化测量。没有伪造真正普通 LLM RAG 对照、reader 复核消融或独立盲测。",
+      "source_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6",
+      "source_lf_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6"
+    },
+    {
+      "id": "next-work",
+      "key": "下一步工作",
+      "value": "仍待完成项目组规则判断、正式统一 judge、真实用户观察、独立自然语言保留集，以及真实冷生成与费用结算。",
+      "category": "decision",
+      "disposition": "proposed",
+      "reason": "这些是报告列出的未完成事项；本案例不会把待办标为已经执行。",
+      "session": "repo-casebook-next-work",
+      "observed_at": "2026-10-12T23:59:59+08:00",
+      "date_precision": "day-end normalized; Asia/Shanghai",
+      "source_title": "R42：通用运行时、工程交付与可视化验证",
+      "source_path": "docs/oracle/40-engineering-delivery-20261012.md:59",
+      "source_lines": [
+        59
+      ],
+      "source_excerpt": "仍待外部完成：F.1.1/F.1.4 项目组判断、正式统一 judge、真实用户任务观察、独立保管的自然语言保留集、真实冷生成与费用结算。当前本地工程完成不等于原计划的全部产品和比赛退出条件均已满足。",
+      "source_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6",
+      "source_lf_sha256": "976a834b3da5d9da391741256bdf7a3b7c8dee8c711aeafc47dcb941d666a2b6"
+    }
+  ]
+}

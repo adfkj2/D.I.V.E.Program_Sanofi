@@ -1,11 +1,20 @@
 "use strict";
 const $ = (id) => document.getElementById(id);
-let project = "my-research",
+let project =
+    new URL(location.href).searchParams.get("project") || "my-research",
   state = null,
+  brief = null,
+  since = null,
+  lastConsult = null,
+  contextVersion = 0,
+  refreshVersion = 0,
+  answerVersion = 0,
   lastTrace = null,
   accessToken = "",
   cutoff = null,
-  recordRequestId = null;
+  recordRequestId = null,
+  recordObservedAt = null,
+  recordDateDisplay = "";
 const category = {
   constraint: "约束",
   decision: "决定",
@@ -69,6 +78,22 @@ function localDate(value = new Date()) {
     .toISOString()
     .slice(0, 16);
 }
+function recordDate(memory) {
+  const value = memory.valid_from || memory.observed_at;
+  if (
+    memory.structured_content.source_sha256 &&
+    memory.structured_content.session?.startsWith("repo-casebook-")
+  ) {
+    return (
+      new Date(value).toLocaleDateString("zh-CN", {
+        timeZone: "Asia/Shanghai",
+        month: "short",
+        day: "numeric",
+      }) + " · 日期精度"
+    );
+  }
+  return date(value);
+}
 function switchTab(name) {
   document.querySelectorAll(".page").forEach((p) => (p.hidden = p.id !== name));
   document.querySelectorAll("[data-tab]").forEach((b) => {
@@ -77,26 +102,49 @@ function switchTab(name) {
   });
 }
 async function refresh() {
-  const [ready, snapshot] = await Promise.all([
+  const version = ++refreshVersion;
+  const context = contextVersion;
+  const query = params({
+    ...(cutoff ? { as_of: cutoff } : {}),
+    ...(since ? { since } : {}),
+  });
+  const [ready, snapshot, resume] = await Promise.all([
     api("/api/readiness"),
     api("/api/snapshot?" + params(cutoff ? { as_of: cutoff } : {})),
+    api("/api/brief?" + query),
   ]);
+  if (version !== refreshVersion || context !== contextVersion) return;
   state = snapshot;
+  brief = resume;
+  $("project").value = project;
+  const url = new URL(location.href);
+  url.searchParams.set("project", project);
+  history.replaceState(null, "", url);
   $("project-label").textContent = project;
   $("mode").textContent =
-    ready.mode === "live_model" ? "在线模型已配置" : "本地证据浏览";
+    ready.mode === "live_model" ? "在线模型已配置" : "本地记录核查";
   $("reader-description").textContent =
     ready.mode === "live_model"
       ? "回答器仅接收本次选中的证据；引用和失败状态可以检查。"
       : "当前未配置回答模型。检索照常运行，只展示真实证据，不生成模型回答。";
   renderBrief();
+  renderResume();
+  renderShortcuts();
   renderTimeline();
+  setAnswerMode();
 }
 function invalidate() {
+  contextVersion += 1;
+  brief = null;
+  lastConsult = null;
   lastTrace = null;
   $("trace-result").hidden = true;
   $("trace-empty").hidden = false;
   $("lookup-result").replaceChildren();
+  $("consult-result").hidden = true;
+  $("resume-panel").hidden = true;
+  $("copy-handoff").disabled = true;
+  $("download-handoff").disabled = true;
 }
 function action(label, handler) {
   const b = node("button", label);
@@ -127,7 +175,7 @@ function recordCard(memory, history = false) {
       "time",
       (category[d.category] || memory.evidence_state) +
         " · " +
-        date(memory.valid_from || memory.observed_at),
+        recordDate(memory),
     ),
   );
   const actions = node("div", undefined, "record-actions");
@@ -145,8 +193,9 @@ function recordCard(memory, history = false) {
 function renderBrief() {
   const confirmed = state.memories.filter(
     (m) =>
-      !m.structured_content.disposition ||
-      m.structured_content.disposition === "confirmed",
+      !state.conflicts.includes(m.structured_content.key) &&
+      (!m.structured_content.disposition ||
+        m.structured_content.disposition === "confirmed"),
   );
   const pending = state.memories.filter((m) =>
     ["proposed", "rejected"].includes(m.structured_content.disposition),
@@ -166,6 +215,186 @@ function renderBrief() {
     ? "历史时点 · " + date(cutoff)
     : "当前有效状态";
 }
+
+function briefItem(memory) {
+  const data = memory.structured_content;
+  const item = node("article", undefined, "resume-item");
+  item.append(node("h3", data.key), node("p", data.value));
+  if (data.reason) item.append(node("small", data.reason));
+  item.append(action("核对来源 ↗", () => showSource(memory.id)));
+  return item;
+}
+
+function renderResume() {
+  const hasRecords =
+    brief.sections.some((section) => section.items.length) ||
+    brief.conflicts.length;
+  $("resume-panel").hidden = !hasRecords;
+  $("copy-handoff").disabled = !hasRecords;
+  $("download-handoff").disabled = !hasRecords;
+  $("resume-summary").textContent = brief.summary;
+  const sections = $("resume-sections");
+  sections.replaceChildren();
+  for (const section of brief.sections.filter((part) => part.items.length)) {
+    const card = node("section", undefined, "resume-card " + section.id);
+    card.append(node("h2", section.title));
+    card.append(...section.items.slice(0, 2).map(briefItem));
+    if (section.items.length > 2) {
+      const rest = node("details", undefined, "resume-more");
+      rest.append(
+        node("summary", "展开其余 " + (section.items.length - 2) + " 条"),
+      );
+      rest.append(...section.items.slice(2).map(briefItem));
+      card.append(rest);
+    }
+    sections.append(card);
+  }
+  const conflicts = $("resume-conflicts");
+  conflicts.replaceChildren();
+  conflicts.hidden = !brief.conflicts.length;
+  if (brief.conflicts.length) {
+    conflicts.append(
+      node("h2", "先核对这些冲突"),
+      node("p", "以下记录同时有效，简报不会替你选择其中一个值。"),
+    );
+    for (const group of brief.conflicts) {
+      const card = node("section", undefined, "resume-card conflict");
+      card.append(node("h3", group.key), ...group.items.map(briefItem));
+      conflicts.append(card);
+    }
+  }
+  const changes = $("recent-changes");
+  changes.replaceChildren();
+  if (!since)
+    changes.append(
+      node(
+        "p",
+        "选择上次工作时间，核对之后新增和明确替换的记录。",
+        "form-note",
+      ),
+    );
+  else if (!brief.changes.length)
+    changes.append(
+      node(
+        "p",
+        "该区间没有新增或替换记录。已删除的来源不会在这里恢复。",
+        "form-note",
+      ),
+    );
+  else
+    for (const change of brief.changes) {
+      const item = node("article", undefined, "change-item");
+      const after = change.after.structured_content;
+      item.append(
+        node(
+          "span",
+          change.kind === "updated" ? "明确更新" : "新增记录",
+          "tag",
+        ),
+      );
+      item.append(node("h3", after.key));
+      if (change.before)
+        item.append(
+          node(
+            "p",
+            "此前 · " + change.before.structured_content.value,
+            "change-before",
+          ),
+        );
+      item.append(node("p", "此后 · " + after.value, "change-after"));
+      item.append(action("查看这次记录 ↗", () => showSource(change.after.id)));
+      changes.append(item);
+    }
+  const curated = state.timeline.some((m) =>
+    m.structured_content.session?.startsWith("repo-casebook-"),
+  );
+  $("casebook-banner").hidden = !curated;
+  if (curated)
+    $("casebook-banner").querySelector("p").textContent =
+      "仓库记录人工整理的选摘案例，截至 2026-10-12。日期按北京时间日末归一化，不代表实际时分秒；未录入的信息不在此简报中。原文可核查，用户价值尚待验证。";
+}
+
+function renderShortcuts() {
+  const keys = state.memories
+    .filter((m) => m.structured_content.schema === "project-record-v1")
+    .map((m) => m.structured_content.key);
+  const questions = [
+    "继续项目",
+    "当前约束",
+    "哪些方案未采用",
+    ...[...new Set(keys)].slice(0, 4),
+  ];
+  $("question-shortcuts").replaceChildren(
+    ...questions.map((question) => {
+      const button = action(question, async () => {
+        $("question").value = question;
+        $("answer-mode").value = "local";
+        setAnswerMode();
+        $("ask-form").requestSubmit(
+          $("ask-form").querySelector('button[type="submit"]'),
+        );
+      });
+      button.className = "question-chip";
+      return button;
+    }),
+  );
+}
+
+function setAnswerMode() {
+  answerVersion += 1;
+  const local = $("answer-mode").value === "local";
+  $("ask-form").querySelector('button[type="submit"]').textContent = local
+    ? "核查记录 →"
+    : "查找证据 →";
+  $("reader-description").textContent = local
+    ? "核查当前状态、约束、未采用方案，或输入一条记录名称。结果直接来自明确记录，不调用模型。"
+    : "检索与模型模式：无密钥时只展示证据；引用可核查不代表结论已被自动证实。";
+  $("consult-result").hidden = true;
+  $("trace-result").hidden = true;
+  $("trace-empty").hidden = false;
+}
+
+function renderConsult() {
+  $("trace-empty").hidden = true;
+  $("trace-result").hidden = true;
+  const box = $("consult-result");
+  box.hidden = false;
+  box.replaceChildren();
+  box.className = "consult-card " + lastConsult.status.toLowerCase();
+  box.append(node("span", "本地记录核查 · 无模型调用", "small-title"));
+  const labels = {
+    ANSWER: "依据已整理",
+    ABSTAIN: "暂时不能确定",
+    UNSUPPORTED: "这个问题需要进一步查证",
+  };
+  box.append(node("h2", labels[lastConsult.status] || lastConsult.status));
+  box.append(
+    node("p", lastConsult.answer || lastConsult.reason, "consult-answer"),
+  );
+  const citations = node("div", undefined, "consult-citations");
+  for (const cite of lastConsult.citations || [])
+    citations.append(
+      action("核对 “" + cite.quote + "” ↗", () => showSource(cite.memory_id)),
+    );
+  box.append(citations);
+  if (lastConsult.status === "UNSUPPORTED")
+    box.append(
+      node(
+        "p",
+        "可以选择上面的项目任务，或输入已记录的名称；也可切换检索与模型模式查找相关片段。",
+        "form-note",
+      ),
+    );
+}
+
+function downloadText(text, filename, type) {
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  link.href = url;
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 function renderTimeline() {
   const rows = [...state.timeline].sort((a, b) =>
     (b.valid_from || "").localeCompare(a.valid_from || ""),
@@ -173,7 +402,7 @@ function renderTimeline() {
   $("timeline-list").replaceChildren(
     ...rows.map((m) => {
       const item = node("div", undefined, "timeline-item");
-      item.append(node("time", date(m.valid_from || m.observed_at)));
+      item.append(node("time", recordDate(m)));
       const body = node("div", undefined, "timeline-body");
       body.append(recordCard(m, true));
       if (m.supersedes_id)
@@ -188,12 +417,49 @@ function renderTimeline() {
     );
 }
 async function showSource(id) {
+  const context = contextVersion;
   const result = await api(
     "/api/sources/" + encodeURIComponent(id) + "?" + params(),
   );
+  if (context !== contextVersion) return;
   const box = $("source-content");
   box.replaceChildren();
-  box.append(node("p", result.memory.content));
+  const source = result.memory.structured_content;
+  if (source.schema === "project-record-v1") {
+    box.append(node("h3", source.key), node("p", source.value));
+    box.append(
+      node(
+        "p",
+        disposition[source.disposition] + " · " + category[source.category],
+        "form-note",
+      ),
+    );
+  } else box.append(node("p", result.memory.content));
+  if (source.source_excerpt) {
+    const section = node("section", undefined, "source-excerpt");
+    section.append(
+      node("span", "随记录保存的来源摘录 · 人工整理", "small-title"),
+    );
+    section.append(node("h3", source.source_title || "来源文档"));
+    section.append(node("blockquote", source.source_excerpt));
+    section.append(node("p", source.source_path, "source-path"));
+    if (source.source_sha256) {
+      const details = node("details", undefined, "technical");
+      details.append(
+        node("summary", "来源文件冻结哈希"),
+        node("code", source.source_sha256),
+      );
+      section.append(details);
+    }
+    section.append(
+      node(
+        "p",
+        "此处展示载入时的摘录快照，不代表实时读取文件或自动验证结论。",
+        "form-note",
+      ),
+    );
+    box.append(section);
+  }
   box.append(
     node(
       "p",
@@ -205,6 +471,7 @@ async function showSource(id) {
     ),
   );
   for (const e of result.events) {
+    if (source.source_excerpt) continue;
     const section = node("div", undefined, "source-event");
     section.append(
       node(
@@ -212,7 +479,9 @@ async function showSource(id) {
         "会话 " +
           (e.source_message_id || "未标记") +
           " · " +
-          date(e.observed_at),
+          (source.session?.startsWith("repo-casebook-")
+            ? recordDate(result.memory)
+            : date(e.observed_at)),
       ),
     );
     let text = e.payload.text;
@@ -238,9 +507,11 @@ async function showSource(id) {
 }
 
 async function showWriteDecision(eventId) {
+  const context = contextVersion;
   const result = await api(
     "/api/events/" + encodeURIComponent(eventId) + "?" + params(),
   );
+  if (context !== contextVersion) return;
   const box = $("source-content");
   box.replaceChildren(node("p", "本次输入的实际写入判定"));
   for (const decision of result.write_decisions) {
@@ -274,10 +545,12 @@ function setInputMode() {
 }
 function openRecord(memory = null) {
   recordRequestId = crypto.randomUUID();
+  recordObservedAt = new Date().toISOString();
+  recordDateDisplay = localDate(recordObservedAt);
   $("record-form").reset();
   $("replaces").value = memory?.id || "";
   $("record-heading").textContent = memory ? "更新明确记录" : "记录新信息";
-  $("record-date").value = localDate();
+  $("record-date").value = recordDateDisplay;
   document.querySelector('[name="input-mode"][value="text"]').disabled =
     !!memory;
   $("record-key").readOnly = !!memory;
@@ -407,8 +680,13 @@ $("open-project").onclick = () =>
   run(async () => {
     project = $("project").value.trim();
     cutoff = null;
+    since = null;
+    $("since").value = "";
     $("as-of").value = "";
     invalidate();
+    $("confirmed").replaceChildren();
+    $("pending").replaceChildren();
+    $("casebook-banner").hidden = true;
     await refresh();
   });
 $("apply-token").onclick = () =>
@@ -431,23 +709,78 @@ $("now").onclick = () =>
     invalidate();
     await refresh();
   });
-$("load-demo").onclick = () =>
-  run(async () => {
-    const name =
-      "demo-" + new Date().toISOString().replace(/\D/g, "").slice(0, 14);
-    const d = await api("/api/demo", {
+async function loadProjectExample(kind) {
+  const buttons = [$("load-demo"), $("load-casebook"), $("empty-casebook")];
+  if (buttons.some((b) => b.disabled)) return;
+  buttons.forEach((b) => {
+    b.disabled = true;
+  });
+  try {
+    const name = kind + "-" + crypto.randomUUID().slice(0, 8);
+    const d = await api("/api/" + kind, {
       method: "POST",
       body: JSON.stringify({ project: name }),
     });
     project = d.namespace;
     $("project").value = project;
     cutoff = null;
+    since = null;
     $("as-of").value = "";
+    $("since").value = "";
     invalidate();
     await refresh();
     switchTab("brief");
-    showMessage(d.notice);
+    $("record-management").open = kind === "demo";
+    if (kind === "casebook") $("message").hidden = true;
+    else showMessage(d.notice);
+  } finally {
+    buttons.forEach((b) => {
+      b.disabled = false;
+    });
+  }
+}
+$("load-demo").onclick = () => run(() => loadProjectExample("demo"));
+$("load-casebook").onclick = () => run(() => loadProjectExample("casebook"));
+$("empty-casebook").onclick = () => run(() => loadProjectExample("casebook"));
+$("answer-mode").onchange = setAnswerMode;
+$("apply-since").onclick = () =>
+  run(async () => {
+    since = $("since").value ? new Date($("since").value).toISOString() : null;
+    invalidate();
+    await refresh();
   });
+$("clear-since").onclick = () =>
+  run(async () => {
+    since = null;
+    $("since").value = "";
+    invalidate();
+    await refresh();
+  });
+$("copy-handoff").onclick = () =>
+  run(async () => {
+    if (!brief) return;
+    try {
+      await navigator.clipboard.writeText(brief.markdown);
+      showMessage(
+        "交接简报已复制，包含当前状态、待确认事项和来源。可带到下一次会话。",
+      );
+    } catch {
+      downloadText(
+        brief.markdown,
+        "project-handoff.md",
+        "text/markdown;charset=utf-8",
+      );
+      showMessage("浏览器未允许复制，已改为下载同一份交接简报。");
+    }
+  });
+$("download-handoff").onclick = () => {
+  if (brief)
+    downloadText(
+      brief.markdown,
+      "project-handoff.md",
+      "text/markdown;charset=utf-8",
+    );
+};
 $("record-form").onsubmit = (e) => {
   e.preventDefault();
   run(async () => {
@@ -461,7 +794,10 @@ $("record-form").onsubmit = (e) => {
       const body = {
         project,
         idempotency_key: recordRequestId,
-        observed_at: new Date($("record-date").value).toISOString(),
+        observed_at:
+          $("record-date").value === recordDateDisplay
+            ? recordObservedAt
+            : new Date($("record-date").value).toISOString(),
         session: $("record-session").value,
       };
       if (structured)
@@ -501,6 +837,7 @@ $("record-form").onsubmit = (e) => {
 $("lookup-form").onsubmit = (e) => {
   e.preventDefault();
   run(async () => {
+    const context = contextVersion;
     const d = await api(
       "/api/lookup?" +
         params({
@@ -508,6 +845,7 @@ $("lookup-form").onsubmit = (e) => {
           ...(cutoff ? { as_of: cutoff } : {}),
         }),
     );
+    if (context !== contextVersion) return;
     $("lookup-result").textContent =
       d.status === "ANSWER"
         ? "确认记录：" + d.value
@@ -525,15 +863,27 @@ $("ask-form").onsubmit = (e) => {
     const b = e.submitter;
     b.disabled = true;
     try {
-      lastTrace = await api("/api/answer", {
+      const context = contextVersion;
+      const answerRequest = ++answerVersion;
+      const local = $("answer-mode").value === "local";
+      const response = await api(local ? "/api/consult" : "/api/answer", {
         method: "POST",
         body: JSON.stringify({
           project,
           question: $("question").value,
           as_of: cutoff,
+          ...(local ? { since } : {}),
         }),
       });
-      renderTrace();
+      if (context !== contextVersion || answerRequest !== answerVersion) return;
+      if (local) {
+        lastConsult = response;
+        renderConsult();
+      } else {
+        lastTrace = response;
+        $("consult-result").hidden = true;
+        renderTrace();
+      }
     } finally {
       b.disabled = false;
     }
@@ -557,15 +907,10 @@ $("forget-form").onsubmit = (e) => {
 };
 $("download-trace").onclick = () => {
   if (!lastTrace) return;
-  const a = document.createElement("a");
-  const url = URL.createObjectURL(
-    new Blob([JSON.stringify(lastTrace, null, 2)], {
-      type: "application/json",
-    }),
+  downloadText(
+    JSON.stringify(lastTrace, null, 2),
+    lastTrace.trace_id + ".json",
+    "application/json",
   );
-  a.href = url;
-  a.download = lastTrace.trace_id + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
 };
 run(refresh);

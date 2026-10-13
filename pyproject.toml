@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dive-memory"
-version = "0.3.0"
+version = "0.4.0"
 description = "Event-sourced long-term interactive AI memory service"
 requires-python = ">=3.11"
 dependencies = []
@@ -28,7 +28,7 @@ testpaths = ["tests"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-dive_memory = ["static/*.html", "static/*.css", "static/*.js", "static/*.json", "static/*.svg"]
+dive_memory = ["static/*.html", "static/*.css", "static/*.js", "static/*.json", "static/*.svg", "data/*.json"]
 
 [tool.ruff]
 line-length = 88

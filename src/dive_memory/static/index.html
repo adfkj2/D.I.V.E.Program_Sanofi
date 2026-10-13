@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>续研 · DIVE 项目记忆</title>
+    <title>续研 · 把研究接着做下去</title>
+    <meta
+      name="description"
+      content="回到一个持续数周的研究项目，核查当前决定、追溯变化，并带着有来源的交接简报继续工作。"
+    />
     <link rel="stylesheet" href="/assets/app.css" />
     <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
     <script src="/assets/app.js" defer></script>
@@ -11,8 +15,8 @@
   <body>
     <aside class="sidebar">
       <a class="brand" href="/" aria-label="续研主页"
-        ><span class="brand-mark">D</span
-        ><span>续研<small>DIVE PROJECT MEMORY</small></span></a
+        ><span class="brand-mark">续</span
+        ><span>续研<small>A CONTINUING PROJECT</small></span></a
       >
       <div class="project-control">
         <label for="project">当前项目</label>
@@ -31,16 +35,23 @@
         ><button data-tab="timeline" class="nav-item">
           <span>02</span>记忆时间线</button
         ><button data-tab="evidence" class="nav-item">
-          <span>03</span>回答与证据</button
+          <span>03</span>核查与证据</button
         ><button data-tab="verify" class="nav-item">
           <span>04</span>验证报告
         </button>
       </nav>
       <div class="sidebar-note">
-        <span class="small-title">EVERY DECISION HAS A SOURCE</span>
-        <p>保留决定的依据，<br />继续尚未完成的工作。</p>
-        <button id="load-demo" class="quiet">载入合成演示 ↗</button
-        ><small>演示数值均为构造数据</small>
+        <span class="small-title">一次研究，许多次会话。</span>
+        <p>记住为何决定，<br />知道从何继续。</p>
+        <div class="sidebar-examples">
+          <button id="load-casebook" class="quiet casebook-button">
+            本项目的真实案例 ↗
+          </button>
+          <button id="load-demo" class="quiet sandbox-button">
+            合成机制沙盒
+          </button>
+        </div>
+        <small>案例来自仓库记录；沙盒数据为构造。</small>
       </div>
       <details class="access">
         <summary>本地访问设置</summary>
@@ -56,7 +67,7 @@
     <main>
       <header class="topbar">
         <span
-          >研究工作台 <span class="separator">/</span>
+          >项目工作台 <span class="separator">/</span>
           <span id="project-label">my-research</span></span
         ><span class="mode" id="mode">连接中</span>
       </header>
@@ -64,43 +75,174 @@
       <section id="brief" class="page">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p>
-            <h1>接着上次，继续。</h1>
-            <p class="lede">先确认现在有效的决定，再开始下一步。</p>
+            <p class="eyebrow">01 / CONTINUE YOUR RESEARCH</p>
+            <h1>把研究接着做下去。</h1>
+            <p class="lede">
+              现在采用什么，哪些事情还没定，下一次会话从这里开始。
+            </p>
           </div>
-          <button class="primary" id="add-record">＋ 记录新信息</button>
+          <button id="add-record">＋ 记录新信息</button>
         </div>
-        <div class="viewbar">
-          <label for="as-of">查看时间</label
-          ><input id="as-of" type="datetime-local" /><button id="apply-time">
-            查看该时点</button
-          ><button class="text-button" id="now">回到当前</button
-          ><span id="time-label">当前有效状态</span>
+        <div id="casebook-banner" class="casebook-banner" hidden>
+          <span class="banner-label">来源摘录</span>
+          <p>
+            此项目含人工整理的来源摘录。请结合每条记录的来源与适用范围核查；案例展示尚不代表真实用户研究的结论。
+          </p>
         </div>
+        <div id="empty" class="empty-story">
+          <div class="story-copy">
+            <p class="eyebrow">给持续数周做实验的你</p>
+            <h2>隔了一周回来，<br />哪一版方案还能用？</h2>
+            <p>
+              你在准备答辩或把实验交给同伴。聊天里有高分、有失败，还有后来改过的决定。先把当前状态和原始依据接起来。
+            </p>
+            <div class="story-actions">
+              <button id="empty-casebook" class="primary">
+                打开本项目真实案例 <span aria-hidden="true">↗</span>
+              </button>
+              <button id="empty-add" class="text-button">
+                从自己的第一条记录开始
+              </button>
+            </div>
+            <small>无需模型密钥，即可查看简报、核查记录与导出交接。</small>
+          </div>
+          <div
+            class="story-document"
+            aria-label="案例预览：两个分数，两个不同的适用范围"
+          >
+            <div class="document-top">
+              <span>CASE FILE / 001</span><span>R27 / R40 历史案例预览</span>
+            </div>
+            <h3>看到一个更高的分数，<br />该换掉当前方案吗？</h3>
+            <div class="case-entry">
+              <span class="case-round">R27</span>
+              <div>
+                <strong>91.25% <span>73 / 80</span></strong>
+                <p>筛选结果，未推广为当前方案。</p>
+              </div>
+            </div>
+            <div class="case-entry">
+              <span class="case-round">R40</span>
+              <div>
+                <strong>90.2% <span>451 / 500</span></strong>
+                <p>完整 500 题开发自评，非官方成绩。</p>
+              </div>
+            </div>
+            <p class="document-foot">
+              先看范围和决定，再比较数字。<span aria-hidden="true">↙</span>
+            </p>
+          </div>
+          <ol class="story-steps">
+            <li>
+              <span>01</span>
+              <div>
+                <strong>恢复当前状态</strong>
+                <p>找到已采纳的方案和约束</p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <strong>核查原始依据</strong>
+                <p>分清结果、提议和最终决定</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <strong>带着简报继续</strong>
+                <p>把可追溯的上下文交给下一次会话</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <section
+          id="resume-panel"
+          class="resume-panel"
+          aria-labelledby="resume-heading"
+          hidden
+        >
+          <div class="resume-heading">
+            <div>
+              <p class="eyebrow">YOUR PROJECT, IN CONTEXT</p>
+              <h2 id="resume-heading">本次继续工作的起点</h2>
+            </div>
+            <div class="handoff-actions">
+              <button id="copy-handoff" class="primary">复制交接简报</button
+              ><button id="download-handoff" aria-label="下载交接简报">
+                下载 ↓
+              </button>
+            </div>
+          </div>
+          <p id="resume-summary" class="resume-summary"></p>
+          <div id="resume-sections" class="resume-sections"></div>
+          <div id="resume-conflicts" class="resume-conflicts"></div>
+        </section>
+        <div class="time-controls">
+          <div class="viewbar">
+            <div class="control-caption">
+              <span class="small-title">回到一个时点</span
+              ><span id="time-label">当前有效状态</span>
+            </div>
+            <div class="time-input-row">
+              <label class="sr-only" for="as-of">查看时间</label
+              ><input id="as-of" type="datetime-local" /><button
+                id="apply-time"
+              >
+                查看该时点</button
+              ><button class="text-button" id="now">回到当前</button>
+            </div>
+          </div>
+          <div class="viewbar since-bar">
+            <div class="control-caption">
+              <label class="small-title" for="since">从什么时候开始看变化</label
+              ><span>与上次离开时衔接</span>
+            </div>
+            <div class="time-input-row">
+              <input id="since" type="datetime-local" /><button
+                id="apply-since"
+              >
+                查看变化</button
+              ><button class="text-button" id="clear-since">清除</button>
+            </div>
+          </div>
+        </div>
+        <section class="recent-section" aria-labelledby="recent-heading">
+          <div class="section-title">
+            <h2 id="recent-heading">这段时间，发生了什么</h2>
+            <span>变化记录</span>
+          </div>
+          <div id="recent-changes" class="recent-changes">
+            <p class="form-note">记录变化后，可以从这里回看。</p>
+          </div>
+        </section>
         <div class="notice" id="conflicts" hidden></div>
-        <div id="empty" class="empty">
-          <div class="empty-mark">↗</div>
-          <h2>让下一次会话有据可循</h2>
-          <p>记录一条约束、决定或结果。它会保留来源，也可以被更新和纠正。</p>
-          <button id="empty-add">添加第一条记录</button>
-        </div>
-        <div class="brief-grid">
-          <div class="main-column">
-            <div class="section-title">
-              <h2>已确认的工作状态</h2>
-              <span id="confirmed-count"></span>
+        <details id="record-management" class="record-management">
+          <summary class="records-heading">
+            <div>
+              <p class="eyebrow">THE RECORD BEHIND THE BRIEF</p>
+              <h2>全部记录与修改</h2>
             </div>
-            <div id="confirmed" class="record-list"></div>
-          </div>
-          <div class="side-column">
-            <div class="section-title"><h2>待确认与未采用</h2></div>
-            <div id="pending" class="record-list"></div>
-            <div class="principle">
-              <span class="small-title">记忆边界</span>
-              <p>提出一个方案，不代表已经采纳。实验分数，也不代替你的决定。</p>
+            <p>展开，逐条更新或遗忘记录 ↓</p>
+          </summary>
+          <div class="brief-grid">
+            <div class="main-column">
+              <div class="section-title">
+                <h2>已确认</h2>
+                <span id="confirmed-count"></span>
+              </div>
+              <div id="confirmed" class="record-list"></div>
+            </div>
+            <div class="side-column">
+              <div class="section-title"><h2>待确认与未采用</h2></div>
+              <div id="pending" class="record-list"></div>
+              <div class="principle">
+                <span class="small-title">保留区别</span>
+                <p>一个方案被提出，不等于它已被采纳。</p>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
         <div class="lookup-box">
           <div>
             <h2>核查一条确认记录</h2>
@@ -120,7 +262,7 @@
       <section id="timeline" class="page" hidden>
         <div class="page-heading">
           <div>
-            <p class="eyebrow">A HISTORY YOU CAN INSPECT</p>
+            <p class="eyebrow">02 / TRACE THE CHANGES</p>
             <h1>决定如何走到今天。</h1>
             <p class="lede">旧版本保留来路，明确的更新才改变当前状态。</p>
           </div>
@@ -130,29 +272,51 @@
       <section id="evidence" class="page" hidden>
         <div class="page-heading">
           <div>
-            <p class="eyebrow">FOLLOW THE EVIDENCE</p>
-            <h1>每个回答，都有来处。</h1>
+            <p class="eyebrow">03 / CHECK BEFORE YOU CONTINUE</p>
+            <h1>先核查，再继续。</h1>
             <p class="lede" id="reader-description">
-              检索当前项目的记忆，检查实际进入回答的片段。
+              按当前记录核查项目状态，再回到来源确认依据。
             </p>
           </div>
         </div>
+        <div
+          id="question-shortcuts"
+          class="question-shortcuts"
+          aria-label="常见核查问题"
+        ></div>
         <form id="ask-form" class="ask-box">
-          <label for="question">你希望接着了解什么？</label
-          ><textarea
+          <div class="ask-mode-row">
+            <label for="question">继续之前，想确认什么？</label
+            ><label class="answer-mode-label" for="answer-mode"
+              ><span>核查方式</span
+              ><select id="answer-mode">
+                <option value="local">项目记录核查</option>
+                <option value="reader">模型与检索</option>
+              </select></label
+            >
+          </div>
+          <textarea
             id="question"
             rows="3"
-            placeholder="哪些记录支持当前采用的方案？"
+            placeholder="例如：继续项目；当前约束；或输入一个记录名称"
             required
             maxlength="4000"
           ></textarea>
           <div class="ask-footer">
             <span>沿用「继续工作」中选定的查看时间</span
-            ><button type="submit" class="primary">查找证据 →</button>
+            ><button type="submit" class="primary">核查这个问题 →</button>
           </div>
         </form>
+        <div
+          id="consult-result"
+          class="consult-result"
+          aria-live="polite"
+          hidden
+        ></div>
         <div id="trace-empty" class="empty compact">
-          <p>提交问题后，这里展示真实检索、来源引用和回答状态。</p>
+          <p>
+            从一个问题开始。这里将展示匹配的记录、引用依据与尚不能确认的内容。
+          </p>
         </div>
         <div id="trace-result" hidden>
           <div class="answer-card">
@@ -177,7 +341,7 @@
       <section id="verify" class="page" hidden>
         <div class="page-heading">
           <div>
-            <p class="eyebrow">EVIDENCE BEFORE CLAIMS</p>
+            <p class="eyebrow">04 / RESULTS WITH THEIR LIMITS</p>
             <h1>结果与边界，一起呈现。</h1>
             <p class="lede">工程检查、构造任务和公开基准分别记录。</p>
           </div>
@@ -185,7 +349,7 @@
         <div id="verification"></div>
       </section>
       <footer>
-        续研 · 长期交互式 AI 记忆系统 <span>本地研究原型 · 单进程持久化</span>
+        续研 · 把研究接着做下去 <span>本地研究原型 · 记录保存在当前服务中</span>
       </footer>
     </main>
     <dialog id="record-dialog">

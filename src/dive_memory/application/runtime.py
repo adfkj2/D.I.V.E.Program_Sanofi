@@ -14,6 +14,7 @@ from ..oracle.evidence import build_evidence_views, render_evidence_block
 from ..oracle.reader import OracleReaderRequest, reader_outcome
 from ..service import MemoryService
 from ..temporal import parse_instant, require_instant, visible_at
+from .briefing import build_brief, consult_records
 from .readers import Reader
 from .records import ProjectExtractionProvider, ProjectRecord
 
@@ -288,6 +289,25 @@ class MemoryApplication:
             "sources": records,
             "mode": "structured_lookup_not_llm",
         }
+
+    def brief(
+        self, namespace: str, *, as_of: str | None = None, since: str | None = None
+    ) -> dict:
+        with self._lock:
+            return build_brief(self.snapshot(namespace, as_of=as_of), since=since)
+
+    def consult(
+        self,
+        namespace: str,
+        question: str,
+        *,
+        as_of: str | None = None,
+        since: str | None = None,
+    ) -> dict:
+        with self._lock:
+            return consult_records(
+                self.snapshot(namespace, as_of=as_of), question, since=since
+            )
 
     def source(self, namespace: str, memory_id: str) -> dict:
         with self._lock:

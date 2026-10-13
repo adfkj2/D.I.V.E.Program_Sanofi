@@ -27,7 +27,8 @@ async function main() {
   const checks = [];
   try {
     await page.goto(process.env.DIVE_TEST_URL || "http://127.0.0.1:8765/");
-    await page.getByText("本地证据浏览", { exact: true }).waitFor();
+    await page.getByText("本地记录核查", { exact: true }).waitFor();
+    await page.screenshot({ path: path.join(output, "00-onboarding.png") });
     await page.locator("#load-demo").click();
     await page
       .locator("#confirmed .record")
@@ -62,6 +63,16 @@ async function main() {
     await page.locator("#record-form button[type=submit]").click();
     await budget.getByText("50 元", { exact: true }).waitFor();
     checks.push("UI correction persists through real API");
+    await budget.getByRole("button", { name: "更新", exact: true }).click();
+    await page.locator("#record-value").fill("55 元");
+    await page
+      .locator("#record-reason")
+      .fill("Second correction without losing timestamp precision");
+    await page.locator("#record-form button[type=submit]").click();
+    await budget.getByText("55 元", { exact: true }).waitFor();
+    checks.push(
+      "successive corrections preserve timestamp precision and create valid replacements",
+    );
     await page.locator("#lookup-key").fill("方案 C 结果");
     await page.locator("#lookup-form button").click();
     await page
@@ -75,12 +86,13 @@ async function main() {
       fullPage: true,
     });
     await page.locator("[data-tab=evidence]").click();
+    await page.locator("#answer-mode").selectOption("reader");
     await page.locator("#question").fill("预算上限与当前基线");
     await page.locator("#ask-form button").click();
     await page
       .getByText("证据已检索 · 未调用回答模型", { exact: true })
       .waitFor();
-    assert.match(await page.locator("#evidence-list").innerText(), /50 元/);
+    assert.match(await page.locator("#evidence-list").innerText(), /55 元/);
     const downloadPromise = page.waitForEvent("download");
     await page.locator("#download-trace").click();
     const download = await downloadPromise;
@@ -113,7 +125,8 @@ async function main() {
     // The project is intentionally not persisted in browser storage: reopen explicitly.
     await page.locator("#project").fill(trace.namespace);
     await page.locator("#open-project").click();
-    await budget.getByText("50 元", { exact: true }).waitFor();
+    await page.locator("#record-management > summary").click();
+    await budget.getByText("55 元", { exact: true }).waitFor();
     assert(
       !(await page
         .locator("#confirmed")
@@ -121,6 +134,136 @@ async function main() {
         .then((t) => t.includes("阅读偏好"))),
     );
     checks.push("server persists edits across page reload");
+
+    // The new primary flow: recover this repository's actual project history.
+    await page.locator("#load-casebook").click();
+    await page.waitForFunction(() =>
+      document.querySelector("#project").value.startsWith("casebook-"),
+    );
+    await page.locator("#resume-summary").filter({ hasText: /./ }).waitFor();
+    const caseProject = await page.locator("#project").inputValue();
+    assert(caseProject.startsWith("casebook-"));
+    await page.locator("#casebook-banner:not([hidden])").waitFor();
+    assert.match(
+      await page.locator("#resume-sections .results").innerText(),
+      /451\/500/,
+    );
+    assert.match(
+      await page.locator("#resume-sections .rejected").innerText(),
+      /不推广/,
+    );
+    checks.push(
+      "repository case loads through live record API with adoption separated",
+    );
+    await page.screenshot({
+      path: path.join(output, "06-project-resumption.png"),
+      fullPage: true,
+    });
+    await page.screenshot({
+      path: path.join(output, "06-project-resumption-viewport.png"),
+    });
+    await page.locator("[data-tab=evidence]").click();
+    await page.locator("#answer-mode").selectOption("local");
+    await page.locator("#question").fill("官方成绩");
+    await page.locator("#ask-form button[type=submit]").click();
+    await page
+      .locator("#consult-result")
+      .getByText(/未评估/)
+      .first()
+      .waitFor();
+    await page.locator("#consult-result button").first().click();
+    await page
+      .locator("#source-dialog[open] .source-excerpt blockquote")
+      .waitFor();
+    assert.match(
+      await page.locator("#source-content").innerText(),
+      /NOT_EVALUATED/,
+    );
+    assert.match(
+      await page.locator("#source-content").innerText(),
+      /docs\/oracle\//,
+    );
+    await page.screenshot({
+      path: path.join(output, "07-source-inspection.png"),
+      fullPage: true,
+    });
+    await page.locator("#source-dialog .close").click();
+    checks.push(
+      "local answer opens stored verbatim repository excerpt and provenance",
+    );
+    await page.locator("#question").fill("R27 推广决定");
+    await page.locator("#ask-form button[type=submit]").click();
+    await page
+      .locator("#consult-result")
+      .getByText(/未采用/)
+      .first()
+      .waitFor();
+    assert.match(await page.locator("#consult-result").innerText(), /不推广/);
+    await page.locator("#question").fill("明年产品市场规模会有多大？");
+    await page.locator("#ask-form button[type=submit]").click();
+    await page.locator("#consult-result.unsupported").waitFor();
+    checks.push(
+      "rejected decision stays rejected and unsupported prediction produces no invented answer",
+    );
+    await page.locator("[data-tab=brief]").click();
+    await page.locator("#as-of").fill("2026-10-10T00:00");
+    await page.locator("#apply-time").click();
+    await page
+      .locator("#resume-sections")
+      .getByText(/R26：422\/500/)
+      .first()
+      .waitFor();
+    assert(
+      !(await page.locator("#resume-sections").innerText()).includes("451/500"),
+    );
+    await page.locator("#now").click();
+    await page
+      .locator("#resume-sections")
+      .getByText(/R40：451\/500/)
+      .first()
+      .waitFor();
+    await page.locator("#since").fill("2026-10-10T00:00");
+    await page.locator("#apply-since").click();
+    await page
+      .locator("#recent-changes .change-before")
+      .filter({ hasText: "422/500" })
+      .waitFor();
+    assert.match(await page.locator("#recent-changes").innerText(), /451\/500/);
+    checks.push(
+      "historical brief and explicit comparison keep old and new full results distinct",
+    );
+    const handoffDownload = page.waitForEvent("download");
+    await page.locator("#download-handoff").click();
+    const handoff = await handoffDownload;
+    const handoffPath = path.join(output, "exported-handoff.md");
+    await handoff.saveAs(handoffPath);
+    const markdown = await fs.readFile(handoffPath, "utf8");
+    assert.match(markdown, /451\/500/);
+    assert.match(markdown, /NOT_EVALUATED/);
+    assert.match(markdown, /docs\/oracle\//);
+    checks.push(
+      "downloaded handoff carries actual project state, caveats and source references",
+    );
+    await page
+      .context()
+      .grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.locator("#copy-handoff").click();
+    await page.getByText(/交接简报已复制/).waitFor();
+    assert.equal(
+      (await page.evaluate(() => navigator.clipboard.readText())).replace(
+        /\r\n/g,
+        "\n",
+      ),
+      markdown,
+    );
+    checks.push(
+      "clipboard handoff matches the downloaded current-state markdown",
+    );
+    await page.locator("#clear-since").click();
+    await page.reload();
+    await page.locator("#resume-summary").filter({ hasText: /./ }).waitFor();
+    assert.equal(await page.locator("#project").inputValue(), caseProject);
+    checks.push("page URL restores selected project after reload");
     await page.locator("[data-tab=verify]").click();
     await page.locator("#verification .report").first().waitFor();
     await page.screenshot({
@@ -138,7 +281,39 @@ async function main() {
       path: path.join(output, "05-mobile.png"),
       fullPage: true,
     });
+    await page.screenshot({
+      path: path.join(output, "05-mobile-viewport.png"),
+    });
     checks.push("390px layout has no horizontal overflow");
+    await page.locator("[data-tab=evidence]").click();
+    await page.locator("#question-shortcuts button").first().click();
+    await page.locator("#consult-result:not([hidden])").waitFor();
+    assert(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    );
+    checks.push("mobile local consult completes without horizontal overflow");
+    await page.locator("[data-tab=brief]").click();
+    await page.locator("#record-management > summary").click();
+    const coldCost = page.locator("#confirmed .record").filter({
+      has: page.getByRole("heading", { name: "独立冷启动费用", exact: true }),
+    });
+    await coldCost.getByRole("button", { name: "更新", exact: true }).click();
+    await page.locator("#record-value").fill("用户尚未启动新测量");
+    await page.locator("#record-form button[type=submit]").click();
+    await coldCost.getByText("用户尚未启动新测量", { exact: true }).waitFor();
+    assert(!(await coldCost.innerText()).includes("日期精度"));
+    await coldCost.getByRole("button", { name: "查看来源 ↗" }).click();
+    await page.locator("#source-dialog[open]").waitFor();
+    assert.equal(
+      await page.locator("#source-dialog .source-excerpt").count(),
+      0,
+    );
+    await page.locator("#source-dialog .close").click();
+    checks.push(
+      "manual case correction keeps its actual time and does not inherit the frozen report citation",
+    );
     assert(requests.every((url) => new URL(url).hostname === "127.0.0.1"));
     assert.deepEqual(errors, []);
     await fs.writeFile(

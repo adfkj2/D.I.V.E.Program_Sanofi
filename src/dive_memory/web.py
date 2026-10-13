@@ -11,6 +11,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from .application.casebook import load_casebook
 from .application.demo import load_demo
 from .application.records import ProjectRecord
 from .application.runtime import MemoryApplication
@@ -32,6 +33,10 @@ class RecordInput(Input):
     idempotency_key: str = Field(min_length=1, max_length=200)
     observed_at: str | None = None
     replaces: str | None = None
+    source_title: str = Field(default="", max_length=300)
+    source_path: str = Field(default="", max_length=1000)
+    source_excerpt: str = Field(default="", max_length=12000)
+    source_sha256: str = Field(default="", max_length=64)
 
 
 class EventInput(Input):
@@ -47,6 +52,12 @@ class AskInput(Input):
     as_of: str | None = None
     token_budget: int = Field(default=1500, ge=1, le=12000, strict=True)
     limit: int = Field(default=12, ge=1, le=100, strict=True)
+
+
+class ConsultInput(Input):
+    question: str = Field(min_length=1, max_length=4000)
+    as_of: str | None = None
+    since: str | None = None
 
 
 def create_workbench(
@@ -66,7 +77,7 @@ def create_workbench(
 
     app = FastAPI(
         title="DIVE Project Memory",
-        version="0.3.0",
+        version="0.4.0",
         lifespan=lifespan,
         docs_url=None,
         redoc_url=None,
@@ -147,6 +158,16 @@ def create_workbench(
     def lookup(project: str, key: str, as_of: str | None = None):
         return runtime.lookup(project, key, as_of=as_of)
 
+    @app.get("/api/brief")
+    def brief(project: str, as_of: str | None = None, since: str | None = None):
+        return runtime.brief(project, as_of=as_of, since=since)
+
+    @app.post("/api/consult")
+    def consult(body: ConsultInput):
+        return runtime.consult(
+            body.project, body.question, as_of=body.as_of, since=body.since
+        )
+
     @app.post("/api/records")
     def record(body: RecordInput):
         values = body.model_dump()
@@ -162,6 +183,10 @@ def create_workbench(
                         "disposition",
                         "reason",
                         "session",
+                        "source_title",
+                        "source_path",
+                        "source_excerpt",
+                        "source_sha256",
                     )
                 }
             ),
@@ -210,6 +235,10 @@ def create_workbench(
     @app.post("/api/demo")
     def demo(body: Input):
         return load_demo(runtime, body.project)
+
+    @app.post("/api/casebook")
+    def casebook(body: Input):
+        return load_casebook(runtime, body.project)
 
     @app.get("/api/verification")
     def verification():

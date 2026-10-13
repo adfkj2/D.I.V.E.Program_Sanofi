@@ -1,0 +1,13 @@
+{
+  "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /451\\/500/. Input:\n\n''\n",
+  "checks": [
+    "real demo input renders confirmed/proposed/rejected separately",
+    "historical cutoff restores old budget",
+    "UI correction persists through real API",
+    "successive corrections preserve timestamp precision and create valid replacements",
+    "real evidence retrieval and trace export; no model answer claimed",
+    "hard erasure removes visible preference and invalidates answer",
+    "server persists edits across page reload"
+  ],
+  "errors": []
+}

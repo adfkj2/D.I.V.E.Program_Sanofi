@@ -5,6 +5,7 @@ import json
 import sys
 from pathlib import Path
 
+from .application.casebook import load_casebook
 from .application.demo import load_demo
 from .application.records import ProjectRecord
 from .application.settings import application_from_environment
@@ -19,14 +20,29 @@ def main(argv=None) -> int:
     sub.add_parser(
         "recover", help="Retry pending local projections, at most 100 events"
     )
-    for name in ("demo", "snapshot", "lookup", "ask", "ingest", "record", "forget"):
+    for name in (
+        "demo",
+        "casebook",
+        "brief",
+        "consult",
+        "snapshot",
+        "lookup",
+        "ask",
+        "ingest",
+        "record",
+        "forget",
+    ):
         p = sub.add_parser(name)
         p.add_argument("--project", required=True)
-        if name in {"snapshot", "lookup", "ask"}:
+        if name in {"snapshot", "lookup", "ask", "brief", "consult"}:
             p.add_argument("--as-of")
+        if name in {"brief", "consult"}:
+            p.add_argument("--since")
+        if name == "brief":
+            p.add_argument("--format", choices=("json", "markdown"), default="json")
         if name == "lookup":
             p.add_argument("--key", required=True)
-        if name == "ask":
+        if name in {"ask", "consult"}:
             p.add_argument("question")
         if name == "ingest":
             p.add_argument("text")
@@ -58,6 +74,17 @@ def main(argv=None) -> int:
             result = {"recovered": app.recover()}
         elif args.command == "demo":
             result = load_demo(app, args.project)
+        elif args.command == "casebook":
+            result = load_casebook(app, args.project)
+        elif args.command == "brief":
+            result = app.brief(args.project, as_of=args.as_of, since=args.since)
+            if args.format == "markdown":
+                print(result["markdown"])
+                return 0
+        elif args.command == "consult":
+            result = app.consult(
+                args.project, args.question, as_of=args.as_of, since=args.since
+            )
         elif args.command == "snapshot":
             result = app.snapshot(args.project, as_of=args.as_of)
         elif args.command == "lookup":

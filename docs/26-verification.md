@@ -1,6 +1,6 @@
 # 验证结果与可复现入口
 
-日期：2026-10-12。所有工程与构造任务结果均不等于官方成绩。
+开始日期：2026-10-12；收尾日期：2026-10-13。所有工程与构造任务结果均不等于官方成绩。
 
 ## 已得到的证据
 
@@ -14,6 +14,8 @@
 | 安装包 | 独立环境检查见交付 manifest | 仅 wheel 安装，清除 PYTHONPATH，跨进程 CLI/API 与静态资源 |
 
 直接证据保存在 `eval/reports/engineering-delivery-20261012/`；可移植 reader 回放包为 `artifacts/r40-reader-replay.zip`，大小约 4.05MB，内含逐文件哈希、500 个公开请求、精确使用的响应与冻结源码。无需下载整个 750MB 历史工作目录。
+
+2026-10-13 收尾复验：从本地提交复制的干净仓库 **1123 passed / 10 skipped，26.42s**，比原工作区多跳过完整 Oracle 原文件检查；源数据未随仓库分发。首次干净运行暴露一个旧预算测试依赖本机账本，已改为临时账本夹具，保持原断言。干净副本的 reader 回放 500/500 与结构化对照也通过。[干净副本记录](../artifacts/engineering-20261012/clean-check/summary.json) · [完整 R40 49 个失败](../artifacts/engineering-20261012/r40-failures.json)。
 
 ## 与简单方案的对照
 
@@ -58,3 +60,7 @@ python tools/verify_wheel.py --wheel-dir dist --output artifacts/my-wheel-check
 输出目录需要新建，保留此前失败与测量。浏览器验证需要先用临时 DB 启动工作台，再安装 `npm ci`、`npx playwright install chromium`，执行 `node tools/verify_workbench.cjs artifacts/my-browser-check`。它会创建并修改专用合成项目。可用 `DIVE_BROWSER_EXECUTABLE` 指定本机浏览器。
 
 CI 提供 Python 3.12/3.14、包安装与 PG 服务作业。**配置文件存在不等于远程 CI 已运行**。本机 Docker daemon 不可用，PG 检查未在本轮本机运行，不能把 skip 当通过。
+
+公开证据 [manifest](../artifacts/engineering-20261012/manifest.json) 绑定已验证代码提交 `c0ca43dfff92a7566cbcd8768277f6264fe66757`、最终 wheel 哈希及逐文件公开哈希。JSON 使用 UTF-8/LF，避免 Windows 换行转换造成跨机器哈希差异。干净副本使用原有 Python 3.14 测试工具环境，加载副本内的应用与测试；全新 Python 3.12 wheel 安装是单独验证，二者没有混称。
+
+交付维护者可用 `python tools/package_delivery_evidence.py --clean-checkout ../delivery-clean-20261012` 从保留的原始报告重新导出本轮证据。此工具依赖本机原始报告与冻结副本，普通使用者按上面的复现入口产生自己的新结果即可。JUnit 与终端耗时的计时范围不同，干净副本记录分别保留 26.385 秒与 26.42 秒。

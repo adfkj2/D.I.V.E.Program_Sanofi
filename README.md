@@ -35,6 +35,8 @@ dive-memory --db memory.db serve --port 8765
 
 [完整验证与全部失败](docs/26-verification.md) · [R42 执行报告](docs/oracle/40-engineering-delivery-20261012.md)
 
+2026-10-13 干净副本复验：1123 通过、10 跳过（额外缺少完整 Oracle 原文件），500 题回放与构造对照通过。[最终交付记录](artifacts/engineering-20261012/manifest.json)。代码已作本地真实提交，尚未推送远程；远程 CI 未执行。
+
 **规则审查尚未关闭。** 未发现题号或参考答案硬编码的直接证据，但多轮完整评测反馈和规则选择仍有 F.1.1/F.1.4 风险，须向项目组披露并确认。90.2% 不能标为官方成绩或合规认证。[规则审查](docs/oracle/39-compliance-audit-20261012.md) · [提交披露材料](docs/28-submission-and-review.md)
 
 ## 复现，而不依赖历史工作目录

@@ -1,0 +1,42 @@
+# Reproducible local deployment of the DIVE Project Memory service.
+#   docker compose -f ops/docker/compose.yml up -d
+# Reader credentials are never stored in this file: live mode is opt-in via
+# the host environment (DIVE_MODE=live plus DIVE_READER_* variables).
+name: dive-memory
+
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: ops/docker/Dockerfile
+    image: dive-memory:0.4.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8765:8765" # bound to the host loopback only; expose deliberately
+    volumes:
+      - dive-data:/data
+    environment:
+      DIVE_DB_PATH: /data/memory.db
+      DIVE_MODE: ${DIVE_MODE:-evidence_only}
+      DIVE_READER_ENDPOINT: ${DIVE_READER_ENDPOINT:-}
+      DIVE_READER_MODEL: ${DIVE_READER_MODEL:-}
+      DIVE_READER_PROVIDER: ${DIVE_READER_PROVIDER:-openai-compatible}
+      DIVE_READER_STRATEGY: ${DIVE_READER_STRATEGY:-indexed}
+      DIVE_WORKBENCH_TOKEN: ${DIVE_WORKBENCH_TOKEN:-}
+      # Secrets are injected via the environment at start time; never baked in.
+      DIVE_READER_API_KEY: ${DIVE_READER_API_KEY:-}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8765/api/readiness', timeout=4).status == 200 else 1)",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+volumes:
+  dive-data:

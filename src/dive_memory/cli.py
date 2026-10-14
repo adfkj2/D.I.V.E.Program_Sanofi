@@ -17,6 +17,11 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     serve = sub.add_parser("serve", help="Open a local workbench")
     serve.add_argument("--port", type=int, default=8765)
+    serve.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Bind address; 127.0.0.1 by default. 0.0.0.0 is intended for containers",
+    )
     sub.add_parser(
         "recover", help="Retry pending local projections, at most 100 events"
     )
@@ -64,7 +69,7 @@ def main(argv=None) -> int:
 
         uvicorn.run(
             create_workbench(application_from_environment(args.db)),
-            host="127.0.0.1",
+            host=args.host,
             port=args.port,
         )
         return 0

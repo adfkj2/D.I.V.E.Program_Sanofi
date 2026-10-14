@@ -1,0 +1,41 @@
+{
+  "round": "R46",
+  "scope": "personal local project workflow",
+  "automated_tests": {
+    "passed": 1215,
+    "skipped": 9
+  },
+  "browser_observations": 23,
+  "model_requests": 0,
+  "cost_yuan": 0,
+  "official_score_changed": false,
+  "participant_research": false,
+  "remote_ci_executed": false,
+  "final_quality_report": "quality/summary.json",
+  "files": {
+    "browser-backup-restore.json": "91d521359b9e1f17c4f59fbd39b590127c43aef2870e001563cbea4c8b4bc947",
+    "browser-checks.json": "1c79d17a396b7d0c2dabf8a0f20a9cb8cba0a3d277baf49bd76cee358c2c8653",
+    "link-check-failure/summary.json": "3999aecb129b052efad28827a909f8932777095c50f5ed574eea00da8b492167",
+    "link-check-failure/tests.txt": "d6e39ba4f40fc0b4f12996065db2d416d8c649883dd21345cf36a864547a8bc3",
+    "offline-error.jpg": "70a34b2cbbbb4fb3f0c3024f04c0d0a69a772573ec091ac1f42cbae1e589f8f7",
+    "product-source-manifest.json": "16c85865771f29d3e5c24fb5a29333b60833e772907e74dfceec7743f587487b",
+    "quality/casebook-sources.txt": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
+    "quality/coverage-json.txt": "587f0d0cc2cab094d1c0da26c42369b4829eb7dcc3dbb99e617e210a87c0dab8",
+    "quality/delivery-format.txt": "cdd24684b33e5200a213c89093e8da4cb81a0de0085a4684d20923e852610123",
+    "quality/delivery-lint.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "quality/source-correctness.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "quality/source-manifest.json": "f434b44c677cd1b4b4818712d8aab4f9b437a5435a2526a5196b3ba2356094f2",
+    "quality/summary.json": "481f4865f90abdf7e4ab5e7ab7e10aca7eff48482c64f3102e7350f9bc7483d0",
+    "quality/tests.txt": "c575c46342a45574f2db826dabebd831b1b3d7e9bcd0f4424183d2fb73cf044b",
+    "quality/tests.xml": "ee0e4cd4625b5d0cbd4903ea8194f838817f92d357efb5127432669f49be5d97",
+    "quality/types.txt": "8f3f4c0ebcb835e848682f2c6610a1bf32c86a993bdb626d9ff36e3a49408398",
+    "wheel-release-summary.json": "aaa3a8207ca68354480e3ccab8e617f0b62cbc7dd4f203a3e8aa161636d376c6"
+  },
+  "final_quality_passed": true,
+  "wheel_sha256": "41ea993b0553418dfaf25617e8b3ba5507a07ecb8d2353a2e286af89d05f90da",
+  "shared_screenshots": {
+    "../../docs/assets/workbench-personal-project.jpg": "c34fe233bf80f6403956e27719a9d081b662612b4057bea89bd90a6940926367",
+    "../../docs/assets/workbench-personal-mobile.jpg": "cf5b3b80729865ed73943f494baf431ec6d34778e399fb398fc19ce47a9c8c36"
+  },
+  "distribution_policy": "Wheel binary remains local under eval/reports; rebuild from source. Its SHA-256 and installation verification are retained. Screenshots shared with docs/assets instead of duplicated."
+}

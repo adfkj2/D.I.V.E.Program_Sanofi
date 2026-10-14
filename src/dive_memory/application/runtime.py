@@ -17,6 +17,7 @@ from ..temporal import parse_instant, require_instant, visible_at
 from .briefing import build_brief, consult_records
 from .readers import Reader
 from .records import ProjectExtractionProvider, ProjectRecord
+from .workspace import ProjectWorkspace
 
 
 def memory_view(memory: Memory) -> dict[str, Any]:
@@ -48,6 +49,7 @@ class MemoryApplication:
         self.reader = reader
         self._lock = RLock()
         self._traces: OrderedDict[str, dict[str, Any]] = OrderedDict()
+        self.workspace = ProjectWorkspace(self.service.store)
 
     @property
     def mode(self) -> str:
@@ -55,6 +57,60 @@ class MemoryApplication:
 
     def close(self) -> None:
         self.service.store.close()
+
+    def projects(self) -> list[dict]:
+        with self._lock:
+            return self.workspace.projects()
+
+    def project_details(self, namespace: str) -> dict:
+        with self._lock:
+            return self.workspace.details(self._namespace(namespace))
+
+    def create_project(self, name: str, goal: str, request_id: str) -> dict:
+        with self._lock:
+            return self.workspace.create_project(name, goal, request_id)
+
+    def update_project(self, namespace: str, name: str, goal: str) -> dict:
+        with self._lock:
+            return self.workspace.save_project(self._namespace(namespace), name, goal)
+
+    def add_task(self, namespace: str, title: str, request_id: str) -> dict:
+        with self._lock:
+            return self.workspace.add_task(
+                self._namespace(namespace), title, request_id
+            )
+
+    def update_task(
+        self,
+        namespace: str,
+        identifier: str,
+        title: str,
+        completed: bool,
+        revision: int,
+    ) -> dict:
+        with self._lock:
+            return self.workspace.change_task(
+                self._namespace(namespace), identifier, title, completed, revision
+            )
+
+    def checkpoint(
+        self, namespace: str, note: str, next_step: str, request_id: str
+    ) -> dict:
+        with self._lock:
+            return self.workspace.checkpoint(
+                self._namespace(namespace), note, next_step, request_id
+            )
+
+    def backup(self, destination: str) -> None:
+        """Consistent SQLite backup, including WAL commits and all project data."""
+        import sqlite3
+
+        with self._lock:
+            target = sqlite3.connect(destination)
+            try:
+                self.service.store.db.backup(target)
+            finally:
+                target.close()
 
     def recover(self) -> list[dict]:
         """Explicit local maintenance; retries bounded core projection outbox work."""
@@ -294,7 +350,32 @@ class MemoryApplication:
         self, namespace: str, *, as_of: str | None = None, since: str | None = None
     ) -> dict:
         with self._lock:
-            return build_brief(self.snapshot(namespace, as_of=as_of), since=since)
+            result = build_brief(self.snapshot(namespace, as_of=as_of), since=since)
+            if not as_of:
+                details = self.project_details(namespace)
+                result["workspace"] = details
+                from .briefing import quoted
+
+                extras = ["", "## 继续工作的安排", "", "项目名称：" + details["name"]]
+                if details["goal"]:
+                    extras.extend(["目标：", quoted(details["goal"])])
+                if details["checkpoints"]:
+                    last = details["checkpoints"][0]
+                    extras.extend(
+                        [
+                            "上次交接（" + last["created_at"] + "）：",
+                            quoted(last["note"]),
+                        ]
+                    )
+                for task in details["tasks"]:
+                    extras.extend(
+                        [
+                            "已完成：" if task["completed"] else "待办：",
+                            quoted(task["title"]),
+                        ]
+                    )
+                result["markdown"] += "\n".join(extras) + "\n"
+            return result
 
     def consult(
         self,

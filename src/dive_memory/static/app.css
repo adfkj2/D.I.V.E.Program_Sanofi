@@ -1594,6 +1594,219 @@ summary {
     padding: 0 20px;
   }
 }
+/* The daily loop stays readable with long project names and on narrow screens. */
+.sidebar-create {
+  width: 100%;
+  margin-top: 10px;
+  background: #355b56;
+  color: #fff;
+  border-color: #66817a;
+}
+.project-control select {
+  background: #213d49;
+  color: #fff;
+  border-color: #536a73;
+}
+.legacy-project {
+  margin-top: 12px;
+  color: #b5c7cd;
+  font-size: 11px;
+}
+.legacy-project .project-row {
+  margin-top: 9px;
+}
+.heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.page-heading {
+  flex-wrap: wrap;
+}
+#workspace-heading,
+#workspace-goal {
+  overflow-wrap: anywhere;
+}
+.starter-preview {
+  background: #e9efeb;
+  padding: 36px 28px;
+  border-left: 1px solid var(--line);
+}
+.starter-preview > div {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-top: 25px;
+}
+.starter-preview p {
+  margin: 0;
+}
+.starter-preview strong {
+  font-size: 16px;
+  font-weight: 500;
+}
+.starter-preview small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 9px;
+  letter-spacing: 0;
+}
+.step-number {
+  font-size: 24px;
+  color: #789184;
+  font-family: var(--serif);
+}
+.daily-work {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 22px;
+  margin: 27px 0;
+}
+.task-board,
+.last-session {
+  min-width: 0;
+  background: var(--paper);
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.task-board .section-title {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.task-board h2 {
+  font-size: 17px;
+}
+.task-board .section-title button {
+  margin-left: auto;
+  font-size: 12px;
+}
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.task-row > span {
+  flex: 1;
+  padding-top: 9px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 13px;
+}
+.task-row > button {
+  min-height: 40px;
+  min-width: 40px;
+  flex-shrink: 0;
+  font-size: 12px;
+  padding: 8px;
+}
+.task-row > button:first-child {
+  color: var(--green);
+  border-color: #bccdbf;
+}
+.task-row.done > span {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+#completed-tasks,
+#older-checkpoints {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 15px;
+}
+.last-session {
+  background: #edf2ec;
+  border-color: #d2dfd3;
+}
+.last-session time {
+  display: block;
+  margin: 15px 0 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.last-session p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.9;
+}
+#checkpoint-list article {
+  border-top: 1px solid var(--line);
+}
+.time-history {
+  margin: 24px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.time-history > summary {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.record-search {
+  margin-top: 24px;
+  font-size: 12px;
+}
+.record-extra {
+  margin: 15px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.record-extra .form-grid {
+  margin-top: 15px;
+}
+.dialog-message {
+  background: #fff0e8;
+  border-left: 3px solid #ad573b;
+  padding: 12px;
+  font-size: 13px;
+}
+.backup-title {
+  margin-top: 26px;
+  font-size: 16px;
+}
+.restore-steps {
+  padding-left: 22px;
+  line-height: 1.9;
+  font-size: 13px;
+}
+.restore-steps li {
+  margin: 9px 0;
+}
+@media (max-width: 1150px) {
+  .starter-preview {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .daily-work {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .heading-actions {
+    width: 100%;
+  }
+  .heading-actions button {
+    font-size: 12px;
+    min-height: 44px;
+  }
+  .task-board,
+  .last-session {
+    padding: 18px;
+  }
+  .starter-preview {
+    padding: 24px 21px;
+  }
+  .task-row > button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   button {
     transition: background 0.15s;

@@ -62,6 +62,14 @@ with TestClient(create_workbench(runtime)) as client:
     assert client.get("/api/brief", params={"project":"casebook"}).status_code == 200
     assert client.post("/api/consult",json={"project":"casebook","question":"官方成绩"}).json()["mode"] == "local_records"
     assert client.post("/api/answer",json={"project":"fresh","question":"预算上限"}).json()["status"] == "EVIDENCE_ONLY"
+    personal = client.post("/api/projects",json={"name":"Installed project","goal":"resume tomorrow","request_id":"personal"}).json()["namespace"]
+    assert client.post("/api/checkpoints",json={"project":personal,"note":"first session complete","next_step":"review results","request_id":"session"}).status_code == 200
+    assert "review results" in client.get("/api/brief",params={"project":personal}).json()["markdown"]
+    Path("backup.db").write_bytes(client.get("/api/backup").content)
+restored = MemoryApplication("backup.db")
+assert restored.project_details(personal)["tasks"][0]["title"] == "review results"
+assert restored.project_details(personal)["checkpoints"][0]["note"] == "first session complete"
+restored.close()
 Path("smoke.json").write_text(json.dumps({"passed":True,"import_file":dive_memory.__file__,"cwd":str(Path.cwd()),"package_assets":6,"persistence_restart":True,"cli_api":True,"packaged_casebook":True,"local_consult":True,"handoff_markdown":True},indent=2),encoding="utf8")
 '''
     result = subprocess.run([str(python), "-c", smoke], cwd=out, env=env, capture_output=True, text=True, encoding="utf-8")

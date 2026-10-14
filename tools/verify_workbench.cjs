@@ -29,6 +29,85 @@ async function main() {
     await page.goto(process.env.DIVE_TEST_URL || "http://127.0.0.1:8765/");
     await page.getByText("本地记录核查", { exact: true }).waitFor();
     await page.screenshot({ path: path.join(output, "00-onboarding.png") });
+    await page.locator("#new-project").click();
+    await page.locator("#project-name").fill("个人论文 · 自动验证");
+    await page.locator("#project-goal").fill("完成可复现的初稿");
+    await page.locator("#project-form button[type=submit]").click();
+    await page
+      .locator("#workspace-heading")
+      .getByText("个人论文 · 自动验证")
+      .waitFor();
+    const personalProject = await page.locator("#project").inputValue();
+    await page.locator("#add-record").click();
+    await page.locator("#record-key").fill("实验进展");
+    await page.locator("#record-value").fill("基线完成，接下来比较误差。");
+    await page.reload();
+    await page.locator("#add-record").click();
+    assert.equal(
+      await page.locator("#record-value").inputValue(),
+      "基线完成，接下来比较误差。",
+    );
+    await page.locator("#record-form button[type=submit]").click();
+    await page.locator("#record-search").fill("比较误差");
+    await page
+      .locator("#search-status")
+      .getByText(/找到 1 条/)
+      .waitFor();
+    await page.locator("#add-task").click();
+    await page.locator("#task-title").fill("整理三篇论文");
+    await page.locator("#task-form button[type=submit]").click();
+    await page
+      .getByRole("button", { name: "完成：整理三篇论文", exact: true })
+      .click();
+    await page.locator("#completed-tasks > summary").click();
+    await page
+      .getByRole("button", { name: "重新打开：整理三篇论文", exact: true })
+      .click();
+    await page.locator("#finish-session").click();
+    await page
+      .locator("#checkpoint-note")
+      .fill("已完成基线，下次核查误差定义。");
+    await page.locator("#checkpoint-next").fill("比较两种方案的误差");
+    await page.locator("#checkpoint-form button[type=submit]").click();
+    await page.locator("#checkpoint-dialog").waitFor({ state: "hidden" });
+    await page.reload();
+    await page
+      .locator("#checkpoint-latest")
+      .getByText("已完成基线，下次核查误差定义。")
+      .waitFor();
+    assert.equal(await page.locator("#project").inputValue(), personalProject);
+    assert.equal(await page.locator("#task-list .task-row").count(), 2);
+    await page.locator(".time-history > summary").click();
+    await page.locator("#as-of").fill("2026-01-01T10:00");
+    await page.locator("#apply-time").click();
+    await page
+      .locator("#time-label")
+      .getByText(/历史时点/)
+      .waitFor();
+    assert.equal(await page.locator("#daily-work").isVisible(), false);
+    assert.equal(await page.locator("#since").inputValue(), "");
+    await page.locator("#now").click();
+    await page.locator("#daily-work").waitFor();
+    await page.locator(".time-history > summary").click();
+    const personalDownload = page.waitForEvent("download");
+    await page.locator("#download-handoff").click();
+    const personalHandoffPath = path.join(output, "personal-handoff.md");
+    await (await personalDownload).saveAs(personalHandoffPath);
+    const personalHandoff = await fs.readFile(personalHandoffPath, "utf8");
+    assert.match(personalHandoff, /比较两种方案的误差/);
+    assert.match(personalHandoff, /个人论文/);
+    await page.locator("#backup-open").click();
+    const personalBackup = page.waitForEvent("download");
+    await page.locator("#download-backup").click();
+    const personalBackupPath = path.join(output, "personal-backup.db");
+    await (await personalBackup).saveAs(personalBackupPath);
+    assert.equal(
+      (await fs.readFile(personalBackupPath)).subarray(0, 15).toString(),
+      "SQLite format 3",
+    );
+    checks.push(
+      "personal project: draft reload, save/search, complete/reopen, checkpoint, resume, handoff and full backup",
+    );
     await page.locator("#load-demo").click();
     await page
       .locator("#confirmed .record")
@@ -49,6 +128,7 @@ async function main() {
     await page.locator("#source-dialog[open]").waitFor();
     assert.match(await page.locator("#source-content").innerText(), /40 元/);
     await page.locator("#source-dialog .close").click();
+    await page.locator(".time-history > summary").click();
     await page.locator("#as-of").fill("2026-10-02T23:59");
     await page.locator("#apply-time").click();
     await budget.getByText("20 元", { exact: true }).waitFor();
@@ -122,7 +202,8 @@ async function main() {
       "hard erasure removes visible preference and invalidates answer",
     );
     await page.reload();
-    // The project is intentionally not persisted in browser storage: reopen explicitly.
+    // Reload restores the last project; the legacy ID entry remains supported.
+    await page.locator(".legacy-project > summary").click();
     await page.locator("#project").fill(trace.namespace);
     await page.locator("#open-project").click();
     await page.locator("#record-management > summary").click();
@@ -206,6 +287,8 @@ async function main() {
       "rejected decision stays rejected and unsupported prediction produces no invented answer",
     );
     await page.locator("[data-tab=brief]").click();
+    if (!(await page.locator("#as-of").isVisible()))
+      await page.locator(".time-history > summary").click();
     await page.locator("#as-of").fill("2026-10-10T00:00");
     await page.locator("#apply-time").click();
     await page

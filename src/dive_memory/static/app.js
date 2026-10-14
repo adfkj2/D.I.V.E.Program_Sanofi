@@ -2,6 +2,14 @@
 const $ = (id) => document.getElementById(id);
 let project =
     new URL(location.href).searchParams.get("project") || "my-research",
+  projectLoading = false,
+  workspace = null,
+  projects = [],
+  projectEditing = false,
+  projectRequestId = null,
+  taskEditing = null,
+  taskRequestId = null,
+  checkpointRequestId = null,
   state = null,
   brief = null,
   since = null,
@@ -43,22 +51,69 @@ function showMessage(text, error = false) {
   $("message").textContent = text;
   $("message").className = error ? "error" : "";
   $("message").hidden = false;
+  const dialog = document.querySelector("dialog[open]");
+  if (error && dialog) {
+    let box = dialog.querySelector(".dialog-message");
+    if (!box) {
+      box = node("p", undefined, "dialog-message");
+      box.setAttribute("role", "alert");
+      dialog.prepend(box);
+    }
+    box.textContent = text;
+  }
 }
 async function api(path, options = {}) {
   const headers = {
     "Content-Type": "application/json",
     ...(accessToken ? { Authorization: "Bearer " + accessToken } : {}),
   };
-  const response = await fetch(path, { ...options, headers });
-  const data = await response.json();
-  if (!response.ok)
+  let response;
+  try {
+    response = await fetch(path, { ...options, headers });
+  } catch {
     throw new Error(
+      "连接已中断。请确认续研已启动，然后重试；未保存的记录草稿仍留在此浏览器。",
+    );
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(
+      "服务暂时无法完成操作。请确认续研运行正常后重试；未提交内容仍保留在表单中。",
+    );
+  }
+  if (!response.ok) {
+    if (response.status === 401)
+      throw new Error(
+        "需要本地访问令牌。请在左侧「本地访问设置」中填写后重试。",
+      );
+    if (response.status === 422)
+      throw new Error("请检查必填内容、字数和日期，再保存一次。");
+    const detail =
       typeof data.detail === "string"
         ? data.detail
-        : JSON.stringify(data.detail),
-    );
+        : "暂时无法完成，请刷新后重试。";
+    const friendly = [
+      [
+        "record not found",
+        "这条记录已被遗忘，或不属于当前项目。请刷新后查看。",
+      ],
+      ["in the future", "记录时间不能晚于现在；未来安排请添加为待办。"],
+      [
+        "replacement time",
+        "更新的时间需要晚于旧记录。请调整记录时间后再保存。",
+      ],
+      [
+        "idempotency key",
+        "这次保存已处理，但内容发生了变化。请关闭窗口、刷新后更新原记录。",
+      ],
+    ].find(([key]) => detail.includes(key));
+    throw new Error(friendly ? friendly[1] : detail);
+  }
   return data;
 }
+
 function params(extra = {}) {
   return new URLSearchParams({ project, ...extra }).toString();
 }
@@ -95,6 +150,7 @@ function recordDate(memory) {
   return date(value);
 }
 function switchTab(name) {
+  if (projectLoading) return;
   document.querySelectorAll(".page").forEach((p) => (p.hidden = p.id !== name));
   document.querySelectorAll("[data-tab]").forEach((b) => {
     b.classList.toggle("selected", b.dataset.tab === name);
@@ -108,25 +164,31 @@ async function refresh() {
     ...(cutoff ? { as_of: cutoff } : {}),
     ...(since ? { since } : {}),
   });
-  const [ready, snapshot, resume] = await Promise.all([
+  const [ready, snapshot, resume, details, catalogue] = await Promise.all([
     api("/api/readiness"),
     api("/api/snapshot?" + params(cutoff ? { as_of: cutoff } : {})),
     api("/api/brief?" + query),
+    api("/api/project?" + params()),
+    api("/api/projects"),
   ]);
   if (version !== refreshVersion || context !== contextVersion) return;
   state = snapshot;
   brief = resume;
+  workspace = details;
+  projects = catalogue.projects;
+  remember("dive-last-project", project);
   $("project").value = project;
   const url = new URL(location.href);
   url.searchParams.set("project", project);
   history.replaceState(null, "", url);
-  $("project-label").textContent = project;
+  $("project-label").textContent = workspace.name;
   $("mode").textContent =
     ready.mode === "live_model" ? "在线模型已配置" : "本地记录核查";
   $("reader-description").textContent =
     ready.mode === "live_model"
       ? "回答器仅接收本次选中的证据；引用和失败状态可以检查。"
       : "当前未配置回答模型。检索照常运行，只展示真实证据，不生成模型回答。";
+  renderWorkspace();
   renderBrief();
   renderResume();
   renderShortcuts();
@@ -149,7 +211,17 @@ function invalidate() {
 function action(label, handler) {
   const b = node("button", label);
   b.type = "button";
-  b.addEventListener("click", () => run(handler));
+  b.addEventListener("click", () =>
+    run(async () => {
+      if (b.disabled) return;
+      b.disabled = true;
+      try {
+        await handler();
+      } finally {
+        b.disabled = false;
+      }
+    }),
+  );
   return b;
 }
 function recordCard(memory, history = false) {
@@ -162,7 +234,9 @@ function recordCard(memory, history = false) {
       "span",
       history
         ? statusNames[memory.status] || memory.status
-        : disposition[d.disposition] || "文本提取",
+        : state?.conflicts.includes(d.key)
+          ? "待解决冲突"
+          : disposition[d.disposition] || "文本提取",
       "tag " + (d.disposition || ""),
     ),
   );
@@ -191,13 +265,30 @@ function recordCard(memory, history = false) {
   return card;
 }
 function renderBrief() {
-  const confirmed = state.memories.filter(
+  const query = $("record-search").value.trim().toLocaleLowerCase();
+  const visible = state.memories.filter(
     (m) =>
-      !state.conflicts.includes(m.structured_content.key) &&
-      (!m.structured_content.disposition ||
-        m.structured_content.disposition === "confirmed"),
+      !query ||
+      [
+        m.content,
+        m.structured_content.key,
+        m.structured_content.value,
+        m.structured_content.reason,
+      ].some((text) =>
+        String(text || "")
+          .toLocaleLowerCase()
+          .includes(query),
+      ),
   );
-  const pending = state.memories.filter((m) =>
+  $("search-status").textContent = query
+    ? "找到 " + visible.length + " 条相关记录（标题、内容或依据中包含关键词）"
+    : "共 " + state.memories.length + " 条当前记录";
+  const confirmed = visible.filter(
+    (m) =>
+      !m.structured_content.disposition ||
+      m.structured_content.disposition === "confirmed",
+  );
+  const pending = visible.filter((m) =>
     ["proposed", "rejected"].includes(m.structured_content.disposition),
   );
   $("confirmed").replaceChildren(...confirmed.map((m) => recordCard(m)));
@@ -205,7 +296,10 @@ function renderBrief() {
   if (!pending.length)
     $("pending").append(node("p", "暂无待确认事项", "form-note"));
   $("confirmed-count").textContent = confirmed.length + " 条记录";
-  $("empty").hidden = state.memories.length > 0;
+  $("empty").hidden =
+    state.memories.length > 0 ||
+    workspace.tasks.length > 0 ||
+    workspace.checkpoints.length > 0;
   $("conflicts").hidden = !state.conflicts.length;
   $("conflicts").textContent =
     "存在尚未解决的冲突：" +
@@ -228,11 +322,15 @@ function briefItem(memory) {
 function renderResume() {
   const hasRecords =
     brief.sections.some((section) => section.items.length) ||
-    brief.conflicts.length;
+    brief.conflicts.length ||
+    (!cutoff && (workspace.tasks.length || workspace.checkpoints.length));
   $("resume-panel").hidden = !hasRecords;
   $("copy-handoff").disabled = !hasRecords;
   $("download-handoff").disabled = !hasRecords;
-  $("resume-summary").textContent = brief.summary;
+  $("resume-summary").textContent =
+    !state.memories.length && !cutoff && hasRecords
+      ? "待办和上次交接已准备好。也可以记下重要信息，让下一次更容易接着做。"
+      : brief.summary;
   const sections = $("resume-sections");
   sections.replaceChildren();
   for (const section of brief.sections.filter((part) => part.items.length)) {
@@ -259,7 +357,10 @@ function renderResume() {
     );
     for (const group of brief.conflicts) {
       const card = node("section", undefined, "resume-card conflict");
-      card.append(node("h3", group.key), ...group.items.map(briefItem));
+      card.append(
+        node("h3", group.key),
+        ...group.items.map((m) => recordCard(m)),
+      );
       conflicts.append(card);
     }
   }
@@ -540,7 +641,7 @@ function setInputMode() {
   $("record-value").required = structured;
   $("event-text").required = !structured;
   $("input-note").textContent = structured
-    ? "由你明确确认字段和状态，系统保留原始输入及版本。"
+    ? "保存你明确确认的内容；计划请放到待办，信息有变化时更新原记录。"
     : "使用现有启发式写入门；这不是完整的语义抽取模型。拒绝写入也会保留判定。";
 }
 function openRecord(memory = null) {
@@ -565,6 +666,10 @@ function openRecord(memory = null) {
     $("record-reason").value = d.reason;
     $("record-session").value = d.session;
   }
+  restoreRecordDraft();
+  $("draft-note").textContent = memory
+    ? "更新会保留原版本；未提交的修改保存在此浏览器。"
+    : "未提交的草稿保存在此浏览器。";
   setInputMode();
   $("record-dialog").showModal();
 }
@@ -655,6 +760,7 @@ async function loadVerification() {
 }
 async function run(fn) {
   try {
+    document.querySelectorAll(".dialog-message").forEach((box) => box.remove());
     await fn();
   } catch (error) {
     showMessage(error.message, true);
@@ -677,28 +783,21 @@ document
 $("add-record").onclick = () => openRecord();
 $("empty-add").onclick = () => openRecord();
 $("open-project").onclick = () =>
-  run(async () => {
-    project = $("project").value.trim();
-    cutoff = null;
-    since = null;
-    $("since").value = "";
-    $("as-of").value = "";
-    invalidate();
-    $("confirmed").replaceChildren();
-    $("pending").replaceChildren();
-    $("casebook-banner").hidden = true;
-    await refresh();
-  });
+  run(() => activateProject($("project").value.trim()));
 $("apply-token").onclick = () =>
   run(async () => {
     accessToken = $("access-token").value;
     $("access-token").value = "";
-    await refresh();
+    await boot();
     showMessage("访问设置已应用。");
   });
 $("apply-time").onclick = () =>
   run(async () => {
     cutoff = $("as-of").value ? new Date($("as-of").value).toISOString() : null;
+    if (cutoff && since && new Date(since) > new Date(cutoff)) {
+      since = null;
+      $("since").value = "";
+    }
     invalidate();
     await refresh();
   });
@@ -721,6 +820,7 @@ async function loadProjectExample(kind) {
       method: "POST",
       body: JSON.stringify({ project: name }),
     });
+    projectLoading = false;
     project = d.namespace;
     $("project").value = project;
     cutoff = null;
@@ -745,7 +845,15 @@ $("empty-casebook").onclick = () => run(() => loadProjectExample("casebook"));
 $("answer-mode").onchange = setAnswerMode;
 $("apply-since").onclick = () =>
   run(async () => {
-    since = $("since").value ? new Date($("since").value).toISOString() : null;
+    const selected = $("since").value
+      ? new Date($("since").value).toISOString()
+      : null;
+    if (
+      selected &&
+      new Date(selected) > (cutoff ? new Date(cutoff) : new Date())
+    )
+      throw new Error("比较起点不能晚于正在查看的时间，请选择更早的日期。");
+    since = selected;
     invalidate();
     await refresh();
   });
@@ -818,7 +926,12 @@ $("record-form").onsubmit = (e) => {
         method: "POST",
         body: JSON.stringify(body),
       });
+      remember(recordDraftKey(), null);
       $("record-dialog").close();
+      $("record-search").value = "";
+      $("record-management").open = true;
+      cutoff = null;
+      $("as-of").value = "";
       invalidate();
       await refresh();
       showMessage(
@@ -913,4 +1026,377 @@ $("download-trace").onclick = () => {
     "application/json",
   );
 };
-run(refresh);
+
+// Personal project workflow. Only navigation preferences and unfinished drafts
+// live in this browser; committed data always come from the SQLite-backed API.
+function remember(key, value) {
+  try {
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+function recalled(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+async function boot() {
+  const data = await api("/api/projects");
+  const requested = new URL(location.href).searchParams.get("project");
+  const saved = recalled("dive-last-project");
+  const chosen =
+    requested ||
+    (data.projects.some((p) => p.namespace === saved)
+      ? saved
+      : data.projects[0]?.namespace) ||
+    "my-research";
+  await activateProject(chosen);
+}
+async function activateProject(identifier) {
+  if (!identifier.trim())
+    throw new Error("请选择一个项目，或先创建自己的项目。");
+  projectLoading = true;
+  document.querySelectorAll(".page").forEach((page) => {
+    page.hidden = true;
+  });
+  showMessage("正在读取项目…");
+  project = identifier;
+  cutoff = null;
+  since = null;
+  $("as-of").value = "";
+  $("since").value = "";
+  $("record-search").value = "";
+  invalidate();
+  const version = contextVersion;
+  $("confirmed").replaceChildren();
+  $("pending").replaceChildren();
+  $("daily-work").hidden = true;
+  const details = await api("/api/project?" + params());
+  if (version !== contextVersion) return;
+  since = details.checkpoints[0]?.created_at || null;
+  $("since").value = since ? localDate(since) : "";
+  await refresh();
+  if (version !== contextVersion) return;
+  projectLoading = false;
+  $("message").hidden = true;
+  switchTab("brief");
+}
+function renderWorkspace() {
+  const known = projects.some((p) => p.namespace === project);
+  const selector = $("project-select");
+  selector.replaceChildren();
+  if (!known) {
+    const option = node("option", "选择或创建项目");
+    option.value = "";
+    selector.append(option);
+  }
+  for (const p of projects) {
+    const option = node(
+      "option",
+      p.name + (p.open_tasks ? " · " + p.open_tasks + " 项待办" : ""),
+    );
+    option.value = p.namespace;
+    selector.append(option);
+  }
+  selector.value = known ? project : "";
+  $("workspace-heading").textContent = known
+    ? workspace.name
+    : "把下一步，留给下一次。";
+  $("workspace-goal").textContent =
+    workspace.goal ||
+    (known
+      ? "记下重要信息，完成一项下一步，再给下次留个起点。"
+      : "记录现在的决定，安排下一步，下次打开就能继续。");
+  $("finish-session").disabled = !known || !!cutoff;
+  $("edit-project").disabled = !known;
+  $("daily-work").hidden = !known || !!cutoff;
+  $("start-project").textContent = known
+    ? "记下第一条重要信息"
+    : "创建我的第一个项目 ↗";
+  $("empty-heading").textContent = known
+    ? "项目准备好了，从一条记录开始。"
+    : "不用重新交代，也能把事情接着做。";
+  const open = workspace.tasks.filter((t) => !t.completed),
+    done = workspace.tasks.filter((t) => t.completed);
+  $("task-count").textContent = open.length + " 项待办";
+  $("task-list").replaceChildren(...open.map(taskRow));
+  if (!open.length)
+    $("task-list").append(
+      node(
+        "p",
+        "暂时没有待办。写下一件具体的小事，就从这里开始。",
+        "form-note",
+      ),
+    );
+  $("done-list").replaceChildren(...done.map(taskRow));
+  $("completed-task-label").textContent =
+    "已完成 " + done.length + " 项 · 可重新打开";
+  $("completed-tasks").hidden = !done.length;
+  const latest = workspace.checkpoints[0];
+  $("checkpoint-latest").replaceChildren();
+  if (latest)
+    $("checkpoint-latest").append(
+      node("time", date(latest.created_at)),
+      node("p", latest.note, "checkpoint-note"),
+    );
+  else
+    $("checkpoint-latest").append(
+      node(
+        "p",
+        "结束本次工作前，保存进展和下一步。下次不用再从头回想。",
+        "form-note",
+      ),
+    );
+  $("checkpoint-list").replaceChildren(
+    ...workspace.checkpoints.slice(1).map((entry) => {
+      const card = node("article");
+      card.append(node("time", date(entry.created_at)), node("p", entry.note));
+      return card;
+    }),
+  );
+  $("older-checkpoints").hidden = workspace.checkpoints.length < 2;
+}
+function taskRow(task) {
+  const row = node(
+    "div",
+    undefined,
+    "task-row" + (task.completed ? " done" : ""),
+  );
+  const button = action(task.completed ? "↶" : "✓", async () => {
+    await api("/api/tasks/" + encodeURIComponent(task.id), {
+      method: "PUT",
+      body: JSON.stringify({
+        project,
+        title: task.title,
+        completed: !task.completed,
+        revision: task.revision,
+      }),
+    });
+    await refresh();
+    showMessage(
+      task.completed
+        ? "待办已重新打开。"
+        : "已完成，做得不错。还可以在已完成列表中重新打开。",
+    );
+  });
+  button.setAttribute(
+    "aria-label",
+    (task.completed ? "重新打开：" : "完成：") + task.title,
+  );
+  row.append(button, node("span", task.title));
+  row.append(action("编辑", () => openTask(task)));
+  return row;
+}
+function openProject(edit = false) {
+  projectEditing = edit;
+  projectRequestId = crypto.randomUUID();
+  $("project-dialog-heading").textContent = edit
+    ? "项目设置"
+    : "创建自己的项目";
+  $("project-name").value = edit ? workspace.name : "";
+  $("project-goal").value = edit ? workspace.goal : "";
+  $("project-dialog").showModal();
+}
+function openTask(task = null) {
+  taskEditing = task;
+  taskRequestId = crypto.randomUUID();
+  $("task-heading").textContent = task ? "修改待办" : "添加下一步";
+  $("task-title").value = task?.title || "";
+  $("task-dialog").showModal();
+}
+async function submitForm(event, handler) {
+  event.preventDefault();
+  const button = event.submitter;
+  if (button.disabled) return;
+  button.disabled = true;
+  await run(handler);
+  button.disabled = false;
+}
+$("new-project").onclick = () => openProject();
+$("edit-project").onclick = () => openProject(true);
+$("start-project").onclick = () =>
+  projects.some((p) => p.namespace === project) ? openRecord() : openProject();
+$("project-select").onchange = () => {
+  if ($("project-select").value)
+    run(() => activateProject($("project-select").value));
+};
+$("project-form").onsubmit = (event) =>
+  submitForm(event, async () => {
+    const result = await api(
+      projectEditing ? "/api/project?" + params() : "/api/projects",
+      {
+        method: projectEditing ? "PUT" : "POST",
+        body: JSON.stringify({
+          name: $("project-name").value,
+          goal: $("project-goal").value,
+          request_id: projectRequestId,
+        }),
+      },
+    );
+    $("project-dialog").close();
+    await activateProject(result.namespace);
+    showMessage(
+      projectEditing
+        ? "项目设置已保存。"
+        : "项目已创建。先记下一条重要信息，或添加下一步。",
+    );
+  });
+$("add-task").onclick = () => openTask();
+$("task-form").onsubmit = (event) =>
+  submitForm(event, async () => {
+    await api(
+      taskEditing
+        ? "/api/tasks/" + encodeURIComponent(taskEditing.id)
+        : "/api/tasks",
+      {
+        method: taskEditing ? "PUT" : "POST",
+        body: JSON.stringify({
+          project,
+          title: $("task-title").value,
+          ...(taskEditing
+            ? {
+                completed: !!taskEditing.completed,
+                revision: taskEditing.revision,
+              }
+            : { request_id: taskRequestId }),
+        }),
+      },
+    );
+    $("task-dialog").close();
+    await refresh();
+    showMessage("下一步已保存。");
+  });
+$("finish-session").onclick = () => {
+  checkpointRequestId = crypto.randomUUID();
+  $("checkpoint-form").reset();
+  try {
+    const draft = JSON.parse(
+      recalled("dive-checkpoint-draft:" + project) || "null",
+    );
+    if (draft) {
+      $("checkpoint-note").value = draft.note || "";
+      $("checkpoint-next").value = draft.next || "";
+      checkpointRequestId = draft.requestId || checkpointRequestId;
+    }
+  } catch {
+    remember("dive-checkpoint-draft:" + project, null);
+  }
+  $("checkpoint-dialog").showModal();
+};
+$("checkpoint-form").onsubmit = (event) =>
+  submitForm(event, async () => {
+    await api("/api/checkpoints", {
+      method: "POST",
+      body: JSON.stringify({
+        project,
+        note: $("checkpoint-note").value,
+        next_step: $("checkpoint-next").value,
+        request_id: checkpointRequestId,
+      }),
+    });
+    remember("dive-checkpoint-draft:" + project, null);
+    $("checkpoint-dialog").close();
+    await refresh();
+    showMessage(
+      "交接已保存。可以安心关闭；下次会从这里继续。也可以复制交接简报，带到新的 AI 会话。",
+    );
+  });
+$("record-search").oninput = () => {
+  if (state) renderBrief();
+};
+const draftFields = [
+  "record-key",
+  "record-value",
+  "record-category",
+  "record-disposition",
+  "record-reason",
+  "record-session",
+  "record-date",
+  "event-text",
+];
+$("record-form").addEventListener("input", () => {
+  const draft = Object.fromEntries(draftFields.map((id) => [id, $(id).value]));
+  Object.assign(draft, {
+    requestId: recordRequestId,
+    observedAt: recordObservedAt,
+    dateDisplay: recordDateDisplay,
+    mode: document.querySelector('[name="input-mode"]:checked').value,
+    explicit: $("event-explicit").checked,
+  });
+  const saved = remember(recordDraftKey(), JSON.stringify(draft));
+  $("draft-note").textContent = saved
+    ? "草稿已保留在此浏览器；点击「保存记录」后才会进入项目。"
+    : "浏览器不允许保存草稿，请先提交记录再关闭。";
+});
+function recordDraftKey() {
+  return "dive-draft:" + project + ":" + ($("replaces").value || "new");
+}
+function restoreRecordDraft() {
+  try {
+    const draft = JSON.parse(recalled(recordDraftKey()) || "null");
+    if (!draft) return;
+    for (const id of draftFields)
+      if (typeof draft[id] === "string") $(id).value = draft[id];
+    recordRequestId = draft.requestId || recordRequestId;
+    recordObservedAt = draft.observedAt || recordObservedAt;
+    recordDateDisplay = draft.dateDisplay || recordDateDisplay;
+    document.querySelector(
+      '[name="input-mode"][value="' +
+        (draft.mode === "text" ? "text" : "record") +
+        '"]',
+    ).checked = true;
+    $("event-explicit").checked = !!draft.explicit;
+  } catch {
+    remember(recordDraftKey(), null);
+  }
+}
+$("backup-open").onclick = () => $("backup-dialog").showModal();
+$("download-backup").onclick = () =>
+  run(async () => {
+    const button = $("download-backup");
+    if (button.disabled) return;
+    button.disabled = true;
+    try {
+      const response = await fetch("/api/backup", {
+        headers: accessToken ? { Authorization: "Bearer " + accessToken } : {},
+      });
+      if (!response.ok)
+        throw new Error(
+          response.status === 401
+            ? "请先填写本地访问令牌。"
+            : "备份未完成，请保持服务运行并重试。",
+        );
+      const blob = await response.blob(),
+        url = URL.createObjectURL(blob);
+      const link = node("a");
+      link.href = url;
+      link.download =
+        "续研-完整备份-" + new Date().toISOString().slice(0, 10) + ".db";
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      showMessage("完整备份已交给浏览器下载，请确认下载文件已保存。");
+      $("backup-dialog").close();
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+$("checkpoint-form").addEventListener("input", () => {
+  const saved = remember(
+    "dive-checkpoint-draft:" + project,
+    JSON.stringify({
+      note: $("checkpoint-note").value,
+      next: $("checkpoint-next").value,
+      requestId: checkpointRequestId,
+    }),
+  );
+  $("checkpoint-draft-note").textContent = saved
+    ? "未提交的交接草稿已保留在此浏览器。"
+    : "浏览器不允许保存草稿，请先保存交接再关闭。";
+});
+run(boot);

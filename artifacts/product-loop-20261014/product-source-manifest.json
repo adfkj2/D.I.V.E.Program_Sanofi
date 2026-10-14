@@ -1,0 +1,15 @@
+{
+  "normalization": "UTF-8 source bytes, CRLF to LF",
+  "files": {
+    "src/dive_memory/static/app.css": "dc7ea9bf5377a23cb85171b3462285b1fd5c71808b6f81703dc8928dc9adfeb0",
+    "src/dive_memory/static/app.js": "c18adc85be966487dd2a0efef96cffbca3598af30a07d9d76e5fea5add361871",
+    "src/dive_memory/static/icon.svg": "0e1748ae5785ce00f0a3378f8022eda48c15863d0ac2f5eadfde8134232224e3",
+    "src/dive_memory/static/index.html": "e3f56cca7ed21873f28b06fa2cb4e86d3dac4b4d3aef1f6ab4faf0536639a61b",
+    "src/dive_memory/static/verification.json": "bd5b34b979b21cef1cd1f6978160ce9f904a76844f02a4398f0aa6abb9b5cb12",
+    "tools/verify_workbench.cjs": "ff9450afd32e1150ffbf74fdedda95e963ff78aba99d14d286dd2d61ba7269a1",
+    "README.md": "c4138860a24c0e1a5a0ba45ed6cc0a07039b95207219ee2c64a24d84c03cb788",
+    "开始使用.md": "4b476dc8cbd7be7e486762b84127469b87e1720165519df6aca65bc4ef2eeb50",
+    "docs/oracle/44-personal-project-loop-20261014.md": "08137b190d547a477ae5dd607d7d8620689a5b73880f7655d1b468a31110aa4b"
+  },
+  "publication_note": "2026-10-14 publication snapshot; no application code changed during packaging."
+}

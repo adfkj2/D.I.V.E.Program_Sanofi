@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "import_file": "${REPOSITORY}\\eval\\reports\\product-loop-20261014\\wheel-check\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "cwd": "${REPOSITORY}\\eval\\reports\\product-loop-20261014\\wheel-check",
+  "package_assets": 6,
+  "persistence_restart": true,
+  "cli_api": true,
+  "packaged_casebook": true,
+  "local_consult": true,
+  "handoff_markdown": true,
+  "personal_project_checkpoint_backup_restore": true,
+  "source_assets_match_wheel": true,
+  "dependencies": "fresh venv with runtime.lock and httpx==0.28.1; no dev tool dependencies needed",
+  "pip_check": "No broken requirements found.",
+  "wheel": "dive_memory-0.4.0-py3-none-any.whl",
+  "wheel_sha256": "41ea993b0553418dfaf25617e8b3ba5507a07ecb8d2353a2e286af89d05f90da",
+  "source_path_injected": false
+}

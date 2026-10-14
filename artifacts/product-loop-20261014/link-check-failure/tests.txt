@@ -1,0 +1,52 @@
+ssssssss................................................................ [  5%]
+........................................................................ [ 11%]
+........................................................................ [ 17%]
+........................................................................ [ 23%]
+........................................................................ [ 29%]
+........................................................................ [ 35%]
+........................................................................ [ 41%]
+........................................................................ [ 47%]
+........................................................................ [ 52%]
+........................................................................ [ 58%]
+........................................................................ [ 64%]
+........................F............................................... [ 70%]
+........................................................................ [ 76%]
+........................................................................ [ 82%]
+..................................................s..................... [ 88%]
+........................................................................ [ 94%]
+........................................................................ [100%]
+================================== FAILURES ===================================
+_________________ test_readme_relative_markdown_links_resolve _________________
+
+    def test_readme_relative_markdown_links_resolve():
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        targets = re.findall(r"\[[^]]+\]\(([^)]+)\)", readme)
+        relative = [target for target in targets if "://" not in target and not target.startswith("#")]
+        assert relative
+>       assert all((ROOT / target).exists() for target in relative)
+E       assert False
+E        +  where False = all(<generator object test_readme_relative_markdown_links_resolve.<locals>.<genexpr> at 0x0000027D1880ACF0>)
+
+tests\test_phase3_artifacts.py:60: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  ${REPOSITORY}\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv\Lib\site-packages\starlette\testclient.py:53
+  ${REPOSITORY}\.venv\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [1] tests\integration\postgres\test_postgres_migrations.py:19: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_migrations.py:53: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_migrations.py:83: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_store.py:65: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_store.py:106: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_store.py:126: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_store.py:151: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\integration\postgres\test_postgres_store.py:180: set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite
+SKIPPED [1] tests\test_semantic_gate.py:430: could not import 'sentence_transformers': No module named 'sentence_transformers'
+FAILED tests/test_phase3_artifacts.py::test_readme_relative_markdown_links_resolve
+1 failed, 1214 passed, 9 skipped, 2 warnings in 46.77s

@@ -2,13 +2,18 @@
 
 import os
 import secrets
+import sqlite3
+import tempfile
+import time
 from contextlib import asynccontextmanager
 from importlib.resources import files
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
+from starlette.background import BackgroundTask
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .application.casebook import load_casebook
@@ -16,6 +21,7 @@ from .application.demo import load_demo
 from .application.records import ProjectRecord
 from .application.runtime import MemoryApplication
 from .application.settings import application_from_environment
+from .observability import RequestMetrics
 
 
 class Input(BaseModel):
@@ -60,6 +66,30 @@ class ConsultInput(Input):
     since: str | None = None
 
 
+class ProjectInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    name: str = Field(min_length=1, max_length=80)
+    goal: str = Field(default="", max_length=1000)
+    request_id: str = Field(min_length=1, max_length=200)
+
+
+class TaskInput(Input):
+    title: str = Field(min_length=1, max_length=500)
+    request_id: str = Field(min_length=1, max_length=200)
+
+
+class TaskUpdate(Input):
+    title: str = Field(min_length=1, max_length=500)
+    completed: bool = Field(strict=True)
+    revision: int = Field(ge=1, strict=True)
+
+
+class CheckpointInput(Input):
+    note: str = Field(min_length=1, max_length=4000)
+    next_step: str = Field(default="", max_length=500)
+    request_id: str = Field(min_length=1, max_length=200)
+
+
 def create_workbench(
     application: MemoryApplication | None = None, *, access_token: str | None = None
 ) -> FastAPI:
@@ -72,8 +102,10 @@ def create_workbench(
 
     @asynccontextmanager
     async def lifespan(_app):
-        yield
-        runtime.close()
+        try:
+            yield
+        finally:
+            runtime.close()
 
     app = FastAPI(
         title="DIVE Project Memory",
@@ -83,24 +115,37 @@ def create_workbench(
         redoc_url=None,
     )
     app.state.application = runtime
+    telemetry = RequestMetrics()
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
     )
 
     @app.middleware("http")
     async def boundary(request: Request, call_next):
+        started = time.perf_counter()
         origin = request.headers.get("origin")
         if origin and urlsplit(origin).netloc != request.headers.get("host"):
-            return JSONResponse(
+            response = JSONResponse(
                 {"detail": "cross-origin request denied"}, status_code=403
             )
-        if request.url.path.startswith("/api/") and token:
-            supplied = request.headers.get("authorization", "").removeprefix("Bearer ")
-            if not secrets.compare_digest(supplied, token):
-                return JSONResponse(
-                    {"detail": "access token required"}, status_code=401
-                )
-        response = await call_next(request)
+        elif (
+            request.url.path.startswith("/api/")
+            and token
+            and not secrets.compare_digest(
+                request.headers.get("authorization", "").removeprefix("Bearer "), token
+            )
+        ):
+            response = JSONResponse(
+                {"detail": "access token required"}, status_code=401
+            )
+        else:
+            response = await call_next(request)
+        # Observability: labels use the matched route template (static set), so
+        # cardinality stays bounded even under arbitrary-path probing; requests
+        # that never matched a route collapse into a single "unmatched" label.
+        route = request.scope.get("route")
+        path = getattr(route, "path", None) or "unmatched"
+        telemetry.record(path, response.status_code, time.perf_counter() - started)
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
@@ -150,9 +195,76 @@ def create_workbench(
         result = runtime.readiness()
         return JSONResponse(result, status_code=200 if result["ready"] else 503)
 
+    @app.get("/metrics")
+    def metrics():
+        """Prometheus text exposition; stdlib-only so the wheel stays dependency-free."""
+        try:
+            readiness = runtime.readiness()
+        except sqlite3.Error:  # readiness probe must never take the scrape down
+            readiness = {"ready": False, "database": "unavailable"}
+        return Response(
+            telemetry.render(
+                ready=bool(readiness["ready"]),
+                database_ready=readiness.get("database") == "ready",
+                mode=runtime.mode,
+            ),
+            media_type="text/plain; version=0.0.4; charset=utf-8",
+        )
+
     @app.get("/api/snapshot")
     def snapshot(project: str, as_of: str | None = None):
         return runtime.snapshot(project, as_of=as_of)
+
+    @app.get("/api/projects")
+    def projects():
+        return {"projects": runtime.projects()}
+
+    @app.get("/api/project")
+    def project_details(project: str):
+        return runtime.project_details(project)
+
+    @app.post("/api/projects")
+    def create_project(body: ProjectInput):
+        return runtime.create_project(body.name, body.goal, body.request_id)
+
+    @app.put("/api/project")
+    def update_project(body: ProjectInput, project: str):
+        return runtime.update_project(project, body.name, body.goal)
+
+    @app.post("/api/tasks")
+    def add_task(body: TaskInput):
+        return runtime.add_task(body.project, body.title, body.request_id)
+
+    @app.put("/api/tasks/{identifier}")
+    def update_task(identifier: str, body: TaskUpdate):
+        return runtime.update_task(
+            body.project, identifier, body.title, body.completed, body.revision
+        )
+
+    @app.post("/api/checkpoints")
+    def checkpoint(body: CheckpointInput):
+        return runtime.checkpoint(
+            body.project, body.note, body.next_step, body.request_id
+        )
+
+    @app.get("/api/backup")
+    def backup():
+        handle = tempfile.NamedTemporaryFile(
+            prefix="dive-backup-", suffix=".db", delete=False
+        )
+        path = Path(handle.name)
+        handle.close()
+        try:
+            runtime.backup(str(path))
+        except BaseException:
+            path.unlink(missing_ok=True)
+            raise
+        return FileResponse(
+            path,
+            media_type="application/octet-stream",
+            filename="续研-完整备份.db",
+            background=BackgroundTask(path.unlink, missing_ok=True),
+        )
 
     @app.get("/api/lookup")
     def lookup(project: str, key: str, as_of: str | None = None):

@@ -15,12 +15,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python -m pip install -r requirements/dev.lock
       - run: python -m pip install --no-deps -e .
-      - run: python -m pytest -q --junitxml=artifacts/tests.xml
-      - run: python -m ruff check src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py tests/test_application_delivery.py tests/test_delivery_cold_run.py tests/test_project_briefing.py tests/test_project_resumption_cli.py tools/build_project_casebook.py
-      - run: python -m ruff format --check src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py tests/test_application_delivery.py tests/test_delivery_cold_run.py tests/test_project_briefing.py tests/test_project_resumption_cli.py tools/build_project_casebook.py
-      - run: python -m mypy src/dive_memory/application src/dive_memory/web.py src/dive_memory/cli.py --follow-imports skip --ignore-missing-imports
+      - run: python tools/check_quality.py --output artifacts/quality
       - run: python eval/run_project_validation.py --output artifacts/structured
-      - run: python tools/build_project_casebook.py --check
       - run: python -m build --wheel
       - run: python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel
       - uses: actions/upload-artifact@v4
@@ -28,7 +24,9 @@ jobs:
         with:
           name: engineering-${{ matrix.python }}
           path: |
-            artifacts/tests.xml
+            artifacts/quality/*.json
+            artifacts/quality/*.xml
+            artifacts/quality/*.txt
             artifacts/structured/
             artifacts/wheel/summary.json
             artifacts/wheel/install-log.json
@@ -60,6 +58,24 @@ jobs:
         with:
           name: postgres-contract
           path: postgres-tests.xml
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f ops/docker/Dockerfile -t dive-memory:ci .
+      - name: Run the image and probe the real readiness endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name dive-ci -p 127.0.0.1:8765:8765 dive-memory:ci
+          trap 'docker rm -f dive-ci >/dev/null 2>&1 || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8765/api/readiness; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/api/readiness
+          curl --fail --silent http://127.0.0.1:8765/metrics | grep -E 'dive_http_requests_total|dive_readiness'
+          docker inspect --format '{{.State.Health.Status}}' dive-ci
   workbench:
     runs-on: ubuntu-latest
     steps:

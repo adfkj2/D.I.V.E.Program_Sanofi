@@ -205,10 +205,6 @@ class CaseResult:
     ok: bool
 
 
-def _sha256_text(text: str) -> str:
-    return sha256(text.encode("utf-8")).hexdigest()
-
-
 def _stage_failure(case: LongMemEvalCase, stage: Stage, exc: BaseException) -> dict[str, Any]:
     return OracleFailure(
         question_id=case.question_id,

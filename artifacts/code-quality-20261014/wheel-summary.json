@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "import_file": "${REPOSITORY}\\eval\\reports\\code-quality-20261014\\wheel-check\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "cwd": "${REPOSITORY}\\eval\\reports\\code-quality-20261014\\wheel-check",
+  "package_assets": 6,
+  "persistence_restart": true,
+  "cli_api": true,
+  "packaged_casebook": true,
+  "local_consult": true,
+  "handoff_markdown": true,
+  "wheel": "dive_memory-0.4.0-py3-none-any.whl",
+  "wheel_sha256": "50540a77852c7db0f246556967cb42ce23179277740458ee34fa47558fa9dcae",
+  "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+  "source_path_injected": false
+}

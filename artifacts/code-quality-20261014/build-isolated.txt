@@ -1,0 +1,258 @@
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - setuptools>=68
+* Getting build dependencies for wheel...
+running egg_info
+writing src\dive_memory.egg-info\PKG-INFO
+writing dependency_links to src\dive_memory.egg-info\dependency_links.txt
+writing entry points to src\dive_memory.egg-info\entry_points.txt
+writing requirements to src\dive_memory.egg-info\requires.txt
+writing top-level names to src\dive_memory.egg-info\top_level.txt
+reading manifest file 'src\dive_memory.egg-info\SOURCES.txt'
+writing manifest file 'src\dive_memory.egg-info\SOURCES.txt'
+* Installed build dependency versions:
+  - setuptools==84.0.0
+* Building wheel...
+running bdist_wheel
+running build
+running build_py
+copying src\dive_memory\cli.py -> build\lib\dive_memory
+copying src\dive_memory\observability.py -> build\lib\dive_memory
+copying src\dive_memory\web.py -> build\lib\dive_memory
+copying src\dive_memory\oracle\pipeline.py -> build\lib\dive_memory\oracle
+running egg_info
+writing src\dive_memory.egg-info\PKG-INFO
+writing dependency_links to src\dive_memory.egg-info\dependency_links.txt
+writing entry points to src\dive_memory.egg-info\entry_points.txt
+writing requirements to src\dive_memory.egg-info\requires.txt
+writing top-level names to src\dive_memory.egg-info\top_level.txt
+reading manifest file 'src\dive_memory.egg-info\SOURCES.txt'
+writing manifest file 'src\dive_memory.egg-info\SOURCES.txt'
+installing to build\bdist.win-amd64\wheel
+running install
+running install_lib
+creating build\bdist.win-amd64\wheel
+creating build\bdist.win-amd64\wheel\dive_memory
+copying build\lib\dive_memory\ablation.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\answering.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\api.py -> build\bdist.win-amd64\wheel\.\dive_memory
+creating build\bdist.win-amd64\wheel\dive_memory\application
+copying build\lib\dive_memory\application\briefing.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\casebook.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\demo.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\oracle_run.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\readers.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\records.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\runtime.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\settings.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\application\__init__.py -> build\bdist.win-amd64\wheel\.\dive_memory\application
+copying build\lib\dive_memory\auth.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\baselines.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\benchmark.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\candidate.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\cli.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\config.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\context.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\contextual_fact_retention.py -> build\bdist.win-amd64\wheel\.\dive_memory
+creating build\bdist.win-amd64\wheel\dive_memory\data
+copying build\lib\dive_memory\data\project-casebook.json -> build\bdist.win-amd64\wheel\.\dive_memory\data
+copying build\lib\dive_memory\decay.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\document_chunks.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\embeddings.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\embedding_benchmark.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\embedding_service.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\entities.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\episodic_retention.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\evaluation.py -> build\bdist.win-amd64\wheel\.\dive_memory
+creating build\bdist.win-amd64\wheel\dive_memory\eval_adapters
+copying build\lib\dive_memory\eval_adapters\longmemeval.py -> build\bdist.win-amd64\wheel\.\dive_memory\eval_adapters
+copying build\lib\dive_memory\eval_adapters\__init__.py -> build\bdist.win-amd64\wheel\.\dive_memory\eval_adapters
+copying build\lib\dive_memory\eval_datasets.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\eval_manifest.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\eval_metrics.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\eval_runner.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\evidence_search.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\extraction.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\gate.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\hot_memory.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\ids.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\lexical.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\lifecycle.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\llm.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\longmemeval_benchmark.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\models.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\narrative_retention.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\normalization.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\observability.py -> build\bdist.win-amd64\wheel\.\dive_memory
+creating build\bdist.win-amd64\wheel\dive_memory\oracle
+copying build\lib\dive_memory\oracle\adjudicated_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\advice_refusal_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\calculating_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\cited_calculation.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\contextual_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\contracts.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\controlled_documents.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\current_state_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\diagnose.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\evaluate.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\evidence.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\grounded_advice_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\indexed_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\loader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\pipeline.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\premise_ledger_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\premise_review_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\providers.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\refusal_gated_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\runner.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\source_coordinates.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\spare_documents.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\statement_provenance.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\temporal_refusal_reader.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\validator.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\oracle\__init__.py -> build\bdist.win-amd64\wheel\.\dive_memory\oracle
+copying build\lib\dive_memory\planner.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\postgres_benchmark.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\postgres_concurrency_recovery.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\postgres_migrations.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\postgres_parallelism_benchmark.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\postgres_scale_benchmark.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\postgres_store.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\relations.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\resolution.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\retrieval.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\semantic_gate.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\sensitivity.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\service.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\smoke.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\source_diversity.py -> build\bdist.win-amd64\wheel\.\dive_memory
+creating build\bdist.win-amd64\wheel\dive_memory\static
+copying build\lib\dive_memory\static\app.css -> build\bdist.win-amd64\wheel\.\dive_memory\static
+copying build\lib\dive_memory\static\app.js -> build\bdist.win-amd64\wheel\.\dive_memory\static
+copying build\lib\dive_memory\static\icon.svg -> build\bdist.win-amd64\wheel\.\dive_memory\static
+copying build\lib\dive_memory\static\index.html -> build\bdist.win-amd64\wheel\.\dive_memory\static
+copying build\lib\dive_memory\static\verification.json -> build\bdist.win-amd64\wheel\.\dive_memory\static
+copying build\lib\dive_memory\store.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\store_contract.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\temporal.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\token_budget.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\user_document_retention.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\web.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\worker.py -> build\bdist.win-amd64\wheel\.\dive_memory
+copying build\lib\dive_memory\__init__.py -> build\bdist.win-amd64\wheel\.\dive_memory
+running install_egg_info
+Copying src\dive_memory.egg-info to build\bdist.win-amd64\wheel\.\dive_memory-0.4.0-py3.14.egg-info
+running install_scripts
+creating build\bdist.win-amd64\wheel\dive_memory-0.4.0.dist-info\WHEEL
+creating '${REPOSITORY}\eval\\reports\\code-quality-20261014\\wheel-dist\\.tmp-f54gl5qz\\dive_memory-0.4.0-py3-none-any.whl' and adding 'build\\bdist.win-amd64\\wheel' to it
+adding 'dive_memory/__init__.py'
+adding 'dive_memory/ablation.py'
+adding 'dive_memory/answering.py'
+adding 'dive_memory/api.py'
+adding 'dive_memory/auth.py'
+adding 'dive_memory/baselines.py'
+adding 'dive_memory/benchmark.py'
+adding 'dive_memory/candidate.py'
+adding 'dive_memory/cli.py'
+adding 'dive_memory/config.py'
+adding 'dive_memory/context.py'
+adding 'dive_memory/contextual_fact_retention.py'
+adding 'dive_memory/decay.py'
+adding 'dive_memory/document_chunks.py'
+adding 'dive_memory/embedding_benchmark.py'
+adding 'dive_memory/embedding_service.py'
+adding 'dive_memory/embeddings.py'
+adding 'dive_memory/entities.py'
+adding 'dive_memory/episodic_retention.py'
+adding 'dive_memory/eval_datasets.py'
+adding 'dive_memory/eval_manifest.py'
+adding 'dive_memory/eval_metrics.py'
+adding 'dive_memory/eval_runner.py'
+adding 'dive_memory/evaluation.py'
+adding 'dive_memory/evidence_search.py'
+adding 'dive_memory/extraction.py'
+adding 'dive_memory/gate.py'
+adding 'dive_memory/hot_memory.py'
+adding 'dive_memory/ids.py'
+adding 'dive_memory/lexical.py'
+adding 'dive_memory/lifecycle.py'
+adding 'dive_memory/llm.py'
+adding 'dive_memory/longmemeval_benchmark.py'
+adding 'dive_memory/models.py'
+adding 'dive_memory/narrative_retention.py'
+adding 'dive_memory/normalization.py'
+adding 'dive_memory/observability.py'
+adding 'dive_memory/planner.py'
+adding 'dive_memory/postgres_benchmark.py'
+adding 'dive_memory/postgres_concurrency_recovery.py'
+adding 'dive_memory/postgres_migrations.py'
+adding 'dive_memory/postgres_parallelism_benchmark.py'
+adding 'dive_memory/postgres_scale_benchmark.py'
+adding 'dive_memory/postgres_store.py'
+adding 'dive_memory/relations.py'
+adding 'dive_memory/resolution.py'
+adding 'dive_memory/retrieval.py'
+adding 'dive_memory/semantic_gate.py'
+adding 'dive_memory/sensitivity.py'
+adding 'dive_memory/service.py'
+adding 'dive_memory/smoke.py'
+adding 'dive_memory/source_diversity.py'
+adding 'dive_memory/store.py'
+adding 'dive_memory/store_contract.py'
+adding 'dive_memory/temporal.py'
+adding 'dive_memory/token_budget.py'
+adding 'dive_memory/user_document_retention.py'
+adding 'dive_memory/web.py'
+adding 'dive_memory/worker.py'
+adding 'dive_memory/application/__init__.py'
+adding 'dive_memory/application/briefing.py'
+adding 'dive_memory/application/casebook.py'
+adding 'dive_memory/application/demo.py'
+adding 'dive_memory/application/oracle_run.py'
+adding 'dive_memory/application/readers.py'
+adding 'dive_memory/application/records.py'
+adding 'dive_memory/application/runtime.py'
+adding 'dive_memory/application/settings.py'
+adding 'dive_memory/data/project-casebook.json'
+adding 'dive_memory/eval_adapters/__init__.py'
+adding 'dive_memory/eval_adapters/longmemeval.py'
+adding 'dive_memory/oracle/__init__.py'
+adding 'dive_memory/oracle/adjudicated_reader.py'
+adding 'dive_memory/oracle/advice_refusal_reader.py'
+adding 'dive_memory/oracle/calculating_reader.py'
+adding 'dive_memory/oracle/cited_calculation.py'
+adding 'dive_memory/oracle/contextual_reader.py'
+adding 'dive_memory/oracle/contracts.py'
+adding 'dive_memory/oracle/controlled_documents.py'
+adding 'dive_memory/oracle/current_state_reader.py'
+adding 'dive_memory/oracle/diagnose.py'
+adding 'dive_memory/oracle/evaluate.py'
+adding 'dive_memory/oracle/evidence.py'
+adding 'dive_memory/oracle/grounded_advice_reader.py'
+adding 'dive_memory/oracle/indexed_reader.py'
+adding 'dive_memory/oracle/loader.py'
+adding 'dive_memory/oracle/pipeline.py'
+adding 'dive_memory/oracle/premise_ledger_reader.py'
+adding 'dive_memory/oracle/premise_review_reader.py'
+adding 'dive_memory/oracle/providers.py'
+adding 'dive_memory/oracle/reader.py'
+adding 'dive_memory/oracle/refusal_gated_reader.py'
+adding 'dive_memory/oracle/runner.py'
+adding 'dive_memory/oracle/source_coordinates.py'
+adding 'dive_memory/oracle/spare_documents.py'
+adding 'dive_memory/oracle/statement_provenance.py'
+adding 'dive_memory/oracle/temporal_refusal_reader.py'
+adding 'dive_memory/oracle/validator.py'
+adding 'dive_memory/static/app.css'
+adding 'dive_memory/static/app.js'
+adding 'dive_memory/static/icon.svg'
+adding 'dive_memory/static/index.html'
+adding 'dive_memory/static/verification.json'
+adding 'dive_memory-0.4.0.dist-info/METADATA'
+adding 'dive_memory-0.4.0.dist-info/WHEEL'
+adding 'dive_memory-0.4.0.dist-info/entry_points.txt'
+adding 'dive_memory-0.4.0.dist-info/top_level.txt'
+adding 'dive_memory-0.4.0.dist-info/RECORD'
+removing build\bdist.win-amd64\wheel
+Successfully built dive_memory-0.4.0-py3-none-any.whl

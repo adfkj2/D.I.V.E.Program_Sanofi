@@ -1,0 +1,43 @@
+# 核心代码走读与现场验证
+
+目标：让项目作者能解释每个状态变化、指出失败会发生在哪里，并用实际代码复核。以下是准备材料，不是对作者理解程度的评分。
+
+## 六分钟走读
+
+1. **输入与来源（1 分钟）**：打开 [ProjectRecord](../src/dive_memory/application/records.py)。明确字段记录需要用户来源和显式确认；普通文本仍走抽取。解释 `confirmed/proposed/rejected` 为什么不是同一种事实，以及为什么结构化核查不等于自由问答。
+2. **写入与更新（1 分钟）**：打开 [MemoryApplication.record](../src/dive_memory/application/runtime.py)。找到幂等载荷核对、替换目标、同键/类别/状态与时间约束。说明两个同键但未明确替换的不同值为什么形成冲突，不会简单取最新值。
+3. **事务与恢复（1 分钟）**：打开 [MemoryService.ingest/process_pending](../src/dive_memory/service.py) 和 [Store.transaction](../src/dive_memory/store.py)。事件先持久化，投影在事务内完成；中断后事件仍在，半个投影不能作为成功结果暴露，重试必须保留幂等性。
+4. **时间、来源与遗忘（1 分钟）**：打开 [temporal.py](../src/dive_memory/temporal.py) 和应用的 `source/forget`。解释有效时间与观察时间、半开区间、namespace 边界、硬删除与墓碑；旧投影不能从已遗忘事件重新构造，已下载的导出文件则不受服务控制。
+5. **回答与失败（1 分钟）**：打开应用的 `answer`、[reader 工厂](../src/dive_memory/application/readers.py) 和 [请求账本](../src/dive_memory/application/oracle_run.py)。默认只返回证据；在线模式显式配置，引用须匹配当前可见来源；TIMEOUT/ERROR/INVALID 与 ABSTAIN 含义不同。未知执行结果不能通过盲目重试绕过预算。
+6. **交付与限制（1 分钟）**：打开 [质量证据页](32-code-quality-evidence.md)、[架构边界测试](../tests/test_architecture_boundaries.py) 和 [RequestMetrics](../src/dive_memory/observability.py)。展示局部与全包覆盖率的分母，解释为何快照复制须持锁，为什么静态路由标签避免每条记录产生一种指标。
+
+## 可直接运行的故障演示
+
+这些检查使用临时数据库或构造的传输，不读真实用户库、不发送模型请求：
+
+```text
+python -m pytest tests/test_application_boundaries.py -k replacement -vv
+python -m pytest tests/test_application_boundaries.py -k "trace or failed_request or cold_execution" -vv
+python -m pytest tests/test_metrics.py -k "concurrent or denied or failure" -vv
+python -m pytest tests/test_quality_gate.py -vv
+```
+
+第一项实际顺序是：记录 20 → 尝试更新为 40 → 在投影写入后抛错 → 查询仍为 20 → 关闭并重开数据库 → 再次恢复失败且明确返回错误 → 恢复成功后当前值为 40、旧日期仍为 20 → 重复恢复不再生成新记录。请先预测每一步，再运行检查并定位断言；不要只背诵“测试通过”。
+
+现场修改练习可在临时分支中增加一种真实业务边界，例如“替换时更换 category”。先写出预期拒绝行为，再找到对应规则，运行相关用例与质量门禁。修改金额/日期等输入时，应能解释为什么机制仍成立。此练习尚需作者亲自完成。
+
+## 必须能回答的问题
+
+| 问题 | 应说明的事实与取舍 |
+|---|---|
+| 为什么不用一份不断更新的摘要？ | 当前结构化任务中完整事件扫描同样 120/120；版本、来源和审计便捷性是价值假设，尚未证明节省用户时间。 |
+| 为什么保留事件与投影两层？ | 事件是重建依据，投影提高查询便利；代价是恢复、幂等、删除传播必须一起设计。 |
+| 为什么不能直接“最后写入胜出”？ | 来源、状态、字段和时间条件可能不相同；提议不能覆盖确认值，未明确替换的矛盾需暴露。 |
+| 多个 namespace 是否等于多人服务？ | 只是数据范围隔离；没有完整多人身份与配额体系，工作台限定单进程。 |
+| 90% 覆盖率是否表示 90% 答题正确？ | 不是。覆盖率统计程序分支执行；Oracle 正确率来自另外的数据、reader 与 judge，必须单列。 |
+| 90.2% 能否称作官方成绩？ | 不能。451/500 是已暴露开发集、同家族 judge、含精确缓存复用的自评；规则认定仍待完成。 |
+| 如何发现模型不可用而非无证据？ | 保留传输超时、执行错误、格式/引用无效和事实不足等不同状态，不把失败记为正确拒答。 |
+| 请求失败后为什么保留费用预留？ | 失败不意味着供应商没有处理请求；账本保留 pending/failed，阻止隐式重试，并且不保存供应商错误中的敏感原文。 |
+| 还存在哪些代码质量欠账？ | 全包覆盖率仍较低，完整 Ruff 有历史诊断，类型检查有局部范围；PG/真实模型、远程 CI 与用户研究不能用本地绿灯替代。 |
+
+答辩时，每个主张至少打开一个实现位置和一个行为测试。对没有测过的能力直接说明边界，并给出可验证的下一步。

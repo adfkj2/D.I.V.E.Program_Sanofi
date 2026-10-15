@@ -56,9 +56,12 @@ assert "未评估" in brief["markdown"]
 assert runtime.consult("casebook", "R27 推广决定")["status"] == "ANSWER"
 with TestClient(create_workbench(runtime)) as client:
     assert client.get("/").status_code == 200
-    for asset in ("app.js", "app.css", "icon.svg"):
+    for asset in ("app.js", "assistant.js", "app.css", "icon.svg"):
         assert client.get("/assets/" + asset).status_code == 200
     assert client.get("/api/verification").status_code == 200
+    assert client.get("/api/assistant/config").json()["configured"] is False
+    assert client.get("/api/assistant/history?project=fresh").json()["turns"] == []
+    assert client.post("/api/assistant/chat",json={"project":"fresh","message":"hello","request_id":"fresh"}).status_code == 400
     assert client.get("/api/brief", params={"project":"casebook"}).status_code == 200
     assert client.post("/api/consult",json={"project":"casebook","question":"官方成绩"}).json()["mode"] == "local_records"
     assert client.post("/api/answer",json={"project":"fresh","question":"预算上限"}).json()["status"] == "EVIDENCE_ONLY"

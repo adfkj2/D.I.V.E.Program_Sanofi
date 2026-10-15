@@ -1,0 +1,7 @@
+{
+  "passed": false,
+  "reason": "Additional verification attempt completed dependency installation but reading the same wheel returned PermissionError (Errno 13). The original fresh installation and installed Agent smoke both passed.",
+  "original_evidence": "wheel-summary.json",
+  "agent_evidence": "installed-agent-smoke.json",
+  "raw_local_log": "eval/reports/project-agent-20261015/wheel-check-retry/install-log.json"
+}

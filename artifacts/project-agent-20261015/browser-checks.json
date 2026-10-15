@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-15",
+  "method": "CUA browser interactions against real local workbench and loopback protocol fixture",
+  "real_model": false,
+  "user_study": false,
+  "checks": [
+    {
+      "check": "首页为项目助手，未连接时禁止发送且可进入模型设置",
+      "passed": true
+    },
+    {
+      "check": "设置本机兼容协议服务后发送入口可用，界面明确标记非真实模型",
+      "passed": true
+    },
+    {
+      "check": "发送请求得到3项待确认提案，确认前不显示已执行",
+      "passed": true
+    },
+    {
+      "check": "确认后显示记忆、待办、交接逐项核验回执，侧栏待办数量更新",
+      "passed": true
+    },
+    {
+      "check": "刷新保留对话，后续问题通过工具检索记忆并展示引用",
+      "passed": true
+    },
+    {
+      "check": "引用打开来源窗口，能回看用户请求与已确认的记录",
+      "passed": true
+    },
+    {
+      "check": "390×844视口页面无横向溢出，DOM宽375px与内容宽375px一致",
+      "passed": true
+    },
+    {
+      "check": "窄屏提交新提案并取消，原待办数量仍为1",
+      "passed": true
+    },
+    {
+      "check": "切换到未监听的本机模型端口后显示连接失败，输入保留且可重试",
+      "passed": true
+    },
+    {
+      "check": "服务重启后历史对话保留，模型回到未连接状态",
+      "passed": true
+    },
+    {
+      "check": "创建另一个项目后对话为空，未展示前一个项目的会话",
+      "passed": true
+    },
+    {
+      "check": "最终首页文案、模型连接入口与独立演示项目目视核查",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "assistant-desktop.png",
+    "assistant-mobile.png",
+    "../../docs/assets/project-agent-home.png"
+  ]
+}

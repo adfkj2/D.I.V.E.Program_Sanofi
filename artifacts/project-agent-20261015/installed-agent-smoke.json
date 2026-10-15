@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "installed_only": true,
+  "protocol_fixture": true,
+  "live_model": false,
+  "assistant_asset": true,
+  "proposal_execute_verify": true,
+  "backup_restore_history": true
+}

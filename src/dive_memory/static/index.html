@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/assets/app.css" />
     <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
     <script src="/assets/app.js" defer></script>
+    <script src="/assets/assistant.js" defer></script>
   </head>
   <body>
     <aside class="sidebar">
@@ -37,14 +38,21 @@
         </details>
       </div>
       <nav aria-label="工作台">
-        <button data-tab="brief" class="nav-item selected" aria-current="page">
-          <span>01</span>继续工作</button
+        <button
+          data-tab="assistant"
+          class="nav-item selected"
+          aria-current="page"
+        >
+          <span>01</span>项目助手
+        </button>
+        <button data-tab="brief" class="nav-item">
+          <span>02</span>项目资料</button
         ><button data-tab="timeline" class="nav-item">
-          <span>02</span>记忆时间线</button
+          <span>03</span>记忆时间线</button
         ><button data-tab="evidence" class="nav-item">
-          <span>03</span>核查与证据</button
+          <span>04</span>核查与证据</button
         ><button data-tab="verify" class="nav-item">
-          <span>04</span>关于与验证
+          <span>05</span>关于与验证
         </button>
       </nav>
       <div class="sidebar-note">
@@ -80,7 +88,55 @@
         ><span class="mode" id="mode">连接中</span>
       </header>
       <div id="message" role="status" aria-live="polite" hidden></div>
-      <section id="brief" class="page">
+      <section id="assistant" class="page">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">YOUR PROJECT, WITH MEMORY</p>
+            <h1>接着上次，一起往前。</h1>
+            <p class="lede">
+              告诉助手你想推进什么。它会查阅项目记忆，把下一步落实为可确认的行动。
+            </p>
+          </div>
+          <button id="assistant-settings-open">连接 / 更换模型</button>
+        </div>
+        <div class="assistant-status">
+          <span id="assistant-status">正在读取助手设置…</span
+          ><button id="assistant-create-project">＋ 创建项目</button>
+        </div>
+        <div id="assistant-onboarding" class="assistant-notice" hidden>
+          <strong>连接 DeepSeek，开始与你的项目对话。</strong>
+          <p>
+            发送后，当前请求、近期对话和选中的项目资料会交给你配置的模型服务。API
+            Key 仅保留在本次服务进程内，重启后需重新连接。
+          </p>
+          <button id="assistant-connect" class="primary">连接模型</button>
+          <button id="assistant-local">先整理项目资料</button>
+        </div>
+        <div
+          id="assistant-thread"
+          class="assistant-thread"
+          aria-live="polite"
+        ></div>
+        <form id="assistant-form" class="assistant-composer">
+          <label for="assistant-message">这次想推进什么？</label>
+          <textarea
+            id="assistant-message"
+            rows="3"
+            maxlength="4000"
+            required
+            placeholder="例如：根据上次进展，帮我安排今天的任务；或记住这个决定，保存本次交接。"
+          ></textarea>
+          <div class="assistant-compose-footer">
+            <small id="assistant-hint"
+              >助手会先展示变更，确认后写入。每轮最多 6 次模型调用。</small
+            ><button id="assistant-send" class="primary" type="submit">
+              发送给助手 ↗
+            </button>
+          </div>
+        </form>
+        <p id="assistant-error" role="alert" hidden></p>
+      </section>
+      <section id="brief" class="page" hidden>
         <div class="page-heading">
           <div>
             <p class="eyebrow">01 / CONTINUE YOUR RESEARCH</p>
@@ -651,6 +707,44 @@
       <p class="form-note">
         以上适用于默认双击入口；自定义数据库路径时替换相应文件。完整备份含所有项目的原文，请妥善保管。
       </p>
+    </dialog>
+    <dialog id="assistant-settings">
+      <form id="assistant-model-form">
+        <p class="eyebrow">MODEL CONNECTION</p>
+        <h2>连接你的模型</h2>
+        <p>
+          默认使用
+          DeepSeek，也可填写兼容工具调用的服务。密钥不会写入数据库或浏览器存储。
+        </p>
+        <label for="assistant-endpoint">服务地址</label
+        ><input
+          id="assistant-endpoint"
+          type="url"
+          value="https://api.deepseek.com"
+          required
+          maxlength="500"
+        />
+        <label for="assistant-model">模型名称</label
+        ><input
+          id="assistant-model"
+          value="deepseek-chat"
+          required
+          maxlength="200"
+        />
+        <label for="assistant-key">API Key</label
+        ><input
+          id="assistant-key"
+          type="password"
+          autocomplete="off"
+          required
+          maxlength="1000"
+        />
+        <p id="assistant-config-error" role="alert" hidden></p>
+        <div class="dialog-actions">
+          <button type="button" id="assistant-settings-close">取消</button
+          ><button class="primary" type="submit">保存连接设置</button>
+        </div>
+      </form>
     </dialog>
   </body>
 </html>

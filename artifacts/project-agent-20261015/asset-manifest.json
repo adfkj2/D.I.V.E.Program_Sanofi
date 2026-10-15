@@ -1,0 +1,10 @@
+{
+  "hash_normalization": "UTF-8 source bytes, CRLF to LF",
+  "files": {
+    "src/dive_memory/static/assistant.js": "3e44bed96e7a341202de76ff7e45bc25099a7bd36cb2154fbb4f9b038b63f51f",
+    "src/dive_memory/static/index.html": "2303370552b5779b2010abdf3d2a4b802ede9f8bc07095c9b346bfcaf7478944",
+    "src/dive_memory/static/app.js": "7811e730a83db6e921dc338e2c4ba31304e0ed3c660af106c969eb0b14c966cf",
+    "src/dive_memory/static/app.css": "3f6f770ad3991c03e7194b410250074721236be043cf14d64b13ee93109d7f51",
+    "tools/verify_workbench.cjs": "e9d2f688e7ba503c81ea052a19dc16be7a25090f5e90d0b380b7ad80ed5a31a5"
+  }
+}

@@ -27,12 +27,25 @@ async function main() {
   const checks = [];
   try {
     await page.goto(process.env.DIVE_TEST_URL || "http://127.0.0.1:8765/");
-    await page.getByText("本地记录核查", { exact: true }).waitFor();
+    await page.getByText("AI 助手 · 待连接模型", { exact: true }).waitFor();
+    await page.locator("#assistant:not([hidden])").waitFor();
+    await page.locator("#assistant-onboarding:not([hidden])").waitFor();
+    assert.equal(await page.locator("#assistant-send").isEnabled(), false);
+    await page.locator("#assistant-connect").click();
+    assert.equal(
+      await page.locator("#assistant-model").inputValue(),
+      "deepseek-chat",
+    );
+    await page.locator("#assistant-settings-close").click();
+    checks.push(
+      "assistant is the primary entry, model setup is explicit and no offline AI reply is fabricated",
+    );
     await page.screenshot({ path: path.join(output, "00-onboarding.png") });
     await page.locator("#new-project").click();
     await page.locator("#project-name").fill("个人论文 · 自动验证");
     await page.locator("#project-goal").fill("完成可复现的初稿");
     await page.locator("#project-form button[type=submit]").click();
+    await page.locator('[data-tab="brief"]').click();
     await page
       .locator("#workspace-heading")
       .getByText("个人论文 · 自动验证")
@@ -42,6 +55,8 @@ async function main() {
     await page.locator("#record-key").fill("实验进展");
     await page.locator("#record-value").fill("基线完成，接下来比较误差。");
     await page.reload();
+    await page.locator("#assistant:not([hidden])").waitFor();
+    await page.locator('[data-tab="brief"]').click();
     await page.locator("#add-record").click();
     assert.equal(
       await page.locator("#record-value").inputValue(),
@@ -71,6 +86,8 @@ async function main() {
     await page.locator("#checkpoint-form button[type=submit]").click();
     await page.locator("#checkpoint-dialog").waitFor({ state: "hidden" });
     await page.reload();
+    await page.locator("#assistant:not([hidden])").waitFor();
+    await page.locator('[data-tab="brief"]').click();
     await page
       .locator("#checkpoint-latest")
       .getByText("已完成基线，下次核查误差定义。")
@@ -202,10 +219,14 @@ async function main() {
       "hard erasure removes visible preference and invalidates answer",
     );
     await page.reload();
+    await page.locator("#assistant:not([hidden])").waitFor();
+    await page.locator('[data-tab="brief"]').click();
     // Reload restores the last project; the legacy ID entry remains supported.
     await page.locator(".legacy-project > summary").click();
     await page.locator("#project").fill(trace.namespace);
     await page.locator("#open-project").click();
+    await page.locator("#assistant:not([hidden])").waitFor();
+    await page.locator('[data-tab="brief"]').click();
     await page.locator("#record-management > summary").click();
     await budget.getByText("55 元", { exact: true }).waitFor();
     assert(
@@ -344,6 +365,8 @@ async function main() {
     );
     await page.locator("#clear-since").click();
     await page.reload();
+    await page.locator("#assistant:not([hidden])").waitFor();
+    await page.locator('[data-tab="brief"]').click();
     await page.locator("#resume-summary").filter({ hasText: /./ }).waitFor();
     assert.equal(await page.locator("#project").inputValue(), caseProject);
     checks.push("page URL restores selected project after reload");

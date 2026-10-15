@@ -11,11 +11,14 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.exception_handlers import request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.background import BackgroundTask
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from .application.assistant import Assistant
 from .application.casebook import load_casebook
 from .application.demo import load_demo
 from .application.records import ProjectRecord
@@ -90,8 +93,27 @@ class CheckpointInput(Input):
     request_id: str = Field(min_length=1, max_length=200)
 
 
+class ChatInput(Input):
+    message: str = Field(min_length=1, max_length=4000)
+    request_id: str = Field(min_length=1, max_length=200)
+
+
+class DecisionInput(Input):
+    approve: bool = Field(strict=True)
+
+
+class ModelInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    endpoint: str = Field(min_length=1, max_length=500)
+    model: str = Field(min_length=1, max_length=200)
+    api_key: str = Field(min_length=1, max_length=1000, repr=False)
+
+
 def create_workbench(
-    application: MemoryApplication | None = None, *, access_token: str | None = None
+    application: MemoryApplication | None = None,
+    *,
+    access_token: str | None = None,
+    assistant_model=None,
 ) -> FastAPI:
     runtime = application or application_from_environment()
     token = (
@@ -115,6 +137,8 @@ def create_workbench(
         redoc_url=None,
     )
     app.state.application = runtime
+    assistant = Assistant(runtime, model=assistant_model)
+    app.state.assistant = assistant
     telemetry = RequestMetrics()
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
@@ -158,6 +182,15 @@ def create_workbench(
     async def invalid(_request, exc):
         return JSONResponse({"detail": str(exc)}, status_code=400)
 
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(request, exc):
+        if request.url.path == "/api/assistant/config":
+            # Pydantic's default errors contain the rejected input, including keys.
+            return JSONResponse(
+                {"detail": "请检查模型地址、名称和密钥长度。"}, status_code=422
+            )
+        return await request_validation_exception_handler(request, exc)
+
     @app.exception_handler(KeyError)
     async def missing(_request, _exc):
         return JSONResponse(
@@ -175,12 +208,13 @@ def create_workbench(
 
     @app.get("/assets/{name}")
     def asset(name: str):
-        if name not in {"app.js", "app.css", "icon.svg"}:
+        if name not in {"app.js", "assistant.js", "app.css", "icon.svg"}:
             raise HTTPException(404)
         return Response(
             files("dive_memory").joinpath("static", name).read_text(encoding="utf-8"),
             media_type={
                 "app.js": "application/javascript",
+                "assistant.js": "application/javascript",
                 "app.css": "text/css",
                 "icon.svg": "image/svg+xml",
             }[name],
@@ -218,6 +252,26 @@ def create_workbench(
     @app.get("/api/projects")
     def projects():
         return {"projects": runtime.projects()}
+
+    @app.get("/api/assistant/config")
+    def assistant_config():
+        return assistant.config()
+
+    @app.post("/api/assistant/config")
+    def configure_assistant(body: ModelInput):
+        return assistant.configure(body.endpoint, body.model, body.api_key)
+
+    @app.get("/api/assistant/history")
+    def assistant_history(project: str):
+        return {"turns": assistant.history(project)}
+
+    @app.post("/api/assistant/chat")
+    def assistant_chat(body: ChatInput):
+        return assistant.chat(body.project, body.message, body.request_id)
+
+    @app.post("/api/assistant/runs/{run_id}/decision")
+    def assistant_decision(run_id: str, body: DecisionInput):
+        return assistant.decide(body.project, run_id, body.approve)
 
     @app.get("/api/project")
     def project_details(project: str):

@@ -8,7 +8,7 @@ Windows 可优先双击根目录的 `启动续研.cmd`。完整用户说明见[�
 
 启动器使用根目录 `memory.db`，工作状态和日志保存在忽略提交的 `.workbench/`。同一项目采用操作系统锁避免重复启动；服务实际就绪并匹配实例身份后才打开浏览器。8765 被占用时由操作系统分配可用本机端口，并保持套接字直到服务接管。只停止启动器自己创建的进程，不按端口或进程名停止其他服务。关闭窗口后服务通过父子管道正常退出；异常退出或超时仅处理自己持有的子进程。
 
-快捷入口固定 `evidence_only`；已有 `DIVE_WORKBENCH_TOKEN` 仍生效。需要在线模型或其他数据库时，使用下面的手工入口。复制数据库前先在启动窗口停止服务。
+快捷入口的旧问答入口固定 `evidence_only`；项目助手使用独立的 `DIVE_AGENT_*` 配置或网页连接设置（见[Agent 指南](34-project-agent.md)）；已有 `DIVE_WORKBENCH_TOKEN` 仍生效。需要在线模型或其他数据库时，使用下面的手工入口。复制数据库前先在启动窗口停止服务。
 
 ```text
 git clone https://github.com/adfkj2/D.I.V.E.Program_Sanofi.git
@@ -107,3 +107,8 @@ dive-memory --db memory.db consult --project research-case "官方成绩"
 工作台通过 `/api/projects`、`/api/project`、`/api/tasks`、`/api/checkpoints` 管理项目目录、待办和交接。写入共用应用锁和SQLite事务；待办revision拒绝过期覆盖；交接与自动新增的下一步原子提交。request_id用于同一次请求重试。工作安排独立于事实检索，不会自动进入模型证据。
 
 `GET /api/backup` 在应用锁内通过SQLite备份接口产生一致副本，包含WAL已提交数据；响应完成后删除服务器临时文件。使用既有API访问令牌边界，备份覆盖所有本地项目，不是单项目导出。恢复请按[开始使用](../开始使用.md)先停服务、保留旧库及附属文件，再放入备份，避免在线覆盖。CLI的核心投影重建不会重建或删除工作安排表。
+
+
+## 项目 Agent（R47）
+
+主入口为对话页，模型配置、工具范围、持久化与故障恢复见[项目 Agent 指南](34-project-agent.md)。独立接口包括 `/api/assistant/config`（GET/POST）、`/api/assistant/history`、`/api/assistant/chat` 以及 `/api/assistant/runs/{run_id}/decision`。这些接口沿用本地访问令牌与同源边界；模型密钥只在服务端内存中使用，配置验证错误也不回显原始输入。`assistant_runs` 表随完整 SQLite 备份保存，不属于 Oracle 评测数据。

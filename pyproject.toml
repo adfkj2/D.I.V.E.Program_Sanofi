@@ -38,7 +38,7 @@ target-version = "py311"
 select = ["E4", "E7", "E9", "F", "I", "BLE001", "RUF012"]
 
 [tool.mypy]
-files = ["src/dive_memory/application", "src/dive_memory/web.py", "src/dive_memory/cli.py", "src/dive_memory/observability.py"]
+files = ["src/dive_memory/agent", "src/dive_memory/application", "src/dive_memory/web.py", "src/dive_memory/cli.py", "src/dive_memory/observability.py"]
 follow_imports = "skip"
 ignore_missing_imports = true
 check_untyped_defs = true
@@ -55,18 +55,18 @@ precision = 2
 
 [tool.dive-quality]
 lint-targets = [
-  "src/dive_memory/application", "src/dive_memory/web.py", "src/dive_memory/cli.py",
+  "src/dive_memory/agent", "src/dive_memory/application", "src/dive_memory/web.py", "src/dive_memory/cli.py",
   "src/dive_memory/observability.py", "tools/windows/launcher.py",
   "tools/build_project_casebook.py", "tools/check_quality.py",
   "tests/test_application_delivery.py", "tests/test_delivery_cold_run.py",
   "tests/test_project_briefing.py", "tests/test_project_resumption_cli.py",
   "tests/test_windows_launcher.py", "tests/test_metrics.py",
   "tests/test_quality_gate.py", "tests/test_application_boundaries.py",
-  "tests/test_architecture_boundaries.py", "tests/test_product_loop.py",
+  "tests/test_architecture_boundaries.py", "tests/test_product_loop.py", "tests/test_project_agent.py", "tests/test_agent_transport.py",
 ]
 
 [tool.dive-quality.coverage.delivery]
-include = ["src/dive_memory/application/*.py", "src/dive_memory/web.py", "src/dive_memory/cli.py", "src/dive_memory/observability.py"]
+include = ["src/dive_memory/agent/*.py", "src/dive_memory/application/*.py", "src/dive_memory/web.py", "src/dive_memory/cli.py", "src/dive_memory/observability.py"]
 line-min = 90
 branch-min = 80
 

@@ -194,6 +194,7 @@ async function refresh() {
   renderShortcuts();
   renderTimeline();
   setAnswerMode();
+  document.dispatchEvent(new CustomEvent("dive-project-refreshed"));
 }
 function invalidate() {
   contextVersion += 1;
@@ -1084,7 +1085,7 @@ async function activateProject(identifier) {
   if (version !== contextVersion) return;
   projectLoading = false;
   $("message").hidden = true;
-  switchTab("brief");
+  switchTab("assistant");
 }
 function renderWorkspace() {
   const known = projects.some((p) => p.namespace === project);
@@ -1243,7 +1244,7 @@ $("project-form").onsubmit = (event) =>
     showMessage(
       projectEditing
         ? "项目设置已保存。"
-        : "项目已创建。先记下一条重要信息，或添加下一步。",
+        : "项目已创建。连接模型后，告诉助手你想推进什么。",
     );
   });
 $("add-task").onclick = () => openTask();

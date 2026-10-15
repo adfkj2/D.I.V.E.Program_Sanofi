@@ -70,3 +70,28 @@ def test_application_does_not_import_cli_or_http_adapters():
                     "starlette",
                 )
             ), (path, module)
+
+
+def test_agent_orchestration_and_benchmark_are_independent():
+    for path in (ROOT / "agent").glob("*.py"):
+        for module in imports(path):
+            assert not any(
+                module == banned or module.startswith(banned + ".")
+                for banned in (
+                    "dive_memory.application",
+                    "dive_memory.oracle",
+                    "dive_memory.web",
+                    "dive_memory.store",
+                    "fastapi",
+                    "starlette",
+                )
+            ), (path, module)
+    for path in (ROOT / "oracle").glob("*.py"):
+        for module in imports(path):
+            assert not module.startswith(
+                (
+                    "dive_memory.agent",
+                    "dive_memory.application.assistant",
+                    "dive_memory.application.agent_tools",
+                )
+            ), (path, module)

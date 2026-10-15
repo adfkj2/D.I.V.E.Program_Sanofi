@@ -1,0 +1,31 @@
+{
+  "round": "R48",
+  "kind": "Live DeepSeek, synthetic product acceptance, developer judgment",
+  "source_commit": "d003f9c7037b4a4e5a40d6610384c18b4af2565b",
+  "files": {
+    "cases.json": "9d891fafe5b124539075393276244f2bbcea4b464bc0115d38cd647c2c2c9484",
+    "ledger.json": "cf0fd72e70f5f9d8d7db27fc71573b197b97bcab9deed49838e35527f03de032",
+    "source-manifest.json": "f8422abaa507ec3f0529098a1a9dfb3022829ec2c3da5129ee3ae5f7870260b1",
+    "summary.json": "47f11058cecaf05eb0c6e34ae5ae0e216406a9f0572a1df23abacebcd8b70019"
+  },
+  "local_raw_hashes": {
+    "frozen-plan.json": "c2e709fb22660116c8ff190c4eb9e74a7ee001c815bdfd796f4169e0b7fbb60c",
+    "ledger.json": "04f76cb65be845247d80eaf70714010efa500d0efdf82d96d83446205b95d891",
+    "preflight.json": "510508c5002ffdf8acad68b84a7cb67cc59a49d00f6d2d5f4c50ad81c5cec20c",
+    "response-01.json": "137d15be85b270739f3915403503b7e805a1436b1d8e8986beab708f7d38c840",
+    "response-02.json": "28ed8d935e54d75c94aa37648ae5252971f213c263e1566c7d4af67400e2fdcd",
+    "response-03.json": "a4fbb97b06bea3aa1f85ad42cbde7779acaba72f984ffaba1d10fb92e374b4f2",
+    "response-04.json": "91707a47112173e9a8e0f547ca61afe30547cf74e10df1d56e60a5e95d5ea2d4",
+    "response-05.json": "e0fa37f010731845c6d6e01c5a72c1a9ca8d33ec12401b74ae9772bd58c69141",
+    "response-06.json": "183a34ab5efb7b6736b1b05037e115b0e96dfbe18d0598a33beb65dc86f97b80",
+    "response-07.json": "db28e772b359b93dfcde4cb037c19db6ef1c16e5b8174a8b23559b3fb09f376e",
+    "response-08.json": "81bad065a9102d91a120764aee1df91a9aa5213d68ba2321303fad4e5e54988d",
+    "response-09.json": "2fe2d301f3cbb06164e6c80393e826d40b9f45b9e0c949c4603ce325f24cd9de",
+    "response-10.json": "d5f1e252ac8b1d5dbfce3c4e84770f4876fbc7c0df703a904dd46f0cb0e1c7bd",
+    "response-11.json": "98d7be63db4f01b5452dc30858b70b81f0d1e3b6898c05dd76c4987a7c21f317",
+    "response-12.json": "24be7be6ce6e51ac694422fdf293585187f1b99c6c5f2e0c56f17c301e11a8fa",
+    "results.json": "f84dd44e46e55977d1af4e2d6c5cb1ff0bb9f0fce54296708b2bba4ff0fc2daf",
+    "summary.json": "c4d2e617481f20b7811f2e4cce08676244213093fb8a502cd9d263a03a08ab54"
+  },
+  "normalization": "CRLF to LF"
+}

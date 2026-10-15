@@ -1,0 +1,29 @@
+{
+  "planned_cases": 4,
+  "attempted_cases": 4,
+  "model_calls": 12,
+  "estimated_peak_cny": "0.064152",
+  "observed_balance_delta_cny": "0.00",
+  "historical_cumulative_cny": "31.456754",
+  "pricing_basis": "Existing shared ledger: input 2 / output 8 CNY per million; unknown calls reserved at output rate. Balance may include other usage.",
+  "judge": "Developer review of synthetic tasks; not benchmark or held-out evaluation",
+  "passed_cases": 4,
+  "failed_cases": 0,
+  "requested_model": "deepseek-chat",
+  "resolved_models": [
+    "deepseek-flash"
+  ],
+  "input_tokens": 25688,
+  "output_tokens": 1597,
+  "aggregate_peak_cny": "31.520906",
+  "restart_scope": "Database and application controller reopened within the same process, not a new service process",
+  "limitations": [
+    "Four synthetic developer-authored tasks, not a held-out benchmark or user study",
+    "No browser interaction in R48; prior R47 browser evidence used a protocol fixture",
+    "Provider balance did not settle during observation; estimated peak is not the final bill"
+  ],
+  "observed_issues": [
+    "Answers expose internal IDs and storage field names",
+    "Restart question made two redundant empty memory searches and required five calls"
+  ]
+}

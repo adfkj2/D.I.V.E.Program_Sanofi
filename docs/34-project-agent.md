@@ -60,3 +60,7 @@ Oracle 的 reader 工厂、实验参数、judge、题集、预算账本和缓存
 ## 复核入口
 
 [本轮报告](oracle/45-project-agent-20261015.md) · [迭代总账](oracle/ITERATION_LOG.md) · [交付架构](25-delivery-architecture.md)
+
+## 真实供应商验收补充（R48）
+
+2026-10-15，未修改本指南所述实现，使用真实 DeepSeek 完成四个合成项目场景，开发者验收4/4。配置 deepseek-chat，供应商返回 deepseek-flash；仍需更广泛任务与真实用户验证。回答的内部字段暴露和重复检索属于已发现的待改进项。[完整方法、费用与结果](oracle/46-live-agent-20261015.md)。

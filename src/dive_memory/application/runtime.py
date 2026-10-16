@@ -66,6 +66,10 @@ class MemoryApplication:
         with self._lock:
             return self.workspace.details(self._namespace(namespace))
 
+    def search_project(self, namespace: str, query: str) -> dict:
+        with self._lock:
+            return self.workspace.search(self._namespace(namespace), query)
+
     def create_project(self, name: str, goal: str, request_id: str) -> dict:
         with self._lock:
             return self.workspace.create_project(name, goal, request_id)

@@ -143,6 +143,50 @@ def test_checkpoint_retry_atomicity_and_bounded_history(app, monkeypatch):
     assert details["checkpoints"][0]["note"] == "session 21"
 
 
+def test_checkpoint_reuses_open_next_step_but_not_completed_or_foreign_tasks(app):
+    app.add_task("other", "校对目录", "foreign")
+    first = app.checkpoint("p", "初稿完成", "校对目录", "first")
+    task = first["tasks"][0]
+    again = app.checkpoint("p", "明天继续", "校对目录", "second")
+    assert again["tasks"] == [task]
+    assert again["checkpoints"][0]["next_step"] == "校对目录"
+    app.update_task("p", task["id"], task["title"], True, task["revision"])
+    repeated_work = app.checkpoint("p", "新版还需校对", "校对目录", "third")
+    assert len(repeated_work["tasks"]) == 2
+    assert sum(not t["completed"] for t in repeated_work["tasks"]) == 1
+    assert app.checkpoint("p", "明天继续", "校对目录", "second") == repeated_work
+
+
+def test_project_search_finds_older_history_and_limits_each_kind(app):
+    for i in range(25):
+        app.add_task("p", f"发布清单{i}", f"task-{i}")
+        app.checkpoint("p", f"发布交接{i}", "", f"point-{i}")
+    app.add_task("other", "发布私有任务", "foreign")
+    app.checkpoint("other", "发布私有交接", "", "foreign-point")
+    result = app.search_project("p", "发布")
+    assert len(result["tasks"]) == 20 and result["tasks_truncated"]
+    assert len(result["checkpoints"]) == 10 and result["checkpoints_truncated"]
+    assert "私有" not in str(result)
+    old = app.search_project("p", "发布交接0")
+    assert old["checkpoints"][0]["note"] == "发布交接0"
+    assert not old["checkpoints_truncated"] and not old["tasks_truncated"]
+
+
+@pytest.mark.parametrize("query", ["100%", "a_b", "x' OR 1=1 --"])
+def test_project_search_treats_query_as_literal_not_sql_or_wildcards(app, query):
+    app.add_task("p", query, "literal")
+    app.add_task("p", "unrelated", "unrelated")
+    result = app.search_project("p", query)
+    assert [t["title"] for t in result["tasks"]] == [query]
+
+
+@pytest.mark.parametrize("query", ["", " ", "x" * 201])
+def test_project_search_rejects_empty_or_unbounded_queries(app, query):
+    with pytest.raises(ValueError):
+        app.search_project("p", query)
+    assert app.projects() == []
+
+
 def test_current_handoff_includes_work_without_leaking_into_history(app):
     app.update_project("p", "个人论文", "完成实验")
     record(app, "p", observed_at="2026-01-01")

@@ -521,3 +521,188 @@ def test_additional_evidence_search_remains_available(runtime):
         "search_memory",
         "read_source",
     ]
+
+
+def test_agent_can_update_task_outside_initial_context(runtime):
+    for i in range(51):
+        runtime.add_task("p", f"日常任务{i}", f"filler-{i}")
+    runtime.add_task("p", "整理参考文献", "target")
+    assert "整理参考文献" not in str(ProjectAdapter(runtime).context("p")["tasks"])
+
+    def propose_found_task(messages):
+        found = json.loads(messages[-1]["content"])
+        task = found["tasks"][0]
+        return propose(
+            {
+                "kind": "update_task",
+                "task_id": task["id"],
+                "title": task["title"],
+                "completed": True,
+                "revision": task["revision"],
+            }
+        )
+
+    agent = Assistant(
+        runtime, Scripted(call("search_project", query="参考文献"), propose_found_task)
+    )
+    result = agent.chat("p", "整理参考文献已完成，请更新", "hidden")
+    assert result["status"] == "pending"
+    assert agent.decide("p", result["id"], True)["status"] == "applied"
+    assert runtime.search_project("p", "参考文献")["tasks"][0]["completed"] == 1
+
+
+def test_project_search_does_not_grant_memory_citation_or_foreign_project_access(
+    runtime,
+):
+    task = runtime.add_task("p", "来源不是记忆", "task")["tasks"][0]
+    agent = Assistant(
+        runtime,
+        Scripted(
+            call("search_project", query="来源", project="foreign"),
+            call("search_project", query="来源"),
+            call("respond", message="无效引用", citations=[task["id"]]),
+            call("respond", message="这是一条待办。", citations=[]),
+        ),
+    )
+    result = agent.chat("p", "查找来源待办", "task-source")
+    assert result["status"] == "completed"
+    assert sum(t["step"] == "tool_error" for t in result["trace"]) == 2
+    assert result["citations"] == []
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_checkpoint_and_explicit_same_next_task_are_rejected_before_write(
+    runtime, reverse
+):
+    actions = [
+        {"kind": "save_checkpoint", "note": "继续", "next_step": "查资料"},
+        {"kind": "add_task", "title": "查资料"},
+    ]
+    with pytest.raises(ValueError, match="同名待办"):
+        ProjectAdapter(runtime).validate_actions(
+            "p", actions[::-1] if reverse else actions
+        )
+    assert runtime.project_details("p")["tasks"] == []
+
+
+def test_missing_next_step_task_rolls_back_checkpoint(runtime, monkeypatch):
+    agent = Assistant(
+        runtime,
+        Scripted(
+            propose(
+                {
+                    "kind": "save_checkpoint",
+                    "note": "已完成整理",
+                    "next_step": "核对引用",
+                }
+            )
+        ),
+    )
+    result = agent.chat("p", "保存交接，下一步核对引用", "verify-next")
+    monkeypatch.setattr(runtime.workspace, "add_task", lambda *args: None)
+    with pytest.raises(ValueError, match="下一步待办核验失败"):
+        agent.decide("p", result["id"], True)
+    assert runtime.project_details("p")["checkpoints"] == []
+    assert agent.history("p")[-1]["status"] == "pending"
+
+
+@pytest.mark.parametrize("padding", ["", " \t"])
+def test_checkpoint_links_existing_task_even_when_model_paraphrases_title(
+    runtime, padding
+):
+    task = runtime.add_task("p", "拍摄封面", "existing")["tasks"][0]
+    agent = Assistant(
+        runtime,
+        Scripted(
+            propose(
+                {
+                    "kind": "save_checkpoint",
+                    "note": "继续明天的工作",
+                    "next_step": "继续拍摄封面",
+                    "next_task_id": padding + task["id"] + padding,
+                }
+            )
+        ),
+    )
+    result = agent.chat("p", "下一步还是原来的拍摄封面，不要重复建待办", "link")
+    assert result["actions"][0]["next_step"] == "拍摄封面"
+    assert result["actions"][0]["next_task_id"] == task["id"]
+    assert agent.decide("p", result["id"], True)["status"] == "applied"
+    details = runtime.project_details("p")
+    assert details["tasks"] == [task]
+    assert details["checkpoints"][0]["next_step"] == "拍摄封面"
+
+
+@pytest.mark.parametrize("kind", ["foreign", "missing", "completed"])
+def test_checkpoint_link_requires_current_project_open_task(runtime, kind):
+    space = "other" if kind == "foreign" else "p"
+    task = runtime.add_task(space, "拍摄封面", "existing")["tasks"][0]
+    if kind == "completed":
+        runtime.update_task(space, task["id"], task["title"], True, task["revision"])
+    target = "missing-id" if kind == "missing" else task["id"]
+    with pytest.raises(ValueError, match="尚未完成"):
+        ProjectAdapter(runtime).validate_actions(
+            "p",
+            [
+                {
+                    "kind": "save_checkpoint",
+                    "note": "交接",
+                    "next_task_id": target,
+                }
+            ],
+        )
+    assert runtime.project_details("p")["checkpoints"] == []
+
+
+@pytest.mark.parametrize("completed", [False, True])
+@pytest.mark.parametrize("padding", ["", " \t"])
+@pytest.mark.parametrize("reverse", [False, True])
+def test_linked_task_cannot_be_changed_in_same_batch(
+    runtime, completed, padding, reverse
+):
+    task = runtime.add_task("p", "拍摄封面", "existing")["tasks"][0]
+    actions = [
+        {
+            "kind": "save_checkpoint",
+            "note": "交接",
+            "next_task_id": padding + task["id"] + padding,
+        },
+        {
+            "kind": "update_task",
+            "task_id": task["id"],
+            "title": "拍摄新版封面",
+            "completed": completed,
+            "revision": task["revision"],
+        },
+    ]
+    with pytest.raises(ValueError, match="同时修改"):
+        ProjectAdapter(runtime).validate_actions(
+            "p",
+            actions[::-1] if reverse else actions,
+        )
+    assert runtime.project_details("p")["tasks"] == [task]
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("change", ["complete", "rename_away", "rename_into"])
+def test_implicit_checkpoint_next_task_conflicts_with_batch_update(
+    runtime, reverse, change
+):
+    task = runtime.add_task("p", "原任务", "original")["tasks"][0]
+    next_step = "新任务" if change == "rename_into" else task["title"]
+    actions = [
+        {"kind": "save_checkpoint", "note": "保存进度", "next_step": next_step},
+        {
+            "kind": "update_task",
+            "task_id": task["id"],
+            "title": task["title"] if change == "complete" else "新任务",
+            "completed": change == "complete",
+            "revision": task["revision"],
+        },
+    ]
+    with pytest.raises(ValueError, match="同时修改"):
+        ProjectAdapter(runtime).validate_actions(
+            "p", actions[::-1] if reverse else actions
+        )
+    assert runtime.project_details("p")["tasks"] == [task]
+    assert runtime.project_details("p")["checkpoints"] == []

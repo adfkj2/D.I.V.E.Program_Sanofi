@@ -35,6 +35,12 @@ class ProjectAdapter:
         }
 
     def read(self, project, name, arguments):
+        if name == "search_project":
+            if set(arguments) != {"query"}:
+                raise ValueError("项目查找只接受 query。")
+            return self.runtime.search_project(
+                project, required_text(arguments["query"], 200)
+            )
         if name == "search_memory":
             if set(arguments) != {"query"}:
                 raise ValueError("搜索只接受 query。")
@@ -108,7 +114,7 @@ class ProjectAdapter:
                     "reason",
                     "replaces",
                 },
-                "save_checkpoint": {"note", "next_step"},
+                "save_checkpoint": {"note", "next_step", "next_task_id"},
             }
             if kind not in fields or set(action) - fields[kind] - {"kind"}:
                 raise ValueError("操作名称或字段不受支持。")
@@ -154,6 +160,13 @@ class ProjectAdapter:
                 item["next_step"] = text(
                     action.get("next_step", ""), "下一步", 500, optional=True
                 )
+                if "next_task_id" in action:
+                    item["next_task_id"] = required_text(action["next_task_id"], 200)
+                    linked = tasks.get(item["next_task_id"])
+                    if linked is None or linked["completed"]:
+                        raise ValueError("下一步须关联当前项目中尚未完成的待办。")
+                    # A model paraphrase must not turn a link into a new task.
+                    item["next_step"] = linked["title"]
                 target = "checkpoint"
             else:
                 target = "task:" + item["title"]
@@ -161,6 +174,29 @@ class ProjectAdapter:
                 raise ValueError("同一批次不能重复操作同一目标。")
             touched.add(target)
             normalized.append(item)
+        added = {a["title"] for a in normalized if a["kind"] == "add_task"}
+        updated = {a["task_id"] for a in normalized if a["kind"] == "update_task"}
+        if any(
+            a["kind"] == "save_checkpoint"
+            and (
+                a.get("next_task_id") in updated
+                or any(
+                    change["kind"] == "update_task"
+                    and a["next_step"]
+                    in {tasks[change["task_id"]]["title"], change["title"]}
+                    for change in normalized
+                )
+            )
+            for a in normalized
+        ):
+            raise ValueError(
+                "本批次不能同时修改下一步关联的待办，请先完成修改再保存交接。"
+            )
+        if any(
+            a["kind"] == "save_checkpoint" and a["next_step"] in added
+            for a in normalized
+        ):
+            raise ValueError("交接下一步会自动沿用或创建待办，请勿再单独添加同名待办。")
         return normalized
 
     def apply(self, project, run_id, prompt, actions):
@@ -215,8 +251,13 @@ class ProjectAdapter:
                     or saved["next_step"] != action["next_step"]
                 ):
                     raise ValueError("交接写入核验失败，整批操作已回滚。")
+                if action["next_step"] and not any(
+                    t["title"] == action["next_step"] and not t["completed"]
+                    for t in self.runtime.project_details(project)["tasks"]
+                ):
+                    raise ValueError("交接下一步待办核验失败，整批操作已回滚。")
                 description = "已保存本次交接" + (
-                    "并添加下一步待办" if action["next_step"] else ""
+                    "并保留下一步待办" if action["next_step"] else ""
                 )
             else:
                 record = ProjectRecord(

@@ -65,7 +65,9 @@
       return (
         "保存交接 · " +
         item.note +
-        (item.next_step ? "\n下一步（自动添加待办）：" + item.next_step : "")
+        (item.next_step
+          ? "\n下一步（沿用已有待办或新建）：" + item.next_step
+          : "")
       );
     return (
       (item.replaces ? "更新记忆 · " : "保存记忆 · ") +

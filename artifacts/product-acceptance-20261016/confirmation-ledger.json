@@ -1,0 +1,148 @@
+{
+  "calls": [
+    {
+      "status": "completed",
+      "charged_budget": 12680,
+      "request_sha256": "e4785208a0bae16274658862718fe4e885f67e42edd4272d6d1a60c84796a5e9",
+      "input_tokens": 2064,
+      "output_tokens": 99,
+      "model": "deepseek-flash",
+      "seconds": 1.27
+    },
+    {
+      "status": "completed",
+      "charged_budget": 18456,
+      "request_sha256": "fbe879328eaaec8f33253de6a7fcac49cfa39d2198359e847885644d087dcf8a",
+      "input_tokens": 4404,
+      "output_tokens": 32,
+      "model": "deepseek-flash",
+      "seconds": 0.881
+    },
+    {
+      "status": "completed",
+      "charged_budget": 19079,
+      "request_sha256": "c9976a9776b82fe297cc587d46e10828f3b62eb4cd726e698a57f1c5e9ae3463",
+      "input_tokens": 4549,
+      "output_tokens": 118,
+      "model": "deepseek-flash",
+      "seconds": 1.305
+    },
+    {
+      "status": "completed",
+      "charged_budget": 13014,
+      "request_sha256": "2e4af43c9f1c143a648c3978e81788e4481028f7e33e06b4e968b7283ec2e6f2",
+      "input_tokens": 2183,
+      "output_tokens": 34,
+      "model": "deepseek-flash",
+      "seconds": 0.98
+    },
+    {
+      "status": "completed",
+      "charged_budget": 13794,
+      "request_sha256": "ca134a61bc8dcb7fbd5b6c0ee5d5eddb623f11f272310740da77cc55e96c785f",
+      "input_tokens": 2387,
+      "output_tokens": 34,
+      "model": "deepseek-flash",
+      "seconds": 0.686
+    },
+    {
+      "status": "completed",
+      "charged_budget": 14462,
+      "request_sha256": "cce5feea2d23038a52e4ace47d8547c4fa020bfa46b15b92d316636b72351495",
+      "input_tokens": 2543,
+      "output_tokens": 36,
+      "model": "deepseek-flash",
+      "seconds": 0.978
+    },
+    {
+      "status": "completed",
+      "charged_budget": 14801,
+      "request_sha256": "65da408e9a1edc5eb14c0c94f783f00dbcf77363e9119784120afa24cc071570",
+      "input_tokens": 2605,
+      "output_tokens": 35,
+      "model": "deepseek-flash",
+      "seconds": 1.063
+    },
+    {
+      "status": "completed",
+      "charged_budget": 15140,
+      "request_sha256": "817bf37215fc402fcf7d9d8961be02a1fde6e09a0e9a87b27200cc932dc89b8d",
+      "input_tokens": 2666,
+      "output_tokens": 119,
+      "model": "deepseek-flash",
+      "seconds": 1.561
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12695,
+      "request_sha256": "3193ffc8ef1ae9edd2dfa02613fd052038a4d1416bf73750c470aedf013c7a67",
+      "input_tokens": 2087,
+      "output_tokens": 83,
+      "model": "deepseek-flash",
+      "seconds": 1.019
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12508,
+      "request_sha256": "dc60573e5309e06429b919ed4723d3dfcffa7ef3c614fba1afcd49ed82d262a1",
+      "input_tokens": 2003,
+      "output_tokens": 34,
+      "model": "deepseek-flash",
+      "seconds": 0.917
+    },
+    {
+      "status": "completed",
+      "charged_budget": 13536,
+      "request_sha256": "7d0c290923df9ae1169bfcb71218c2e66f90fb88b7566cbaea8892f496901e7c",
+      "input_tokens": 2264,
+      "output_tokens": 49,
+      "model": "deepseek-flash",
+      "seconds": 0.977
+    },
+    {
+      "status": "completed",
+      "charged_budget": 15538,
+      "request_sha256": "adfa97037b1336fba37fbb2fde0bb860725cdfbdc801b03d977e2f0c966b2ca2",
+      "input_tokens": 2858,
+      "output_tokens": 33,
+      "model": "deepseek-flash",
+      "seconds": 1.054
+    },
+    {
+      "status": "completed",
+      "charged_budget": 16560,
+      "request_sha256": "a0ce5d069cd77806edb81973d744c0a99af34355f200c98088d339596608b5f3",
+      "input_tokens": 3118,
+      "output_tokens": 33,
+      "model": "deepseek-flash",
+      "seconds": 0.797
+    },
+    {
+      "status": "completed",
+      "charged_budget": 17582,
+      "request_sha256": "b9046ddbab6ff4957bb69650c729390480d8de7d67d5d7a68bf17f9d66223841",
+      "input_tokens": 3378,
+      "output_tokens": 188,
+      "model": "deepseek-flash",
+      "seconds": 2.051
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12541,
+      "request_sha256": "65b957dda1c95b182c018c1860721920875d1f1f210240c08d1cd4f9a2056c2e",
+      "input_tokens": 2010,
+      "output_tokens": 34,
+      "model": "deepseek-flash",
+      "seconds": 0.698
+    },
+    {
+      "status": "completed",
+      "charged_budget": 13584,
+      "request_sha256": "7aee4e1c1d9575f597729ef382a75b0a30f4e94d8f918e08067e923d0bd4ccc3",
+      "input_tokens": 2268,
+      "output_tokens": 149,
+      "model": "deepseek-flash",
+      "seconds": 1.598
+    }
+  ]
+}

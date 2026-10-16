@@ -107,6 +107,30 @@ class ProjectWorkspace:
             )
         return self.details(namespace)
 
+    def search(self, namespace: str, query: str) -> dict:
+        """Literal keyword lookup across all workflow data, bounded per kind."""
+        query = text(query, "project search", 200)
+        tasks = self.store.db.execute(
+            """SELECT id,title,completed,revision FROM app_tasks
+               WHERE namespace=? AND instr(lower(title),lower(?)) > 0
+               ORDER BY completed,created_at,id LIMIT 21""",
+            (namespace, query),
+        ).fetchall()
+        checkpoints = self.store.db.execute(
+            """SELECT note,next_step,created_at FROM app_checkpoints
+               WHERE namespace=? AND (instr(lower(note),lower(?)) > 0
+                 OR instr(lower(next_step),lower(?)) > 0)
+               ORDER BY created_at DESC,id DESC LIMIT 11""",
+            (namespace, query, query),
+        ).fetchall()
+        return {
+            "tasks": [dict(row) for row in tasks[:20]],
+            "tasks_truncated": len(tasks) > 20,
+            "checkpoints": [dict(row) for row in checkpoints[:10]],
+            "checkpoints_truncated": len(checkpoints) > 10,
+            "scope": "当前项目全部待办与交接的关键词匹配；未命中不等于从未发生",
+        }
+
     def create_project(self, name: str, goal: str, request_id: str) -> dict:
         name = text(name, "project name", 80)
         goal = text(goal, "project goal", 1000, optional=True)
@@ -201,6 +225,10 @@ class ProjectWorkspace:
                 "INSERT INTO app_checkpoints VALUES (?,?,?,?,?)",
                 (identifier, namespace, note, next_step, utc_now()),
             )
-            if next_step:
+            pending = self.store.db.execute(
+                "SELECT id FROM app_tasks WHERE namespace=? AND title=? AND completed=0 LIMIT 1",
+                (namespace, next_step),
+            ).fetchone()
+            if next_step and pending is None:
                 self.add_task(namespace, next_step, "checkpoint:" + identifier)
         return self.details(namespace)

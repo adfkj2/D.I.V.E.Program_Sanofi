@@ -83,7 +83,7 @@ class AgentEngine:
                         "actions": actions,
                         "trace": trace,
                     }
-                if name not in {"search_memory", "read_source"}:
+                if name not in {"search_memory", "read_source", "search_project"}:
                     raise ValueError("模型请求了不支持的工具。")
                 if name == "read_source" and arguments.get("memory_id") not in seen:
                     raise ValueError("请先搜索记忆，再读取已检出的来源。")
@@ -92,9 +92,11 @@ class AgentEngine:
                 trace.append(
                     {
                         "step": name,
-                        "label": "已检索相关记忆"
-                        if name == "search_memory"
-                        else "已核对记忆来源",
+                        "label": {
+                            "search_memory": "已检索相关记忆",
+                            "read_source": "已核对记忆来源",
+                            "search_project": "已查找待办与历史交接",
+                        }[name],
                         "memory_ids": result.get("memory_ids", []),
                     }
                 )

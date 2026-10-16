@@ -1,0 +1,7 @@
+{
+  "source_and_state_assertions": "passed",
+  "cost_assertion": "Decimal value comparison passed",
+  "reporting_failure_preserved": "Initial report assembly compared decimal strings 31.80457 vs 31.804570; corrected to numerical comparison without model rerun",
+  "credential_scan": "passed",
+  "source_and_frozen_plan_binding": "passed"
+}

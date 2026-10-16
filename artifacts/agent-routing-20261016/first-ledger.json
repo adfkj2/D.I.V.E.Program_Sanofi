@@ -1,0 +1,139 @@
+{
+  "calls": [
+    {
+      "status": "completed",
+      "charged_budget": 11043,
+      "request_sha256": "38764c470bf3f8b369c7f5236d2d58dd396f4086999db1efff42791c40192e41",
+      "input_tokens": 1738,
+      "output_tokens": 39,
+      "model": "deepseek-flash",
+      "seconds": 0.916
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12079,
+      "request_sha256": "0420d807bbe00bbbdb460e0380aba47b21097dacaa88e7f9c106ef47a02c45dd",
+      "input_tokens": 2008,
+      "output_tokens": 155,
+      "model": "deepseek-flash",
+      "seconds": 1.403
+    },
+    {
+      "status": "completed",
+      "charged_budget": 11689,
+      "request_sha256": "10867853cc1bc328328faf7f16e208afa77f20ee7d1ab8fdc840af0dcfe52467",
+      "input_tokens": 1855,
+      "output_tokens": 36,
+      "model": "deepseek-flash",
+      "seconds": 1.657
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12709,
+      "request_sha256": "207a269e98b316ffb5537971a6a34dc0eb8d4ec5fa3b883e30b08c92f3882cd3",
+      "input_tokens": 2122,
+      "output_tokens": 152,
+      "model": "deepseek-flash",
+      "seconds": 1.461
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12035,
+      "request_sha256": "13c5316f6cc637edc9c1f777c3b866d0b58ee80434d70c21eaa5e72311c379c7",
+      "input_tokens": 1914,
+      "output_tokens": 169,
+      "model": "deepseek-flash",
+      "seconds": 1.526
+    },
+    {
+      "status": "completed",
+      "charged_budget": 12654,
+      "request_sha256": "32acc71d3a2e7c64ab5a93d9b2cc91537f7c6d92f5eac777a7c9811c6e0d4c03",
+      "input_tokens": 2068,
+      "output_tokens": 38,
+      "model": "deepseek-flash",
+      "seconds": 0.79
+    },
+    {
+      "status": "completed",
+      "charged_budget": 14007,
+      "request_sha256": "5f144a10a4520f2967cd5c637780979d84e0f2db1e3c4a7ebe8c4e68adef3b11",
+      "input_tokens": 2420,
+      "output_tokens": 149,
+      "model": "deepseek-flash",
+      "seconds": 1.692
+    },
+    {
+      "status": "completed",
+      "charged_budget": 13288,
+      "request_sha256": "74cba7ea0bf38fcec35f8eaecbea5757a6ee26430e6ebb86eacf31cb64eefb9a",
+      "input_tokens": 2180,
+      "output_tokens": 109,
+      "model": "deepseek-flash",
+      "seconds": 1.119
+    },
+    {
+      "status": "completed",
+      "charged_budget": 13784,
+      "request_sha256": "3a0607d1fc13275ab08bc83a3b577d1791f3262cf2633b72470f3f94ebe6fe76",
+      "input_tokens": 2269,
+      "output_tokens": 120,
+      "model": "deepseek-flash",
+      "seconds": 1.558
+    },
+    {
+      "status": "completed",
+      "charged_budget": 14312,
+      "request_sha256": "aef9d7a97318329500930df2e88950a99644951f111d0ae17ad97996e49e6999",
+      "input_tokens": 2364,
+      "output_tokens": 38,
+      "model": "deepseek-flash",
+      "seconds": 0.643
+    },
+    {
+      "status": "completed",
+      "charged_budget": 15665,
+      "request_sha256": "4cc6d353996cc325b12efac147abcf10771cc7ed1e7c81bcf5a7f12135909bf1",
+      "input_tokens": 2716,
+      "output_tokens": 52,
+      "model": "deepseek-flash",
+      "seconds": 1.113
+    },
+    {
+      "status": "completed",
+      "charged_budget": 18336,
+      "request_sha256": "3b9c5f223a51c3fe30e5a7dcb8723f10121c59da140c4b02557ff9ef116f1f89",
+      "input_tokens": 3500,
+      "output_tokens": 152,
+      "model": "deepseek-flash",
+      "seconds": 1.445
+    },
+    {
+      "status": "completed",
+      "charged_budget": 14210,
+      "request_sha256": "fbcf339b5f245b166016a64819f18646046f42904cb47411d283e9876e33b846",
+      "input_tokens": 2357,
+      "output_tokens": 40,
+      "model": "deepseek-flash",
+      "seconds": 0.645
+    },
+    {
+      "status": "completed",
+      "charged_budget": 15570,
+      "request_sha256": "7e266ef81bed7343ddfb252fa616bb829f534e3f41d6ad1fb723b73658cb2117",
+      "input_tokens": 2711,
+      "output_tokens": 52,
+      "model": "deepseek-flash",
+      "seconds": 1.151
+    },
+    {
+      "status": "completed",
+      "charged_budget": 18241,
+      "request_sha256": "6231532f44a17f844d42caf038ca5dd4e951fabb8d835a38e76bdce5956241e0",
+      "input_tokens": 3495,
+      "output_tokens": 192,
+      "model": "deepseek-flash",
+      "seconds": 1.714
+    }
+  ]
+}

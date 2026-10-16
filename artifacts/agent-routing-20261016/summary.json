@@ -1,0 +1,35 @@
+{
+  "round": "R50",
+  "date": "2026-10-16",
+  "planned_cases": 8,
+  "final_passed_cases": 8,
+  "method": "Six completed final-source cases plus two resumed checks from a copied DB; not one uninterrupted run",
+  "requested_model": "deepseek-chat",
+  "resolved_models": [
+    "deepseek-flash"
+  ],
+  "round_model_calls": 34,
+  "input_tokens": 83533,
+  "output_tokens": 3132,
+  "round_estimated_peak_cny": "0.192122",
+  "aggregate_peak_cny": "31.804570",
+  "pricing_basis": "Existing shared ledger: input 2/output 8 CNY per million, all inputs conservatively uncached; final bill may differ",
+  "initial_local_limit_cny": "0.30",
+  "revised_local_limit_cny": "0.50",
+  "budget_adjustment": "Agent-set local cap increased within existing user aggregate limit to complete two blocked checks; no reset",
+  "comparison": {
+    "r48_original_four_calls": 12,
+    "r49_original_four_calls": 8,
+    "final_original_four_calls": 9,
+    "handoff_calls": 1,
+    "progress_only_calls": 1,
+    "handoff_seconds": 1.907,
+    "restart_seconds": 4.252
+  },
+  "limitations": [
+    "Developer-created iterative tasks, not held-out or independent judge/user study",
+    "Some memory questions use more source calls than R49; latency single-run only",
+    "No browser/package reinstall rerun; core/API and quality checks run",
+    "Prompt guidance does not guarantee identical behavior across models or future requests"
+  ]
+}

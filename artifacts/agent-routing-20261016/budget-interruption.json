@@ -1,0 +1,28 @@
+{
+  "first_six_completed": true,
+  "case_seven": {
+    "id": "assistant_01624c9d58a4405b03f2d66aee8a7d4e",
+    "project": "live",
+    "prompt": "我们实际确定的评估指标是什么？请核对原始来源再回答，不要修改。",
+    "created_at": "2026-10-16T00:23:34.372697+00:00",
+    "status": "error",
+    "message": "Budget guard stopped this run before sending.",
+    "actions": [],
+    "citations": [],
+    "trace": []
+  },
+  "case_eight": "not run in v2; completed in continuation",
+  "v2_paid_calls": 13,
+  "v2_estimate_cny": "0.070528",
+  "followup_plan": "Only the two uncompleted checks, same source, copied DB, fresh request IDs",
+  "continuation": {
+    "planned_cases": 2,
+    "attempted_cases": 2,
+    "model_calls": 6,
+    "estimated_peak_cny": "0.038216",
+    "observed_balance_delta_cny": "0.00",
+    "historical_cumulative_cny": "31.766354",
+    "continuation_of": "agent-routing-20261016-v2",
+    "method": "Only two uncompleted cases, copied fixture DB, same source, fresh request IDs; not a fresh eight-case run"
+  }
+}

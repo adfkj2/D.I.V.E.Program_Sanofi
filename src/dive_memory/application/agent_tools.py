@@ -14,12 +14,24 @@ class ProjectAdapter:
 
     def context(self, project):
         data = self.runtime.project_details(project)
+        tasks = data["tasks"]
+        completed = sum(bool(task["completed"]) for task in tasks)
         return {
-            **data,
-            "tasks": data["tasks"][:50],
-            "checkpoints": data["checkpoints"][:3],
-            "task_count": len(data["tasks"]),
-            "scope": "仅当前项目；安排不是事实证据",
+            "name": data["name"],
+            "goal": data["goal"],
+            # IDs/revisions remain available for validated edits, not narration.
+            "tasks": [
+                {key: task[key] for key in ("id", "title", "completed", "revision")}
+                for task in tasks[:50]
+            ],
+            "checkpoints": [
+                {key: point[key] for key in ("note", "next_step", "created_at")}
+                for point in data["checkpoints"][:3]
+            ],
+            "task_count": len(tasks),
+            "task_summary": {"completed": completed, "open": len(tasks) - completed},
+            "tasks_truncated": len(tasks) > 50,
+            "scope": "仅当前项目的任务状态与最近3条交接；安排和完成状态不代表实验结果",
         }
 
     def read(self, project, name, arguments):

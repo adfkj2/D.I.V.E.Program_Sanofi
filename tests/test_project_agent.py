@@ -454,3 +454,70 @@ def test_remembering_same_fact_again_verifies_reinforcement(runtime):
         assert agent.decide("p", result["id"], True)["status"] == "applied"
     assert runtime.lookup("p", "方法")["value"] == "使用 MAE"
     assert len(runtime.snapshot("p")["memories"]) == 1
+
+
+def test_compact_context_still_supports_validated_task_edits(runtime):
+    runtime.add_task("p", "核对结果", "seed")
+    runtime.checkpoint("p", "准备核对", "", "checkpoint")
+
+    def complete_known_task(messages):
+        context = json.loads(messages[-1]["content"])["current_project_data"]
+        assert context["task_summary"] == {"completed": 0, "open": 1}
+        assert context["tasks_truncated"] is False
+        task = context["tasks"][0]
+        assert set(task) == {"id", "title", "completed", "revision"}
+        assert context["checkpoints"][0]["note"] == "准备核对"
+        return propose(
+            {
+                "kind": "update_task",
+                "task_id": task["id"],
+                "title": task["title"],
+                "revision": task["revision"],
+                "completed": True,
+            }
+        )
+
+    agent = Assistant(runtime, Scripted(complete_known_task))
+    result = agent.chat("p", "核对结果已经完成，请更新待办", "compact")
+    assert result["status"] == "pending"
+    assert agent.decide("p", result["id"], True)["status"] == "applied"
+    assert ProjectAdapter(runtime).context("p")["task_summary"] == {
+        "completed": 1,
+        "open": 0,
+    }
+
+
+def test_context_reports_full_counts_when_task_details_are_truncated(runtime):
+    for index in range(51):
+        runtime.add_task("p", f"任务{index}", f"task-{index}")
+    task = runtime.project_details("p")["tasks"][0]
+    runtime.update_task("p", task["id"], task["title"], True, task["revision"])
+    for index in range(4):
+        runtime.checkpoint("p", f"交接{index}", "", f"point-{index}")
+    context = ProjectAdapter(runtime).context("p")
+    assert context["task_count"] == 51
+    assert context["task_summary"] == {"completed": 1, "open": 50}
+    assert context["tasks_truncated"] is True
+    assert len(context["tasks"]) == 50
+    assert len(context["checkpoints"]) == 3
+    assert context["checkpoints"][0]["note"] == "交接3"
+
+
+def test_additional_evidence_search_remains_available(runtime):
+    runtime.record("p", ProjectRecord("评估方法", "MAE"), idempotency_key="method")
+    memory_id = runtime.snapshot("p")["memories"][0]["id"]
+    model = Scripted(
+        call("search_memory", query="不存在的关键词"),
+        call("search_memory", query="评估方法"),
+        call("read_source", memory_id=memory_id),
+        call("respond", message="使用 MAE。", citations=[memory_id]),
+    )
+    result = Assistant(runtime, model).chat("p", "评估方法是什么？", "evidence")
+    assert result["status"] == "completed"
+    assert result["citations"] == [memory_id]
+    assert [step["step"] for step in result["trace"]] == [
+        "context",
+        "search_memory",
+        "search_memory",
+        "read_source",
+    ]

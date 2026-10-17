@@ -11,9 +11,9 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def _connect():
+def _connect(dsn=None):
     psycopg = pytest.importorskip("psycopg")
-    return psycopg.connect(os.environ["DIVE_TEST_POSTGRES_DSN"], autocommit=False)
+    return psycopg.connect(dsn or os.environ["DIVE_TEST_POSTGRES_DSN"], autocommit=False)
 
 
 def test_all_migrations_apply_and_are_idempotent():
@@ -50,12 +50,12 @@ def test_all_migrations_apply_and_are_idempotent():
     } <= tables
 
 
-def test_skip_locked_claims_do_not_double_claim():
+def test_skip_locked_claims_do_not_double_claim(isolated_postgres_dsn):
     import uuid
 
     namespace = f"pg-contract-{uuid.uuid4()}"
     event_ids = [f"evt-{uuid.uuid4()}" for _ in range(4)]
-    with _connect() as setup:
+    with _connect(isolated_postgres_dsn) as setup:
         for event_id in event_ids:
             setup.execute(
                 "INSERT INTO events(id,namespace,event_type,payload,observed_at,idempotency_key) "
@@ -65,7 +65,7 @@ def test_skip_locked_claims_do_not_double_claim():
             setup.execute("INSERT INTO outbox(event_id) VALUES (%s)", (event_id,))
         setup.commit()
 
-    with _connect() as first, _connect() as second:
+    with _connect(isolated_postgres_dsn) as first, _connect(isolated_postgres_dsn) as second:
         claimed_first = {row[0] for row in first.execute("SELECT * FROM claim_memory_outbox(2,3)")}
         first.commit()
         claimed_second = {row[0] for row in second.execute("SELECT * FROM claim_memory_outbox(2,3)")}
@@ -74,19 +74,19 @@ def test_skip_locked_claims_do_not_double_claim():
     assert len(claimed_first) == len(claimed_second) == 2
     assert claimed_first.isdisjoint(claimed_second)
 
-    with _connect() as cleanup:
+    with _connect(isolated_postgres_dsn) as cleanup:
         cleanup.execute("DELETE FROM outbox WHERE event_id=ANY(%s)", (event_ids,))
         cleanup.execute("DELETE FROM events WHERE id=ANY(%s)", (event_ids,))
         cleanup.commit()
 
 
-def test_stale_claim_is_recovered_but_exhausted_event_is_not_retried():
+def test_stale_claim_is_recovered_but_exhausted_event_is_not_retried(isolated_postgres_dsn):
     namespace = f"pg-retry-{uuid.uuid4()}"
     stale_event = f"evt-{uuid.uuid4()}"
     exhausted_event = f"evt-{uuid.uuid4()}"
     event_ids = [stale_event, exhausted_event]
     try:
-        with _connect() as setup:
+        with _connect(isolated_postgres_dsn) as setup:
             for event_id in event_ids:
                 setup.execute(
                     "INSERT INTO events(id,namespace,event_type,payload,observed_at,idempotency_key) "
@@ -105,7 +105,7 @@ def test_stale_claim_is_recovered_but_exhausted_event_is_not_retried():
             )
             setup.commit()
 
-        with _connect() as worker:
+        with _connect(isolated_postgres_dsn) as worker:
             claimed = {row[0] for row in worker.execute("SELECT * FROM claim_memory_outbox(100,3)")}
             state = worker.execute(
                 "SELECT status,attempts FROM outbox WHERE event_id=%s", (stale_event,)
@@ -116,7 +116,7 @@ def test_stale_claim_is_recovered_but_exhausted_event_is_not_retried():
         assert exhausted_event not in claimed
         assert state == ("PROCESSING", 1)
     finally:
-        with _connect() as cleanup:
+        with _connect(isolated_postgres_dsn) as cleanup:
             cleanup.execute("DELETE FROM outbox WHERE event_id=ANY(%s)", (event_ids,))
             cleanup.execute("DELETE FROM events WHERE id=ANY(%s)", (event_ids,))
             cleanup.commit()

@@ -1,6 +1,5 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 import threading
 import uuid
 
@@ -13,37 +12,13 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def _service():
+def _service(dsn):
     pytest.importorskip("psycopg")
     from dive_memory.postgres_store import PostgresStore
     from dive_memory.service import MemoryService
 
-    store = PostgresStore(os.environ["DIVE_TEST_POSTGRES_DSN"])
+    store = PostgresStore(dsn)
     return MemoryService(store=store)
-
-
-@pytest.fixture
-def isolated_postgres_dsn():
-    psycopg = pytest.importorskip("psycopg")
-    from psycopg import sql
-    from psycopg.conninfo import make_conninfo
-    from dive_memory.postgres_migrations import apply_migrations
-
-    schema = f"dive_store_test_{uuid.uuid4().hex}"
-    with psycopg.connect(os.environ["DIVE_TEST_POSTGRES_DSN"], autocommit=True) as admin:
-        admin.execute(sql.SQL("CREATE SCHEMA {}").format(sql.Identifier(schema)))
-        try:
-            dsn = make_conninfo(
-                os.environ["DIVE_TEST_POSTGRES_DSN"],
-                options=f"-c search_path={schema},public",
-            )
-            with psycopg.connect(dsn, autocommit=False) as connection:
-                apply_migrations(connection, Path(__file__).parents[3] / "migrations")
-            yield dsn
-        finally:
-            admin.execute(
-                sql.SQL("DROP SCHEMA IF EXISTS {} CASCADE").format(sql.Identifier(schema))
-            )
 
 
 class _SemanticFixtureEmbedding:
@@ -62,8 +37,8 @@ class _SemanticFixtureEmbedding:
         return [0.0, 0.0, 1.0]
 
 
-def test_postgres_service_ingest_retrieve_temporal_transition_and_hard_purge():
-    service = _service()
+def test_postgres_service_ingest_retrieve_temporal_transition_and_hard_purge(isolated_postgres_dsn):
+    service = _service(isolated_postgres_dsn)
     namespace = f"pg-u-{uuid.uuid4()}"
     try:
         old = service.ingest(namespace, "我住在成都", explicit=True,
@@ -103,8 +78,8 @@ def test_postgres_service_ingest_retrieve_temporal_transition_and_hard_purge():
         service.store.close()
 
 
-def test_postgres_store_namespace_isolation_and_duplicate_provenance():
-    service = _service()
+def test_postgres_store_namespace_isolation_and_duplicate_provenance(isolated_postgres_dsn):
+    service = _service(isolated_postgres_dsn)
     first_namespace = f"pg-a-{uuid.uuid4()}"
     second_namespace = f"pg-b-{uuid.uuid4()}"
     try:
@@ -148,8 +123,8 @@ def test_postgres_store_uses_pgvector_exact_cosine_search(isolated_postgres_dsn)
         store.close()
 
 
-def test_postgres_projection_transaction_rolls_back_and_marks_event_failed():
-    service = _service()
+def test_postgres_projection_transaction_rolls_back_and_marks_event_failed(isolated_postgres_dsn):
+    service = _service(isolated_postgres_dsn)
     namespace = f"pg-rollback-{uuid.uuid4()}"
     original = service.store.record_transition
 
@@ -177,13 +152,13 @@ def test_postgres_projection_transaction_rolls_back_and_marks_event_failed():
         service.store.close()
 
 
-def test_postgres_concurrent_idempotency_creates_one_event_and_projection():
+def test_postgres_concurrent_idempotency_creates_one_event_and_projection(isolated_postgres_dsn):
     namespace = f"pg-idempotent-{uuid.uuid4()}"
     key = f"key-{uuid.uuid4()}"
     barrier = threading.Barrier(2)
 
     def ingest_once():
-        service = _service()
+        service = _service(isolated_postgres_dsn)
         try:
             barrier.wait(timeout=5)
             return service.ingest(
@@ -202,7 +177,7 @@ def test_postgres_concurrent_idempotency_creates_one_event_and_projection():
         assert sorted(result["accepted"] for result in results) == [False, True]
         assert len({result["event_id"] for result in results}) == 1
 
-        verifier = _service()
+        verifier = _service(isolated_postgres_dsn)
         try:
             assert verifier.store.connection.execute(
                 "SELECT count(*) AS count FROM events WHERE namespace=%s", (namespace,)
@@ -213,6 +188,6 @@ def test_postgres_concurrent_idempotency_creates_one_event_and_projection():
         finally:
             verifier.store.close()
     finally:
-        cleanup = _service()
+        cleanup = _service(isolated_postgres_dsn)
         cleanup.store.purge_namespace(namespace)
         cleanup.store.close()

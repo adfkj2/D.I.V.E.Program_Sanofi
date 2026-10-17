@@ -173,9 +173,4 @@ def rollback(service, namespace: str, revision: int, *, reason: str) -> dict:
 
 def redact(store, namespace: str) -> None:
     """Forget removes derived content too; retain only revision numbers/timestamps."""
-    with store.transaction():
-        store.db.execute("DELETE FROM profile_proposals WHERE namespace=?", (namespace,))
-        store.db.execute(
-            "UPDATE profile_revisions SET current_json='{}',provenance_json='{}',"
-            "source_digest='',reason='forgotten_sources' WHERE namespace=?", (namespace,),
-        )
+    store.redact_profile_history(namespace)

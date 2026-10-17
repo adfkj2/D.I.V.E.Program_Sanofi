@@ -401,3 +401,4 @@ R51隐式关联修复最终核验：97项定向检查通过，全量1303通过/9
 ## R52 · 2026-10-17 · GitHub PostgreSQL 工程检查失败修复（执行前登记）
 
 用户指出推送后持续工程检查失败并要求解决。已读最近6次Actions，均为postgres-contract失败，其余4项成功；最早与最新日志均6失败/2通过，报events/outbox表不存在和vector类型不存在。基线6e9987a：迁移测试只在临时schema建表并清理，6个后续用例却连接未迁移的默认schema；本地未配置DSN时这8项被跳过。计划让所有需要存储的用例显式使用独立、预迁移的测试schema，保持原断言，检查真实远程运行全绿后交付，并补充推送后检查流程。0新增模型请求/¥0，共享累计¥32.096522不变；原始证据eval/reports/ci-postgres-20261017。
+R52首次远程复验e72d92c：PostgreSQL由2/8变6/8，初始化修复有效；暴露hard forget调用SQLite专属db接口、并发初始化embedding_state主键冲突（另一线程BrokenBarrier掩盖原错误）。保留失败日志；将派生画像清理交给各存储实现，SQLite保留原清理语义，PostgreSQL清理实际缓存；初始化改为原子ON CONFLICT后读取并检查代际一致性，不删除原断言。

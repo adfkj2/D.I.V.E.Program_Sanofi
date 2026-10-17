@@ -808,6 +808,15 @@ class SQLiteStore:
                 (namespace,),
             )
 
+    def redact_profile_history(self, namespace: str) -> None:
+        """Remove derived content while retaining revision metadata for audit."""
+        with self.transaction():
+            self.db.execute("DELETE FROM profile_proposals WHERE namespace=?", (namespace,))
+            self.db.execute(
+                "UPDATE profile_revisions SET current_json='{}',provenance_json='{}',"
+                "source_digest='',reason='forgotten_sources' WHERE namespace=?", (namespace,),
+            )
+
     def reindex_lexical(self, namespace: str | None = None) -> int:
         """Rebuild the FTS projection from ``memories``.
 

@@ -48,12 +48,12 @@ class PostgresStore:
             "VALUES (%s,%s,%s,%s,%s,'ACTIVE',now()) ON CONFLICT(id) DO NOTHING",
             (generation, provider, self.embedder.model, revision, self.embedder.dimensions),
         )
+        self.connection.execute(
+            "INSERT INTO embedding_state(id,active_generation) VALUES (true,%s) "
+            "ON CONFLICT(id) DO NOTHING", (generation,)
+        )
         row = self.connection.execute("SELECT active_generation FROM embedding_state WHERE id=true").fetchone()
-        if row is None:
-            self.connection.execute(
-                "INSERT INTO embedding_state(id,active_generation) VALUES (true,%s)", (generation,)
-            )
-        elif row["active_generation"] != generation:
+        if row["active_generation"] != generation:
             raise RuntimeError("embedding generation differs from active PostgreSQL generation")
 
     @contextmanager
@@ -72,6 +72,13 @@ class PostgresStore:
                 yield self
             finally:
                 self._transaction_depth = 0
+
+    def redact_profile_history(self, namespace: str) -> None:
+        """This backend has no revision/proposal tables; clear its cached profile.
+
+        MemoryService rebuilds the current profile from surviving memories.
+        """
+        self.connection.execute("DELETE FROM profiles WHERE namespace=%s", (namespace,))
 
     def close(self) -> None:
         self.connection.close()

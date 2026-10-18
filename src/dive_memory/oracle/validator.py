@@ -42,13 +42,14 @@ class SubmissionReport:
     field_violations: tuple[str, ...] = ()
     malformed_lines: tuple[str, ...] = ()
     blank_lines: int = 0
+    count_mismatch: bool = False
 
     @property
     def status(self) -> str:
         problems = (
             self.duplicate_ids or self.missing_ids or self.unexpected_ids
             or self.empty_hypotheses or self.non_string_fields
-            or self.field_violations or self.malformed_lines
+            or self.field_violations or self.malformed_lines or self.count_mismatch
         )
         return "INVALID" if problems else "VALID"
 
@@ -70,6 +71,7 @@ class SubmissionReport:
             "field_violation_count": len(self.field_violations),
             "malformed_line_count": len(self.malformed_lines),
             "blank_lines": self.blank_lines,
+            "count_mismatch": self.count_mismatch,
             "duplicate_ids": list(self.duplicate_ids[:50]),
             "missing_ids": list(self.missing_ids[:50]),
             "unexpected_ids": list(self.unexpected_ids[:50]),
@@ -80,6 +82,15 @@ class SubmissionReport:
         }
 
 
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON object key")
+        result[key] = value
+    return result
+
+
 def read_submission(path: str | Path) -> list[dict[str, Any]]:
     """Read a submission, preserving every parsed row for the analysis stage."""
 
@@ -88,7 +99,7 @@ def read_submission(path: str | Path) -> list[dict[str, Any]]:
     for line in text.splitlines():
         if not line.strip():
             continue
-        payload = json.loads(line)
+        payload = json.loads(line, object_pairs_hook=_unique_object)
         if not isinstance(payload, dict):
             raise ValueError("a submission line must be a JSON object")
         rows.append(payload)
@@ -124,9 +135,9 @@ def validate_submission(
             continue
         lines += 1
         try:
-            payload = json.loads(line)
-        except json.JSONDecodeError as exc:
-            malformed.append(f"line {number}: {exc.msg}")
+            payload = json.loads(line, object_pairs_hook=_unique_object)
+        except ValueError:
+            malformed.append(f"line {number}: invalid JSON or duplicate object key")
             continue
         if not isinstance(payload, dict):
             malformed.append(f"line {number}: not a JSON object")
@@ -180,6 +191,11 @@ def validate_submission(
         field_violations=tuple(field_violations),
         malformed_lines=tuple(malformed),
         blank_lines=blank,
+        count_mismatch=require_full and (
+            len(seen) != ORACLE_EXPECTED_CASES
+            or lines != ORACLE_EXPECTED_CASES
+            or expected_count != ORACLE_EXPECTED_CASES
+        ),
     )
 
 

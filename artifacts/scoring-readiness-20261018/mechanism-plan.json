@@ -1,0 +1,26 @@
+{
+  "kind": "paired_structured_state_development",
+  "blind": false,
+  "model_calls": 0,
+  "fixture_sha256": "6d54f738dbe75fb9d256bbc27a2a8ea5e46c44baa3f1a6e2805542f45201ae30",
+  "arms": [
+    "memory",
+    "without_updates",
+    "without_source_gate",
+    "without_forgetting",
+    "event_scan",
+    "rolling_summary",
+    "lexical_top_one"
+  ],
+  "reader": "exact confirmed field lookup; no LLM",
+  "budget": "all arms see all supplied events; no token limit or NLP claim",
+  "memory_restart": "close after ingestion; reopen before tasks",
+  "expected_tasks_per_arm": 120,
+  "limitations": [
+    "Developer-authored structured fixtures; no independent generalization evidence.",
+    "Source admission ablation is not all selective-writing mechanisms.",
+    "Rolling field summary and lexical top-one are simple proxies, not LLM summarization or model RAG.",
+    "Event scan implements the same explicit update/role/deletion contract; a tie proves no superiority.",
+    "Latency excludes annotation and user time; backend timings are not directly comparable."
+  ]
+}

@@ -44,10 +44,47 @@ def test_request_cap_and_failed_ledger_prevent_accidental_retry(tmp_path):
     with pytest.raises(RunStopped, match="cap"):
         wrapped.complete(**request)
     assert raw.calls == 1
+    assert ledger.usage_summary()["input_tokens"] == 5
+    assert ledger.usage_summary()["output_tokens"] == 1
+    assert ledger.rows[0]["elapsed_seconds"] >= 0
     ledger.rows[0]["state"] = "pending"
     ledger.save()
     with pytest.raises(RunStopped, match="uncertain"):
         RequestLedger(ledger.path, 10, 10000)
+
+
+def test_usage_never_reports_partial_totals_as_complete(tmp_path):
+    ledger = RequestLedger(tmp_path / "ledger.json", 10, 10000)
+    assert ledger.usage_summary()["input_tokens"] == 0
+    ledger.rows = [
+        {"state": "completed", "input_tokens": 5, "output_tokens": 2},
+        {"state": "failed", "input_tokens": None, "output_tokens": None},
+    ]
+    summary = ledger.usage_summary()
+    assert summary["attempted_calls"] == 2
+    assert summary["completed_calls"] == 1
+    assert summary["missing_usage_calls"] == 1
+    assert (
+        summary["input_tokens"]
+        is summary["output_tokens"]
+        is summary["cost_cny"]
+        is None
+    )
+
+
+def test_cold_run_rejects_negative_or_zero_case_limit(tmp_path):
+    for limit in ("0", "-1"):
+        with pytest.raises(SystemExit):
+            main(
+                [
+                    "--dataset",
+                    "missing",
+                    "--output",
+                    str(tmp_path / "out"),
+                    "--max-cases",
+                    limit,
+                ]
+            )
 
 
 @pytest.mark.parametrize(

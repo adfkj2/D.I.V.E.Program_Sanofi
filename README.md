@@ -125,11 +125,15 @@ dive-memory --db memory.db serve --port 8765
 
 ## 技术与验证
 
+评分手册对照：[2026-10-17 评估与改进优先级](docs/oracle/51-handbook-score-review-20261017.md)。代码质量估计约17/20，仍需本人现场理解验证；Benchmark与总分未经官方认定，答辩及过程表现单独评定。
+
 助手按四层组织：**模型接口 → Agent 工具循环 → 项目工具适配 → 记忆与存储**。助手编排不依赖 Oracle；Oracle 也不依赖助手。后续可独立迭代 benchmark 的写入、检索和 reader 策略，再把经过验证的通用能力接入产品。
 
 [架构与扩展说明](docs/34-project-agent.md) · [核心交付架构](docs/25-delivery-architecture.md)
 
 ### 可复核的工程交付
+
+**R54 评测交付与机制对照：** 修复全量提交校验的错误放行，公开500题原始提交核验包；新增可独立安装运行的7臂配对机制检查。完整系统与事件扫描均120/120，去更新115/120、去来源门及遗忘各110/120；不作为自然语言优势或官方分数。[本轮结果与局限](docs/oracle/55-scoring-readiness-20261018.md) · [评委复核入口](docs/28-submission-and-review.md)。
 
 **R52 远程工程检查已全绿：5/5 任务成功，PostgreSQL 8/8通过、零跳过。** 修复测试数据库初始化、删除路径误用SQLite接口及并发初始化冲突；本地环境跳过不作远程通过。[真实Actions结果](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/38994769337) · [失败与修复记录](docs/oracle/50-ci-postgres-20261017.md)。
 

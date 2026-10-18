@@ -10,6 +10,7 @@ import json
 import os
 from dataclasses import asdict
 from pathlib import Path
+from time import perf_counter
 
 from ..oracle.loader import load_oracle_dataset
 from ..oracle.pipeline import PipelineConfig
@@ -94,10 +95,15 @@ class RequestLedger:
                 }
                 ledger.rows.append(row)
                 ledger.save()
+                started = perf_counter()
                 try:
                     response = client.complete(**kwargs)
                 except Exception as exc:  # noqa: BLE001 - persist uncertainty, never serialize provider text
-                    row.update(state="failed", error_type=type(exc).__name__)
+                    row.update(
+                        state="failed",
+                        error_type=type(exc).__name__,
+                        elapsed_seconds=perf_counter() - started,
+                    )
                     ledger.save()
                     raise RunStopped(
                         "Transport failed; inspect the ledger before resuming"
@@ -107,11 +113,36 @@ class RequestLedger:
                     input_tokens=response.input_tokens,
                     output_tokens=response.output_tokens,
                     resolved_model=response.model,
+                    elapsed_seconds=perf_counter() - started,
                 )
                 ledger.save()
                 return response
 
         return CappedClient()
+
+    def usage_summary(self):
+        # Never present a partial token sum as usage for the whole run.
+        def total(field):
+            values = [row.get(field) for row in self.rows]
+            return (
+                sum(values) if all(type(v) is int and v >= 0 for v in values) else None
+            )
+
+        return {
+            "attempted_calls": len(self.rows),
+            "completed_calls": sum(row["state"] == "completed" for row in self.rows),
+            "input_tokens": total("input_tokens"),
+            "output_tokens": total("output_tokens"),
+            "missing_usage_calls": sum(
+                any(
+                    type(row.get(field)) is not int or row[field] < 0
+                    for field in ("input_tokens", "output_tokens")
+                )
+                for row in self.rows
+            ),
+            "cost_cny": None,
+            "cost_note": "Unknown until current provider tariff/billing is supplied; never zero by omission.",
+        }
 
     def save(self):
         atomic_write_json(
@@ -122,6 +153,7 @@ class RequestLedger:
                 "requests": self.rows,
                 "cache_replay": False,
                 "currency_cost": "NOT_COMPUTED_current_provider_rates_required",
+                "usage": self.usage_summary(),
             },
         )
 
@@ -136,6 +168,8 @@ def main(argv=None):
     parser.add_argument("--max-cases", type=int)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     args = parser.parse_args(argv)
+    if args.max_cases is not None and args.max_cases <= 0:
+        parser.error("max-cases must be positive")
     config = r40_pipeline()
     plan = {
         "pipeline": config.to_dict(),
@@ -222,6 +256,7 @@ def main(argv=None):
         pipeline_config=config,
         selection=dataset.cases[: args.max_cases] if args.max_cases else dataset.cases,
     )
+    started = perf_counter()
     try:
         summary = runner.run()
     except RunStopped as exc:
@@ -230,6 +265,17 @@ def main(argv=None):
         )
         print(str(exc))
         return 2
+    finally:
+        atomic_write_json(
+            args.output / "execution-metrics.json",
+            {
+                **ledger.usage_summary(),
+                "wall_seconds": perf_counter() - started,
+                "timing_scope": "runner only; excludes model loading and judge",
+                "cache_replay": False,
+                "official_score": "NOT_EVALUATED",
+            },
+        )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 

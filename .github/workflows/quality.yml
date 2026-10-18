@@ -17,6 +17,7 @@ jobs:
       - run: python -m pip install --no-deps -e .
       - run: python tools/check_quality.py --output artifacts/quality
       - run: python eval/run_project_validation.py --output artifacts/structured
+      - run: python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms
       - run: python -m build --wheel
       - run: python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel
       - uses: actions/upload-artifact@v4
@@ -28,6 +29,8 @@ jobs:
             artifacts/quality/*.xml
             artifacts/quality/*.txt
             artifacts/structured/
+            artifacts/mechanisms/*.json
+            artifacts/mechanisms/*.jsonl
             artifacts/wheel/summary.json
             artifacts/wheel/install-log.json
             artifacts/wheel/smoke-output.txt

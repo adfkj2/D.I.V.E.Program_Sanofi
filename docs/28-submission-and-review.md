@@ -2,6 +2,32 @@
 
 此材料尚未发送给 mentor/主办方，也没有官方批准含义。
 
+## 当前可交付的核验包（2026-10-18）
+
+[500题原始提交与校验清单](../artifacts/scoring-readiness-20261018/oracle/manifest.json)现可直接从公开仓库获取，文件内容与R40提交逐字一致。包内只有提交、来源声明、格式校验与哈希清单，不含密钥、参考答案或个人数据库。`generation_revision`指向R40历史源码快照，不能把今天的HEAD冒充历史生成版本。
+
+安装项目后，用自行获取的公开Oracle数据复核：
+
+```text
+python -m dive_memory.evaluation_bundle --dataset eval/external/longmemeval/longmemeval_oracle.json --verify artifacts/scoring-readiness-20261018/oracle
+```
+
+验证成功只表示500题完整且与清单一致；`official_score=NOT_EVALUATED`、`rule_review=PENDING_PROJECT_GROUP`始终保留。原始声明不能由哈希自动证明，须结合历史源码、请求和失败证据审阅。全新500题的完整token、费用、墙钟目前均为null：历史累计开发费用不能填入该位置。新的冷运行入口已增加逐次请求用量/耗时与全程摘要；有任何缺失usage时，相关总量保持null，不把部分和当全量。
+
+重新包装另一份提交时，先按 [来源声明](../eval/protocols/r40-provenance.json)的结构填写真实版本、模型、暴露情况和指标（未知写null），然后：
+
+```text
+python -m dive_memory.evaluation_bundle --dataset eval/external/longmemeval/longmemeval_oracle.json --submission path/to/submission.jsonl --provenance path/to/provenance.json --output eval/reports/new-submission-bundle
+```
+
+输出必须是新目录。校验器拒绝不足/超过500行、重复题号、缺失题号、多余字段、空回答、重复JSON键及来源哈希不符。封装后再用`--verify`独立检查。该工具既不判分，也不调用模型。
+
+给项目组的审阅材料已具备以下三项明确问题；由作者决定提交时机，本文不代发：
+
+1. 全部500题均参与过开发分析，时间/建议/当前状态的文本路由在该反馈下演进；请确认F.1.1/F.1.4的适用边界与需要采取的处理。
+2. 请确认正式judge、脚本版本/ref、提交截止和对历史混合生成输出的接受方式。官方重判现有JSONL与重新生成500题是不同操作、不同费用，不能混写。
+3. 如需验证通用性，请确认由谁独立持有新材料、哪些公开数据允许使用，以及结果是否仅作机制补充证据。新的对照不能自行替代正式Oracle得分。
+
 ## 开场故事
 
 一个多周实验经历了很多次尝试。新会话开始时，执行者仍需要确认：最高分的实验是否真的被采用？早先的约束是否更新？下一个计划是否已经完成？续研把这些信息保留为有时间、有来源、可纠正的记忆，帮助人在继续工作前核查系统如何理解项目。
@@ -20,7 +46,7 @@
 
 请结合手册 F.1.1 与 F.1.4 判断：在公开 500 题上多轮观察错误后，设计通用时间、建议与当前状态复核规则，即使生产路径不读取题号/参考答案，是否属于不允许的过拟合调参？现有暴露记录是否需要改用早期基线、补充由第三方持有的新测试，或采取其他处理？请给出适用于本项目的书面边界，避免自行宣告通过。
 
-提供材料：R1–R42 总账、R41 规则审查、R40 reader 源码与策略说明、500 题提交哈希、冻结源码/环境、全部失败、成本账本以及 R42 构造对照。保留历史时间线，不重写 commit 来制造早期开发记录。
+提供材料：[完整迭代总账](oracle/ITERATION_LOG.md)、[R41规则审查](oracle/39-compliance-audit-20261012.md)、R40 reader源码与策略说明、上述500题包、冻结源码/环境、全部失败、成本账本以及[最新配对机制对照](../eval/mechanisms/README.md)。保留历史时间线，不重写commit来制造早期开发记录。
 
 ## 五分钟现场演示
 

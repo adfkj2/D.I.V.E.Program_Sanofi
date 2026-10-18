@@ -1,0 +1,280 @@
+{
+  "date": "2026-10-18",
+  "validated_code_commit": "4d699341d7a433b5c117ec65e9d5c06065d5fca9",
+  "run_id": 39091294336,
+  "url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39091294336",
+  "jobs": [
+    {
+      "name": "workbench",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/runtime.lock && python -m pip install --no-deps .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci && npx playwright install --with-deps chromium",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise the real workbench",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "local-runtime (3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/dev.lock",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install --no-deps -e .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/check_quality.py --output artifacts/quality",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python eval/run_project_validation.py --output artifacts/structured",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m build --wheel",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "docker",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run docker build -f ops/docker/Dockerfile -t dive-memory:ci .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run the image and probe the real readiness endpoint",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "local-runtime (3.14)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/dev.lock",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install --no-deps -e .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/check_quality.py --output artifacts/quality",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python eval/run_project_validation.py --output artifacts/structured",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m build --wheel",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "postgres-contract",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/postgres.lock",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest tests/integration/postgres -q --junitxml=postgres-tests.xml",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require PostgreSQL contracts to run without skips",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "all_jobs_success": true
+}

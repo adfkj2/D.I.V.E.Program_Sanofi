@@ -47,6 +47,10 @@
     {
       "file": "installed-validation.json",
       "sha256": "15e8396e676d444f5d826d2f4d90d58b6515b15f6d3aa4f4440f63d3216f5d26"
+    },
+    {
+      "file": "remote-checks.json",
+      "sha256": "4fefadb9089c3f316b80f0946b18c9ac3c50ebc9dba16f642a3961ccd4509e85"
     }
   ],
   "oracle_bundle": "oracle/manifest.json",
@@ -54,5 +58,6 @@
     "Structured developer fixtures, not independent NLP evaluation",
     "Official judging and F.1.4 review pending",
     "Original failures and both runs retained locally"
-  ]
+  ],
+  "validated_code_commit": "4d699341d7a433b5c117ec65e9d5c06065d5fca9"
 }

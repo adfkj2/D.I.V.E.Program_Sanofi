@@ -168,3 +168,29 @@ def select_document_chunk(text: str, query: str, max_chars: int) -> DocumentChun
     scores = [sum(1.0 / frequency[term] for term in asked & terms)
               for terms in seen]
     return max(chunks, key=lambda chunk: (scores[chunk.index], -chunk.index))
+
+
+def select_document_chunks(
+    text: str, query: str, max_chars: int, *, max_chunks: int = 2
+) -> list[DocumentChunk]:
+    """Expose disjoint matches within one total character allowance.
+
+    A long document can discuss the same topic in multiple sections. Keep at
+    most two exact passages for active reading instead of hiding everything
+    after the best one. No-match queries retain the deterministic first window.
+    Indices/offsets always refer to the canonical stored document.
+    """
+    if type(max_chunks) is not int or not 1 <= max_chunks <= 4:
+        raise ValueError("max_chunks must be between one and four")
+    if type(max_chars) is not int or max_chars < max_chunks:
+        raise ValueError("character allowance must fit all requested chunks")
+    if len(text) <= max_chars or max_chunks == 1:
+        return [select_document_chunk(text, query, max_chars)]
+    chunks = split_document(text, max_chars=max_chars // max_chunks, overlap_chars=0)
+    asked = _terms(query)
+    seen = [_terms(c.content) for c in chunks]
+    frequency = {t: sum(t in terms for terms in seen) for t in asked}
+    scores = [sum(1 / frequency[t] for t in asked & terms) for terms in seen]
+    ranked = sorted(chunks, key=lambda c: (-scores[c.index], c.index))
+    selected = [c for c in ranked if scores[c.index] > 0][:max_chunks]
+    return selected or [select_document_chunk(text, query, max_chars)]

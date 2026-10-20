@@ -8,14 +8,16 @@ are never promoted to evidence. Historical readers remain unchanged.
 from __future__ import annotations
 
 import json
-from dataclasses import replace
+from dataclasses import asdict, replace
+from decimal import InvalidOperation
 from hashlib import sha256
 from time import perf_counter
 from typing import Any, Protocol, Sequence
 
-from ..document_chunks import select_document_chunk
+from ..document_chunks import select_document_chunk, select_document_chunks
 from ..models import RetrievalItem
 from ..token_budget import ApproximateTokenCounter
+from .calculation import calculate
 from .contracts import ReaderStatus
 from .evidence import build_evidence_views, render_evidence_block
 from .indexed_reader import RULES, parse_indexed
@@ -30,6 +32,26 @@ from .reader import (
 )
 
 VERSION = "adaptive-evidence-reader-v3"
+VERIFIED_VERSION = "scoped-evidence-reader-v1"
+CALCULATION_RULES = """
+An optional calculate tool is available before the final call:
+{"action":"calculate","operation":"sum","operands":[{"index":0,"quote":"an exact source quote","label":"an exact entity or event scope in that quote","value":"an exact number in that quote"}],"unit":"items"}
+Supported operations: sum, difference (first minus second), mean, product, ratio,
+count, elapsed_days, elapsed_weeks, elapsed_months, earliest, latest, date_order.
+For count omit value. For dates use exact dated source expressions, with a year or a
+literal relative date anchored to the displayed statement date. Do not invent a year.
+For elapsed time an ending operand may be {"question_date":true}.
+The tool verifies literal operands and arithmetic ONLY. You must verify entity, time,
+units, distinctness and completeness against the question and sources yourself.
+Different platforms/categories can be disjoint components, not conflicting updates.
+Repeated totals for the same scope are updates, not components to sum. A subtotal
+must not be added to its components. Distinct scopes need distinct exact labels.
+Preserve uncertainty; an approximate source is not an exact operand. If the tool
+rejects a plan, fix the evidence selection or abstain, never treat the error as zero.
+After a calculation STOP and wait. Its result is derived, not a new source to cite.
+Final answers must still cite the original visible passages. A later search/read
+invalidates the previous calculation; recalculate if the selected premises change.
+"""
 ADAPTIVE_RULES = (
     RULES.split("Return only JSON:", 1)[0].replace(
         "Do not copy memory IDs.",
@@ -104,13 +126,18 @@ class AdaptiveEvidenceReader:
         source: EvidenceSource | None = None,
         max_calls: int = 4,
         passage_chars: int = 2400,
+        verified_tools: bool = False,
     ) -> None:
         if type(max_calls) is not int or not 1 <= max_calls <= 6:
             raise ValueError("max_calls must be an integer between 1 and 6")
         if type(passage_chars) is not int or not 256 <= passage_chars <= 4800:
             raise ValueError("passage_chars must be an integer between 256 and 4800")
-        if spec.prompt_version != VERSION:
+        if type(verified_tools) is not bool:
+            raise ValueError("verified_tools must be boolean")
+        self.version = VERIFIED_VERSION if verified_tools else VERSION
+        if spec.prompt_version != self.version:
             raise ValueError("adaptive reader requires its own prompt version")
+        self.verified_tools = verified_tools
         self.client, self.spec, self.source = client, spec, source
         self.max_calls, self.passage_chars = max_calls, passage_chars
         self.policy = reader_policy("indexed_evidence")
@@ -122,6 +149,7 @@ class AdaptiveEvidenceReader:
             source=source,
             max_calls=self.max_calls,
             passage_chars=self.passage_chars,
+            verified_tools=self.verified_tools,
         )
 
     def _render(self, items: Sequence[RetrievalItem], request: ReaderRequest) -> str:
@@ -167,6 +195,7 @@ class AdaptiveEvidenceReader:
         completed_actions: list[dict[str, Any]] = []
         observation = "Initial retrieved evidence."
         validation_error: str | None = None
+        calculation: dict[str, Any] | None = None
 
         def finish(status: ReaderStatus, reason: str, decision=None) -> ReaderOutcome:
             usage = TokenUsage(
@@ -198,10 +227,10 @@ class AdaptiveEvidenceReader:
             )
             return replace(
                 outcome,
-                policy_version=VERSION,
+                policy_version=self.version,
                 detail=json.dumps(
                     {
-                        "version": VERSION,
+                        "version": self.version,
                         "max_calls": self.max_calls,
                         "passage_chars": self.passage_chars,
                         "turns": turns,
@@ -215,7 +244,7 @@ class AdaptiveEvidenceReader:
 
         for call in range(self.max_calls):
             context = self._render(items, request)
-            payload = {
+            payload: dict[str, Any] = {
                 "question": request.question,
                 "question_date": request.question_date,
                 "as_of": request.as_of,
@@ -227,12 +256,15 @@ class AdaptiveEvidenceReader:
                 "completed_actions": completed_actions,
                 "tools_available": call + 1 < self.max_calls,
             }
+            if self.verified_tools:
+                payload["calculation"] = calculation
+            rules = FINAL_RULES if call + 1 == self.max_calls else ADAPTIVE_RULES
+            if self.verified_tools and call + 1 < self.max_calls:
+                rules = rules.replace("four forms", "five forms") + CALCULATION_RULES
             messages = [
                 {
                     "role": "system",
-                    "content": FINAL_RULES
-                    if call + 1 == self.max_calls
-                    else ADAPTIVE_RULES,
+                    "content": rules,
                 },
                 {
                     "role": "user",
@@ -296,20 +328,36 @@ class AdaptiveEvidenceReader:
                     if not isinstance(query, str) or not 1 <= len(query.strip()) <= 500:
                         raise ValueError("search query must be 1 to 500 characters")
                     found = self.source.search(query.strip())
+                    calculation = None
                     preferred = []
                     for item in found:
+                        chunks = (
+                            select_document_chunks(
+                                item.memory.content, query, self.passage_chars
+                            )
+                            if self.verified_tools
+                            else [
+                                select_document_chunk(
+                                    item.memory.content, query, self.passage_chars
+                                )
+                            ]
+                        )
                         catalog[item.memory.id] = {
                             "memory_id": item.memory.id,
                             "chars": len(item.memory.content),
+                            **(
+                                {"passages": [[c.start, c.end] for c in chunks]}
+                                if self.verified_tools
+                                else {}
+                            ),
                         }
-                        chunk = select_document_chunk(
-                            item.memory.content, query, self.passage_chars
-                        )
-                        preferred.append(
-                            replace(
-                                item, memory=replace(item.memory, content=chunk.content)
+                        for chunk in chunks:
+                            preferred.append(
+                                replace(
+                                    item,
+                                    memory=replace(item.memory, content=chunk.content),
+                                )
                             )
-                        )
                     items = self._pack(preferred, items, request)
                     observation = f"Search returned {len(found)} admitted memories. Only the current context may be cited."
                 elif obj.get("action") == "read" and set(obj) == {
@@ -328,6 +376,7 @@ class AdaptiveEvidenceReader:
                             "read requires a previously shown memory and a nonnegative integer offset"
                         )
                     item = self.source.read(memory_id)
+                    calculation = None
                     if start >= len(item.memory.content):
                         raise ValueError("read offset is outside the stored memory")
                     end = min(len(item.memory.content), start + self.passage_chars)
@@ -343,6 +392,36 @@ class AdaptiveEvidenceReader:
                     )
                     items = self._pack([snippet], items, request)
                     observation = f"Read exact characters {start}:{end} of {len(item.memory.content)} from {memory_id}."
+                elif self.verified_tools and obj.get("action") == "calculate":
+                    if set(obj) != {"action", "operation", "operands", "unit"}:
+                        raise ValueError("invalid calculation action schema")
+                    calculation = None
+                    plan = {k: v for k, v in obj.items() if k != "action"}
+                    plan["status"] = "CALCULATE"
+                    try:
+                        decision = calculate(
+                            plan,
+                            replace(request, items=items),
+                            distinct_scopes=True,
+                        )
+                    except (
+                        ValueError,
+                        TypeError,
+                        KeyError,
+                        OverflowError,
+                        InvalidOperation,
+                    ) as exc:
+                        validation_error = str(exc)
+                        turn["validation_error"] = validation_error
+                        completed_actions.append(obj)
+                        continue
+                    calculation = {
+                        "answer": decision.answer,
+                        "citations": [asdict(c) for c in decision.citations],
+                        "semantic_scope_verified": False,
+                    }
+                    turn["calculation"] = calculation
+                    observation = "Arithmetic verified. Check semantic scope and cite original visible sources."
                 else:
                     raise ValueError("invalid tool action schema")
                 completed_actions.append(obj)

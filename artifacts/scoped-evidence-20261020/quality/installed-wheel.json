@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "import_file": "${REPOSITORY}\\eval\\reports\\scoped-evidence-20261020\\installed-wheel\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "cwd": "${REPOSITORY}\\eval\\reports\\scoped-evidence-20261020\\installed-wheel",
+  "package_assets": 6,
+  "persistence_restart": true,
+  "cli_api": true,
+  "packaged_casebook": true,
+  "local_consult": true,
+  "handoff_markdown": true,
+  "wheel": "dive_memory-0.4.0-py3-none-any.whl",
+  "wheel_sha256": "be5d9f84b57078252f39037a88701ddd852c08d6e3f800502a3c4345f7968191",
+  "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+  "source_path_injected": false
+}

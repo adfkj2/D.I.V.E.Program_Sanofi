@@ -115,6 +115,7 @@ class PipelineConfig:
     reported_detail_assertions_only: bool = False
     precise_detail_terms: bool = False
     contextual_fact_anchors: bool = False
+    scoped_fact_anchors: bool = False
     explicit_user_documents: bool = False
     prefer_explicit_user_documents: bool = False
     controlled_document_limit: int = 2
@@ -128,6 +129,10 @@ class PipelineConfig:
     def __post_init__(self) -> None:
         if type(self.contextual_fact_anchors) is not bool:
             raise ValueError('contextual_fact_anchors must be boolean')
+        if type(self.scoped_fact_anchors) is not bool:
+            raise ValueError('scoped_fact_anchors must be boolean')
+        if self.scoped_fact_anchors and not self.contextual_fact_anchors:
+            raise ValueError('scoped facts require contextual retention')
         if type(self.explicit_user_documents) is not bool:
             raise ValueError('explicit_user_documents must be boolean')
         if type(self.prefer_explicit_user_documents) is not bool:
@@ -195,6 +200,7 @@ class PipelineConfig:
             "reported_detail_assertions_only": self.reported_detail_assertions_only,
             "precise_detail_terms": self.precise_detail_terms,
             "contextual_fact_anchors": self.contextual_fact_anchors,
+            **({"scoped_fact_anchors": True} if self.scoped_fact_anchors else {}),
             "explicit_user_documents": self.explicit_user_documents,
             "prefer_explicit_user_documents": self.prefer_explicit_user_documents,
             "controlled_document_limit": self.controlled_document_limit,
@@ -409,7 +415,7 @@ def run_case(
     if config.explicit_user_documents:
         retention = ExplicitUserDocumentRetention(retention)
     if config.contextual_fact_anchors:
-        retention = ContextualFactRetention(retention)
+        retention = ContextualFactRetention(retention, scoped_assertions=config.scoped_fact_anchors)
     service = MemoryService(gate=gate, embedder=embedder, deterministic_ids=True,
                             episodic_policy=retention)
     try:

@@ -6,8 +6,8 @@ an explicitly selected development strategy, not a claim of official accuracy.
 
 from typing import Protocol
 
+from ..reading.adaptive import VERIFIED_VERSION, AdaptiveEvidenceReader
 from ..reading.adaptive import VERSION as ADAPTIVE_VERSION
-from ..reading.adaptive import AdaptiveEvidenceReader
 from ..reading.adjudicated_reader import (
     REFEREE_VERSION,
     AdjudicatedReader,
@@ -45,19 +45,22 @@ def create_reader(
     provider: str = "openai-compatible",
     strategy: str = "indexed",
 ) -> Reader:
-    if strategy == "adaptive":
+    if strategy in {"adaptive", "verified"}:
         return AdaptiveEvidenceReader(
             thinking or normal,
             ReaderSpec(
                 provider,
                 model,
-                prompt_version=ADAPTIVE_VERSION,
+                prompt_version=VERIFIED_VERSION
+                if strategy == "verified"
+                else ADAPTIVE_VERSION,
                 max_tokens=8192,
                 timeout_seconds=120,
             ),
+            verified_tools=strategy == "verified",
         )
     if strategy not in {"indexed", "r40"}:
-        raise ValueError("strategy must be indexed, r40 or adaptive")
+        raise ValueError("strategy must be indexed, r40, adaptive or verified")
     policy = ReaderPolicy(
         name="indexed_evidence",
         prompt_version="oracle-indexed-reader-v2",

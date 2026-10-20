@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "baseline_commit": "5103d6e1dcb5e825e7cb8b8d2073c7ac66ac514e",
+  "source_binding": "quality/source-manifest.json; 237 files; CRLF normalized to LF",
+  "scope": "R62 free development audits and engineering checks, not new answer accuracy",
+  "raw_evidence": "eval/reports/scoped-evidence-20261020",
+  "exclusions": [
+    "raw conversations",
+    "reference answers",
+    "full traces",
+    "databases",
+    "models",
+    "wheels",
+    "unreviewed drafts"
+  ],
+  "files": [
+    {
+      "path": "failures-and-repairs/contracts-before.txt",
+      "sha256": "634186e5d112c102fcd0b3ab2c1f198f6136de591c50084c413dbb2527a06d6d",
+      "bytes": 987,
+      "raw_path": "eval/reports/scoped-evidence-20261020/contracts-before.txt",
+      "raw_sha256": "088d8ed6b5b9fed4401229d2757b1b67fad8ac27d3d098c57767d6aacbd7d05d",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/contracts-first.txt",
+      "sha256": "4589da57d5b8678646a5143158e164ac25810b4bd3858654a7a702dc85a6e5a8",
+      "bytes": 1613,
+      "raw_path": "eval/reports/scoped-evidence-20261020/contracts-first.txt",
+      "raw_sha256": "4ee58eede0ef1ac6389d9ee5df74a31b48dc7793a132cfe047909ad3cfcc8c21",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/contracts-fourth.txt",
+      "sha256": "d9c2369a878f952c70545d70f13ec4a79d8d6c2f1437a60c01e0cc7437972d04",
+      "bytes": 179,
+      "raw_path": "eval/reports/scoped-evidence-20261020/contracts-fourth.txt",
+      "raw_sha256": "c3ddc4343d316cc8e402e8bcfc36e78cf6cd221b8aaf7e4d2bc98aa045543e68",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/contracts-second.txt",
+      "sha256": "d45dba9c415edc24e47c09c9fd66cccc6ce01af29774336f375c3eee5fd130d6",
+      "bytes": 260,
+      "raw_path": "eval/reports/scoped-evidence-20261020/contracts-second.txt",
+      "raw_sha256": "00be42b2c45f02553f0e9a3f31d92133c971d69ac8b0dd1dc03132db8c3801ba",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/contracts-third.txt",
+      "sha256": "aa37af621a5cd9b0f7ee21fab90446068e911c9b3bc1a94cb98b7d9f309ebcb7",
+      "bytes": 22178,
+      "raw_path": "eval/reports/scoped-evidence-20261020/contracts-third.txt",
+      "raw_sha256": "f9dd39b7f774a8c29da9d553dbad023e37c787355f615e81af85f45db0e0a7bc",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "formation/v1-summary.json",
+      "sha256": "c233f64f7583d84d9b1ae319236e49cf042481eec306dc2111173b67559c1d75",
+      "bytes": 1964,
+      "raw_path": "eval/reports/scoped-evidence-20261020/formation-summary.json",
+      "raw_sha256": "baa75ec1a58a2bd7c67f5d48cf7ab40db57031345c618f50fba9a08da4a7d884",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "formation/v2-summary.json",
+      "sha256": "1d734734d0fac931ca21377e713215ca1d5192b4626af0a3948c68fa06abcc37",
+      "bytes": 2220,
+      "raw_path": "eval/reports/scoped-evidence-20261020/formation-v2/formation-summary.json",
+      "raw_sha256": "9cbe5cdda7cf6cfcaaee12cc65b46d91b1ccf991fa57a3df542cae25bf2f3f4f",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "formation/v3-summary.json",
+      "sha256": "2ebae162f2d72964d4453d77785cca6dceaeb5b454ae884cf1f9fcaa5a0f9dd4",
+      "bytes": 2220,
+      "raw_path": "eval/reports/scoped-evidence-20261020/formation-v3/formation-summary.json",
+      "raw_sha256": "8edec8e1fc49e3da1bf0e94c02da101ca2abcd073fabddc8b1da5590acb41878",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/installed-wheel.json",
+      "sha256": "aa16161b4b3bb11ad74e37af7f1f92abf2d2ae21b4ad4316f1d8728e01574e8d",
+      "bytes": 675,
+      "raw_path": "eval/reports/scoped-evidence-20261020/installed-wheel/summary.json",
+      "raw_sha256": "61e0998ab45cb75946e4678fb3c3419af2f102467df01c41adc66732215d3104",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "offline-pipeline/comparison.json",
+      "sha256": "ea1eb38a9cfd77091bbf527d12219dcead2347a68c3207374aee8e2880dd0c4f",
+      "bytes": 21185,
+      "raw_path": "eval/reports/scoped-evidence-20261020/offline-pipeline/comparison.json",
+      "raw_sha256": "ea1eb38a9cfd77091bbf527d12219dcead2347a68c3207374aee8e2880dd0c4f",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "offline-pipeline/plan.json",
+      "sha256": "535e2d80d034fb8d67f500e532a9f3b0f7732610d430d1512a0ebd986cf10edc",
+      "bytes": 26399,
+      "raw_path": "eval/reports/scoped-evidence-20261020/offline-pipeline/plan.json",
+      "raw_sha256": "535e2d80d034fb8d67f500e532a9f3b0f7732610d430d1512a0ebd986cf10edc",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "offline-pipeline/summary.json",
+      "sha256": "4c5e9b8a12ef86a714830a990a8013db50f20d3582d65196634725cb42a9f50c",
+      "bytes": 413,
+      "raw_path": "eval/reports/scoped-evidence-20261020/offline-pipeline/summary.json",
+      "raw_sha256": "4c5e9b8a12ef86a714830a990a8013db50f20d3582d65196634725cb42a9f50c",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "paid-validation-proposal.json",
+      "sha256": "bc52410ad191ef900a37b1d19b6028b7f8f2c70178346611a000dc6ce486b144",
+      "bytes": 27716,
+      "raw_path": "eval/reports/scoped-evidence-20261020/paid-validation-proposal.json",
+      "raw_sha256": "487a34c3ff0212f7e6e819541f4206ba5c555e40eb6b8743243f10454a2d88ab",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/casebook-sources.txt",
+      "sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
+      "bytes": 108,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/casebook-sources.txt",
+      "raw_sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/coverage-json.txt",
+      "sha256": "e261aa41e0130e1dfaa84efc0e55f57aa332a1c3e35bd8ae249bd9b3baa9c855",
+      "bytes": 98,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/coverage-json.txt",
+      "raw_sha256": "e261aa41e0130e1dfaa84efc0e55f57aa332a1c3e35bd8ae249bd9b3baa9c855",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/delivery-format.txt",
+      "sha256": "b642d2f0cc49caff9e609808fb9c82854fc174b2f54b459a0d09dbe4c0f837ab",
+      "bytes": 27,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/delivery-format.txt",
+      "raw_sha256": "b642d2f0cc49caff9e609808fb9c82854fc174b2f54b459a0d09dbe4c0f837ab",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/delivery-lint.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/delivery-lint.txt",
+      "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/source-correctness.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/source-correctness.txt",
+      "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/source-manifest.json",
+      "sha256": "0362d79923d326f53c50fb1e9ba196145ed19cfa1f5162d8c7dd5f7833ed8b64",
+      "bytes": 26190,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/source-manifest.json",
+      "raw_sha256": "0362d79923d326f53c50fb1e9ba196145ed19cfa1f5162d8c7dd5f7833ed8b64",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/summary.json",
+      "sha256": "233e280ce68afd0d67e838d501a1b99cda9cef242edba79c1d33a340d60a061b",
+      "bytes": 9677,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/summary.json",
+      "raw_sha256": "233e280ce68afd0d67e838d501a1b99cda9cef242edba79c1d33a340d60a061b",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/tests.txt",
+      "sha256": "c0b5b4e7396b4beb6cd474b23f1fd74bbc6ec31982b8b73cd35d0dd7616afd3c",
+      "bytes": 3652,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/tests.txt",
+      "raw_sha256": "c0b5b4e7396b4beb6cd474b23f1fd74bbc6ec31982b8b73cd35d0dd7616afd3c",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "quality/types.txt",
+      "sha256": "32c1f154f636757bc9df6843701b18b495673a7cf2e0f68b592d2055d6ae6c07",
+      "bytes": 44,
+      "raw_path": "eval/reports/scoped-evidence-20261020/quality-v1/types.txt",
+      "raw_sha256": "32c1f154f636757bc9df6843701b18b495673a7cf2e0f68b592d2055d6ae6c07",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/types-first.txt",
+      "sha256": "1cb64a605b067f32a8a72444a23928ef1f5381aeabb69ffa3bacd498cfb1a712",
+      "bytes": 763,
+      "raw_path": "eval/reports/scoped-evidence-20261020/types-first.txt",
+      "raw_sha256": "8a18015a3e9b7c53629bae899bf59cf7aa347493a7df48917d42ea0afcba158a",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b3eca233cc5874220e87b2f4cca03cbb35200212d7d01a546db5364adaf70cab",
+      "bytes": 2115,
+      "transformation": "Authored release explanation or separately recorded remote evidence"
+    }
+  ]
+}

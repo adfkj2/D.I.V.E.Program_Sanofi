@@ -8,7 +8,7 @@ import argparse
 import hashlib
 import json
 import os
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from decimal import Decimal
 from pathlib import Path
 from time import perf_counter
@@ -280,7 +280,12 @@ def main(argv=None):
     parser.add_argument(
         "--model", choices=tuple(MODEL_PRICES), default="deepseek-flash"
     )
-    parser.add_argument("--reader-strategy", choices=("r40", "adaptive"), default="r40")
+    parser.add_argument(
+        "--reader-strategy", choices=("r40", "adaptive", "verified"), default="r40"
+    )
+    parser.add_argument(
+        "--fact-policy", choices=("historical", "scoped"), default="historical"
+    )
     parser.add_argument(
         "--reasoning-effort", choices=("low", "high", "max"), default="low"
     )
@@ -290,7 +295,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.max_cases is not None and args.max_cases <= 0:
         parser.error("max-cases must be positive")
-    config = r40_pipeline()
+    config = replace(r40_pipeline(), scoped_fact_anchors=args.fact_policy == "scoped")
     plan = {
         "pipeline": config.to_dict(),
         "model": args.model,

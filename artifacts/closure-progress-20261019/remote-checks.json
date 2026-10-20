@@ -1,0 +1,379 @@
+{
+  "checked_at": "2026-10-20",
+  "repository": "adfkj2/D.I.V.E.Program_Sanofi",
+  "source_commit": "4dbd0785baf264b7fc05a994d710667d7c33f275",
+  "workflow_run_id": 39358674960,
+  "html_url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 118419413661,
+      "name": "workbench",
+      "head_sha": "4dbd0785baf264b7fc05a994d710667d7c33f275",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-20T02:23:52Z",
+      "completed_at": "2026-10-20T02:24:45Z",
+      "html_url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960/job/118419413661",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/runtime.lock && python -m pip install --no-deps .",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci && npx playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exercise the real workbench",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 118419413767,
+      "name": "local-runtime (3.14)",
+      "head_sha": "4dbd0785baf264b7fc05a994d710667d7c33f275",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-20T02:23:52Z",
+      "completed_at": "2026-10-20T02:25:16Z",
+      "html_url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960/job/118419413767",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/dev.lock",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/check_quality.py --output artifacts/quality",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python eval/run_project_validation.py --output artifacts/structured",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m build --wheel",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 118419413787,
+      "name": "postgres-contract",
+      "head_sha": "4dbd0785baf264b7fc05a994d710667d7c33f275",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-20T02:23:52Z",
+      "completed_at": "2026-10-20T02:24:24Z",
+      "html_url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960/job/118419413787",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/postgres.lock",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest tests/integration/postgres -q --junitxml=postgres-tests.xml",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require PostgreSQL contracts to run without skips",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 118419413835,
+      "name": "docker",
+      "head_sha": "4dbd0785baf264b7fc05a994d710667d7c33f275",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-20T02:23:52Z",
+      "completed_at": "2026-10-20T02:24:08Z",
+      "html_url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960/job/118419413835",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run docker build -f ops/docker/Dockerfile -t dive-memory:ci .",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run the image and probe the real readiness endpoint",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 118419413873,
+      "name": "local-runtime (3.12)",
+      "head_sha": "4dbd0785baf264b7fc05a994d710667d7c33f275",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-20T02:23:52Z",
+      "completed_at": "2026-10-20T02:25:21Z",
+      "html_url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960/job/118419413873",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements/dev.lock",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/check_quality.py --output artifacts/quality",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python eval/run_project_validation.py --output artifacts/structured",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m build --wheel",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "postgres": {
+    "passed": 8,
+    "skipped": 0,
+    "seconds": 1.59,
+    "source_job": 118419413787
+  },
+  "browser": {
+    "passed": true,
+    "checks": 19,
+    "source_job": 118419413661
+  },
+  "scope": "Exact source commit above; later documentation-only commits require their own remote verification."
+}

@@ -80,6 +80,6 @@ R60先补可注入、持久绑定的峰值费率，公开模型选择，禁止�
 
 ## 证据与结项边界
 
-原始计划、逐题轨迹、失败、请求账本与完整质量记录位于`eval/reports/closure-95-20261018/`。公开[精选复核包](../../artifacts/closure-progress-20261019/README.md)含原始统计、三态派生统计、逐题预测与judge尝试（移除参考答案）、费用账本、源码差异及门禁/安装记录；[manifest](../../artifacts/closure-progress-20261019/manifest.json)绑定原始和公开文件哈希。远程任务须以本次发布提交的结果另行补证。
+原始计划、逐题轨迹、失败、请求账本与完整质量记录位于`eval/reports/closure-95-20261018/`。公开[精选复核包](../../artifacts/closure-progress-20261019/README.md)含原始统计、三态派生统计、逐题预测与judge尝试（移除参考答案）、费用账本、源码差异及门禁/安装记录；[manifest](../../artifacts/closure-progress-20261019/manifest.json)绑定原始和公开文件哈希。源码提交`4dbd0785baf264b7fc05a994d710667d7c33f275`的[远程运行39358674960](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39358674960)五项全部成功：Python3.12/3.14、PostgreSQL、容器、浏览器；PostgreSQL实际8通过/零跳过，浏览器19项通过。后续文档提交仍须单独核验最新远程任务，不能沿用此提交的状态。
 
 本轮目标不等于现有成绩。正式judge、F.1.4适用边界与代码质量评分须由项目组/mentor认定；本人理解深度须现场解释与修改。不得用工程测试数或覆盖率折算19/20。

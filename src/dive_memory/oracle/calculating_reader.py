@@ -3,18 +3,26 @@
 Only visible question wording routes a request. The planner sees the same
 budget-visible evidence, not the benchmark type, answer or marked source turns.
 """
+import json
+import re
 from dataclasses import replace
 from decimal import InvalidOperation
 from hashlib import sha256
-import json
-import re
 from time import perf_counter
 
 from ..answering import AnswerStatus, GroundedAnswerDecision
 from ..token_budget import ApproximateTokenCounter
 from .cited_calculation import calculate
-from .indexed_reader import IndexedEvidenceReader, VERSION as BASE_VERSION, RULES as BASE_RULES, parse_indexed
-from .reader import TokenUsage, map_decision, assert_prompt_is_clean, render_reader_context, reader_policy
+from .indexed_reader import RULES as BASE_RULES
+from .indexed_reader import VERSION as BASE_VERSION
+from .indexed_reader import IndexedEvidenceReader, parse_indexed
+from .reader import (
+    TokenUsage,
+    assert_prompt_is_clean,
+    map_decision,
+    reader_policy,
+    render_reader_context,
+)
 
 VERSION = "oracle-cited-calculation-reader-v4"
 RULES = BASE_RULES.split("Return only JSON:")[0] + """
@@ -84,7 +92,7 @@ class CalculatingReader:
         try:
             completion = self.client.complete(model=self.spec.model,messages=messages,temperature=self.spec.temperature,
                 max_tokens=self.spec.max_tokens,timeout_seconds=self.spec.timeout_seconds,response_format={"type":"json_object"})
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - provider boundary preserves transport errors separately from abstention
             d = GroundedAnswerDecision(AnswerStatus.ERROR,None,
                 "READER_TIMEOUT" if isinstance(exc,TimeoutError) else "READER_FAILURE",
                 missing_requirements=(type(exc).__name__,))

@@ -29,10 +29,16 @@ from statistics import median
 from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 from .contracts import (
-    ABSTENTION_SUFFIX,
+    ABSTENTION_SUFFIX as ABSTENTION_SUFFIX,
+)
+from .contracts import (
     CANONICAL_ABSTENTION_HYPOTHESIS,
-    ORACLE_EXPECTED_CASES,
-    HypothesisOrigin,
+)
+from .contracts import (
+    ORACLE_EXPECTED_CASES as ORACLE_EXPECTED_CASES,
+)
+from .contracts import (
+    HypothesisOrigin as HypothesisOrigin,
 )
 from .loader import load_oracle_dataset
 from .validator import read_submission, validate_submission

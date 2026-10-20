@@ -3,9 +3,9 @@
 Routing uses only the first grounded outcome. Both readers receive the same
 budget-visible request; neither receives reference answers or the other's answer.
 """
+import json
 from dataclasses import replace
 from hashlib import sha256
-import json
 
 from .contracts import ReaderStatus
 from .reader import ReaderSpec, TokenUsage

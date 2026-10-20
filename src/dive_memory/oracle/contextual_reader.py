@@ -5,8 +5,7 @@ provenance, not semantic entailment. Parsing, repair limits and routing are inhe
 """
 
 from .adjudicated_reader import EvidenceReferee
-from .indexed_reader import IndexedEvidenceReader, RULES
-
+from .indexed_reader import RULES, IndexedEvidenceReader
 
 VERSION = "oracle-contextual-reader-v1"
 REFEREE_VERSION = "oracle-contextual-referee-v1"

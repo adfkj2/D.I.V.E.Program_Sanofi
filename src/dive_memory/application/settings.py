@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 
-from ..oracle.providers import OpenAICompatibleChatClient
+from ..reading.providers import OpenAICompatibleChatClient
 from .readers import create_reader
 from .runtime import MemoryApplication
 
@@ -33,16 +33,22 @@ def application_from_environment(db_path: str | None = None) -> MemoryApplicatio
             endpoint, key, provider=provider, extra_body=normal_options
         )
         thinking = None
-        if strategy == "r40":
+        if strategy in {"r40", "adaptive"}:
+            effort = os.getenv("DIVE_REASONING_EFFORT", "low")
+            if effort not in {"low", "high", "max"}:
+                raise ValueError("DIVE_REASONING_EFFORT must be low, high or max")
             if provider != "deepseek":
                 raise ValueError(
-                    "environment r40 preset requires deepseek mode support; inject transports for another provider"
+                    "environment reasoning preset requires deepseek mode support; inject transports for another provider"
                 )
             thinking = OpenAICompatibleChatClient(
                 endpoint,
                 key,
                 provider=provider,
-                extra_body={"thinking": {"type": "enabled"}, "reasoning_effort": "low"},
+                extra_body={
+                    "thinking": {"type": "enabled"},
+                    "reasoning_effort": effort,
+                },
             )
         reader = create_reader(
             normal, thinking, provider=provider, model=model, strategy=strategy

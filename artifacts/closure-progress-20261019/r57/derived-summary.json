@@ -1,0 +1,29 @@
+{
+  "round": "r57",
+  "cases": 40,
+  "generated": 40,
+  "not_generated": 0,
+  "not_generated_ids": [],
+  "correct": 34,
+  "incorrect": 5,
+  "unknown": 1,
+  "accuracy": null,
+  "confirmed_correct_lower_bound": 0.85,
+  "maximum_possible_correct": 35,
+  "historical_baseline_correct": 35,
+  "improvements": 2,
+  "confirmed_regressions": 2,
+  "baseline_correct_now_unknown": 1,
+  "confirmed_new_wrong_unanswerable": 2,
+  "statuses": {
+    "ANSWER": 36,
+    "INVALID": 2,
+    "ABSTAIN": 2
+  },
+  "invalid_or_transport_failures": 2,
+  "promote": false,
+  "official": false,
+  "new_api_calls": 94,
+  "peak_cost_cny": "0.723226",
+  "cumulative_peak_cny": "33.368740"
+}

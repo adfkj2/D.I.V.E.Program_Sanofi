@@ -1,0 +1,24 @@
+{
+  "reader": {
+    "attempted_calls": 56,
+    "completed_calls": 56,
+    "input_tokens": 284947,
+    "output_tokens": 34861,
+    "missing_usage_calls": 0,
+    "cost_cny": null,
+    "cost_note": "Unknown until current provider tariff/billing is supplied; never zero by omission."
+  },
+  "judge": {
+    "attempted_calls": 40,
+    "completed_calls": 40,
+    "input_tokens": 6570,
+    "output_tokens": 302,
+    "missing_usage_calls": 0,
+    "cost_cny": null,
+    "cost_note": "Unknown until current provider tariff/billing is supplied; never zero by omission."
+  },
+  "peak_cost_cny": "0.864338",
+  "cumulative_peak_cny": "34.233078",
+  "wall_seconds_including_model_load": 370.06510010000056,
+  "new_api_calls": 96
+}

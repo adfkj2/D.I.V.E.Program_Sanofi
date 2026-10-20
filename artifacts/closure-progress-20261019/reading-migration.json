@@ -1,0 +1,32 @@
+{
+  "reader": {
+    "source_sha256_lf": "64a2a653dcb4295b29a9e73820c2d38acbe346a4e539a17864e6a45fc342d736"
+  },
+  "evidence": {
+    "source_sha256_lf": "7bea676b93f2ca4f0f0be066a088860b0aa38bc6c12f718c460b4ce23ebb8e1d"
+  },
+  "providers": {
+    "source_sha256_lf": "a43fdab33060064f779c84f5f7daafdc55bc792007cd3a7455280f8f0e7f55c8"
+  },
+  "indexed_reader": {
+    "source_sha256_lf": "cba8f72e6e65ec85acdae108a57cf497d6f6a610b490771cf5e8f025479222f3"
+  },
+  "adjudicated_reader": {
+    "source_sha256_lf": "6d1296c13b3b7c2f05b9447a5a7c21c8184340d97a116917ea626be977609c73"
+  },
+  "advice_refusal_reader": {
+    "source_sha256_lf": "59d8cb4fab7cb9111bc6506fc30280b8bdca337cddf6e5608c25951b2b336673"
+  },
+  "current_state_reader": {
+    "source_sha256_lf": "843e1d331fb43d17c658cb5e66ce84cb8fdb781571602eb3b98050b2e42ed051"
+  },
+  "grounded_advice_reader": {
+    "source_sha256_lf": "cbfb8f3dc8284a0d54cb84ea1e00c0d92bb0babd846ad0d62db6ab0194c1ffff"
+  },
+  "premise_review_reader": {
+    "source_sha256_lf": "620422a988229a3e13d106d191234e3cee47cad20727616b92739806de0ccf79"
+  },
+  "temporal_refusal_reader": {
+    "source_sha256_lf": "286415db30bbf586d94be834dcd9c83fd0c565abc83feabb11a4406d7999396f"
+  }
+}

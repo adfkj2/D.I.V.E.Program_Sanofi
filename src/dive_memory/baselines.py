@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .ids import cosine, stable_vector
-from .models import Memory
+from .ids import cosine
+from .ids import stable_vector as stable_vector
+from .models import Memory as Memory
 from .service import MemoryService
 
 

@@ -25,11 +25,10 @@ unchanged.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from hashlib import sha256
-import json
 from typing import Mapping
-
 
 RETRIEVAL_CHANNELS = frozenset({
     "bm25", "dense", "predicate", "temporal", "entity", "relation", "multi_hop",

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 PREDICATE_MAP = {
     "residence": "lives_in",
     "preference": "prefers",

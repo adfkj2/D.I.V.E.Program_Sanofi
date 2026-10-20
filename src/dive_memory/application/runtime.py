@@ -10,8 +10,8 @@ from typing import Any
 from ..context import pack_context
 from ..ids import new_id
 from ..models import Memory, MemoryStatus, utc_now
-from ..oracle.evidence import build_evidence_views, render_evidence_block
-from ..oracle.reader import OracleReaderRequest, reader_outcome
+from ..reading.evidence import build_evidence_views, render_evidence_block
+from ..reading.reader import ReaderRequest, reader_outcome
 from ..service import MemoryService
 from ..temporal import parse_instant, require_instant, visible_at
 from .briefing import build_brief, consult_records
@@ -470,7 +470,7 @@ class MemoryApplication:
             packing_ms = (perf_counter() - started) * 1000 - retrieved_ms
             outcome = None
             if self.reader:
-                request = OracleReaderRequest(
+                request = ReaderRequest(
                     question,
                     cutoff,
                     cutoff,
@@ -480,7 +480,20 @@ class MemoryApplication:
                     packed.omitted,
                     self.reader.policy,
                 )
-                outcome = reader_outcome(self.reader, request).to_dict()
+                reader = self.reader
+                bind = getattr(reader, "bind_evidence", None)
+                if callable(bind):
+                    from ..retrieval_session import MemoryEvidenceSource
+
+                    reader = bind(
+                        MemoryEvidenceSource(
+                            self.service,
+                            namespace,
+                            as_of=cutoff,
+                            initial=request.items,
+                        )
+                    )
+                outcome = reader_outcome(reader, request).to_dict()
             trace = {
                 "trace_id": new_id("trace"),
                 "namespace": namespace,

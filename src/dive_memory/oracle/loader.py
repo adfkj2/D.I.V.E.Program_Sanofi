@@ -19,9 +19,9 @@ See ``docs/oracle/06-s-cleaned-vs-oracle.md``.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
 import random
+from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
 from typing import Any, Iterable, Sequence

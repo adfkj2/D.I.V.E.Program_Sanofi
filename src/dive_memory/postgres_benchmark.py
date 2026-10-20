@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import platform
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
 from statistics import median
 from time import perf_counter
-import uuid
 
 from .benchmark import _percentile
 from .ids import stable_vector

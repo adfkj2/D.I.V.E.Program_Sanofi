@@ -1,6 +1,6 @@
 """Opt-in retention of explicitly requested user material as source documents."""
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
 from .extraction import _document_candidate
 from .gate import GateAction, GateDecision, _sensitive

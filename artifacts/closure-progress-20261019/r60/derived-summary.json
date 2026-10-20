@@ -1,0 +1,40 @@
+{
+  "round": "r60",
+  "cases": 40,
+  "generated": 29,
+  "not_generated": 11,
+  "not_generated_ids": [
+    "gpt4_194be4b3",
+    "eeda8a6d",
+    "gpt4_fe651585_abs",
+    "80ec1f4f",
+    "gpt4_4edbafa2",
+    "57f827a0",
+    "1cea1afa",
+    "gpt4_93159ced",
+    "852ce960",
+    "603deb26",
+    "gpt4_cd90e484"
+  ],
+  "correct": 26,
+  "incorrect": 3,
+  "unknown": 0,
+  "accuracy": null,
+  "confirmed_correct_lower_bound": 0.65,
+  "maximum_possible_correct": 37,
+  "historical_baseline_correct": 25,
+  "improvements": 2,
+  "confirmed_regressions": 1,
+  "baseline_correct_now_unknown": 0,
+  "confirmed_new_wrong_unanswerable": 0,
+  "statuses": {
+    "ANSWER": 25,
+    "ABSTAIN": 4
+  },
+  "invalid_or_transport_failures": 0,
+  "promote": false,
+  "official": false,
+  "new_api_calls": 68,
+  "peak_cost_cny": "2.917316",
+  "cumulative_peak_cny": "38.070542"
+}

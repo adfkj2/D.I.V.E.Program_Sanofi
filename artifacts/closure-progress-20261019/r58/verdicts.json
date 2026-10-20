@@ -1,0 +1,1054 @@
+{
+  "official": false,
+  "cases": 40,
+  "results": [
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 145,
+          "output_tokens": 7,
+          "latency_ms": 888.6192000009032,
+          "error": null
+        }
+      ],
+      "question_id": "c7dc5443",
+      "status": "ANSWER",
+      "hypothesis": "5-2",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 145,
+        "output_tokens": 7,
+        "latency_ms": 888.6192000009032,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 210,
+          "output_tokens": 7,
+          "latency_ms": 686.1143000005541,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_d31cdae3",
+      "status": "ANSWER",
+      "hypothesis": "The family road trip across the American Southwest was first; the solo trip to Europe was last summer (2022), while the family trip was a few years earlier.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 210,
+        "output_tokens": 7,
+        "latency_ms": 686.1143000005541,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": false,
+          "raw": "INVALID_OUTPUT_RULE",
+          "input_tokens": null,
+          "output_tokens": null,
+          "latency_ms": 0.0,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_c27434e8_abs",
+      "status": "INVALID",
+      "hypothesis": null,
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "INVALID_OUTPUT_RULE",
+        "input_tokens": null,
+        "output_tokens": null,
+        "latency_ms": 0.0,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 157,
+          "output_tokens": 7,
+          "latency_ms": 781.3616000003094,
+          "error": null
+        }
+      ],
+      "question_id": "8b9d4367",
+      "status": "ANSWER",
+      "hypothesis": "Jaipur Rugs",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 157,
+        "output_tokens": 7,
+        "latency_ms": 781.3616000003094,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 131,
+          "output_tokens": 7,
+          "latency_ms": 975.5889999996725,
+          "error": null
+        }
+      ],
+      "question_id": "c4a1ceb8",
+      "status": "ANSWER",
+      "hypothesis": "3 types of citrus fruit: lime, orange, and lemon.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 131,
+        "output_tokens": 7,
+        "latency_ms": 975.5889999996725,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 136,
+          "output_tokens": 7,
+          "latency_ms": 449.4905999999901,
+          "error": null
+        }
+      ],
+      "question_id": "efc3f7c2",
+      "status": "ANSWER",
+      "hypothesis": "30 minutes earlier (6:00 AM vs. 6:30 AM).",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 136,
+        "output_tokens": 7,
+        "latency_ms": 449.4905999999901,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 143,
+          "output_tokens": 7,
+          "latency_ms": 497.0731000012165,
+          "error": null
+        }
+      ],
+      "question_id": "6aeb4375",
+      "status": "ANSWER",
+      "hypothesis": "Four Korean restaurants.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 143,
+        "output_tokens": 7,
+        "latency_ms": 497.0731000012165,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": false,
+          "raw": "NO",
+          "input_tokens": 135,
+          "output_tokens": 7,
+          "latency_ms": 833.8657000003877,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_2f8be40d",
+      "status": "ANSWER",
+      "hypothesis": "Four weddings.",
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "NO",
+        "input_tokens": 135,
+        "output_tokens": 7,
+        "latency_ms": 833.8657000003877,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 223,
+          "output_tokens": 7,
+          "latency_ms": 920.5361000003904,
+          "error": null
+        }
+      ],
+      "question_id": "06f04340",
+      "status": "ANSWER",
+      "hypothesis": "Serve a Middle Eastern-style salad combining chopped basil and mint with your homegrown cherry tomatoes, cucumbers, feta, and a lemon-tahini dressing; a minty yogurt sauce would make a refreshing accompaniment.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 223,
+        "output_tokens": 7,
+        "latency_ms": 920.5361000003904,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": false,
+          "raw": "NO",
+          "input_tokens": 138,
+          "output_tokens": 7,
+          "latency_ms": 468.5575000003155,
+          "error": null
+        }
+      ],
+      "question_id": "66f24dbb",
+      "status": "ANSWER",
+      "hypothesis": "You bought her a yellow dress and a pair of silver hoop earrings with a small pearl in the center.",
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "NO",
+        "input_tokens": 138,
+        "output_tokens": 7,
+        "latency_ms": 468.5575000003155,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 133,
+          "output_tokens": 7,
+          "latency_ms": 899.0462000001571,
+          "error": null
+        }
+      ],
+      "question_id": "4c36ccef",
+      "status": "ANSWER",
+      "hypothesis": "Roscioli",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 133,
+        "output_tokens": 7,
+        "latency_ms": 899.0462000001571,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 152,
+          "output_tokens": 7,
+          "latency_ms": 774.9088999989908,
+          "error": null
+        }
+      ],
+      "question_id": "15745da0_abs",
+      "status": "ABSTAIN",
+      "hypothesis": "The available conversation history does not contain enough information to answer this question.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 152,
+        "output_tokens": 7,
+        "latency_ms": 774.9088999989908,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 118,
+          "output_tokens": 7,
+          "latency_ms": 974.3868000005023,
+          "error": null
+        }
+      ],
+      "question_id": "a1cc6108",
+      "status": "ANSWER",
+      "hypothesis": "About 11 years old.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 118,
+        "output_tokens": 7,
+        "latency_ms": 974.3868000005023,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 132,
+          "output_tokens": 7,
+          "latency_ms": 1058.2261999988987,
+          "error": null
+        }
+      ],
+      "question_id": "67e0d0f2",
+      "status": "ANSWER",
+      "hypothesis": "20 online courses total (12 on Coursera and 8 on edX).",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 132,
+        "output_tokens": 7,
+        "latency_ms": 1058.2261999988987,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 137,
+          "output_tokens": 7,
+          "latency_ms": 895.5208000006678,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_d84a3211",
+      "status": "ANSWER",
+      "hypothesis": "$185 total ($120 helmet + $25 chain + $40 bike lights).",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 137,
+        "output_tokens": 7,
+        "latency_ms": 895.5208000006678,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 122,
+          "output_tokens": 7,
+          "latency_ms": 860.9219999998459,
+          "error": null
+        }
+      ],
+      "question_id": "94f70d80",
+      "status": "ANSWER",
+      "hypothesis": "4 hours",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 122,
+        "output_tokens": 7,
+        "latency_ms": 860.9219999998459,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 252,
+          "output_tokens": 7,
+          "latency_ms": 766.7983999999706,
+          "error": null
+        }
+      ],
+      "question_id": "195a1a1b",
+      "status": "ANSWER",
+      "hypothesis": "In the evening, start a calm 60–90 minute wind-down before 9:30 pm: dim lights and disconnect from screens/work, do light stretching or journaling, prepare for the next day, then try a guided meditation such as the Body Scan by Insight Timer or the Sleep meditation by Headspace, aiming to be settled by 9:30 pm.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 252,
+        "output_tokens": 7,
+        "latency_ms": 766.7983999999706,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 125,
+          "output_tokens": 7,
+          "latency_ms": 765.6057999993209,
+          "error": null
+        }
+      ],
+      "question_id": "09ba9854",
+      "status": "ANSWER",
+      "hypothesis": "$50",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 125,
+        "output_tokens": 7,
+        "latency_ms": 765.6057999993209,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 138,
+          "output_tokens": 7,
+          "latency_ms": 587.9533000006631,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_a56e767c",
+      "status": "ANSWER",
+      "hypothesis": "4 distinct film festivals: AFI Fest, Austin Film Festival, Portland Film Festival, and Seattle International Film Festival.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 138,
+        "output_tokens": 7,
+        "latency_ms": 587.9533000006631,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 196,
+          "output_tokens": 7,
+          "latency_ms": 602.6124999989406,
+          "error": null
+        }
+      ],
+      "question_id": "6e984302",
+      "status": "ANSWER",
+      "hypothesis": "You bought your own set of sculpting tools: a modeling tool set, a wire cutter, and a sculpting mat.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 196,
+        "output_tokens": 7,
+        "latency_ms": 602.6124999989406,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 181,
+          "output_tokens": 7,
+          "latency_ms": 596.2670000008075,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_7ca326fa",
+      "status": "ANSWER",
+      "hypothesis": "Emma graduated first, Rachel second, and Alex third.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 181,
+        "output_tokens": 7,
+        "latency_ms": 596.2670000008075,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": false,
+          "raw": "NO",
+          "input_tokens": 172,
+          "output_tokens": 7,
+          "latency_ms": 634.3042999997124,
+          "error": null
+        }
+      ],
+      "question_id": "f523d9fe",
+      "status": "ABSTAIN",
+      "hypothesis": "The available conversation history does not contain enough information to answer this question.",
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "NO",
+        "input_tokens": 172,
+        "output_tokens": 7,
+        "latency_ms": 634.3042999997124,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 210,
+          "output_tokens": 7,
+          "latency_ms": 647.9758999994374,
+          "error": null
+        }
+      ],
+      "question_id": "0db4c65d",
+      "status": "ANSWER",
+      "hypothesis": "18 days",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 210,
+        "output_tokens": 7,
+        "latency_ms": 647.9758999994374,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 124,
+          "output_tokens": 7,
+          "latency_ms": 630.6621999992785,
+          "error": null
+        }
+      ],
+      "question_id": "60d45044",
+      "status": "ANSWER",
+      "hypothesis": "Your favorite is Japanese short-grain rice.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 124,
+        "output_tokens": 7,
+        "latency_ms": 630.6621999992785,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 256,
+          "output_tokens": 7,
+          "latency_ms": 877.7815000012197,
+          "error": null
+        }
+      ],
+      "question_id": "d6233ab6",
+      "status": "ANSWER",
+      "hypothesis": "Yes—given that you remember high school happily and are feeling nostalgic, attending the reunion could be worthwhile, especially as a chance to reconnect with old friends.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 256,
+        "output_tokens": 7,
+        "latency_ms": 877.7815000012197,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 184,
+          "output_tokens": 7,
+          "latency_ms": 589.1905999997107,
+          "error": null
+        }
+      ],
+      "question_id": "eac54adc",
+      "status": "ANSWER",
+      "hypothesis": "19 days",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 184,
+        "output_tokens": 7,
+        "latency_ms": 589.1905999997107,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 152,
+          "output_tokens": 7,
+          "latency_ms": 557.1815999992396,
+          "error": null
+        }
+      ],
+      "question_id": "7a8d0b71",
+      "status": "ANSWER",
+      "hypothesis": "$2,000 was allocated for influencer marketing.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 152,
+        "output_tokens": 7,
+        "latency_ms": 557.1815999992396,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 158,
+          "output_tokens": 7,
+          "latency_ms": 855.7972999988124,
+          "error": null
+        }
+      ],
+      "question_id": "f685340e_abs",
+      "status": "ABSTAIN",
+      "hypothesis": "The available conversation history does not contain enough information to answer this question.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 158,
+        "output_tokens": 7,
+        "latency_ms": 855.7972999988124,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 118,
+          "output_tokens": 7,
+          "latency_ms": 692.3021000002336,
+          "error": null
+        }
+      ],
+      "question_id": "28dc39ac",
+      "status": "ANSWER",
+      "hypothesis": "140 hours",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 118,
+        "output_tokens": 7,
+        "latency_ms": 692.3021000002336,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 216,
+          "output_tokens": 7,
+          "latency_ms": 777.5344000001496,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_194be4b3",
+      "status": "ANSWER",
+      "hypothesis": "You currently own 4 musical instruments: a Korg B1 piano, a black Fender Stratocaster electric guitar, a Yamaha FG800 acoustic guitar, and a 5-piece Pearl Export drum set.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 216,
+        "output_tokens": 7,
+        "latency_ms": 777.5344000001496,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 169,
+          "output_tokens": 7,
+          "latency_ms": 632.7526000004582,
+          "error": null
+        }
+      ],
+      "question_id": "eeda8a6d",
+      "status": "ANSWER",
+      "hypothesis": "17 fish in total: 16 in the 20-gallon tank (10 neon tetras, 5 golden honey gouramis, and 1 pleco catfish) plus Bubbles the betta in the 10-gallon tank.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 169,
+        "output_tokens": 7,
+        "latency_ms": 632.7526000004582,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": null,
+          "raw": "{\"type\": \"json_object\", \"output\": {\"verdict\": \"yes\"}}",
+          "input_tokens": 153,
+          "output_tokens": 18,
+          "latency_ms": 947.2597000003589,
+          "error": "unexpected verdict ''"
+        },
+        {
+          "correct": null,
+          "raw": "{\"type\": \"json_object\", \"output\": {\"verdict\": \"yes\"}}",
+          "input_tokens": 153,
+          "output_tokens": 18,
+          "latency_ms": 786.6995000003953,
+          "error": "unexpected verdict ''"
+        }
+      ],
+      "question_id": "gpt4_fe651585_abs",
+      "status": "ABSTAIN",
+      "hypothesis": "The available conversation history does not contain enough information to answer this question.",
+      "correct": null,
+      "judge": {
+        "correct": null,
+        "raw": "{\"type\": \"json_object\", \"output\": {\"verdict\": \"yes\"}}",
+        "input_tokens": 153,
+        "output_tokens": 18,
+        "latency_ms": 786.6995000003953,
+        "error": "unexpected verdict ''"
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 142,
+          "output_tokens": 7,
+          "latency_ms": 985.5002999993303,
+          "error": null
+        }
+      ],
+      "question_id": "80ec1f4f",
+      "status": "ANSWER",
+      "hypothesis": "2 — the Natural History Museum (on 2/8) and The Art Cube (on 15 February).",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 142,
+        "output_tokens": 7,
+        "latency_ms": 985.5002999993303,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 168,
+          "output_tokens": 7,
+          "latency_ms": 856.4788999992743,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_4edbafa2",
+      "status": "ANSWER",
+      "hypothesis": "3 June",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 168,
+        "output_tokens": 7,
+        "latency_ms": 856.4788999992743,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 265,
+          "output_tokens": 7,
+          "latency_ms": 703.3806999988883,
+          "error": null
+        }
+      ],
+      "question_id": "57f827a0",
+      "status": "ANSWER",
+      "hypothesis": "Anchor the room around the walnut dresser, leaving clear space around it so its low, mid-century profile can breathe and drawers can open fully. Keep nearby hardware and accents cohesive with your chosen brass accents and simple knobs, and avoid overcrowding—balance the dresser with open walkways and a few complementary pieces rather than filling every wall.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 265,
+        "output_tokens": 7,
+        "latency_ms": 703.3806999988883,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 150,
+          "output_tokens": 7,
+          "latency_ms": 828.6582000000635,
+          "error": null
+        }
+      ],
+      "question_id": "1cea1afa",
+      "status": "ANSWER",
+      "hypothesis": "You had 600 Instagram followers as of the latest available update.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 150,
+        "output_tokens": 7,
+        "latency_ms": 828.6582000000635,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 177,
+          "output_tokens": 7,
+          "latency_ms": 800.6303000001935,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_93159ced",
+      "status": "ANSWER",
+      "hypothesis": "About 4 years and 9 months.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 177,
+        "output_tokens": 7,
+        "latency_ms": 800.6303000001935,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 172,
+          "output_tokens": 7,
+          "latency_ms": 787.8435000002355,
+          "error": null
+        }
+      ],
+      "question_id": "852ce960",
+      "status": "ANSWER",
+      "hypothesis": "The stated pre-approval amount was $350,000; a later message recalls it as $400,000.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 172,
+        "output_tokens": 7,
+        "latency_ms": 787.8435000002355,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 154,
+          "output_tokens": 7,
+          "latency_ms": 651.0725999996794,
+          "error": null
+        }
+      ],
+      "question_id": "603deb26",
+      "status": "ANSWER",
+      "hypothesis": "10 times",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 154,
+        "output_tokens": 7,
+        "latency_ms": 651.0725999996794,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "judge_attempts": [
+        {
+          "correct": true,
+          "raw": "YES",
+          "input_tokens": 173,
+          "output_tokens": 7,
+          "latency_ms": 610.6068000008236,
+          "error": null
+        }
+      ],
+      "question_id": "gpt4_cd90e484",
+      "status": "ANSWER",
+      "hypothesis": "Two weeks.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 173,
+        "output_tokens": 7,
+        "latency_ms": 610.6068000008236,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    }
+  ]
+}

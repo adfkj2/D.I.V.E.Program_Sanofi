@@ -1,0 +1,14 @@
+{
+  "judge": {
+    "attempted_calls": 30,
+    "completed_calls": 30,
+    "input_tokens": 4752,
+    "output_tokens": 214,
+    "missing_usage_calls": 0,
+    "cost_cny": null,
+    "cost_note": "Unknown until current provider tariff/billing is supplied; never zero by omission."
+  },
+  "peak_cost_cny": "0.011216",
+  "cumulative_peak_cny": "38.070542",
+  "new_api_calls": 30
+}

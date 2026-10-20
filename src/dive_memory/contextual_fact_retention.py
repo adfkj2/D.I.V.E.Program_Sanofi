@@ -1,10 +1,11 @@
 """Opt-in, bounded verbatim context for personal facts embedded in mixed discourse."""
-from dataclasses import dataclass
 import re
-from .episodic_retention import EpisodicRetentionPolicy, _DETAIL, _PERSON, PREDICATE
-from .narrative_retention import _FICTIONAL_SCOPE, _PRECISE_NONFACTUAL, _PROSPECTIVE
+from dataclasses import dataclass
+
+from .episodic_retention import _DETAIL, _PERSON, PREDICATE, EpisodicRetentionPolicy
 from .extraction import Candidate
-from .gate import GateDecision, GateAction, _sensitive
+from .gate import GateAction, GateDecision, _sensitive
+from .narrative_retention import _FICTIONAL_SCOPE, _PRECISE_NONFACTUAL, _PROSPECTIVE
 
 VERSION='contextual-personal-fact-v1'
 _PAST=re.compile(r'\b(?:I|we)\s+(?:(?:have|had|just|recently|already|also|actually)\s+)*(?:did|used to|swam|played|met|bought|received|earned|[a-z]{3,}ed)\b',re.I)
@@ -84,5 +85,6 @@ class ContextualFactRetention:
             added.append(Candidate(content,'episode','OBSERVATION',{'subject':'user','predicate':PREDICATE,
                 'assertion':'reported_context','role':'user','source_span':[a,b],'retention_policy':VERSION,
                 'context_may_include_questions_or_hypotheses':True},gate,observed_at))
-            if len(added)>=self.max_items:break
+            if len(added)>=self.max_items:
+                break
         return [*prior,*added]

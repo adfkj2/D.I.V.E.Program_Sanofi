@@ -137,19 +137,22 @@ def validate_grounded_decision(
     if not decision.citations:
         return _unsupported("ANSWER requires at least one citation", policy_version=decision.policy_version)
 
-    by_id = {item.memory.id: item for item in items}
+    by_id: dict[str, list[RetrievalItem]] = {}
+    for item in items:
+        by_id.setdefault(item.memory.id, []).append(item)
     for citation in decision.citations:
-        item = by_id.get(citation.memory_id)
-        if item is None:
+        passages = by_id.get(citation.memory_id, [])
+        if not passages:
             return _unsupported("citation references a memory outside the retrieval set",
                                 policy_version=decision.policy_version)
-        if citation.quote not in item.memory.content:
+        matching = [item for item in passages if citation.quote in item.memory.content]
+        if not matching:
             return _unsupported("citation quote is not a verbatim memory substring",
                                 policy_version=decision.policy_version)
         if not citation.source_refs:
             return _unsupported("citation is missing provenance source refs",
                                 policy_version=decision.policy_version)
-        if not set(citation.source_refs) <= set(item.source_refs):
+        if not any(set(citation.source_refs) <= set(item.source_refs) for item in matching):
             return _unsupported("citation source refs are outside the retrieved provenance",
                                 policy_version=decision.policy_version)
     return decision
@@ -176,7 +179,7 @@ def decide_grounded_answer(
     except TimeoutError:
         return GroundedAnswerDecision(AnswerStatus.ERROR, None, "READER_TIMEOUT",
                                       policy_version=policy_version)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - reader adapters may raise vendor-specific failures; preserve ERROR outcome
         return GroundedAnswerDecision(
             AnswerStatus.ERROR,
             None,

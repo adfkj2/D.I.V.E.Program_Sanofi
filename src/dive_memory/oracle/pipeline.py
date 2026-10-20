@@ -28,26 +28,33 @@ from time import perf_counter
 from typing import Any, Mapping, Sequence
 
 from ..context import pack_context
-from ..models import DOCUMENT_PREDICATE
-from ..eval_adapters.longmemeval import LongMemEvalCase, LongMemEvalTurn, parse_instant
-from ..retrieval import SCORING_POLICIES, RetrievalConfig, ScoringPolicy, scoring_policy
-from ..service import MemoryService
-from .evidence import AnswerKind, build_evidence_views, classify_answer_kind, render_evidence_block
-from .controlled_documents import _document_supplement_config, _controlled_candidates, _controlled_pack
-from .source_coordinates import attach_source_coordinates
-from .statement_provenance import attach_statement_provenance
-from .spare_documents import extend_documents
-from ..episodic_retention import EpisodicRetentionPolicy
-from ..narrative_retention import NarrativeRetentionPolicy
-from ..user_document_retention import ExplicitUserDocumentRetention
 from ..contextual_fact_retention import ContextualFactRetention
-from ..source_diversity import diversify_sources
+from ..episodic_retention import EpisodicRetentionPolicy
+from ..eval_adapters.longmemeval import LongMemEvalCase, LongMemEvalTurn, parse_instant
 from ..evidence_search import recover_evidence
+from ..models import DOCUMENT_PREDICATE
+from ..narrative_retention import NarrativeRetentionPolicy
+from ..retrieval import SCORING_POLICIES as SCORING_POLICIES
+from ..retrieval import RetrievalConfig, ScoringPolicy, scoring_policy
+from ..service import MemoryService
+from ..source_diversity import diversify_sources
+from ..user_document_retention import ExplicitUserDocumentRetention
 from .contracts import (
     OracleFailure,
     Stage,
     assert_writer_visible,
     find_evaluator_only_fields,
+)
+from .controlled_documents import (
+    _controlled_candidates,
+    _controlled_pack,
+    _document_supplement_config,
+)
+from .evidence import (
+    AnswerKind,
+    build_evidence_views,
+    classify_answer_kind,
+    render_evidence_block,
 )
 from .reader import (
     OracleReaderRequest,
@@ -59,7 +66,9 @@ from .reader import (
     reader_policy,
     render_reader_context,
 )
-
+from .source_coordinates import attach_source_coordinates
+from .spare_documents import extend_documents
+from .statement_provenance import attach_statement_provenance
 
 CONTEXT_BUDGET_VERSION = "reader-visible-evidence-v2"
 
@@ -594,6 +603,13 @@ def run_case(
             )
 
         read_started = perf_counter()
+        active_source = None
+        bind = getattr(reader, "bind_evidence", None)
+        if callable(bind):
+            from ..retrieval_session import MemoryEvidenceSource
+            active_source = MemoryEvidenceSource(service, case.namespace,
+                as_of=visibility_cutoff, initial=request.items)
+            reader = bind(active_source)
         outcome = reader_outcome(reader, request)
         read_ms = (perf_counter() - read_started) * 1000
         total_ms = (perf_counter() - total_started) * 1000
@@ -663,7 +679,9 @@ def run_case(
                 "reader_usage_source": outcome.usage.source,
                 "context_estimated": packed.estimated_tokens,
             },
-            "calls": {"retrieval": 1, "reader": outcome.calls,
+            "calls": {"retrieval": 1 + (active_source.search_calls if active_source else 0),
+                      **({"memory_read": active_source.read_calls} if active_source else {}),
+                      "reader": outcome.calls,
                       "embedding": formation["embedding_calls"]},
         }
         return CaseResult(record, hypothesis, outcome.origin is not None)

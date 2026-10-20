@@ -127,7 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     commands = [
         (
             "source-correctness",
-            ["-m", "ruff", "check", "src", "--select", "E9,F63,F7,F82"],
+            ["-m", "ruff", "check", "src"],
         ),
         ("delivery-lint", ["-m", "ruff", "check", *config["lint-targets"]]),
         (

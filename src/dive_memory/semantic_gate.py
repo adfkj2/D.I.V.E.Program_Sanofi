@@ -41,26 +41,30 @@ so every accept/reject can be explained by naming the features that moved.
 """
 from __future__ import annotations
 
+import json
+import re
 from dataclasses import dataclass, replace
 from hashlib import sha256
 from inspect import signature
-import json
-import re
 from typing import TYPE_CHECKING, Any, Sequence
 
+from .extraction import SUBJECT_USER, _fact_from_text
 from .gate import (
     EXPLICIT_MARKERS,
     GateAction,
     GateDecision,
-    decide as decide_v1,
     _features,
-    _sensitive,
 )
-from .extraction import SUBJECT_USER, _fact_from_text
+from .gate import (
+    _sensitive as _sensitive,
+)
+from .gate import (
+    decide as decide_v1,
+)
 from .relations import is_single_valued
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .embeddings import EmbeddingProvider
+    from .embeddings import EmbeddingProvider as EmbeddingProvider
 
 POLICY_VERSION = "semantic-utility-v2.1"
 

@@ -1,29 +1,26 @@
 from __future__ import annotations
 
 import argparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import ctypes
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
 import hashlib
 import json
-import math
 import os
-from pathlib import Path
 import platform
 import random
-from statistics import mean, median, pstdev
 import subprocess
-import sys
-from time import perf_counter
 import traceback
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from statistics import mean, median, pstdev
+from time import perf_counter
 from typing import Any, Callable
 
 from .benchmark import _percentile
 from .ids import stable_vector
 from .postgres_benchmark import BenchmarkEmbeddingProvider
 from .postgres_migrations import apply_migrations
-
 
 SCHEMA_VERSION = "dive-postgres-100k-checkpoints-v1"
 DATASET_SIZE = 100_000
@@ -121,7 +118,7 @@ def _run_command(args: list[str], timeout: int = 15) -> dict[str, Any]:
                                 encoding="utf-8", errors="replace", check=False)
         return {"available": result.returncode == 0, "returncode": result.returncode,
                 "stdout": result.stdout.strip(), "stderr": result.stderr.strip()}
-    except Exception as exc:  # pragma: no cover - host dependent
+    except Exception as exc:  # noqa: BLE001 - host command failures become explicit unavailable measurements  # pragma: no cover - host dependent
         return {"available": False, "error": f"{type(exc).__name__}: {exc}"}
 
 
@@ -252,8 +249,8 @@ def _schema_dsn(dsn: str, schema: str) -> str:
 
 def _connect(ctx: RunContext, *, autocommit: bool = True):
     import psycopg
-    from psycopg.rows import dict_row
     from pgvector.psycopg import register_vector
+    from psycopg.rows import dict_row
     connection = psycopg.connect(_schema_dsn(ctx.dsn, ctx.schema), autocommit=autocommit,
                                  row_factory=dict_row)
     register_vector(connection)
@@ -504,9 +501,10 @@ def _bulk_insert(connection: Any, namespace: str, count: int, seed: int) -> dict
 def smoke_test(ctx: RunContext) -> dict[str, Any]:
     import psycopg
     from psycopg import sql
+
     from .postgres_store import PostgresStore
-    from .service import MemoryService
     from .retrieval import RetrievalConfig
+    from .service import MemoryService
 
     smoke_schema = f"smoke_{hashlib.sha256((ctx.run_id + _utc()).encode()).hexdigest()[:16]}"
     started = _utc()
@@ -628,9 +626,10 @@ def _raw_exact_query(connection: Any, query_vector: Any, *, where: str = "",
 
 def checkpoint_b(ctx: RunContext) -> dict[str, Any]:
     from pgvector import Vector
+
     from .postgres_store import PostgresStore
-    from .service import MemoryService
     from .retrieval import RetrievalConfig
+    from .service import MemoryService
 
     _ensure_main_count(ctx)
     rng = random.Random(SEED + 1)
@@ -759,9 +758,10 @@ def checkpoint_c(ctx: RunContext) -> dict[str, Any]:
 
 def checkpoint_d(ctx: RunContext) -> dict[str, Any]:
     from pgvector import Vector
+
     from .postgres_store import PostgresStore
-    from .service import MemoryService
     from .retrieval import RetrievalConfig
+    from .service import MemoryService
     rng = random.Random(SEED + 3)
     current_candidates = [index for index in range(DATASET_SIZE) if index % 5 != 0]
     historical_candidates = [index for index in range(DATASET_SIZE) if index % 1825 <= 100]
@@ -890,7 +890,7 @@ def checkpoint_e(ctx: RunContext) -> dict[str, Any]:
                     worker_service.ingest(
                         namespace, f"请记住 concurrent writer {worker} fact {item}", explicit=True,
                         idempotency_key=f"writer-{worker}-{item}")
-                except Exception as exc:  # pragma: no cover - recorded live failure
+                except Exception as exc:  # noqa: BLE001 - concurrent worker records failures instead of losing them across threads  # pragma: no cover - recorded live failure
                     failures.append(f"{type(exc).__name__}: {exc}")
                 latencies.append((perf_counter() - started) * 1000)
         finally:
@@ -1037,7 +1037,7 @@ def _concurrent_query_worker(ctx: RunContext, targets: list[int]) -> dict[str, A
                 rows = _raw_exact_query(connection, vector)
                 if not rows:
                     raise RuntimeError("empty exact result")
-            except Exception as exc:  # pragma: no cover - live evidence
+            except Exception as exc:  # noqa: BLE001 - record all failed retrievals so the benchmark denominator stays intact  # pragma: no cover - live evidence
                 errors.append(f"{type(exc).__name__}: {exc}")
             latencies.append((perf_counter() - started) * 1000)
     finally:
@@ -1178,7 +1178,7 @@ def checkpoint_h(ctx: RunContext) -> dict[str, Any]:
                     correct = True
                 finally:
                     service.store.close()
-        except Exception as exc:  # pragma: no cover - live evidence
+        except Exception as exc:  # noqa: BLE001 - operation boundary preserves arbitrary driver failures as failed evidence  # pragma: no cover - live evidence
             error = f"{type(exc).__name__}: {exc}"
         return {"operation": kind, "latency_ms": (perf_counter() - started) * 1000,
                 "correct": correct, "error": error}

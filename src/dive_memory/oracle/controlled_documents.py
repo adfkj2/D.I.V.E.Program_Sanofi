@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
+
 from ..context import PackedContext, pack_context
 from ..models import DOCUMENT_PREDICATE, RetrievalItem
 from ..retrieval import RetrievalConfig, scoring_policy

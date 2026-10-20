@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from enum import StrEnum
-import re
-
 
 EPHEMERAL_MARKERS = ("今天晚上", "现在临时", "just for now", "今晚", "稍后")
 EXPLICIT_MARKERS = ("记住", "请记住", "remember", "不要忘记", "keep in mind")

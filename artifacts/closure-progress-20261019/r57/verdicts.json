@@ -1,0 +1,646 @@
+{
+  "official": false,
+  "cases": 40,
+  "results": [
+    {
+      "question_id": "c7dc5443",
+      "status": "ANSWER",
+      "hypothesis": "Your latest recorded recreational volleyball league record is 5-2 with the Net Ninjas.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 159,
+        "output_tokens": 7,
+        "latency_ms": 778.7220999998681,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_d31cdae3",
+      "status": "ANSWER",
+      "hypothesis": "The family road trip across the American Southwest came first; the solo trip to Europe was last summer (2022), while the family trip was a few years earlier.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 210,
+        "output_tokens": 7,
+        "latency_ms": 843.5307999989163,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_c27434e8_abs",
+      "status": "INVALID",
+      "hypothesis": null,
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "INVALID_OUTPUT_RULE",
+        "input_tokens": null,
+        "output_tokens": null,
+        "latency_ms": 0.0,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "question_id": "8b9d4367",
+      "status": "ANSWER",
+      "hypothesis": "Jaipur Rugs",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 157,
+        "output_tokens": 7,
+        "latency_ms": 874.8754000007466,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "c4a1ceb8",
+      "status": "ANSWER",
+      "hypothesis": "3 — lime, orange, and lemon.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 127,
+        "output_tokens": 7,
+        "latency_ms": 689.1254999991361,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "efc3f7c2",
+      "status": "ANSWER",
+      "hypothesis": "30 minutes earlier",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 123,
+        "output_tokens": 7,
+        "latency_ms": 905.1314000007551,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "6aeb4375",
+      "status": "ANSWER",
+      "hypothesis": "You have tried four Korean restaurants in your city.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 149,
+        "output_tokens": 7,
+        "latency_ms": 836.9038999990153,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_2f8be40d",
+      "status": "ANSWER",
+      "hypothesis": "3 weddings",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 135,
+        "output_tokens": 7,
+        "latency_ms": 437.44109999897773,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "06f04340",
+      "status": "ANSWER",
+      "hypothesis": "Make a Middle Eastern-style dinner: a salad of your homegrown cherry tomatoes with chopped basil and mint, bulgur, cucumbers, feta, and lemon-tahini dressing. For a heartier main, serve grilled meat with a minty yogurt sauce.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 234,
+        "output_tokens": 7,
+        "latency_ms": 521.3688999992883,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "66f24dbb",
+      "status": "ANSWER",
+      "hypothesis": "A yellow dress and a pair of earrings to match.",
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "NO",
+        "input_tokens": 128,
+        "output_tokens": 7,
+        "latency_ms": 939.924999998766,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "question_id": "4c36ccef",
+      "status": "ANSWER",
+      "hypothesis": "Roscioli",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 133,
+        "output_tokens": 7,
+        "latency_ms": 762.5406999995903,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "15745da0_abs",
+      "status": "ANSWER",
+      "hypothesis": "About three months (you said you'd been collecting vintage cameras for three months).",
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "NO",
+        "input_tokens": 155,
+        "output_tokens": 7,
+        "latency_ms": 712.1815000009519,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "question_id": "a1cc6108",
+      "status": "ANSWER",
+      "hypothesis": "About 11 years old.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 118,
+        "output_tokens": 7,
+        "latency_ms": 698.228499999459,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "67e0d0f2",
+      "status": "ANSWER",
+      "hypothesis": "20 online courses (12 Coursera + 8 edX).",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 129,
+        "output_tokens": 7,
+        "latency_ms": 707.1969000007812,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_d84a3211",
+      "status": "ANSWER",
+      "hypothesis": "$185 total: $120 helmet + $25 chain + $40 bike lights.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 137,
+        "output_tokens": 7,
+        "latency_ms": 685.073900000134,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "94f70d80",
+      "status": "ANSWER",
+      "hypothesis": "4 hours",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 122,
+        "output_tokens": 7,
+        "latency_ms": 843.5365000004822,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "195a1a1b",
+      "status": "ANSWER",
+      "hypothesis": "Try a calm, structured evening wind-down: disconnect from screens and stimulating work, do a guided meditation such as the “Body Scan” by Insight Timer or “Sleep” by Headspace, then read or journal quietly before your 9:30 pm bedtime. Keeping the routine structured and limiting social media can also help you unwind.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 244,
+        "output_tokens": 7,
+        "latency_ms": 915.6115999994654,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "09ba9854",
+      "status": "ANSWER",
+      "hypothesis": "You would save about $50 ($60 taxi fare minus $10 train fare).",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 140,
+        "output_tokens": 7,
+        "latency_ms": 894.480899998598,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_a56e767c",
+      "status": "ANSWER",
+      "hypothesis": "4",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 117,
+        "output_tokens": 7,
+        "latency_ms": 657.5534999992669,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "6e984302",
+      "status": "ANSWER",
+      "hypothesis": "You bought your own set of sculpting tools: a modeling tool set, a wire cutter, and a sculpting mat.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 196,
+        "output_tokens": 7,
+        "latency_ms": 710.8516000007512,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_7ca326fa",
+      "status": "ANSWER",
+      "hypothesis": "Emma graduated first, Rachel second, and Alex third.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 181,
+        "output_tokens": 7,
+        "latency_ms": 866.4559000008012,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "f523d9fe",
+      "status": "INVALID",
+      "hypothesis": null,
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "INVALID_OUTPUT_RULE",
+        "input_tokens": null,
+        "output_tokens": null,
+        "latency_ms": 0.0,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "question_id": "0db4c65d",
+      "status": "ANSWER",
+      "hypothesis": "18 days",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 210,
+        "output_tokens": 7,
+        "latency_ms": 678.74540000048,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "60d45044",
+      "status": "ANSWER",
+      "hypothesis": "Japanese short-grain rice",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 121,
+        "output_tokens": 7,
+        "latency_ms": 743.7356999998883,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "d6233ab6",
+      "status": "ANSWER",
+      "hypothesis": "Yes—it sounds like a good idea. You have happy high school memories, including debate team and AP economics, and you mention old high school friends, so a reunion could be a low-pressure chance to reconnect and revisit those positive experiences.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 273,
+        "output_tokens": 7,
+        "latency_ms": 777.6405999993585,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "eac54adc",
+      "status": "ANSWER",
+      "hypothesis": "19 days",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 184,
+        "output_tokens": 7,
+        "latency_ms": 592.5681000007899,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "7a8d0b71",
+      "status": "ANSWER",
+      "hypothesis": "$2,000 was allocated for influencer marketing.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 152,
+        "output_tokens": 7,
+        "latency_ms": 745.738399999027,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "question_id": "f685340e_abs",
+      "status": "ABSTAIN",
+      "hypothesis": "The available conversation history does not contain enough information to answer this question.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 158,
+        "output_tokens": 7,
+        "latency_ms": 648.1755000004341,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "question_id": "28dc39ac",
+      "status": "ANSWER",
+      "hypothesis": "You have spent about 140 hours total: 30 hours on The Last of Us Part II (hard), 25 hours on The Last of Us Part II (normal), 70 hours on Assassin's Creed Odyssey, 10 hours on Celeste, and 5 hours on Hyper Light Drifter.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 177,
+        "output_tokens": 7,
+        "latency_ms": 548.0327000004763,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_194be4b3",
+      "status": "ANSWER",
+      "hypothesis": "You currently own 4 musical instruments: a Korg B1 piano, a black Fender Stratocaster electric guitar, a 5-piece Pearl Export drum set, and a Yamaha FG800 acoustic guitar.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 216,
+        "output_tokens": 7,
+        "latency_ms": 785.227099999247,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "eeda8a6d",
+      "status": "ANSWER",
+      "hypothesis": "17 fish total: 16 in the 20-gallon tank (10 neon tetras + 5 golden honey gouramis + 1 pleco) and 1 betta in the 10-gallon tank.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 163,
+        "output_tokens": 7,
+        "latency_ms": 877.0456000002014,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_fe651585_abs",
+      "status": "ABSTAIN",
+      "hypothesis": "The available conversation history does not contain enough information to answer this question.",
+      "correct": null,
+      "judge": {
+        "correct": null,
+        "raw": "{\"type\": \"json_object\", \"output\": {\"verdict\": \"yes\"}}",
+        "input_tokens": 153,
+        "output_tokens": 18,
+        "latency_ms": 832.9579000001104,
+        "error": "unexpected verdict ''"
+      },
+      "baseline_correct": true,
+      "unanswerable": true
+    },
+    {
+      "question_id": "80ec1f4f",
+      "status": "ANSWER",
+      "hypothesis": "2 — the Natural History Museum and The Art Cube.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 129,
+        "output_tokens": 7,
+        "latency_ms": 665.4116999998223,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_4edbafa2",
+      "status": "ANSWER",
+      "hypothesis": "3 June 2023",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 171,
+        "output_tokens": 7,
+        "latency_ms": 663.3839000005537,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "57f827a0",
+      "status": "ANSWER",
+      "hypothesis": "Rearranging around your mid-century modern walnut dresser: keep the layout uncluttered and leave space around its tapered legs so it feels light rather than bulky; keep the dresser low-profile and let the walnut grain be the focus; keep the satin finish and brass accents/simple knobs as the understated hardware scheme.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 263,
+        "output_tokens": 7,
+        "latency_ms": 870.7856999990327,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "1cea1afa",
+      "status": "ANSWER",
+      "hypothesis": "600 followers",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 140,
+        "output_tokens": 7,
+        "latency_ms": 634.8541999996087,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_93159ced",
+      "status": "ANSWER",
+      "hypothesis": "About 4 years and 9 months.",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 177,
+        "output_tokens": 7,
+        "latency_ms": 548.8626999995176,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "852ce960",
+      "status": "ANSWER",
+      "hypothesis": "You were pre-approved for $350,000 from Wells Fargo.",
+      "correct": false,
+      "judge": {
+        "correct": false,
+        "raw": "NO",
+        "input_tokens": 161,
+        "output_tokens": 7,
+        "latency_ms": 988.1906999999046,
+        "error": null
+      },
+      "baseline_correct": false,
+      "unanswerable": false
+    },
+    {
+      "question_id": "603deb26",
+      "status": "ANSWER",
+      "hypothesis": "10 times",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 154,
+        "output_tokens": 7,
+        "latency_ms": 582.9065999987506,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    },
+    {
+      "question_id": "gpt4_cd90e484",
+      "status": "ANSWER",
+      "hypothesis": "14 days (two weeks)",
+      "correct": true,
+      "judge": {
+        "correct": true,
+        "raw": "YES",
+        "input_tokens": 176,
+        "output_tokens": 7,
+        "latency_ms": 858.0579999998008,
+        "error": null
+      },
+      "baseline_correct": true,
+      "unanswerable": false
+    }
+  ]
+}

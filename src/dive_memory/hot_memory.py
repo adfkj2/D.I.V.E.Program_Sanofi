@@ -5,8 +5,8 @@ retrieval or counted as answer evidence. All writes below affect derived tables.
 """
 from __future__ import annotations
 
-from hashlib import sha256
 import json
+from hashlib import sha256
 
 from . import temporal
 from .entities import is_user_subject

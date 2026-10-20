@@ -9,7 +9,7 @@ import re
 from dataclasses import dataclass
 
 from .extraction import Candidate
-from .gate import GateDecision, GateAction, _sensitive
+from .gate import GateAction, GateDecision, _sensitive
 
 VERSION = "selective-episodic-v1"
 PREDICATE = "episodic_statement"

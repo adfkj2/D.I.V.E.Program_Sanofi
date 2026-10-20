@@ -2,8 +2,8 @@ from typing import Any
 
 from .answering import decide_grounded_answer
 from .auth import NamespaceAuthorizer
-from .context import pack_context
 from .config import RuntimeConfig
+from .context import pack_context
 from .models import Memory
 from .service import MemoryService
 

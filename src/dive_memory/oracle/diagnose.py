@@ -51,11 +51,12 @@ from collections import Counter
 from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from ..eval_adapters.longmemeval import LongMemEvalCase
 from .contracts import CANONICAL_ABSTENTION_HYPOTHESIS, HypothesisOrigin
-from .evaluate import Judge, NOT_EVALUATED, NOT_RUN, UNKNOWN, NormalizedExactMatchJudge
+from .evaluate import NOT_EVALUATED, NOT_RUN, UNKNOWN, Judge
+from .evaluate import NormalizedExactMatchJudge as NormalizedExactMatchJudge
 from .loader import load_oracle_dataset
 
 # --------------------------------------------------------------------------- #

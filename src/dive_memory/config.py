@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, dataclass
 from hashlib import sha256
-import json
-from typing import Mapping, Any
+from typing import Any, Mapping
 
 
 def _boolean(value: Any, field: str) -> bool:

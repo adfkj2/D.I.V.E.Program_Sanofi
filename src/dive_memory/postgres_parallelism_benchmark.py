@@ -7,22 +7,21 @@ is deliberately separate from the concurrency recovery runner and its evidence.
 from __future__ import annotations
 
 import argparse
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
 import hashlib
 import json
-from pathlib import Path
 import random
 import shutil
 import statistics
 import subprocess
 import threading
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
+from pathlib import Path
 from time import perf_counter
 from typing import Any, Iterable
 
 from .benchmark import _percentile
 from .ids import stable_vector
-
 
 SCHEMA_VERSION = "dive-postgres-paired-parallelism-v1"
 DEFAULT_REPORTS_ROOT = Path("eval/reports/postgres-parallelism")
@@ -309,7 +308,7 @@ def _resource_snapshot(container: str, connection: Any) -> dict[str, Any]:
             row = json.loads(stats.stdout.strip().splitlines()[-1])
             result["container"] = {"cpu_percent": row.get("CPUPerc"), "memory_usage": row.get("MemUsage"),
                                    "memory_percent": row.get("MemPerc")}
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - optional external metrics failures are retained as unavailable evidence
             result["container"] = {"status": "NOT_AVAILABLE", "reason": str(exc)}
     else:
         result["container"] = {"status": "NOT_AVAILABLE"}
@@ -406,7 +405,7 @@ def ensure_environment(run_dir: Path, dsn: str, container: str, *, expected_shm:
         state_text, inspect_shm_text = inspect_text.rsplit("|", 1)
         container_state = json.loads(state_text)
         inspect_shm = int(inspect_shm_text)
-    except Exception:
+    except Exception:  # noqa: BLE001 - container inspection failure marks the run invalid rather than successful
         container_state, inspect_shm = {}, None
     shm_total = resources.get("shared_memory", {}).get("total_bytes")
     valid = (counts == {"memories": cfg["dataset_size"], "vectors": cfg["dataset_size"]}
@@ -437,11 +436,16 @@ def arm_artifact_path(run_dir: Path, workers: int, trial: int, arm: str) -> Path
 
 def _classify_error(exc: BaseException) -> str:
     text = str(exc).lower()
-    if "dynamic shared memory" in text or "dsm" in text: return "DSM_ERROR"
-    if "shared memory" in text: return "SHARED_MEMORY_ERROR"
-    if "deadlock" in text: return "DEADLOCK"
-    if "timeout" in text: return "TIMEOUT"
-    if "connection" in text or "server closed" in text: return "CONNECTION_ERROR"
+    if "dynamic shared memory" in text or "dsm" in text:
+        return "DSM_ERROR"
+    if "shared memory" in text:
+        return "SHARED_MEMORY_ERROR"
+    if "deadlock" in text:
+        return "DEADLOCK"
+    if "timeout" in text:
+        return "TIMEOUT"
+    if "connection" in text or "server closed" in text:
+        return "CONNECTION_ERROR"
     return "DATABASE_ERROR"
 
 
@@ -501,7 +505,7 @@ def execute_trial_arm(run_dir: Path, dsn: str, container: str, workers: int, tri
                                         "latency_ms": (perf_counter() - started) * 1000, "success": True,
                                         "correct": bool(actual and actual[0] == expected), "expected_top1": expected,
                                         "actual_ids": actual, "error_class": None})
-                    except Exception as exc:
+                    except Exception as exc:  # noqa: BLE001 - worker boundary records arbitrary driver failures with operation identity
                         results.append({"worker_id": worker_id, "operation_index": row["operation_index"],
                                         "target_memory_id": row["target_memory_id"],
                                         "latency_ms": (perf_counter() - started) * 1000, "success": False,
@@ -590,7 +594,8 @@ def aggregate_trials(run_dir: Path) -> dict[str, Any]:
             np_path = arm_artifact_path(run_dir, int(worker_text), int(trial_text), "no-parallel")
             if p_path.exists() and np_path.exists():
                 pair = compare_pair(read_json(p_path), read_json(np_path))
-                if pair["status"] == "PASS": valid_pairs.append(pair)
+                if pair["status"] == "PASS":
+                    valid_pairs.append(pair)
         metrics: dict[str, Any] = {}
         for name in ("throughput", "p50", "p95", "p99"):
             values = [pair["delta_parallel_minus_no_parallel"][name] for pair in valid_pairs]
@@ -616,7 +621,8 @@ def validate_artifacts(run_dir: Path) -> dict[str, Any]:
         errors.append("manifest/schedule schema or run-id mismatch")
     for key, path in (("query_schedule", schedule_path), ("execution_order", order_path)):
         recorded = manifest.get("artifacts", {}).get(key, {}).get("sha256")
-        if recorded != file_sha256(path): errors.append(f"{key} file SHA mismatch")
+        if recorded != file_sha256(path):
+            errors.append(f"{key} file SHA mismatch")
     order = read_json(order_path)
     if order.get("run_id") != run_id or order != generate_execution_order(run_id, manifest["config"]["trials"]):
         errors.append("execution order mismatch")
@@ -630,7 +636,8 @@ def validate_artifacts(run_dir: Path) -> dict[str, Any]:
         if value.get("run_id") and value.get("run_id") != run_id:
             errors.append(f"run-id mismatch: {path.name}")
         lowered = path.read_text(encoding="utf-8").lower()
-        if any(token in lowered for token in forbidden): errors.append(f"secret-like content: {path.name}")
+        if any(token in lowered for token in forbidden):
+            errors.append(f"secret-like content: {path.name}")
     for worker_text, trials in manifest["checkpoints"].items():
         for trial_text, trial_record in trials.items():
             for arm in ARMS:
@@ -673,10 +680,11 @@ def run_paired_trial(run_dir: Path, dsn: str, container: str, workers: int, tria
 def run_smoke(dsn: str, container: str, smoke_root: Path) -> dict[str, Any]:
     import psycopg
     from psycopg import sql
-    from .postgres_migrations import apply_migrations
-    from .postgres_benchmark import BenchmarkEmbeddingProvider
-    from .postgres_store import PostgresStore
+
     from . import postgres_scale_benchmark as scale
+    from .postgres_benchmark import BenchmarkEmbeddingProvider
+    from .postgres_migrations import apply_migrations
+    from .postgres_store import PostgresStore
     run_id = "smoke-paired-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     schema = "paired_smoke_" + hashlib.sha256(run_id.encode()).hexdigest()[:16]
     run_dir = smoke_root / run_id
@@ -706,8 +714,10 @@ def run_smoke(dsn: str, container: str, smoke_root: Path) -> dict[str, Any]:
         atomic_write_json(run_dir / "smoke-result.json", smoke)
         validation = validate_artifacts(run_dir)
         atomic_write_json(run_dir / "artifact-validation.json", validation)
-        if validation["status"] != "PASS": raise RuntimeError(f"smoke artifact validation failed: {validation}")
-        if smoke["status"] != "PASS": raise RuntimeError(f"smoke failed: {smoke}")
+        if validation["status"] != "PASS":
+            raise RuntimeError(f"smoke artifact validation failed: {validation}")
+        if smoke["status"] != "PASS":
+            raise RuntimeError(f"smoke failed: {smoke}")
         return {**smoke, "run_dir": str(run_dir)}
     finally:
         with psycopg.connect(dsn, autocommit=True) as admin:
@@ -728,7 +738,8 @@ def main() -> None:
     args = parser.parse_args()
     import os
     dsn = os.environ.get("DIVE_TEST_POSTGRES_DSN")
-    if not dsn: raise SystemExit("set DIVE_TEST_POSTGRES_DSN; it is never written to artifacts")
+    if not dsn:
+        raise SystemExit("set DIVE_TEST_POSTGRES_DSN; it is never written to artifacts")
     if args.command == "smoke":
         result = run_smoke(dsn, args.container, args.smoke_root)
     else:

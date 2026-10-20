@@ -36,22 +36,22 @@ from datetime import datetime, timezone
 from pathlib import Path
 from statistics import median
 from time import perf_counter
-from typing import Any, Callable, Iterable, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
-from ..eval_manifest import build_run_manifest, code_snapshot
 from ..eval_adapters.longmemeval import LongMemEvalCase
+from ..eval_manifest import build_run_manifest, code_snapshot
+from ..retrieval import SCORING_POLICIES
 from .contracts import (
     CANONICAL_ABSTENTION_HYPOTHESIS,
     ORACLE_ABSTENTION_CASES,
     ORACLE_DATASET_LICENSE,
     ORACLE_DATASET_NAME,
     ORACLE_EXPECTED_CASES,
-    OracleResumeConflictError,
     SUBMISSION_FIELDS,
+    OracleResumeConflictError,
 )
 from .loader import OracleDataset, load_oracle_dataset, select_cases, sha256_file
 from .pipeline import CaseResult, PipelineConfig, run_case, summarize_record
-from ..retrieval import SCORING_POLICIES
 from .reader import READER_POLICIES, ReaderPolicy, ReaderSpec, reader_policy
 
 SCHEMA_VERSION = "dive-oracle-run-v1"
@@ -665,8 +665,8 @@ def build_reader(args: argparse.Namespace) -> Any:
     from .reader import GroundedChatReader
 
     policy: ReaderPolicy = reader_policy(getattr(args, "reader_policy", "evidence_first"))
-    from .indexed_reader import IndexedEvidenceReader
     from .calculating_reader import CalculatingReader
+    from .indexed_reader import IndexedEvidenceReader
     reader_class = (CalculatingReader if policy.name == "cited_calculation" else
                     IndexedEvidenceReader if policy.name == "indexed_evidence" else GroundedChatReader)
 

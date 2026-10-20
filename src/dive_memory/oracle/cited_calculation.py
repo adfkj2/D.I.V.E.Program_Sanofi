@@ -6,14 +6,19 @@ Unsupported expressions raise ValueError, allowing a recorded reader fallback.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import date, timedelta
-from decimal import Decimal, InvalidOperation, localcontext
-from fractions import Fraction
 import calendar
 import re
+from dataclasses import dataclass
+from datetime import date, timedelta
+from decimal import Decimal, localcontext
+from fractions import Fraction
 
-from ..answering import AnswerStatus, EvidenceCitation, GroundedAnswerDecision, validate_grounded_decision
+from ..answering import (
+    AnswerStatus,
+    EvidenceCitation,
+    GroundedAnswerDecision,
+    validate_grounded_decision,
+)
 
 VERSION = "cited-calculation-v4"
 _ONES = dict(zip("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(), range(20)))
@@ -234,7 +239,8 @@ def calculate(plan, request):
             if op not in {"elapsed_days","elapsed_weeks","elapsed_months"}:
                 raise ValueError("question date only allowed for elapsed-time calculation")
             d = _date(request.question_date)
-            values.append(DateRange(d,d)); labels.append("question date")
+            values.append(DateRange(d,d))
+            labels.append("question date")
             continue
         required = {"index","quote","label"} | (set() if op == "count" else {"value"})
         if set(operand) != required:

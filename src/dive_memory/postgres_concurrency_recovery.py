@@ -7,23 +7,22 @@ are small and resumable; no command implicitly runs the complete experiment.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
+import os
+import random
+import subprocess
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field, is_dataclass
 from datetime import datetime, timezone
 from enum import Enum
-import hashlib
-import json
-import os
 from pathlib import Path
-import random
-import subprocess
-import threading
 from time import perf_counter
 from typing import Any, Callable, Iterable
 
 from . import postgres_scale_benchmark as scale
 from .ids import stable_vector
-
 
 SCHEMA_VERSION = "dive-postgres-concurrency-recovery-v1"
 DEFAULT_SOURCE_RUN = "postgres-100k-20260921-084800"
@@ -462,12 +461,12 @@ def _client_rss() -> Measurement:
     try:
         import psutil  # type: ignore[import-not-found]
         return Measurement(MeasurementStatus.MEASURED, int(psutil.Process().memory_info().rss))
-    except Exception:
+    except Exception:  # noqa: BLE001 - optional process metrics may fail on unsupported hosts; try the fallback
         try:
             import resource
             value = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
             return Measurement(MeasurementStatus.MEASURED, int(value * (1024 if os.name != "darwin" else 1)))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - optional host metrics remain explicitly unavailable on backend failure
             return _not_available(f"client RSS unavailable: {type(exc).__name__}")
 
 
@@ -494,7 +493,7 @@ class ResourceSampler:
                 memory_percent = Measurement(MeasurementStatus.MEASURED,
                                              float(str(parsed.get("MemPerc", "0")).rstrip("%")))
                 memory_usage = Measurement(MeasurementStatus.MEASURED, parsed.get("MemUsage"))
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - malformed external Docker output becomes unavailable metrics
                 cpu = memory_percent = memory_usage = _not_available(f"docker stats parse failed: {exc}")
         shm_result = _run_command(["docker", "exec", self.container, "sh", "-c",
                                    "df -B1 /dev/shm | tail -1"], 10)
@@ -535,13 +534,13 @@ class ResourceSampler:
                                 "waiting": int(row["waiting"]),
                                 "ungranted_locks": int(locks["count"]),
                                 "deadlocks_total": int(database["deadlocks"])})
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - database sampler reports any driver failure as unavailable evidence
             return _not_available(f"PostgreSQL activity unavailable: {type(exc).__name__}: {exc}")
 
     def sample(self) -> ResourceSample:
         try:
             available, cpu, memory_percent, memory_usage, shm, disk = self._docker()
-        except Exception as exc:  # defensive: observability must not stop work
+        except Exception as exc:  # noqa: BLE001 - observability failures must not stop the measured workload  # defensive: observability must not stop work
             unavailable = _not_available(f"Docker sampling failed: {type(exc).__name__}: {exc}")
             available = cpu = memory_percent = memory_usage = shm = disk = unavailable
         host_raw = scale._host_memory()
@@ -585,7 +584,7 @@ def _safe_container_inspect(result: subprocess.CompletedProcess[str] | None) -> 
                 "environment": "REDACTED_NOT_CAPTURED",
             },
         }
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - external container inspection failures remain unavailable evidence
         return {"status": "NOT_AVAILABLE", "reason": f"docker inspect parse failed: {exc}"}
 
 
@@ -714,7 +713,7 @@ class PostgresRecoveryBackend:
             correct = actual == expected
             return OperationResult(operation_id, "retrieval", (perf_counter() - started) * 1000,
                                    True, correct, expected, actual)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - benchmark worker records driver failures in the operation result
             return OperationResult(operation_id, "retrieval", (perf_counter() - started) * 1000,
                                    False, False, expected_ids=expected,
                                    error_class=classify_database_error(exc), raw_error=f"{type(exc).__name__}: {exc}")
@@ -760,7 +759,7 @@ class PostgresRecoveryBackend:
         try:
             memories_after, vectors_after = self.main_count()
             database_available = True
-        except Exception:
+        except Exception:  # noqa: BLE001 - post-fault database availability is measured even when the driver fails
             memories_after, vectors_after = memories_before, vectors_before
             database_available = False
         correct = all(row.correct for row in operations if row.success)
@@ -940,9 +939,10 @@ def run_smoke(dsn: str, container: str, smoke_root: Path, *, rows: int = 100) ->
     """Tiny isolated PostgreSQL validation. It never touches the 100K schema."""
     import psycopg
     from psycopg import sql
+
+    from .postgres_benchmark import BenchmarkEmbeddingProvider
     from .postgres_migrations import apply_migrations
     from .postgres_store import PostgresStore
-    from .postgres_benchmark import BenchmarkEmbeddingProvider
 
     run_id = f"smoke-{datetime.now().strftime('%Y%m%d-%H%M%S-%f')}"
     schema = "recovery_smoke_" + hashlib.sha256(run_id.encode()).hexdigest()[:16]

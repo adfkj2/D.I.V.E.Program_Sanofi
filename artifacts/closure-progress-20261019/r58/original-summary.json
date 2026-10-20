@@ -1,0 +1,14 @@
+{
+  "cases": 40,
+  "correct": 35,
+  "accuracy": 0.875,
+  "historical_baseline_correct": 35,
+  "improvements": 3,
+  "regressions": 3,
+  "fully_judged": false,
+  "invalid": 1,
+  "new_wrong_unanswerable": 2,
+  "promote": false,
+  "official": false,
+  "sample_only_not_500_case_accuracy": true
+}

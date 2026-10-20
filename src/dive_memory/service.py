@@ -1,34 +1,46 @@
 from __future__ import annotations
 
 import json
-from hashlib import sha256
 import threading
 from functools import wraps
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+from . import hot_memory, temporal
+from .context import pack_context
+from .decay import apply_decay
+from .embeddings import EmbeddingProvider
+from .entities import entity_candidates, is_user_subject
+from .gate import decide as decide
 from .ids import new_id, stable_id
 from .lifecycle import ConsolidationReport, archive_expired, consolidate
-from .models import Event, EvidenceState, Memory, MemoryStatus, RetrievalItem, RetrievalResult, utc_now
-from . import temporal
-from . import hot_memory
-from .context import pack_context
+from .llm import (
+    ExtractionOutcome,
+    ExtractionOutcomeCode,
+    ExtractionProvider,
+    HeuristicExtractionProvider,
+)
+from .models import (
+    Event,
+    EvidenceState,
+    Memory,
+    MemoryStatus,
+    RetrievalItem,
+    RetrievalResult,
+    utc_now,
+)
 from .planner import plan_query
-from .llm import ExtractionOutcome, ExtractionOutcomeCode, ExtractionProvider, HeuristicExtractionProvider
-from .gate import decide
-from .entities import entity_candidates, is_user_subject
 from .relations import is_single_valued, relation_predicate
 from .resolution import (
+    _AUTHORITATIVE_SOURCES,
     RelationshipResolver,
     ResolutionAction,
     ResolutionContext,
-    _AUTHORITATIVE_SOURCES,
 )
 from .retrieval import RetrievalConfig
-from .token_budget import TokenCounter
-from .decay import apply_decay
 from .store import SQLiteStore
-from .embeddings import EmbeddingProvider
+from .token_budget import TokenCounter
 
 
 def _synchronized(method):
@@ -411,7 +423,7 @@ class MemoryService:
                     memory_ids = self._process_event(event)
                     self.store.mark_event_processed(event.id, utc_now())
                 results.append({"event_id": event.id, "memory_ids": memory_ids})
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - durable queue boundary records event failure and retry state for any extractor
                 failure = self.store.mark_event_failed(event.id, f"{type(exc).__name__}: {exc}")
                 results.append({"event_id": event.id, "memory_ids": [], "error": str(exc), **failure})
         return results

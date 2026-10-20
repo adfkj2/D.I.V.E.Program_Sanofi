@@ -1,0 +1,5 @@
+src\dive_memory\application\oracle_run.py:217: error: Unsupported operand types for * ("Decimal" and "None")  [operator]
+src\dive_memory\application\oracle_run.py:217: note: Right operand is of type "Any | None"
+src\dive_memory\application\oracle_run.py:218: error: Unsupported operand types for * ("Decimal" and "None")  [operator]
+src\dive_memory\application\oracle_run.py:218: note: Right operand is of type "Any | None"
+Found 2 errors in 1 file (checked 34 source files)

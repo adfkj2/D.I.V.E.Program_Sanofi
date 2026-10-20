@@ -6,7 +6,6 @@ from . import temporal
 from .models import MemoryStatus
 from .store import SQLiteStore
 
-
 # Only *temporary* durabilities expire on a timer. docs/04 is explicit that
 # stable identity, explicit long-term preferences and user-pinned items carry no
 # automatic TTL, and expiry of temporary plans is driven by the validity window

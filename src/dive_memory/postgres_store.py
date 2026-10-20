@@ -5,7 +5,11 @@ from datetime import datetime
 from typing import Any, Iterable
 
 from . import temporal
-from .embeddings import DeterministicEmbeddingProvider, EmbeddingProvider, embed_with_metadata
+from .embeddings import (
+    DeterministicEmbeddingProvider,
+    EmbeddingProvider,
+    embed_with_metadata,
+)
 from .ids import stable_id
 from .models import Event, EvidenceState, Memory, MemoryStatus, utc_now
 from .normalization import normalize_text
@@ -22,8 +26,8 @@ class PostgresStore:
     def __init__(self, dsn: str, embedder: EmbeddingProvider | None = None) -> None:
         try:
             import psycopg
-            from psycopg.rows import dict_row
             from pgvector.psycopg import register_vector
+            from psycopg.rows import dict_row
         except ImportError as exc:  # pragma: no cover - optional environment
             raise RuntimeError("install dive-memory[postgres] to use PostgresStore") from exc
         self.connection = psycopg.connect(dsn, autocommit=True, row_factory=dict_row)

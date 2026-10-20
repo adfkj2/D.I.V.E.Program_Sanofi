@@ -14,6 +14,19 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any, Iterable, Mapping, Sequence
 
+from ..reading.contracts import (
+    CANONICAL_ABSTENTION_HYPOTHESIS as CANONICAL_ABSTENTION_HYPOTHESIS,
+)
+from ..reading.contracts import (
+    HypothesisOrigin as HypothesisOrigin,
+)
+from ..reading.contracts import (
+    LeakageError as LeakageError,
+)
+from ..reading.contracts import (
+    ReaderStatus as ReaderStatus,
+)
+
 # --- Provenance of the official artifacts -------------------------------------
 
 ORACLE_DATASET_NAME = "longmemeval_oracle"
@@ -80,14 +93,8 @@ SUBMISSION_FIELDS: frozenset[str] = frozenset({"question_id", "hypothesis"})
 #: Hypothesis emitted when the reader refuses, errors, or times out. Uniform
 #: for every question -- it is a template, not a per-question answer, so it
 #: cannot be mistaken for hard-coding. See appendix F of the student handbook.
-CANONICAL_ABSTENTION_HYPOTHESIS = (
-    "The available conversation history does not contain enough information "
-    "to answer this question."
-)
 
 
-class LeakageError(RuntimeError):
-    """Raised when a gold-only field reaches a writer-visible surface."""
 
 
 def _yield_leaked_keys(payload: Any, forbidden: frozenset[str], path: str) -> Iterable[str]:
@@ -154,22 +161,10 @@ class Stage(StrEnum):
     UNKNOWN = "UNKNOWN"
 
 
-class ReaderStatus(StrEnum):
-    """Outcome of one reader call, kept distinct from a semantic abstention."""
-
-    ANSWER = "ANSWER"
-    ABSTAIN = "ABSTAIN"
-    TIMEOUT = "TIMEOUT"
-    ERROR = "ERROR"
-    INVALID = "INVALID"
 
 
 #: How a hypothesis that ends up in the submission was produced. This is what
 #: stops an error fallback from being silently counted as a real answer.
-class HypothesisOrigin(StrEnum):
-    READER = "READER"
-    READER_ABSTENTION = "READER_ABSTENTION"
-    ERROR_FALLBACK = "ERROR_FALLBACK"
 
 
 @dataclass(frozen=True, slots=True)

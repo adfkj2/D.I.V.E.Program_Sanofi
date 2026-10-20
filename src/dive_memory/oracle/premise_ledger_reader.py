@@ -5,15 +5,20 @@ truth or relevance of the model's semantic judgments, identities or dates.
 """
 from __future__ import annotations
 
+import json
 from dataclasses import replace
 from hashlib import sha256
-import json
 from time import perf_counter
 
 from ..answering import AnswerStatus, GroundedAnswerDecision
 from ..token_budget import ApproximateTokenCounter
 from .indexed_reader import parse_indexed
-from .reader import TokenUsage, assert_prompt_is_clean, map_decision, render_reader_context
+from .reader import (
+    TokenUsage,
+    assert_prompt_is_clean,
+    map_decision,
+    render_reader_context,
+)
 
 VERSION = "oracle-premise-ledger-reader-v1"
 INVALID = "UNSUPPORTED_READER_OUTPUT"
@@ -169,7 +174,7 @@ class PremiseLedgerReader:
                 completion = self.client.complete(model=self.spec.model, messages=messages,
                     temperature=self.spec.temperature, max_tokens=self.spec.max_tokens,
                     timeout_seconds=self.spec.timeout_seconds, response_format={"type": "json_object"})
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - provider boundary records failed calls instead of treating them as refusals
                 failed += 1
                 code = "READER_TIMEOUT" if isinstance(exc, TimeoutError) else "READER_FAILURE"
                 decision = GroundedAnswerDecision(AnswerStatus.ERROR, None, code,

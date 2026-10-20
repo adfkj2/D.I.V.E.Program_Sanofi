@@ -6,13 +6,16 @@ from collections.abc import Iterable
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from time import perf_counter
-
 from typing import Any, Mapping
 
 from . import lexical, temporal
-from .ids import cosine, stable_id
-from .embeddings import DeterministicEmbeddingProvider, EmbeddingProvider, embed_with_metadata
 from .document_chunks import DocumentChunkHit, split_document
+from .embeddings import (
+    DeterministicEmbeddingProvider,
+    EmbeddingProvider,
+    embed_with_metadata,
+)
+from .ids import cosine, stable_id
 from .models import (
     DOCUMENT_PREDICATE,
     Event,
@@ -23,7 +26,6 @@ from .models import (
 )
 from .normalization import normalize_text
 from .retrieval import RetrievalConfig, ScoringPolicy
-
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;

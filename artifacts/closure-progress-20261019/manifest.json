@@ -1,0 +1,618 @@
+{
+  "schema": "dive-curated-evidence-v1",
+  "baseline_commit": "ec87f01ead04a70cdda0c951c3f6c95cc270f141",
+  "source_binding": "quality/source-manifest.json binds release source; historical patches target that source",
+  "scope": "R55-R61 development progress, not 500-case acceptance or official code-quality grade",
+  "raw_evidence": "eval/reports/closure-95-20261018 (local, ignored)",
+  "exclusions": [
+    "reference answers",
+    "full conversation traces",
+    "databases",
+    "models",
+    "wheel binaries",
+    "credentials",
+    "unreviewed drafts"
+  ],
+  "files": [
+    {
+      "path": "selection.json",
+      "sha256": "7671df5de2e949f0945d7a9793f15d616748b5495d7f2ab6e5d853ee3744b8c7",
+      "bytes": 634,
+      "original_path": "eval/reports/closure-95-20261018/pilot-ids.json",
+      "original_sha256": "7671df5de2e949f0945d7a9793f15d616748b5495d7f2ab6e5d853ee3744b8c7",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r55-plan.json",
+      "sha256": "5bfc93c9f0f3432a53bdc1c1f35f740b07137f1cbe5e0ea6deb356abbaa60f73",
+      "bytes": 973,
+      "original_path": "eval/reports/closure-95-20261018/plan.json",
+      "original_sha256": "5bfc93c9f0f3432a53bdc1c1f35f740b07137f1cbe5e0ea6deb356abbaa60f73",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "reading-migration.json",
+      "sha256": "e7fcd4e7b51238f8ec32492af666c4a1cf06cd7884162b145709def69528cc09",
+      "bytes": 1205,
+      "original_path": "eval/reports/closure-95-20261018/reading-migration.json",
+      "original_sha256": "e71d8d4a1199c4a4a83fd20a46f73ba602a454a9be4cb087284561e5343dd34a",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r55-error-summary.json",
+      "sha256": "12f7611ffdbb8ee0bfa4cf39cf95e8b0ae172d672dc567a74d9a22e315944c83",
+      "bytes": 441,
+      "original_path": "eval/reports/closure-95-20261018/error-summary.json",
+      "original_sha256": "12f7611ffdbb8ee0bfa4cf39cf95e8b0ae172d672dc567a74d9a22e315944c83",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "quality/summary.json",
+      "sha256": "7ae31d6eb5aaaf5abb40a99fde40e893ddaea467761cca579a5371674cd7ad43",
+      "bytes": 9540,
+      "original_path": "eval/reports/closure-95-20261018/quality-r61-v2/summary.json",
+      "original_sha256": "7ae31d6eb5aaaf5abb40a99fde40e893ddaea467761cca579a5371674cd7ad43",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "quality/source-manifest.json",
+      "sha256": "e1659f5fbdccf583550da3b9ad06ffd6a1fa1a753c2d838445dcdfc32a8eb069",
+      "bytes": 25971,
+      "original_path": "eval/reports/closure-95-20261018/quality-r61-v2/source-manifest.json",
+      "original_sha256": "e1659f5fbdccf583550da3b9ad06ffd6a1fa1a753c2d838445dcdfc32a8eb069",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "quality/installed-wheel.json",
+      "sha256": "7a7f9bf3f3e7b4d6d7ddef552158e61e3927cbd17b721aa9dc77a7f346368b00",
+      "bytes": 673,
+      "original_path": "eval/reports/closure-95-20261018/installed-wheel-r61/summary.json",
+      "original_sha256": "2803ac8f4931e9dee81547bc64aaeb4d2e9ce914c1cf156dabd1d737d56d03df",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "failures-and-repairs/quality-r61-first.json",
+      "sha256": "f5c1135dd00426acf31b97b80eae2ea3cfbee4b876a18ea26bad583e5a06923f",
+      "bytes": 9534,
+      "original_path": "eval/reports/closure-95-20261018/quality-r61/summary.json",
+      "original_sha256": "f5c1135dd00426acf31b97b80eae2ea3cfbee4b876a18ea26bad583e5a06923f",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "full-lint-audit.json",
+      "sha256": "b481b094a68a0d25140cdf0dfdd4ae9e5bc5f10065b8d3cd9a56c69c2976167e",
+      "bytes": 109276,
+      "original_path": "eval/reports/closure-95-20261018/full-lint-audit.json",
+      "original_sha256": "a8dd1727ff0789c00d5aa3d0a5fe85f77d75806d19f76e87cccb3a2083989d6a",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "full-lint-candidate.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3,
+      "original_path": "eval/reports/closure-95-20261018/full-lint-candidate.json",
+      "original_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "lint-ast-comparison.json",
+      "sha256": "aba86b4b65e47db4bb05a1b25d3125b4315c24980e423c4a32864e83774657f2",
+      "bytes": 6470,
+      "original_path": "eval/reports/closure-95-20261018/lint-ast-comparison.json",
+      "original_sha256": "97bc546653d9e8e7ae3f08febd4cce82baa7ca0c51701c9ecc51f7c0f05178ca",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60-continuation-withdrawn.json",
+      "sha256": "df9ed4ca6559f1e41cd45f489cd340c984a6d1c77b57d4618fee6276deb576d8",
+      "bytes": 373,
+      "original_path": "eval/reports/closure-95-20261018/r60-continuation-withdrawn.json",
+      "original_sha256": "4f65cedec932315434d3e8b4e3c71446c0cbe9b3f520f22e0f080556c51f3c4d",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "failures-and-repairs/policy-before.txt",
+      "sha256": "b7e33b8946ba1241ad0f11d191f15482ed8991c9bfe332dd8a39d7645925093a",
+      "bytes": 815,
+      "original_path": "eval/reports/closure-95-20261018/policy-before.txt",
+      "original_sha256": "3e89c90f29cd6a769f2fa525e7966fb5eb14d8009e1e4df6cc0d975d8c7fa3a0",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/policy-after.txt",
+      "sha256": "55b4d167ea39714d5bfede81098e848c9ccb8954b6055474d15bce2b154fba59",
+      "bytes": 99,
+      "original_path": "eval/reports/closure-95-20261018/policy-after.txt",
+      "original_sha256": "16daab852b167992a599ad524b2c16bac9e8ff9155858c1e48ff59106102f4e3",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/protocol-before.txt",
+      "sha256": "ec5eb8e6f9319347f36094cbdbcfd3464f1e767d48ee6c7507ea8ccf02523884",
+      "bytes": 6956,
+      "original_path": "eval/reports/closure-95-20261018/protocol-before.txt",
+      "original_sha256": "0c727ed14e0dca5e9690ffabcdbfaa4b34b72f79c5f75fec2d075a6a593836c3",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/protocol-after.txt",
+      "sha256": "39a97328d41c69863aedb29cae99a6522ba36c151b096e132772776424a6561e",
+      "bytes": 99,
+      "original_path": "eval/reports/closure-95-20261018/protocol-after.txt",
+      "original_sha256": "f32d8c4cd9850c5c70e6719d188c511f16adf6d8b90401c74c8c12175a8f2192",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/terminal-before.txt",
+      "sha256": "cc2025186f843d9b2385da1c750ed1a5fe71eab3c09a99a61c689560bb40851a",
+      "bytes": 1098,
+      "original_path": "eval/reports/closure-95-20261018/terminal-before.txt",
+      "original_sha256": "2646a5a305f967cda333db44c277ce9a2f18fe5c45d9c54a584bdcce732d9a1a",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/terminal-after.txt",
+      "sha256": "36ee72eeb57a0042c7f9876e52c3d26d23aeb61e23a3fa3f0b779e38792a6bcf",
+      "bytes": 99,
+      "original_path": "eval/reports/closure-95-20261018/terminal-after.txt",
+      "original_sha256": "aeb786c447d1f28cabf9bae8fa4043e9857bdc5b143e79810a49e17e02ecda56",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/pricing-before.txt",
+      "sha256": "90433632d61b7f4c6858705c18b49e1eca5e96862f00d4910beaef9b36f3d2cd",
+      "bytes": 6691,
+      "original_path": "eval/reports/closure-95-20261018/pricing-before.txt",
+      "original_sha256": "d2c9f28097a7607b8e7eb78dd87a044545c801f2074c187dc3873d35d9079585",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/pricing-after.txt",
+      "sha256": "d2d796f3d90d012840889179759458140019d994cf3d2df1c967a72d3496745e",
+      "bytes": 99,
+      "original_path": "eval/reports/closure-95-20261018/pricing-after.txt",
+      "original_sha256": "4a21fe869116cbb8c5d3e1ae996de8c8c9d539e47955ade33990b9ba1c1388fd",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/reservation-before.txt",
+      "sha256": "5edff1e836c7e5d9a54fd90d89a70803857526a74a0e378ee828ddf081da970b",
+      "bytes": 1783,
+      "original_path": "eval/reports/closure-95-20261018/reservation-before.txt",
+      "original_sha256": "3a7a842c57ae68b8186244c5a543a2b87f515c364bb40a1af28ea7a16a3cfad6",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/reservation-after.txt",
+      "sha256": "512d1b50a6a42c5657398b3f6341c2f4b63a6b980e12bbdb8b4b3194c8bedc41",
+      "bytes": 99,
+      "original_path": "eval/reports/closure-95-20261018/reservation-after.txt",
+      "original_sha256": "5a0310cad64a7add3458683e837053957e7fce5c3fc465eb5c379c432f1b567f",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/quality-r61/types.txt",
+      "sha256": "d3d1c8452f5d8d2badd3b75ada7ef24e2093e612925891948a6d16a68dcabb5c",
+      "bytes": 475,
+      "original_path": "eval/reports/closure-95-20261018/quality-r61/types.txt",
+      "original_sha256": "d3d1c8452f5d8d2badd3b75ada7ef24e2093e612925891948a6d16a68dcabb5c",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/quality-r61-v2/types.txt",
+      "sha256": "2964f4e84ac77897e510c8d7fa5b664a688c51c01f2c3733e4c2fa20c1f6c174",
+      "bytes": 44,
+      "original_path": "eval/reports/closure-95-20261018/quality-r61-v2/types.txt",
+      "original_sha256": "2964f4e84ac77897e510c8d7fa5b664a688c51c01f2c3733e4c2fa20c1f6c174",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "failures-and-repairs/quality-r61-v2/source-correctness.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19,
+      "original_path": "eval/reports/closure-95-20261018/quality-r61-v2/source-correctness.txt",
+      "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "UTF-8/LF normalization; repository prefix removed; trailing whitespace trimmed"
+    },
+    {
+      "path": "r56/plan.json",
+      "sha256": "02b8f19d4002b0964e1b7e6779cb95c20df7cc0fd53243b44cb345903d0efda6",
+      "bytes": 14765,
+      "original_path": "eval/reports/closure-95-20261018/pilot-plan-v2.json",
+      "original_sha256": "87a6867201ba959d5cd740b12c9b40200d6f4827ccd34226e6e0945dff7c6494",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r56/original-summary.json",
+      "sha256": "ddf25bc4d51fbe2c2f77cda90c713e3eac52cfdb98221204b76d43d7da445cb0",
+      "bytes": 292,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/summary.json",
+      "original_sha256": "ddf25bc4d51fbe2c2f77cda90c713e3eac52cfdb98221204b76d43d7da445cb0",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r56/real-model-checks.json",
+      "sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "bytes": 209,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/real-model-checks.json",
+      "original_sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r56/usage.json",
+      "sha256": "b4f2f2c66251fac292d56f378671c58e57da0504b17695bf03e27bc27d6a7993",
+      "bytes": 714,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/usage.json",
+      "original_sha256": "b4f2f2c66251fac292d56f378671c58e57da0504b17695bf03e27bc27d6a7993",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r56/verdicts.json",
+      "sha256": "741759fb58cf836cdc3dbe76e700ba309fe1a8ad4f2468d9717c9abe128c11a2",
+      "bytes": 17303,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/verdicts.json",
+      "original_sha256": "058aa915512963bf060b7cfb698d9c4037aae591f824866f59a34679bae71665",
+      "transformation": "Removed reference answers; otherwise preserves all judge attempts and verdicts"
+    },
+    {
+      "path": "r56/derived-summary.json",
+      "sha256": "b0c944eac29bc35bee0adb9c641f6be2aa2015581a54cb33ad47c27ec9b1defc",
+      "bytes": 666,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/verdicts.json",
+      "original_sha256": "058aa915512963bf060b7cfb698d9c4037aae591f824866f59a34679bae71665",
+      "transformation": "Derived tri-state counts: unknown is neither confirmed correct nor confirmed incorrect"
+    },
+    {
+      "path": "r56/source-from-release.patch.gz",
+      "sha256": "b9b772700f3fe9e122f5b5f30fbe9308a73a904dfc45c25b1491f576046e3ebb",
+      "bytes": 19612,
+      "original_path": "eval/reports/closure-95-20261018/source-pilot-v2.zip",
+      "original_sha256": "2ea61fa2a70534a9ae8f32a3e5ed7faa7feff880509f2eef0114ffc4d9fe9104",
+      "transformation": "Gzip (mtime=0) compressed patch. Release src to archived source, checked against pre-run SHA256. R56/R57 adaptive was reconstructed later and verified byte-for-byte against those pre-run hashes."
+    },
+    {
+      "path": "r56/reader-ledger.json",
+      "sha256": "ca24efe97ab31bed46b3c2bd7f76e1ceaa3775a0e5781ad056f53d2340ab6b9e",
+      "bytes": 15165,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/reader-ledger.json",
+      "original_sha256": "ca24efe97ab31bed46b3c2bd7f76e1ceaa3775a0e5781ad056f53d2340ab6b9e",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r56/judge-ledger.json",
+      "sha256": "14b341beb19991ae39ebb832f18caab6aa3df37a7ccc6d1ce80038b041a59bd3",
+      "bytes": 9534,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v2/judge-ledger.json",
+      "original_sha256": "14b341beb19991ae39ebb832f18caab6aa3df37a7ccc6d1ce80038b041a59bd3",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r57/plan.json",
+      "sha256": "3cd6602bc9f6013b599077f770f00aced559f89b3a543f315fc0e5afc161a564",
+      "bytes": 14754,
+      "original_path": "eval/reports/closure-95-20261018/pilot-plan-v3.json",
+      "original_sha256": "5f1676fa83910de631792a093823ee1bc00e98fb697b618d8a087b7baaf8f0ae",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r57/original-summary.json",
+      "sha256": "e2fbea445e5d06c95f27cd20017ccbb451089da4a36a61dd2221138fc826136c",
+      "bytes": 291,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/summary.json",
+      "original_sha256": "e2fbea445e5d06c95f27cd20017ccbb451089da4a36a61dd2221138fc826136c",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r57/real-model-checks.json",
+      "sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "bytes": 209,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/real-model-checks.json",
+      "original_sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r57/usage.json",
+      "sha256": "e20e22bab2029d165480a368febcea32f68cc3c1db0f28c159420e98405c092e",
+      "bytes": 714,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/usage.json",
+      "original_sha256": "e20e22bab2029d165480a368febcea32f68cc3c1db0f28c159420e98405c092e",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r57/verdicts.json",
+      "sha256": "879d6631f7ffb6e81b3b77eb55c24f56c34e5aa2b9f71a2ad28a95240265608f",
+      "bytes": 18040,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/verdicts.json",
+      "original_sha256": "ba21ca45f6998e40e9ea67e3e387680e368a462b7afbf2990e844eb791fdf6ec",
+      "transformation": "Removed reference answers; otherwise preserves all judge attempts and verdicts"
+    },
+    {
+      "path": "r57/derived-summary.json",
+      "sha256": "a0cdc5c7303d86daf0a50a1e847be393058f37440d0631d08984efd2acf99003",
+      "bytes": 661,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/verdicts.json",
+      "original_sha256": "ba21ca45f6998e40e9ea67e3e387680e368a462b7afbf2990e844eb791fdf6ec",
+      "transformation": "Derived tri-state counts: unknown is neither confirmed correct nor confirmed incorrect"
+    },
+    {
+      "path": "r57/source-from-release.patch.gz",
+      "sha256": "644983d4f7fcbd26457ad312e2ca01e0ea258757d9ec60b29983534aa9160a48",
+      "bytes": 18384,
+      "original_path": "eval/reports/closure-95-20261018/source-pilot-v3.zip",
+      "original_sha256": "3f2d9ca691352043aefb5b913b6c29366897c5d98ded09b9cc2facb45e057164",
+      "transformation": "Gzip (mtime=0) compressed patch. Release src to archived source, checked against pre-run SHA256. R56/R57 adaptive was reconstructed later and verified byte-for-byte against those pre-run hashes."
+    },
+    {
+      "path": "r57/reader-ledger.json",
+      "sha256": "4faa04b92fb3570e138e14c03ea6ab3f7087fc8a5d0974bdce7dff6d10132649",
+      "bytes": 17621,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/reader-ledger.json",
+      "original_sha256": "4faa04b92fb3570e138e14c03ea6ab3f7087fc8a5d0974bdce7dff6d10132649",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r57/judge-ledger.json",
+      "sha256": "890630bf07e4971f052638d5eb479b668bb6b9bc82133ea0fc2aaa48afdb0fbe",
+      "bytes": 11958,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v3/judge-ledger.json",
+      "original_sha256": "890630bf07e4971f052638d5eb479b668bb6b9bc82133ea0fc2aaa48afdb0fbe",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r58/plan.json",
+      "sha256": "2ee245dedda49ec149aa21a5942fb315e59962ff23e1a269584a6cc44eb51e98",
+      "bytes": 14789,
+      "original_path": "eval/reports/closure-95-20261018/pilot-plan-v4.json",
+      "original_sha256": "90329aec27535922f22de3032aa234779f4a94b3240dfb36584a5d6cf4e267a4",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r58/original-summary.json",
+      "sha256": "bc6c4947b1013da90804a10f9b511d1997c4ae8b56076851519c727e64676ab8",
+      "bytes": 292,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/summary.json",
+      "original_sha256": "bc6c4947b1013da90804a10f9b511d1997c4ae8b56076851519c727e64676ab8",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r58/real-model-checks.json",
+      "sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "bytes": 209,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/real-model-checks.json",
+      "original_sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r58/usage.json",
+      "sha256": "265ba165ecef81dd7c9903a7b8c30366730b7f6779c8fd2e31edea2af2d26152",
+      "bytes": 715,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/usage.json",
+      "original_sha256": "265ba165ecef81dd7c9903a7b8c30366730b7f6779c8fd2e31edea2af2d26152",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r58/verdicts.json",
+      "sha256": "aaf462d0a4eabd09317c559abea6afeabb118fa01a63ada1fe4d07d1411c2ddd",
+      "bytes": 27804,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/verdicts.json",
+      "original_sha256": "f92f6d358fa937fe0004d83ab637f171c8f0b04482c584f349479d65f971c61e",
+      "transformation": "Removed reference answers; otherwise preserves all judge attempts and verdicts"
+    },
+    {
+      "path": "r58/derived-summary.json",
+      "sha256": "e10c0127452ff113c2202a7dda680fbaa68991265b5fed60b7120349eecc60f7",
+      "bytes": 662,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/verdicts.json",
+      "original_sha256": "f92f6d358fa937fe0004d83ab637f171c8f0b04482c584f349479d65f971c61e",
+      "transformation": "Derived tri-state counts: unknown is neither confirmed correct nor confirmed incorrect"
+    },
+    {
+      "path": "r58/source-from-release.patch.gz",
+      "sha256": "959c182e35cc2c9204df2d09dabd6f6fa50cd6e4f268eaa6ab057439493806ce",
+      "bytes": 17376,
+      "original_path": "eval/reports/closure-95-20261018/source-pilot-v4.zip",
+      "original_sha256": "92eeb641360935960b19525876f410e6d821084b9c605190b5f0a2c3bacdcb5d",
+      "transformation": "Gzip (mtime=0) compressed patch. Release src to archived source, checked against pre-run SHA256. R56/R57 adaptive was reconstructed later and verified byte-for-byte against those pre-run hashes."
+    },
+    {
+      "path": "r58/reader-ledger.json",
+      "sha256": "7d402f978b4e9a317e91dacfb55883cbed4c2f4c0fd8da9b6fd31e4d4123028d",
+      "bytes": 17624,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/reader-ledger.json",
+      "original_sha256": "7d402f978b4e9a317e91dacfb55883cbed4c2f4c0fd8da9b6fd31e4d4123028d",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r58/judge-ledger.json",
+      "sha256": "4f4764e52fb624ffe075c92291a5e632b335b1ac72814daa96e1250df16b020f",
+      "bytes": 12564,
+      "original_path": "eval/reports/closure-95-20261018/pilot-v4/judge-ledger.json",
+      "original_sha256": "4f4764e52fb624ffe075c92291a5e632b335b1ac72814daa96e1250df16b020f",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r59/plan.json",
+      "sha256": "0208d82c7c151778576fbe9c6e3f17c60a6f476453dbfdde7e1e86f5ab9ddfb0",
+      "bytes": 14761,
+      "original_path": "eval/reports/closure-95-20261018/r59-plan.json",
+      "original_sha256": "7296bdd55a9ab94b3076587d3b193b5c2d05953089c19bb8b5ba5f8f9b03e3e7",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r59/original-summary.json",
+      "sha256": "73b3057d02f7c75ec680d51cbdea89ad216c2afaa675d541766291f29f33657f",
+      "bytes": 292,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/summary.json",
+      "original_sha256": "73b3057d02f7c75ec680d51cbdea89ad216c2afaa675d541766291f29f33657f",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r59/real-model-checks.json",
+      "sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "bytes": 209,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/real-model-checks.json",
+      "original_sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r59/usage.json",
+      "sha256": "06b900662e5c1938c2fbcaf25c0d6c30c0eca4270d39f923d04f14491e41ee31",
+      "bytes": 716,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/usage.json",
+      "original_sha256": "06b900662e5c1938c2fbcaf25c0d6c30c0eca4270d39f923d04f14491e41ee31",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r59/verdicts.json",
+      "sha256": "6b6b6d79524bdf3e5c35a8960c0164ac8ab59b1790e958fd5d2584efb9e84075",
+      "bytes": 27647,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/verdicts.json",
+      "original_sha256": "5c9caafa09d966c77aeec0fd4cf0b78142aaed9d323d0bb8065e52b99ef4573c",
+      "transformation": "Removed reference answers; otherwise preserves all judge attempts and verdicts"
+    },
+    {
+      "path": "r59/derived-summary.json",
+      "sha256": "862f5cb2a37ca7aff554bf7e07963c50c44f6609cb7bd7d567ce3daee1ccc427",
+      "bytes": 645,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/verdicts.json",
+      "original_sha256": "5c9caafa09d966c77aeec0fd4cf0b78142aaed9d323d0bb8065e52b99ef4573c",
+      "transformation": "Derived tri-state counts: unknown is neither confirmed correct nor confirmed incorrect"
+    },
+    {
+      "path": "r59/source-from-release.patch.gz",
+      "sha256": "0cb1a0387220709aa2198182d40fa35138c2a331c5778549227de6faf53ee3c2",
+      "bytes": 17026,
+      "original_path": "eval/reports/closure-95-20261018/source-r59.zip",
+      "original_sha256": "1297052e8955f362feec2c56d4f817a09dd130fe70071694a7c6e0cdbfec35b0",
+      "transformation": "Gzip (mtime=0) compressed patch. Release src to archived source, checked against pre-run SHA256. R56/R57 adaptive was reconstructed later and verified byte-for-byte against those pre-run hashes."
+    },
+    {
+      "path": "r59/reader-ledger.json",
+      "sha256": "5b46e51678390cda68898218ec234e1cb5560d91c340b3e1de536dd9271b3976",
+      "bytes": 28317,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/reader-ledger.json",
+      "original_sha256": "5b46e51678390cda68898218ec234e1cb5560d91c340b3e1de536dd9271b3976",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r59/judge-ledger.json",
+      "sha256": "a66e7d4b8c9c0f3c77c642353e39a1f258382961c87472bb2ccd4966d41a002c",
+      "bytes": 12868,
+      "original_path": "eval/reports/closure-95-20261018/r59-r40-high/judge-ledger.json",
+      "original_sha256": "a66e7d4b8c9c0f3c77c642353e39a1f258382961c87472bb2ccd4966d41a002c",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/plan.json",
+      "sha256": "a463cff5e156e3653a463a77b3d19f4e201222edfd34d565c054c86432224fe0",
+      "bytes": 14871,
+      "original_path": "eval/reports/closure-95-20261018/r60-plan.json",
+      "original_sha256": "b02e29bf4b9ff2bbb8dbb5a5a490e78aaffdad13ee32511e03cdc3c2dc5b9744",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/original-summary.json",
+      "sha256": "86b3d71307e8888f93efee9eb02797216e50f55b72b5036c3818863976cf294b",
+      "bytes": 196,
+      "original_path": "eval/reports/closure-95-20261018/r60-partial-judging-v2/summary.json",
+      "original_sha256": "86b3d71307e8888f93efee9eb02797216e50f55b72b5036c3818863976cf294b",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/real-model-checks.json",
+      "sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "bytes": 209,
+      "original_path": "eval/reports/closure-95-20261018/r60-pro-high/real-model-checks.json",
+      "original_sha256": "7f710686ba0fe58a91b1b905161907ec98c5d0db925ebab3faf8c7087c54c0e4",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/usage.json",
+      "sha256": "a0a72dd949a8940d1550d690f78f71d4d534542dd5b456b25a8118506648a947",
+      "bytes": 707,
+      "original_path": "eval/reports/closure-95-20261018/r60-pro-high/usage.json",
+      "original_sha256": "a0a72dd949a8940d1550d690f78f71d4d534542dd5b456b25a8118506648a947",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/partial-judge-usage.json",
+      "sha256": "60dc3c0836fcdeab167bab3c6bbb3f8a44577c2f8114c6bb584e18a865e5df48",
+      "bytes": 373,
+      "original_path": "eval/reports/closure-95-20261018/r60-partial-judging-v2/usage.json",
+      "original_sha256": "60dc3c0836fcdeab167bab3c6bbb3f8a44577c2f8114c6bb584e18a865e5df48",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/stopped.json",
+      "sha256": "d677bc6c54195400863c44ca0ede1d2cf82c00bac61027b1df0e03e713e1106d",
+      "bytes": 85,
+      "original_path": "eval/reports/closure-95-20261018/r60-pro-high/stopped.json",
+      "original_sha256": "d677bc6c54195400863c44ca0ede1d2cf82c00bac61027b1df0e03e713e1106d",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/verdicts.json",
+      "sha256": "d7fc666c0fb14c1341aa1546857433dfcac1750f469488a9b2d4303e84ab2750",
+      "bytes": 19702,
+      "original_path": "eval/reports/closure-95-20261018/r60-partial-judging-v2/verdicts.json",
+      "original_sha256": "ab62c3647f8d10103f40f7e4400e10d6b480c8a77544dde40b3b4db84a2dc3d3",
+      "transformation": "Removed reference answers; otherwise preserves all judge attempts and verdicts"
+    },
+    {
+      "path": "r60/derived-summary.json",
+      "sha256": "b495c86efa71d81f001d7154b6cd2cba115f888f7f4ff9307a81572b36865dd7",
+      "bytes": 851,
+      "original_path": "eval/reports/closure-95-20261018/r60-partial-judging-v2/verdicts.json",
+      "original_sha256": "ab62c3647f8d10103f40f7e4400e10d6b480c8a77544dde40b3b4db84a2dc3d3",
+      "transformation": "Derived tri-state counts: unknown is neither confirmed correct nor confirmed incorrect"
+    },
+    {
+      "path": "r60/source-from-release.patch.gz",
+      "sha256": "cede2ce14f80a0431d20c8437786fc7da07cf6c96e0424dfbe6b3a5043cf3704",
+      "bytes": 15577,
+      "original_path": "eval/reports/closure-95-20261018/source-r60.zip",
+      "original_sha256": "c239c76e0c1d8e50f3ea21204a1ae393f2735976b3f111d18db0d7db6492a599",
+      "transformation": "Gzip (mtime=0) compressed patch. Release src to archived source, checked against pre-run SHA256. R56/R57 adaptive was reconstructed later and verified byte-for-byte against those pre-run hashes."
+    },
+    {
+      "path": "r60/reader-ledger.json",
+      "sha256": "6b9faf23b88d3419ea5ca5e1a61dc4e263b1ad42a270fd8b79e11b868f2cedf7",
+      "bytes": 12288,
+      "original_path": "eval/reports/closure-95-20261018/r60-pro-high/reader-ledger.json",
+      "original_sha256": "6b9faf23b88d3419ea5ca5e1a61dc4e263b1ad42a270fd8b79e11b868f2cedf7",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "r60/judge-ledger.json",
+      "sha256": "b127f63d00c0e96925f7fe6b130fac5e765a552668068e441bfb1b11eeafbcca",
+      "bytes": 11898,
+      "original_path": "eval/reports/closure-95-20261018/r60-partial-judging-v2/judge-ledger.json",
+      "original_sha256": "b127f63d00c0e96925f7fe6b130fac5e765a552668068e441bfb1b11eeafbcca",
+      "transformation": "JSON reserialization; local repository prefix becomes ${REPOSITORY}"
+    },
+    {
+      "path": "comparison.json",
+      "sha256": "e583f0aafe6ec3e1368a110ff69c950c63e8263a45140e0695d84151e9d0e10f",
+      "bytes": 4315,
+      "original_path": null,
+      "original_sha256": null,
+      "transformation": "none"
+    },
+    {
+      "path": "README.md",
+      "sha256": "33f7287ce3799bdd3a17f94272959bc4b42f64e4cadfc2f954bc6bda71f50d07",
+      "bytes": 1849,
+      "original_path": null,
+      "original_sha256": null,
+      "transformation": "New evidence guide"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "8c39fa13cd50fbcdb9534e4bc3c027228006188d369d82f8c037b5f9055e9da3",
+      "bytes": 45,
+      "original_path": null,
+      "original_sha256": null,
+      "transformation": "Pin normalized log bytes across Git checkouts"
+    }
+  ]
+}

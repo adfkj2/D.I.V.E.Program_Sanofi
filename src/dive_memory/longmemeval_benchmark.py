@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 from collections import defaultdict
 from datetime import datetime, timezone
-import json
 from math import log2
 from pathlib import Path
 from statistics import median
@@ -16,7 +16,6 @@ from .eval_manifest import build_run_manifest
 from .extraction import assertion_segments
 from .retrieval import RetrievalConfig
 from .service import MemoryService
-
 
 _WARM_BATCH = 32  # measured sweet spot on CPU bge-m3; see ops/gate_batch_probe.py
 
@@ -275,7 +274,7 @@ def run_longmemeval_retrieval(
             rows.append(row)
             for key, value in counts.items():
                 totals[key] += int(value)
-        except Exception as exc:  # keep per-case failure evidence
+        except Exception as exc:  # noqa: BLE001 - retain each failed case and continue measuring the full denominator  # keep per-case failure evidence
             errors.append({
                 "question_id": case.question_id,
                 "error_type": type(exc).__name__,
@@ -284,7 +283,6 @@ def run_longmemeval_retrieval(
 
     completed = datetime.now(timezone.utc)
     answerable = [row for row in rows if not row["should_abstain"]]
-    abstention = [row for row in rows if row["should_abstain"]]
     reader_name = reader_name or (
         str(getattr(reader, "policy_version", type(reader).__name__)) if reader is not None else None
     )
@@ -462,7 +460,7 @@ def main() -> None:
     gate: Any | None = None
     gate_name = "utility-baseline-v1"
     if args.gate == "semantic":
-        from .semantic_gate import load_local_gate, POLICY_VERSION
+        from .semantic_gate import POLICY_VERSION, load_local_gate
 
         gate = load_local_gate(
             cache_size=args.gate_cache,

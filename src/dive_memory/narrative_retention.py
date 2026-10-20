@@ -1,13 +1,19 @@
 """Bounded, query-independent source windows around admitted personal material."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
-from .episodic_retention import EpisodicRetentionPolicy, _PERSON, _UNASSERTED, _EVENT, _DETAIL, PREDICATE
+from .episodic_retention import (
+    _DETAIL,
+    _EVENT,
+    _PERSON,
+    _UNASSERTED,
+    PREDICATE,
+    EpisodicRetentionPolicy,
+)
 from .extraction import Candidate
-from .gate import GateDecision, GateAction, _sensitive
-
+from .gate import GateAction, GateDecision, _sensitive
 
 _FICTIONAL_SCOPE = re.compile(
     r"\b(?:if|unless|suppose|imagine|hypothetically|fiction\w*|pretend|roleplay|example)\b|"

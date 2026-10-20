@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 from enum import StrEnum
 from typing import Any
 
-
 ALLOWED_MEMORY_KINDS = frozenset({
     "working", "episode", "semantic_fact", "profile", "preference",
     "procedural", "resource", "temporal_event", "relation", "inference",

@@ -6,26 +6,28 @@ an explicitly selected development strategy, not a claim of official accuracy.
 
 from typing import Protocol
 
-from ..oracle.adjudicated_reader import (
+from ..reading.adaptive import VERSION as ADAPTIVE_VERSION
+from ..reading.adaptive import AdaptiveEvidenceReader
+from ..reading.adjudicated_reader import (
     REFEREE_VERSION,
     AdjudicatedReader,
     EvidenceReferee,
 )
-from ..oracle.advice_refusal_reader import AdviceRefusalReader
-from ..oracle.current_state_reader import REVIEW_VERSION as STATE_VERSION
-from ..oracle.current_state_reader import CurrentStateReader, CurrentStateReviewReader
-from ..oracle.grounded_advice_reader import VERSION as ADVICE_VERSION
-from ..oracle.grounded_advice_reader import GroundedAdviceReader
-from ..oracle.indexed_reader import IndexedEvidenceReader
-from ..oracle.premise_review_reader import REVIEW_VERSION, NecessaryPremiseReader
-from ..oracle.reader import (
+from ..reading.advice_refusal_reader import AdviceRefusalReader
+from ..reading.current_state_reader import REVIEW_VERSION as STATE_VERSION
+from ..reading.current_state_reader import CurrentStateReader, CurrentStateReviewReader
+from ..reading.grounded_advice_reader import VERSION as ADVICE_VERSION
+from ..reading.grounded_advice_reader import GroundedAdviceReader
+from ..reading.indexed_reader import IndexedEvidenceReader
+from ..reading.premise_review_reader import REVIEW_VERSION, NecessaryPremiseReader
+from ..reading.reader import (
     ChatClient,
     OracleReaderRequest,
     ReaderOutcome,
     ReaderPolicy,
     ReaderSpec,
 )
-from ..oracle.temporal_refusal_reader import TemporalRefusalReader
+from ..reading.temporal_refusal_reader import TemporalRefusalReader
 
 
 class Reader(Protocol):
@@ -43,8 +45,19 @@ def create_reader(
     provider: str = "openai-compatible",
     strategy: str = "indexed",
 ) -> Reader:
+    if strategy == "adaptive":
+        return AdaptiveEvidenceReader(
+            thinking or normal,
+            ReaderSpec(
+                provider,
+                model,
+                prompt_version=ADAPTIVE_VERSION,
+                max_tokens=8192,
+                timeout_seconds=120,
+            ),
+        )
     if strategy not in {"indexed", "r40"}:
-        raise ValueError("strategy must be indexed or r40")
+        raise ValueError("strategy must be indexed, r40 or adaptive")
     policy = ReaderPolicy(
         name="indexed_evidence",
         prompt_version="oracle-indexed-reader-v2",

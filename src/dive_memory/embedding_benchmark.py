@@ -1,24 +1,23 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
-from datetime import datetime, timezone
 import gc
 import json
 import math
 import os
-from pathlib import Path
 import platform
 import re
+from collections import Counter
+from datetime import datetime, timezone
+from pathlib import Path
 from statistics import median
 from time import perf_counter
-from typing import Any, Iterable, Sequence
+from typing import Any, Sequence
 
 from .eval_manifest import build_run_manifest
 from .eval_metrics import aggregate_ranking_rows
 from .ids import stable_vector
 from .lexical import cjk_bigrams
-
 
 MODEL_SPECS: dict[str, dict[str, Any]] = {
     "bge-m3": {
@@ -369,7 +368,7 @@ def run_embedding_comparison(
             results[model] = _run_sentence_transformer(
                 model, documents, queries, device=device, batch_size=batch_size,
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - one unavailable embedding backend must produce a recorded failed measurement
             results[model] = {
                 "status": "FAILED",
                 "model": MODEL_SPECS[model]["repo_id"],

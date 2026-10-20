@@ -8,11 +8,10 @@ trace an excerpt back to both its source event and its character range.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
 from . import lexical
-
 
 DEFAULT_CHUNK_CHARS = 640
 DEFAULT_OVERLAP_CHARS = 80

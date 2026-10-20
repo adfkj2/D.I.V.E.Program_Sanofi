@@ -1,0 +1,3343 @@
+[
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 12
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\__init__.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .answering import (\r\n    AnswerStatus,\r\n    GroundedAnswerDecision,\r\n    GroundedReader,\r\n    OpenAICompatibleGroundedReader,\r\n)\r\nfrom .auth import NamespaceAuthorizer, StaticTokenAuthorizer\r\nfrom .embeddings import (\r\n    DeterministicEmbeddingProvider,\r\n    EmbeddingProvider,\r\n    OpenAICompatibleEmbeddingProvider,\r\n)\r\nfrom .service import MemoryService\r\nfrom .worker import OutboxWorker\r\n\r\n",
+          "end_location": {
+            "column": 1,
+            "row": 14
+          },
+          "location": {
+            "column": 1,
+            "row": 3
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 3
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 3,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 21,
+      "row": 182
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\answering.py",
+    "fix": null,
+    "location": {
+      "column": 12,
+      "row": 182
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 182,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 35,
+      "row": 8
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\api.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Any\n\nfrom .answering import decide_grounded_answer\nfrom .auth import NamespaceAuthorizer\nfrom .config import RuntimeConfig\nfrom .context import pack_context\nfrom .models import Memory\nfrom .service import MemoryService\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 11
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 39,
+      "row": 5
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\baselines.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .ids import cosine",
+          "end_location": {
+            "column": 39,
+            "row": 5
+          },
+          "location": {
+            "column": 1,
+            "row": 5
+          }
+        }
+      ],
+      "message": "Remove unused import: `.ids.stable_vector`"
+    },
+    "location": {
+      "column": 26,
+      "row": 5
+    },
+    "message": "`.ids.stable_vector` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 5,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 27,
+      "row": 6
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\baselines.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 7
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Remove unused import: `.models.Memory`"
+    },
+    "location": {
+      "column": 21,
+      "row": 6
+    },
+    "message": "`.models.Memory` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 53,
+      "row": 10
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\candidate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport math\nfrom dataclasses import dataclass, replace\nfrom enum import StrEnum\nfrom typing import Any, Mapping\n\nfrom .models import ALLOWED_MEMORY_KINDS, EvidenceState\nfrom .normalization import normalize_predicate, normalize_text\nfrom .temporal import parse_instant, require_instant\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 13
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 32,
+      "row": 6
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\config.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nfrom dataclasses import asdict, dataclass\nfrom hashlib import sha256\nfrom typing import Any, Mapping\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 9
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 55,
+      "row": 7
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\contextual_fact_retention.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import re\nfrom dataclasses import dataclass\n\nfrom .episodic_retention import _DETAIL, _PERSON, PREDICATE, EpisodicRetentionPolicy\nfrom .extraction import Candidate\nfrom .gate import GateAction, GateDecision, _sensitive\nfrom .narrative_retention import _FICTIONAL_SCOPE, _PRECISE_NONFACTUAL, _PROSPECTIVE\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 9
+          },
+          "location": {
+            "column": 1,
+            "row": 2
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 2
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 2,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 43,
+      "row": 87
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\contextual_fact_retention.py",
+    "fix": null,
+    "location": {
+      "column": 42,
+      "row": 87
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 87,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 31,
+      "row": 7
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\decay.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\r\n\r\nfrom datetime import datetime, timedelta, timezone\r\n\r\nfrom . import temporal\r\nfrom .models import MemoryStatus\r\nfrom .store import SQLiteStore\r\n\r\n",
+          "end_location": {
+            "column": 1,
+            "row": 10
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 22,
+      "row": 14
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\document_chunks.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport re\nfrom dataclasses import dataclass\n\nfrom . import lexical\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 17
+          },
+          "location": {
+            "column": 1,
+            "row": 9
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 9
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 9,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 33,
+      "row": 20
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\embedding_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport gc\nimport json\nimport math\nimport os\nimport platform\nimport re\nfrom collections import Counter\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom statistics import median\nfrom time import perf_counter\nfrom typing import Any, Iterable, Sequence\n\nfrom .eval_manifest import build_run_manifest\nfrom .eval_metrics import aggregate_ranking_rows\nfrom .ids import stable_vector\nfrom .lexical import cjk_bigrams\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 23
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 33,
+      "row": 15
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\embedding_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Any, Sequence",
+          "end_location": {
+            "column": 43,
+            "row": 15
+          },
+          "location": {
+            "column": 1,
+            "row": 15
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Iterable`"
+    },
+    "location": {
+      "column": 25,
+      "row": 15
+    },
+    "message": "`typing.Iterable` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 15,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 372
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\embedding_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 372
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 372,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 31,
+      "row": 11
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\embeddings.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nimport math\nimport urllib.request\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom time import perf_counter\nfrom typing import Any, Protocol\n\nfrom .ids import stable_vector\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 14
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 55,
+      "row": 12
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\episodic_retention.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport re\nfrom dataclasses import dataclass\n\nfrom .extraction import Candidate\nfrom .gate import GateAction, GateDecision, _sensitive\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 14
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 34,
+      "row": 9
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\eval_adapters\\longmemeval.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom typing import Any, Iterable, Mapping\n\nfrom ..evaluation import EvalCase\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 12
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 23,
+      "row": 6
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\eval_datasets.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 9
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 32,
+      "row": 11
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\eval_manifest.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport importlib.metadata\nimport json\nimport platform\nimport subprocess\nimport sys\nfrom dataclasses import asdict, dataclass\nfrom hashlib import sha256\nfrom pathlib import Path\nfrom typing import Any, Mapping\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 14
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 10,
+      "row": 5
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\gate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport re\nfrom dataclasses import dataclass, field\nfrom enum import StrEnum\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 8
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 50,
+      "row": 16
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\hot_memory.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nfrom hashlib import sha256\n\nfrom . import temporal\nfrom .entities import is_user_subject\nfrom .ids import new_id\nfrom .models import utc_now\nfrom .resolution import _AUTHORITATIVE_SOURCES\nfrom .token_budget import ApproximateTokenCounter\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 18
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 35,
+      "row": 18
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\longmemeval_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport json\nfrom collections import defaultdict\nfrom datetime import datetime, timezone\nfrom math import log2\nfrom pathlib import Path\nfrom statistics import median\nfrom time import perf_counter\nfrom typing import Any, Iterable, Sequence\n\nfrom .answering import AnswerStatus, GroundedReader, decide_grounded_answer\nfrom .eval_adapters.longmemeval import LongMemEvalAdapter, LongMemEvalCase\nfrom .eval_manifest import build_run_manifest\nfrom .extraction import assertion_segments\nfrom .retrieval import RetrievalConfig\nfrom .service import MemoryService\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 21
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 278
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\longmemeval_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 278
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 278,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "F841",
+    "end_location": {
+      "column": 15,
+      "row": 287
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\longmemeval_benchmark.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 18,
+            "row": 287
+          },
+          "location": {
+            "column": 5,
+            "row": 287
+          }
+        }
+      ],
+      "message": "Remove assignment to unused variable `abstention`"
+    },
+    "location": {
+      "column": 5,
+      "row": 287
+    },
+    "message": "Local variable `abstention` is assigned to but never used",
+    "name": "unused-variable",
+    "noqa_row": 287,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-variable"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 67,
+      "row": 465
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\longmemeval_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "        from .semantic_gate import POLICY_VERSION, load_local_gate\n",
+          "end_location": {
+            "column": 1,
+            "row": 466
+          },
+          "location": {
+            "column": 1,
+            "row": 465
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 9,
+      "row": 465
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 465,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 23,
+      "row": 6
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\models.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom datetime import datetime, timezone\nfrom enum import StrEnum\nfrom typing import Any\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 9
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 55,
+      "row": 9
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\narrative_retention.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport re\nfrom dataclasses import dataclass\n\nfrom .episodic_retention import (\n    _DETAIL,\n    _EVENT,\n    _PERSON,\n    _UNASSERTED,\n    PREDICATE,\n    EpisodicRetentionPolicy,\n)\nfrom .extraction import Candidate\nfrom .gate import GateAction, GateDecision, _sensitive\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 12
+          },
+          "location": {
+            "column": 1,
+            "row": 2
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 2
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 2,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 19
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\adjudicated_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.adjudicated_reader import (\n    FORMAT_RECOVERY_VERSION as FORMAT_RECOVERY_VERSION,\n)\nfrom ..reading.adjudicated_reader import (\n    REFEREE_VERSION as REFEREE_VERSION,\n)\nfrom ..reading.adjudicated_reader import (\n    RULES as RULES,\n)\nfrom ..reading.adjudicated_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.adjudicated_reader import (\n    AdjudicatedReader as AdjudicatedReader,\n)\nfrom ..reading.adjudicated_reader import (\n    EvidenceReferee as EvidenceReferee,\n)\nfrom ..reading.adjudicated_reader import (\n    IndexedEvidenceReader as IndexedEvidenceReader,\n)\nfrom ..reading.adjudicated_reader import (\n    ReaderSpec as ReaderSpec,\n)\nfrom ..reading.adjudicated_reader import (\n    ReaderStatus as ReaderStatus,\n)\nfrom ..reading.adjudicated_reader import (\n    TokenUsage as TokenUsage,\n)\nfrom ..reading.adjudicated_reader import (\n    combine as combine,\n)\nfrom ..reading.adjudicated_reader import (\n    recoverable_secondary_format as recoverable_secondary_format,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 20
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 17
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\advice_refusal_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.advice_refusal_reader import (\n    _RECALL as _RECALL,\n)\nfrom ..reading.advice_refusal_reader import (\n    _REQUEST as _REQUEST,\n)\nfrom ..reading.advice_refusal_reader import (\n    _ZH_RECALL as _ZH_RECALL,\n)\nfrom ..reading.advice_refusal_reader import (\n    _ZH_REQUEST as _ZH_REQUEST,\n)\nfrom ..reading.advice_refusal_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.advice_refusal_reader import (\n    AdviceRefusalReader as AdviceRefusalReader,\n)\nfrom ..reading.advice_refusal_reader import (\n    ReaderSpec as ReaderSpec,\n)\nfrom ..reading.advice_refusal_reader import (\n    ReaderStatus as ReaderStatus,\n)\nfrom ..reading.advice_refusal_reader import (\n    advice_question as advice_question,\n)\nfrom ..reading.advice_refusal_reader import (\n    combine as combine,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 18
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 107,
+      "row": 17
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\calculating_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import json\nimport re\nfrom dataclasses import replace\nfrom decimal import InvalidOperation\nfrom hashlib import sha256\nfrom time import perf_counter\n\nfrom ..answering import AnswerStatus, GroundedAnswerDecision\nfrom ..token_budget import ApproximateTokenCounter\nfrom .cited_calculation import calculate\nfrom .indexed_reader import RULES as BASE_RULES\nfrom .indexed_reader import VERSION as BASE_VERSION\nfrom .indexed_reader import IndexedEvidenceReader, parse_indexed\nfrom .reader import (\n    TokenUsage,\n    assert_prompt_is_clean,\n    map_decision,\n    reader_policy,\n    render_reader_context,\n)\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 19
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 87
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\calculating_reader.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 87
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 87,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 107,
+      "row": 16
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\cited_calculation.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport calendar\nimport re\nfrom dataclasses import dataclass\nfrom datetime import date, timedelta\nfrom decimal import Decimal, InvalidOperation, localcontext\nfrom fractions import Fraction\n\nfrom ..answering import (\n    AnswerStatus,\n    EvidenceCitation,\n    GroundedAnswerDecision,\n    validate_grounded_decision,\n)\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 18
+          },
+          "location": {
+            "column": 1,
+            "row": 7
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 7
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 46,
+      "row": 11
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\cited_calculation.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from decimal import Decimal, localcontext",
+          "end_location": {
+            "column": 60,
+            "row": 11
+          },
+          "location": {
+            "column": 1,
+            "row": 11
+          }
+        }
+      ],
+      "message": "Remove unused import: `decimal.InvalidOperation`"
+    },
+    "location": {
+      "column": 30,
+      "row": 11
+    },
+    "message": "`decimal.InvalidOperation` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 11,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "E702",
+    "end_location": {
+      "column": 43,
+      "row": 237
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\cited_calculation.py",
+    "fix": null,
+    "location": {
+      "column": 42,
+      "row": 237
+    },
+    "message": "Multiple statements on one line (semicolon)",
+    "name": "multiple-statements-on-one-line-semicolon",
+    "noqa_row": 237,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-semicolon"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 57,
+      "row": 8
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\contextual_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .adjudicated_reader import EvidenceReferee\nfrom .indexed_reader import RULES, IndexedEvidenceReader\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 11
+          },
+          "location": {
+            "column": 1,
+            "row": 7
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 7
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 52,
+      "row": 22
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\contracts.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom enum import StrEnum\nfrom typing import Any, Iterable, Mapping, Sequence\n\nfrom ..reading.contracts import (\n    CANONICAL_ABSTENTION_HYPOTHESIS as CANONICAL_ABSTENTION_HYPOTHESIS,\n)\nfrom ..reading.contracts import (\n    HypothesisOrigin as HypothesisOrigin,\n)\nfrom ..reading.contracts import (\n    LeakageError as LeakageError,\n)\nfrom ..reading.contracts import (\n    ReaderStatus as ReaderStatus,\n)\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 24
+          },
+          "location": {
+            "column": 1,
+            "row": 11
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 11
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 11,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 66,
+      "row": 9
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\controlled_documents.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nfrom typing import Any, Mapping, Sequence\n\nfrom ..context import PackedContext, pack_context\nfrom ..models import DOCUMENT_PREDICATE, RetrievalItem\nfrom ..retrieval import RetrievalConfig, scoring_policy\nfrom ..token_budget import ApproximateTokenCounter\nfrom .evidence import build_evidence_views, render_evidence_block\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 11
+          },
+          "location": {
+            "column": 1,
+            "row": 2
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 2
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 2,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 22
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\current_state_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.current_state_reader import (\n    _EXCLUDE as _EXCLUDE,\n)\nfrom ..reading.current_state_reader import (\n    _HABIT as _HABIT,\n)\nfrom ..reading.current_state_reader import (\n    _STATE as _STATE,\n)\nfrom ..reading.current_state_reader import (\n    REVIEW_VERSION as REVIEW_VERSION,\n)\nfrom ..reading.current_state_reader import (\n    RULES as RULES,\n)\nfrom ..reading.current_state_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.current_state_reader import (\n    CurrentStateReader as CurrentStateReader,\n)\nfrom ..reading.current_state_reader import (\n    CurrentStateReviewReader as CurrentStateReviewReader,\n)\nfrom ..reading.current_state_reader import (\n    IndexedEvidenceReader as IndexedEvidenceReader,\n)\nfrom ..reading.current_state_reader import (\n    ReaderSpec as ReaderSpec,\n)\nfrom ..reading.current_state_reader import (\n    ReaderStatus as ReaderStatus,\n)\nfrom ..reading.current_state_reader import (\n    advice_question as advice_question,\n)\nfrom ..reading.current_state_reader import (\n    combine as combine,\n)\nfrom ..reading.current_state_reader import (\n    current_state_question as current_state_question,\n)\nfrom ..reading.current_state_reader import (\n    multiple_source_dates as multiple_source_dates,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 23
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 40,
+      "row": 59
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\diagnose.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport json\nfrom collections import Counter\nfrom dataclasses import dataclass, field\nfrom enum import StrEnum\nfrom pathlib import Path\nfrom typing import Any, Iterable, Mapping, Sequence\n\nfrom ..eval_adapters.longmemeval import LongMemEvalCase\nfrom .contracts import CANONICAL_ABSTENTION_HYPOTHESIS, HypothesisOrigin\nfrom .evaluate import NOT_EVALUATED, NOT_RUN, UNKNOWN, Judge, NormalizedExactMatchJudge\nfrom .loader import load_oracle_dataset\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 61
+          },
+          "location": {
+            "column": 1,
+            "row": 46
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 46
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 46,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 33,
+      "row": 54
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\diagnose.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Any, Mapping, Sequence",
+          "end_location": {
+            "column": 52,
+            "row": 54
+          },
+          "location": {
+            "column": 1,
+            "row": 54
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Iterable`"
+    },
+    "location": {
+      "column": 25,
+      "row": 54
+    },
+    "message": "`typing.Iterable` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 54,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 88,
+      "row": 58
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\diagnose.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .evaluate import Judge, NOT_EVALUATED, NOT_RUN, UNKNOWN",
+          "end_location": {
+            "column": 88,
+            "row": 58
+          },
+          "location": {
+            "column": 1,
+            "row": 58
+          }
+        }
+      ],
+      "message": "Remove unused import: `.evaluate.NormalizedExactMatchJudge`"
+    },
+    "location": {
+      "column": 63,
+      "row": 58
+    },
+    "message": "`.evaluate.NormalizedExactMatchJudge` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 58,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 22,
+      "row": 32
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\evaluate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .contracts import (\n    CANONICAL_ABSTENTION_HYPOTHESIS,\n)",
+          "end_location": {
+            "column": 2,
+            "row": 36
+          },
+          "location": {
+            "column": 1,
+            "row": 31
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 5,
+      "row": 32
+    },
+    "message": "`.contracts.ABSTENTION_SUFFIX` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 32,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 26,
+      "row": 34
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\evaluate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .contracts import (\n    CANONICAL_ABSTENTION_HYPOTHESIS,\n)",
+          "end_location": {
+            "column": 2,
+            "row": 36
+          },
+          "location": {
+            "column": 1,
+            "row": 31
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 5,
+      "row": 34
+    },
+    "message": "`.contracts.ORACLE_EXPECTED_CASES` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 34,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 21,
+      "row": 35
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\evaluate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .contracts import (\n    CANONICAL_ABSTENTION_HYPOTHESIS,\n)",
+          "end_location": {
+            "column": 2,
+            "row": 36
+          },
+          "location": {
+            "column": 1,
+            "row": 31
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 5,
+      "row": 35
+    },
+    "message": "`.contracts.HypothesisOrigin` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 46
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\evidence.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.evidence import (\n    _ASSISTANT_MARKERS as _ASSISTANT_MARKERS,\n)\nfrom ..reading.evidence import (\n    _CHANNEL_WEIGHT as _CHANNEL_WEIGHT,\n)\nfrom ..reading.evidence import (\n    _COUNT_MARKERS as _COUNT_MARKERS,\n)\nfrom ..reading.evidence import (\n    _DURATION_MARKERS as _DURATION_MARKERS,\n)\nfrom ..reading.evidence import (\n    _ORDERING_MARKERS as _ORDERING_MARKERS,\n)\nfrom ..reading.evidence import (\n    _OVERLAP_WEIGHT as _OVERLAP_WEIGHT,\n)\nfrom ..reading.evidence import (\n    _PREFERENCE_MARKERS as _PREFERENCE_MARKERS,\n)\nfrom ..reading.evidence import (\n    _STOPWORDS as _STOPWORDS,\n)\nfrom ..reading.evidence import (\n    _TIME_POINT_MARKERS as _TIME_POINT_MARKERS,\n)\nfrom ..reading.evidence import (\n    _TOKEN as _TOKEN,\n)\nfrom ..reading.evidence import (\n    DOCUMENT_ASSERTION as DOCUMENT_ASSERTION,\n)\nfrom ..reading.evidence import (\n    DOCUMENT_PREDICATE as DOCUMENT_PREDICATE,\n)\nfrom ..reading.evidence import (\n    DOCUMENT_PREDICATES as DOCUMENT_PREDICATES,\n)\nfrom ..reading.evidence import (\n    KIND_INSTRUCTIONS as KIND_INSTRUCTIONS,\n)\nfrom ..reading.evidence import (\n    LEXICAL_CHANNELS as LEXICAL_CHANNELS,\n)\nfrom ..reading.evidence import (\n    SUFFICIENT_RELEVANCE as SUFFICIENT_RELEVANCE,\n)\nfrom ..reading.evidence import (\n    WEAK_RELEVANCE as WEAK_RELEVANCE,\n)\nfrom ..reading.evidence import (\n    AnswerKind as AnswerKind,\n)\nfrom ..reading.evidence import (\n    EvidenceAssessment as EvidenceAssessment,\n)\nfrom ..reading.evidence import (\n    EvidenceState as EvidenceState,\n)\nfrom ..reading.evidence import (\n    EvidenceView as EvidenceView,\n)\nfrom ..reading.evidence import (\n    LifecycleState as LifecycleState,\n)\nfrom ..reading.evidence import (\n    MemoryStatus as MemoryStatus,\n)\nfrom ..reading.evidence import (\n    RetrievalItem as RetrievalItem,\n)\nfrom ..reading.evidence import (\n    TemporalScaffold as TemporalScaffold,\n)\nfrom ..reading.evidence import (\n    _instant as _instant,\n)\nfrom ..reading.evidence import (\n    _role_of as _role_of,\n)\nfrom ..reading.evidence import (\n    _scalar_value as _scalar_value,\n)\nfrom ..reading.evidence import (\n    _subject_predicate as _subject_predicate,\n)\nfrom ..reading.evidence import (\n    assess_evidence as assess_evidence,\n)\nfrom ..reading.evidence import (\n    build_evidence_views as build_evidence_views,\n)\nfrom ..reading.evidence import (\n    build_temporal_scaffold as build_temporal_scaffold,\n)\nfrom ..reading.evidence import (\n    classify_answer_kind as classify_answer_kind,\n)\nfrom ..reading.evidence import (\n    conflict_groups as conflict_groups,\n)\nfrom ..reading.evidence import (\n    conflicting_groups_among as conflicting_groups_among,\n)\nfrom ..reading.evidence import (\n    content_tokens as content_tokens,\n)\nfrom ..reading.evidence import (\n    relevance_proxy as relevance_proxy,\n)\nfrom ..reading.evidence import (\n    render_evidence_block as render_evidence_block,\n)\nfrom ..reading.evidence import (\n    summarize_views as summarize_views,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 47
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 11
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\grounded_advice_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.grounded_advice_reader import (\n    RULES as RULES,\n)\nfrom ..reading.grounded_advice_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.grounded_advice_reader import (\n    GroundedAdviceReader as GroundedAdviceReader,\n)\nfrom ..reading.grounded_advice_reader import (\n    IndexedEvidenceReader as IndexedEvidenceReader,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 12
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 20
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\indexed_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.indexed_reader import (\n    RULES as RULES,\n)\nfrom ..reading.indexed_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.indexed_reader import (\n    AnswerStatus as AnswerStatus,\n)\nfrom ..reading.indexed_reader import (\n    ApproximateTokenCounter as ApproximateTokenCounter,\n)\nfrom ..reading.indexed_reader import (\n    EvidenceCitation as EvidenceCitation,\n)\nfrom ..reading.indexed_reader import (\n    GroundedAnswerDecision as GroundedAnswerDecision,\n)\nfrom ..reading.indexed_reader import (\n    IndexedEvidenceReader as IndexedEvidenceReader,\n)\nfrom ..reading.indexed_reader import (\n    TokenUsage as TokenUsage,\n)\nfrom ..reading.indexed_reader import (\n    assert_prompt_is_clean as assert_prompt_is_clean,\n)\nfrom ..reading.indexed_reader import (\n    map_decision as map_decision,\n)\nfrom ..reading.indexed_reader import (\n    parse_indexed as parse_indexed,\n)\nfrom ..reading.indexed_reader import (\n    render_reader_context as render_reader_context,\n)\nfrom ..reading.indexed_reader import (\n    validate_grounded_decision as validate_grounded_decision,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 21
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 41
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\loader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nimport random\nfrom dataclasses import dataclass\nfrom hashlib import sha256\nfrom pathlib import Path\nfrom typing import Any, Iterable, Sequence\n\nfrom ..eval_adapters.longmemeval import (\n    LongMemEvalAdapter,\n    LongMemEvalCase,\n    LongMemEvalSchemaError,\n)\nfrom .contracts import (\n    ABSTENTION_SUFFIX,\n    ORACLE_ALLOWED_FIELDS,\n    ORACLE_DATASET_NAME,\n    ORACLE_EXPECTED_CASES,\n    ORACLE_QUESTION_TYPES,\n    ORACLE_REQUIRED_FIELDS,\n)\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 44
+          },
+          "location": {
+            "column": 1,
+            "row": 20
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 20
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 20,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 61
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\pipeline.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom time import perf_counter\nfrom typing import Any, Mapping, Sequence\n\nfrom ..context import pack_context\nfrom ..contextual_fact_retention import ContextualFactRetention\nfrom ..episodic_retention import EpisodicRetentionPolicy\nfrom ..eval_adapters.longmemeval import LongMemEvalCase, LongMemEvalTurn, parse_instant\nfrom ..evidence_search import recover_evidence\nfrom ..models import DOCUMENT_PREDICATE\nfrom ..narrative_retention import NarrativeRetentionPolicy\nfrom ..retrieval import SCORING_POLICIES, RetrievalConfig, ScoringPolicy, scoring_policy\nfrom ..service import MemoryService\nfrom ..source_diversity import diversify_sources\nfrom ..user_document_retention import ExplicitUserDocumentRetention\nfrom .contracts import (\n    OracleFailure,\n    Stage,\n    assert_writer_visible,\n    find_evaluator_only_fields,\n)\nfrom .controlled_documents import (\n    _controlled_candidates,\n    _controlled_pack,\n    _document_supplement_config,\n)\nfrom .evidence import (\n    AnswerKind,\n    build_evidence_views,\n    classify_answer_kind,\n    render_evidence_block,\n)\nfrom .reader import (\n    OracleReaderRequest,\n    ReaderPolicy,\n    assert_prompt_is_clean,\n    build_evidence_packet,\n    build_reader_prompt,\n    reader_outcome,\n    reader_policy,\n    render_reader_context,\n)\nfrom .source_coordinates import attach_source_coordinates\nfrom .spare_documents import extend_documents\nfrom .statement_provenance import attach_statement_provenance\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 64
+          },
+          "location": {
+            "column": 1,
+            "row": 24
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 24
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 24,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 41,
+      "row": 33
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\pipeline.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..retrieval import RetrievalConfig, ScoringPolicy, scoring_policy",
+          "end_location": {
+            "column": 89,
+            "row": 33
+          },
+          "location": {
+            "column": 1,
+            "row": 33
+          }
+        }
+      ],
+      "message": "Remove unused import: `..retrieval.SCORING_POLICIES`"
+    },
+    "location": {
+      "column": 25,
+      "row": 33
+    },
+    "message": "`..retrieval.SCORING_POLICIES` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 33,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 92,
+      "row": 16
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\premise_ledger_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nfrom dataclasses import replace\nfrom hashlib import sha256\nfrom time import perf_counter\n\nfrom ..answering import AnswerStatus, GroundedAnswerDecision\nfrom ..token_budget import ApproximateTokenCounter\nfrom .indexed_reader import parse_indexed\nfrom .reader import (\n    TokenUsage,\n    assert_prompt_is_clean,\n    map_decision,\n    render_reader_context,\n)\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 18
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 29,
+      "row": 172
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\premise_ledger_reader.py",
+    "fix": null,
+    "location": {
+      "column": 20,
+      "row": 172
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 172,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 16
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\premise_review_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.premise_review_reader import (\n    REVIEW_VERSION as REVIEW_VERSION,\n)\nfrom ..reading.premise_review_reader import (\n    RULES as RULES,\n)\nfrom ..reading.premise_review_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.premise_review_reader import (\n    IndexedEvidenceReader as IndexedEvidenceReader,\n)\nfrom ..reading.premise_review_reader import (\n    NecessaryPremiseReader as NecessaryPremiseReader,\n)\nfrom ..reading.premise_review_reader import (\n    ReaderSpec as ReaderSpec,\n)\nfrom ..reading.premise_review_reader import (\n    ReaderStatus as ReaderStatus,\n)\nfrom ..reading.premise_review_reader import (\n    RefusalReviewReader as RefusalReviewReader,\n)\nfrom ..reading.premise_review_reader import (\n    combine as combine,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 17
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 12
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\providers.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.providers import (\n    ChatCompletion as ChatCompletion,\n)\nfrom ..reading.providers import (\n    ChatTransportError as ChatTransportError,\n)\nfrom ..reading.providers import (\n    OpenAICompatibleChatClient as OpenAICompatibleChatClient,\n)\nfrom ..reading.providers import (\n    ScriptedChatClient as ScriptedChatClient,\n)\nfrom ..reading.providers import (\n    _as_int as _as_int,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 13
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 62
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.reader import (\n    _EVIDENCE_FIRST_ABSTAIN_POLICY as _EVIDENCE_FIRST_ABSTAIN_POLICY,\n)\nfrom ..reading.reader import (\n    _EVIDENCE_FIRST_ABSTAIN_POLICY_V2 as _EVIDENCE_FIRST_ABSTAIN_POLICY_V2,\n)\nfrom ..reading.reader import (\n    _INVALID_REASON as _INVALID_REASON,\n)\nfrom ..reading.reader import (\n    _STRICT_ABSTAIN_POLICY as _STRICT_ABSTAIN_POLICY,\n)\nfrom ..reading.reader import (\n    CANONICAL_ABSTENTION_HYPOTHESIS as CANONICAL_ABSTENTION_HYPOTHESIS,\n)\nfrom ..reading.reader import (\n    DEFAULT_PROMPT_VERSION as DEFAULT_PROMPT_VERSION,\n)\nfrom ..reading.reader import (\n    DERIVATION_CODES as DERIVATION_CODES,\n)\nfrom ..reading.reader import (\n    DERIVED_EVIDENCE_PROMPT_VERSION as DERIVED_EVIDENCE_PROMPT_VERSION,\n)\nfrom ..reading.reader import (\n    EVIDENCE_FIRST_V2_PROMPT_VERSION as EVIDENCE_FIRST_V2_PROMPT_VERSION,\n)\nfrom ..reading.reader import (\n    PROMPT_TOP_LEVEL_KEYS as PROMPT_TOP_LEVEL_KEYS,\n)\nfrom ..reading.reader import (\n    READER_POLICIES as READER_POLICIES,\n)\nfrom ..reading.reader import (\n    READER_RULES as READER_RULES,\n)\nfrom ..reading.reader import (\n    READER_RULES_V2 as READER_RULES_V2,\n)\nfrom ..reading.reader import (\n    READER_RULES_V3 as READER_RULES_V3,\n)\nfrom ..reading.reader import (\n    READER_RULES_V4 as READER_RULES_V4,\n)\nfrom ..reading.reader import (\n    STRICT_PROMPT_VERSION as STRICT_PROMPT_VERSION,\n)\nfrom ..reading.reader import (\n    V4_SCAFFOLD_INSTRUCTION as V4_SCAFFOLD_INSTRUCTION,\n)\nfrom ..reading.reader import (\n    AnswerStatus as AnswerStatus,\n)\nfrom ..reading.reader import (\n    ApproximateTokenCounter as ApproximateTokenCounter,\n)\nfrom ..reading.reader import (\n    ChatClient as ChatClient,\n)\nfrom ..reading.reader import (\n    ChatCompletion as ChatCompletion,\n)\nfrom ..reading.reader import (\n    DeterministicReader as DeterministicReader,\n)\nfrom ..reading.reader import (\n    EvidenceAssessment as EvidenceAssessment,\n)\nfrom ..reading.reader import (\n    EvidenceState as EvidenceState,\n)\nfrom ..reading.reader import (\n    EvidenceView as EvidenceView,\n)\nfrom ..reading.reader import (\n    GroundedAnswerDecision as GroundedAnswerDecision,\n)\nfrom ..reading.reader import (\n    GroundedChatReader as GroundedChatReader,\n)\nfrom ..reading.reader import (\n    GroundedReader as GroundedReader,\n)\nfrom ..reading.reader import (\n    HypothesisOrigin as HypothesisOrigin,\n)\nfrom ..reading.reader import (\n    LeakageError as LeakageError,\n)\nfrom ..reading.reader import (\n    OracleReader as OracleReader,\n)\nfrom ..reading.reader import (\n    OracleReaderRequest as OracleReaderRequest,\n)\nfrom ..reading.reader import (\n    ReaderOutcome as ReaderOutcome,\n)\nfrom ..reading.reader import (\n    ReaderPolicy as ReaderPolicy,\n)\nfrom ..reading.reader import (\n    ReaderSpec as ReaderSpec,\n)\nfrom ..reading.reader import (\n    ReaderStatus as ReaderStatus,\n)\nfrom ..reading.reader import (\n    RetrievalItem as RetrievalItem,\n)\nfrom ..reading.reader import (\n    TokenUsage as TokenUsage,\n)\nfrom ..reading.reader import (\n    _Generation as _Generation,\n)\nfrom ..reading.reader import (\n    _render_context as _render_context,\n)\nfrom ..reading.reader import (\n    _sha256 as _sha256,\n)\nfrom ..reading.reader import (\n    assert_prompt_is_clean as assert_prompt_is_clean,\n)\nfrom ..reading.reader import (\n    assess_evidence as assess_evidence,\n)\nfrom ..reading.reader import (\n    build_evidence_packet as build_evidence_packet,\n)\nfrom ..reading.reader import (\n    build_evidence_views as build_evidence_views,\n)\nfrom ..reading.reader import (\n    build_reader_prompt as build_reader_prompt,\n)\nfrom ..reading.reader import (\n    build_temporal_scaffold as build_temporal_scaffold,\n)\nfrom ..reading.reader import (\n    invoke_reader as invoke_reader,\n)\nfrom ..reading.reader import (\n    map_decision as map_decision,\n)\nfrom ..reading.reader import (\n    reader_outcome as reader_outcome,\n)\nfrom ..reading.reader import (\n    reader_policy as reader_policy,\n)\nfrom ..reading.reader import (\n    render_evidence_block as render_evidence_block,\n)\nfrom ..reading.reader import (\n    render_reader_context as render_reader_context,\n)\nfrom ..reading.reader import (\n    resolve_policy as resolve_policy,\n)\nfrom ..reading.reader import (\n    validate_grounded_decision as validate_grounded_decision,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 63
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 43,
+      "row": 11
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\refusal_gated_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import json\nfrom dataclasses import replace\nfrom hashlib import sha256\n\nfrom .contracts import ReaderStatus\nfrom .reader import ReaderSpec, TokenUsage\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 13
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 77,
+      "row": 55
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\runner.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport os\nimport platform\nimport re\nimport sys\nfrom dataclasses import dataclass, field\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom statistics import median\nfrom time import perf_counter\nfrom typing import Any, Callable, Iterable, Mapping, Sequence\n\nfrom ..eval_adapters.longmemeval import LongMemEvalCase\nfrom ..eval_manifest import build_run_manifest, code_snapshot\nfrom ..retrieval import SCORING_POLICIES\nfrom .contracts import (\n    CANONICAL_ABSTENTION_HYPOTHESIS,\n    ORACLE_ABSTENTION_CASES,\n    ORACLE_DATASET_LICENSE,\n    ORACLE_DATASET_NAME,\n    ORACLE_EXPECTED_CASES,\n    SUBMISSION_FIELDS,\n    OracleResumeConflictError,\n)\nfrom .loader import OracleDataset, load_oracle_dataset, select_cases, sha256_file\nfrom .pipeline import CaseResult, PipelineConfig, run_case, summarize_record\nfrom .reader import READER_POLICIES, ReaderPolicy, ReaderSpec, reader_policy\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 57
+          },
+          "location": {
+            "column": 1,
+            "row": 25
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 25
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 25,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 43,
+      "row": 39
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\runner.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Any, Callable, Mapping, Sequence",
+          "end_location": {
+            "column": 62,
+            "row": 39
+          },
+          "location": {
+            "column": 1,
+            "row": 39
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Iterable`"
+    },
+    "location": {
+      "column": 35,
+      "row": 39
+    },
+    "message": "`typing.Iterable` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 39,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 54,
+      "row": 669
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\runner.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    from .calculating_reader import CalculatingReader\n    from .indexed_reader import IndexedEvidenceReader\n",
+          "end_location": {
+            "column": 1,
+            "row": 670
+          },
+          "location": {
+            "column": 1,
+            "row": 668
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 668
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 668,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 2,
+      "row": 18
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\oracle\\temporal_refusal_reader.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from ..reading.temporal_refusal_reader import (\n    _COUNT as _COUNT,\n)\nfrom ..reading.temporal_refusal_reader import (\n    _DIRECT as _DIRECT,\n)\nfrom ..reading.temporal_refusal_reader import (\n    _DURATION as _DURATION,\n)\nfrom ..reading.temporal_refusal_reader import (\n    _ORDER as _ORDER,\n)\nfrom ..reading.temporal_refusal_reader import (\n    _ZH as _ZH,\n)\nfrom ..reading.temporal_refusal_reader import (\n    VERSION as VERSION,\n)\nfrom ..reading.temporal_refusal_reader import (\n    ReaderSpec as ReaderSpec,\n)\nfrom ..reading.temporal_refusal_reader import (\n    ReaderStatus as ReaderStatus,\n)\nfrom ..reading.temporal_refusal_reader import (\n    TemporalRefusalReader as TemporalRefusalReader,\n)\nfrom ..reading.temporal_refusal_reader import (\n    combine as combine,\n)\nfrom ..reading.temporal_refusal_reader import (\n    temporal_question as temporal_question,\n)\n",
+          "end_location": {
+            "column": 1,
+            "row": 19
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 6
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 35,
+      "row": 17
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport json\nimport os\nimport platform\nimport uuid\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom statistics import median\nfrom time import perf_counter\n\nfrom .benchmark import _percentile\nfrom .ids import stable_vector\nfrom .postgres_migrations import apply_migrations\nfrom .retrieval import RetrievalConfig\nfrom .service import MemoryService\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 20
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 31,
+      "row": 25
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport os\nimport random\nimport subprocess\nimport threading\nfrom concurrent.futures import ThreadPoolExecutor\nfrom dataclasses import asdict, dataclass, field, is_dataclass\nfrom datetime import datetime, timezone\nfrom enum import Enum\nfrom pathlib import Path\nfrom time import perf_counter\nfrom typing import Any, Callable, Iterable\n\nfrom . import postgres_scale_benchmark as scale\nfrom .ids import stable_vector\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 28
+          },
+          "location": {
+            "column": 1,
+            "row": 7
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 7
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 21,
+      "row": 465
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 12,
+      "row": 465
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 465,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 470
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 470
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 470,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 29,
+      "row": 497
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 20,
+      "row": 497
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 497,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 538
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 538
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 538,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 544
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 544
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 544,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 21,
+      "row": 588
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 12,
+      "row": 588
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 588,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 717
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 717
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 717,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 763
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 763
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 763,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 63,
+      "row": 945
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_concurrency_recovery.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    import psycopg\n    from psycopg import sql\n\n    from .postgres_benchmark import BenchmarkEmbeddingProvider\n    from .postgres_migrations import apply_migrations\n    from .postgres_store import PostgresStore\n",
+          "end_location": {
+            "column": 1,
+            "row": 946
+          },
+          "location": {
+            "column": 1,
+            "row": 941
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 941
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 941,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 31,
+      "row": 24
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport random\nimport shutil\nimport statistics\nimport subprocess\nimport threading\nfrom concurrent.futures import ThreadPoolExecutor\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom time import perf_counter\nfrom typing import Any, Iterable\n\nfrom .benchmark import _percentile\nfrom .ids import stable_vector\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 27
+          },
+          "location": {
+            "column": 1,
+            "row": 7
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 7
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 312
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 312
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 312,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 21,
+      "row": 409
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 12,
+      "row": 409
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 409,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 57,
+      "row": 440
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 56,
+      "row": 440
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 440,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 32,
+      "row": 441
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 31,
+      "row": 441
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 441,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 27,
+      "row": 442
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 26,
+      "row": 442
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 442,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 26,
+      "row": 443
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 25,
+      "row": 443
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 443,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 56,
+      "row": 444
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 55,
+      "row": 444
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 444,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 37,
+      "row": 504
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 504
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 504,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 45,
+      "row": 593
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 44,
+      "row": 593
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 593,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 42,
+      "row": 619
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 41,
+      "row": 619
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 619,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 57,
+      "row": 633
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 56,
+      "row": 633
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 633,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 52,
+      "row": 679
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    import psycopg\n    from psycopg import sql\n\n    from . import postgres_scale_benchmark as scale\n    from .postgres_benchmark import BenchmarkEmbeddingProvider\n    from .postgres_migrations import apply_migrations\n    from .postgres_store import PostgresStore\n",
+          "end_location": {
+            "column": 1,
+            "row": 680
+          },
+          "location": {
+            "column": 1,
+            "row": 674
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 674
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 674,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 43,
+      "row": 709
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 42,
+      "row": 709
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 709,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 38,
+      "row": 710
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 37,
+      "row": 710
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 710,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "E701",
+    "end_location": {
+      "column": 16,
+      "row": 731
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_parallelism_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 15,
+      "row": 731
+    },
+    "message": "Multiple statements on one line (colon)",
+    "name": "multiple-statements-on-one-line-colon",
+    "noqa_row": 731,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-statements-on-one-line-colon"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 50,
+      "row": 25
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport ctypes\nimport hashlib\nimport json\nimport math\nimport os\nimport platform\nimport random\nimport subprocess\nimport sys\nimport traceback\nfrom concurrent.futures import ThreadPoolExecutor, as_completed\nfrom dataclasses import dataclass\nfrom datetime import datetime, timedelta, timezone\nfrom pathlib import Path\nfrom statistics import mean, median, pstdev\nfrom time import perf_counter\nfrom typing import Any, Callable\n\nfrom .benchmark import _percentile\nfrom .ids import stable_vector\nfrom .postgres_benchmark import BenchmarkEmbeddingProvider\nfrom .postgres_migrations import apply_migrations\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 28
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 64,
+      "row": 4
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from concurrent.futures import ThreadPoolExecutor",
+          "end_location": {
+            "column": 64,
+            "row": 4
+          },
+          "location": {
+            "column": 1,
+            "row": 4
+          }
+        }
+      ],
+      "message": "Remove unused import: `concurrent.futures.as_completed`"
+    },
+    "location": {
+      "column": 52,
+      "row": 4
+    },
+    "message": "`concurrent.futures.as_completed` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 4,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 12,
+      "row": 10
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 11
+          },
+          "location": {
+            "column": 1,
+            "row": 10
+          }
+        }
+      ],
+      "message": "Remove unused import: `math`"
+    },
+    "location": {
+      "column": 8,
+      "row": 10
+    },
+    "message": "`math` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 10,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 11,
+      "row": 17
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 18
+          },
+          "location": {
+            "column": 1,
+            "row": 17
+          }
+        }
+      ],
+      "message": "Remove unused import: `sys`"
+    },
+    "location": {
+      "column": 8,
+      "row": 17
+    },
+    "message": "`sys` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 17,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 21,
+      "row": 124
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 12,
+      "row": 124
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 124,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 49,
+      "row": 256
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    import psycopg\n    from pgvector.psycopg import register_vector\n    from psycopg.rows import dict_row\n",
+          "end_location": {
+            "column": 1,
+            "row": 257
+          },
+          "location": {
+            "column": 1,
+            "row": 254
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 254
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 254,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 43,
+      "row": 509
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    import psycopg\n    from psycopg import sql\n\n    from .postgres_store import PostgresStore\n    from .retrieval import RetrievalConfig\n    from .service import MemoryService\n",
+          "end_location": {
+            "column": 1,
+            "row": 510
+          },
+          "location": {
+            "column": 1,
+            "row": 505
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 505
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 505,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 43,
+      "row": 633
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    from pgvector import Vector\n\n    from .postgres_store import PostgresStore\n    from .retrieval import RetrievalConfig\n    from .service import MemoryService\n",
+          "end_location": {
+            "column": 1,
+            "row": 634
+          },
+          "location": {
+            "column": 1,
+            "row": 630
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 630
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 630,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 43,
+      "row": 764
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "    from pgvector import Vector\n\n    from .postgres_store import PostgresStore\n    from .retrieval import RetrievalConfig\n    from .service import MemoryService\n",
+          "end_location": {
+            "column": 1,
+            "row": 765
+          },
+          "location": {
+            "column": 1,
+            "row": 761
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 5,
+      "row": 761
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 761,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 33,
+      "row": 893
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 893
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 893,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 29,
+      "row": 1040
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 20,
+      "row": 1040
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 1040,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 25,
+      "row": 1181
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_scale_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 16,
+      "row": 1181
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 1181,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 39,
+      "row": 12
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_store.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nfrom contextlib import contextmanager\nfrom datetime import datetime\nfrom typing import Any, Iterable\n\nfrom . import temporal\nfrom .embeddings import (\n    DeterministicEmbeddingProvider,\n    EmbeddingProvider,\n    embed_with_metadata,\n)\nfrom .ids import stable_id\nfrom .models import Event, EvidenceState, Memory, MemoryStatus, utc_now\nfrom .normalization import normalize_text\nfrom .retrieval import RetrievalConfig\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 15
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 57,
+      "row": 26
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\postgres_store.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "            import psycopg\n            from pgvector.psycopg import register_vector\n            from psycopg.rows import dict_row\n",
+          "end_location": {
+            "column": 1,
+            "row": 27
+          },
+          "location": {
+            "column": 1,
+            "row": 24
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 13,
+      "row": 24
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 24,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 35,
+      "row": 1
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\relations.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\r\n\r\n",
+          "end_location": {
+            "column": 1,
+            "row": 4
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 27,
+      "row": 31
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\retrieval.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\nfrom hashlib import sha256\nfrom typing import Mapping\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 34
+          },
+          "location": {
+            "column": 1,
+            "row": 26
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 26
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 26,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 40,
+      "row": 60
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\semantic_gate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nimport re\nfrom dataclasses import dataclass, replace\nfrom hashlib import sha256\nfrom inspect import signature\nfrom typing import TYPE_CHECKING, Any, Sequence\n\nfrom .extraction import SUBJECT_USER, _fact_from_text\nfrom .gate import (\n    EXPLICIT_MARKERS,\n    GateAction,\n    GateDecision,\n    _features,\n    _sensitive,\n)\nfrom .gate import (\n    decide as decide_v1,\n)\nfrom .relations import is_single_valued\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 62
+          },
+          "location": {
+            "column": 1,
+            "row": 42
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 42
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 42,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 15,
+      "row": 57
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\semantic_gate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from .gate import (\n    EXPLICIT_MARKERS,\n    GateAction,\n    GateDecision,\n    decide as decide_v1,\n    _features,\n)",
+          "end_location": {
+            "column": 2,
+            "row": 58
+          },
+          "location": {
+            "column": 1,
+            "row": 51
+          }
+        }
+      ],
+      "message": "Remove unused import: `.gate._sensitive`"
+    },
+    "location": {
+      "column": 5,
+      "row": 57
+    },
+    "message": "`.gate._sensitive` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 57,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 46,
+      "row": 63
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\semantic_gate.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "pass",
+          "end_location": {
+            "column": 46,
+            "row": 63
+          },
+          "location": {
+            "column": 5,
+            "row": 63
+          }
+        }
+      ],
+      "message": "Remove unused import: `.embeddings.EmbeddingProvider`"
+    },
+    "location": {
+      "column": 29,
+      "row": 63
+    },
+    "message": "`.embeddings.EmbeddingProvider` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 63,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 42,
+      "row": 31
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\service.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nimport threading\nfrom functools import wraps\nfrom hashlib import sha256\nfrom pathlib import Path\nfrom typing import Any\n\nfrom . import hot_memory, temporal\nfrom .context import pack_context\nfrom .decay import apply_decay\nfrom .embeddings import EmbeddingProvider\nfrom .entities import entity_candidates, is_user_subject\nfrom .gate import decide\nfrom .ids import new_id, stable_id\nfrom .lifecycle import ConsolidationReport, archive_expired, consolidate\nfrom .llm import (\n    ExtractionOutcome,\n    ExtractionOutcomeCode,\n    ExtractionProvider,\n    HeuristicExtractionProvider,\n)\nfrom .models import (\n    Event,\n    EvidenceState,\n    Memory,\n    MemoryStatus,\n    RetrievalItem,\n    RetrievalResult,\n    utc_now,\n)\nfrom .planner import plan_query\nfrom .relations import is_single_valued, relation_predicate\nfrom .resolution import (\n    _AUTHORITATIVE_SOURCES,\n    RelationshipResolver,\n    ResolutionAction,\n    ResolutionContext,\n)\nfrom .retrieval import RetrievalConfig\nfrom .store import SQLiteStore\nfrom .token_budget import TokenCounter\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 34
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 25,
+      "row": 18
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\service.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 19
+          },
+          "location": {
+            "column": 1,
+            "row": 18
+          }
+        }
+      ],
+      "message": "Remove unused import: `.gate.decide`"
+    },
+    "location": {
+      "column": 19,
+      "row": 18
+    },
+    "message": "`.gate.decide` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 18,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "BLE001",
+    "end_location": {
+      "column": 29,
+      "row": 414
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\service.py",
+    "fix": null,
+    "location": {
+      "column": 20,
+      "row": 414
+    },
+    "message": "Do not catch blind exception: `Exception`",
+    "name": "blind-except",
+    "noqa_row": 414,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/blind-except"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 54,
+      "row": 25
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\store.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport json\nimport sqlite3\nfrom collections.abc import Iterable\nfrom contextlib import contextmanager\nfrom datetime import datetime, timedelta, timezone\nfrom time import perf_counter\nfrom typing import Any, Mapping\n\nfrom . import lexical, temporal\nfrom .document_chunks import DocumentChunkHit, split_document\nfrom .embeddings import (\n    DeterministicEmbeddingProvider,\n    EmbeddingProvider,\n    embed_with_metadata,\n)\nfrom .ids import cosine, stable_id\nfrom .models import (\n    DOCUMENT_PREDICATE,\n    Event,\n    EvidenceState,\n    Memory,\n    MemoryStatus,\n    utc_now,\n)\nfrom .normalization import normalize_text\nfrom .retrieval import RetrievalConfig, ScoringPolicy\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 28
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 55,
+      "row": 6
+    },
+    "filename": "${REPOSITORY}\\src\\dive_memory\\user_document_retention.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import re\nfrom dataclasses import dataclass\n\nfrom .extraction import _document_candidate\nfrom .gate import GateAction, GateDecision, _sensitive\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 8
+          },
+          "location": {
+            "column": 1,
+            "row": 2
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 2
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 2,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "phase": "R55",
+  "date": "2026-10-18",
+  "baseline_commit": "ec87f01ead04a70cdda0c951c3f6c95cc270f141",
+  "target_correct_min": 475,
+  "target_total": 500,
+  "code_quality_target": 19,
+  "code_quality_total": 20,
+  "baseline_correct": 451,
+  "baseline_official": false,
+  "baseline_errors": 49,
+  "required_net_gain": 24,
+  "shared_spend_cny": "32.096522",
+  "planning_stop_cny": "39.00",
+  "new_model_budget_cny": "0",
+  "status": "PREPARED",
+  "scope": [
+    "Extract reusable reading runtime from benchmark namespace without prompt or algorithm changes",
+    "Expand type checking and dependency checks",
+    "Audit all 49 remaining failures and create evidence/cost plan before model execution"
+  ],
+  "gate": [
+    "No gold, question IDs or expected answers enter runtime",
+    "Old reader prompt/output semantics preserved for architecture phase",
+    "Full tests and exact-commit remote checks",
+    "No 95% or 19/20 claim without corresponding evidence"
+  ]
+}

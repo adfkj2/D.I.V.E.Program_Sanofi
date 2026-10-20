@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, replace
 from enum import StrEnum
-import math
 from typing import Any, Mapping
 
 from .models import ALLOWED_MEMORY_KINDS, EvidenceState

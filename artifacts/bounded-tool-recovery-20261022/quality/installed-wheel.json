@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "import_file": "${REPOSITORY}\\eval\\reports\\bounded-tool-recovery-20261022\\installed-wheel\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "cwd": "${REPOSITORY}\\eval\\reports\\bounded-tool-recovery-20261022\\installed-wheel",
+  "package_assets": 6,
+  "persistence_restart": true,
+  "cli_api": true,
+  "packaged_casebook": true,
+  "local_consult": true,
+  "handoff_markdown": true,
+  "wheel": "dive_memory-0.4.0-py3-none-any.whl",
+  "wheel_sha256": "123b8a3ba4c4fa90543a62b16067facf7e1ccb9223bf4d940e39a0ef7dc977b6",
+  "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+  "source_path_injected": false
+}

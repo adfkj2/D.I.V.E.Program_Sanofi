@@ -56,7 +56,7 @@ precision = 2
 [tool.dive-quality]
 lint-targets = [
   "src/dive_memory/retrieval_session.py", "tests/test_adaptive_reader.py",
-  "tests/test_scoped_evidence.py",
+  "tests/test_scoped_evidence.py", "tests/test_tool_recovery.py",
   "src/dive_memory/reading", "src/dive_memory/agent", "src/dive_memory/application", "src/dive_memory/web.py", "src/dive_memory/cli.py",
   "src/dive_memory/observability.py", "tools/windows/launcher.py",
   "tools/build_project_casebook.py", "tools/check_quality.py",

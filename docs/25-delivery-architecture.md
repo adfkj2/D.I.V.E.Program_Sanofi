@@ -35,6 +35,8 @@ flowchart TD
 
 R62新增显式`verified`策略（产品阅读入口`DIVE_READER_STRATEGY=verified`，评测入口`--reader-strategy verified`）：搜索时最多选择两个不重叠原文片段，共用2400字符额度；模型可在原4次调用预算内请求`reading/calculation.py`计算。计算器校验数值原句、近似表达、日期和重复范围，但语义相关性、范围及完整性仍由模型判断；工具结果不是新的原始来源，最终回答仍需引用原文，后续查证会清除旧计算。`oracle/cited_calculation.py`仅保留兼容导出。
 
+R63将该可选策略升级为v2：[纯工具协议](../src/dive_memory/reading/tool_protocol.py)与调用循环分离，只将缺字段和重复请求交给模型在剩余调用内修正；额外字段、非法值、未知来源及最终轮工具仍拒绝。来源执行异常与模型参数错误分开，失败的新计算先清除旧结果。默认adaptive和judge不改，未通过真实验证的候选不推广。[边界及验证](oracle/58-bounded-tool-recovery-20261022.md)。
+
 评测侧`--fact-policy scoped`独立控制作用域事实锚点，默认`historical`保持原写入行为。新锚点保留原句、模态及位置，写入OBSERVATION，不把条件或纯计划提升为事实。该开关不自动改变产品手工记录和Agent确认流程。两项配置分别绑定到运行计划与源码哈希；免费来源审计不能替代真实答题推广检查。
 
 旧 `api.py` 保留兼容性，不是 README 的工作台入口。评测脚本、历史调参和本轮审计分别留在 `ops/`、`audit_tools/`、`eval/`。包内静态验证报告只在验证页面读取，绝不作为回答模型的输入。

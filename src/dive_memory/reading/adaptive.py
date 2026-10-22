@@ -30,14 +30,19 @@ from .reader import (
     map_decision,
     reader_policy,
 )
+from .tool_protocol import EvidenceSourceError, RecoverableToolError, validate_action
 
 VERSION = "adaptive-evidence-reader-v3"
-VERIFIED_VERSION = "scoped-evidence-reader-v1"
+VERIFIED_VERSION = "scoped-evidence-reader-v2"
 CALCULATION_RULES = """
 An optional calculate tool is available before the final call:
 {"action":"calculate","operation":"sum","operands":[{"index":0,"quote":"an exact source quote","label":"an exact entity or event scope in that quote","value":"an exact number in that quote"}],"unit":"items"}
 Supported operations: sum, difference (first minus second), mean, product, ratio,
 count, elapsed_days, elapsed_weeks, elapsed_months, earliest, latest, date_order.
+Every calculate request MUST include operation, operands and unit. Use an empty
+unit string only for a unitless result. Labels must be exact substrings of quotes,
+not paraphrases. Missing fields and repeated actions consume a call without running
+the tool; use validation_error to correct the request or finalize from current evidence.
 For count omit value. For dates use exact dated source expressions, with a year or a
 literal relative date anchored to the displayed statement date. Do not invent a year.
 For elapsed time an ending operand may be {"question_date":true}.
@@ -316,8 +321,18 @@ class AdaptiveEvidenceReader:
                         if call + 1 < self.max_calls:
                             continue
                     return finish(ReaderStatus.INVALID, "INVALID_FINAL", decision)
+                if self.verified_tools:
+                    if obj.get("action") == "calculate":
+                        calculation = None
+                    if call + 1 == self.max_calls:
+                        raise ValueError("tool action requested on final call")
+                    obj = validate_action(obj)
                 action_key = json.dumps(obj, sort_keys=True)
                 if action_key in actions:
+                    if self.verified_tools:
+                        raise RecoverableToolError(
+                            "repeated tool action; use current evidence or a different request"
+                        )
                     raise ValueError("repeated tool action")
                 if call + 1 == self.max_calls:
                     raise ValueError("tool action requested on final call")
@@ -327,7 +342,12 @@ class AdaptiveEvidenceReader:
                     query = obj["query"]
                     if not isinstance(query, str) or not 1 <= len(query.strip()) <= 500:
                         raise ValueError("search query must be 1 to 500 characters")
-                    found = self.source.search(query.strip())
+                    try:
+                        found = self.source.search(query.strip())
+                    except Exception as exc:  # noqa: BLE001 - isolate storage errors from model syntax
+                        if not self.verified_tools:
+                            raise
+                        raise EvidenceSourceError(type(exc).__name__) from exc
                     calculation = None
                     preferred = []
                     for item in found:
@@ -375,7 +395,12 @@ class AdaptiveEvidenceReader:
                         raise ValueError(
                             "read requires a previously shown memory and a nonnegative integer offset"
                         )
-                    item = self.source.read(memory_id)
+                    try:
+                        item = self.source.read(memory_id)
+                    except Exception as exc:  # noqa: BLE001 - isolate storage errors from model syntax
+                        if not self.verified_tools:
+                            raise
+                        raise EvidenceSourceError(type(exc).__name__) from exc
                     calculation = None
                     if start >= len(item.memory.content):
                         raise ValueError("read offset is outside the stored memory")
@@ -393,8 +418,6 @@ class AdaptiveEvidenceReader:
                     items = self._pack([snippet], items, request)
                     observation = f"Read exact characters {start}:{end} of {len(item.memory.content)} from {memory_id}."
                 elif self.verified_tools and obj.get("action") == "calculate":
-                    if set(obj) != {"action", "operation", "operands", "unit"}:
-                        raise ValueError("invalid calculation action schema")
                     calculation = None
                     plan = {k: v for k, v in obj.items() if k != "action"}
                     plan["status"] = "CALCULATE"
@@ -434,6 +457,13 @@ class AdaptiveEvidenceReader:
                 if call + 1 < self.max_calls:
                     continue
                 return finish(ReaderStatus.INVALID, "INVALID_READER_JSON")
+            except RecoverableToolError as exc:
+                validation_error = str(exc)
+                turn["validation_error"] = validation_error
+                continue
+            except EvidenceSourceError as exc:
+                turn["error"] = str(exc)
+                return finish(ReaderStatus.ERROR, "EVIDENCE_SOURCE_FAILURE")
             except (ValueError, KeyError, TypeError) as exc:
                 turn["error"] = str(exc)
                 return finish(ReaderStatus.INVALID, "INVALID_READER_ACTION")

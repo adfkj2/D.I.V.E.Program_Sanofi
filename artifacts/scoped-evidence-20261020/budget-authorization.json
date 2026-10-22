@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-20",
+  "approved": true,
+  "authorization": "批准增加¥20，按上述条件执行",
+  "previous_user_limit_cny": "40.00",
+  "new_user_limit_cny": "60.00",
+  "planning_stop_cny": "59.00",
+  "settlement_reserve_cny": "1.00",
+  "prior_cumulative_peak_cny": "38.070542",
+  "proposal_sha256": "487a34c3ff0212f7e6e819541f4206ba5c555e40eb6b8743243f10454a2d88ab",
+  "pilot_cap_cny": "1.60",
+  "full_cap_cny": "19.00",
+  "full_only_after_pilot_pass": true,
+  "no_extra_candidate_retries": true
+}

@@ -2,7 +2,19 @@
 
 此材料尚未发送给 mentor/主办方，也没有官方批准含义。
 
-## 当前可交付的核验包（2026-10-18）
+## 最新全量诊断材料（2026-10-22）
+
+R62全量非官方开发自评为**435/500（已确认87.0%，另8题未知）**，未达95%验收；即使未知题全对，上界也仅88.6%。[原始输出](../artifacts/scoped-evidence-20261020/full/submission.jsonl)绑定冻结源码e5e7bc2，分段完成499题保存输出+1中断失败，未复用pilot或旧候选答案。完整判分和费用见[R62报告](oracle/57-scoped-evidence-and-calculation-20261020.md)。
+
+**复核时必须同时读取[失败题清单](../artifacts/scoped-evidence-20261020/full/invalid-case-ids.json)与provenance。** 中断题的拒答文本为占位，所有执行失败都计错；[未知判分清单](../artifacts/scoped-evidence-20261020/full/judge-unknowns.json)中的项目不计正确；格式核验无法表达或证明这个计分规则。3次请求实际用量未知，完整token/账单/连续墙钟保持null，另列保守费用。
+
+```text
+python -m dive_memory.oracle.validator artifacts/scoped-evidence-20261020/full/submission.jsonl --dataset eval/external/longmemeval/longmemeval_oracle.json --require-full
+```
+
+上面命令预期退出码1：16个无效输出的hypothesis为null，故不能生成正式提交包。[完整失败校验](../artifacts/scoped-evidence-20261020/full/submission-validation.json)保留，未用填造拒答绕过。全500题已暴露，同家族非官方judge；独立保留集、正式判分与规则认定仍未完成。
+
+## 历史核验包（2026-10-18）
 
 [500题原始提交与校验清单](../artifacts/scoring-readiness-20261018/oracle/manifest.json)现可直接从公开仓库获取，文件内容与R40提交逐字一致。包内只有提交、来源声明、格式校验与哈希清单，不含密钥、参考答案或个人数据库。`generation_revision`指向R40历史源码快照，不能把今天的HEAD冒充历史生成版本。
 
@@ -64,4 +76,4 @@ python -m dive_memory.evaluation_bundle --dataset eval/external/longmemeval/long
 
 ## 正式提交前仍待完成
 
-主办方规则认定、官方统一 judge、3–5 人任务观察、独立保管的自然语言保留集，以及正式冷启动的真实生成/成本核算。代码提供冷运行入口，但本轮没有发起新的付费模型调用。公开发布前由仓库所有者确认最终许可证与项目署名规范。
+主办方规则认定、官方统一 judge、3–5 人任务观察、独立保管的自然语言保留集，以及正式冷启动的真实生成/成本核算。R62已执行新的分段全量生成与判分，但存在3次中断未知用量，不能声称完成无中断的冷启动成本核算。公开发布前由仓库所有者确认最终许可证与项目署名规范。

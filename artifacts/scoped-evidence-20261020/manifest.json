@@ -2,7 +2,8 @@
   "schema": 1,
   "baseline_commit": "5103d6e1dcb5e825e7cb8b8d2073c7ac66ac514e",
   "source_binding": "quality/source-manifest.json; 237 files; CRLF normalized to LF",
-  "scope": "R62 free development audits and engineering checks, not new answer accuracy",
+  "generation_commit": "e5e7bc221207ef61fb0782ebfbd5c453aa866013",
+  "scope": "R62 free audits, engineering checks, 40-case pilot and segmented 500-case new-generation development self-evaluation. 499 saved outputs plus one interrupted generation scored wrong; two further interruptions affect judging; both verdicts remain unknown. Unknown verdicts are never credited. Not an official score or independent holdout.",
   "raw_evidence": "eval/reports/scoped-evidence-20261020",
   "exclusions": [
     "raw conversations",
@@ -14,6 +15,54 @@
     "unreviewed drafts"
   ],
   "files": [
+    {
+      "path": "pilot/verdicts.json",
+      "sha256": "e056d9256bdab638c88f57980b7f5802b2ebd3f907e54323e7e90749c04c937b",
+      "bytes": 29056,
+      "raw_path": "eval/reports/scoped-evidence-20261020/pilot/verdicts.json",
+      "raw_sha256": "a5f63afe0e9db4a9b55f4f7284420c9f013d15b77157766040cba0eab8f9b302",
+      "transformation": "Only reference answers removed; predictions and all judge attempts preserved."
+    },
+    {
+      "path": "full/verdicts.json",
+      "sha256": "c18bb4ec82f039855e20a12b124580f59cadb2b10d17e607b33a68cd7137a121",
+      "bytes": 369404,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/verdicts.json",
+      "raw_sha256": "3abc2caa4c5d2253160644dc2101de9bf9dbb479dc6cdfa51f4f642296b12d67",
+      "transformation": "Only reference answers removed; predictions and all judge attempts preserved."
+    },
+    {
+      "path": "full/submission.jsonl",
+      "sha256": "496842552e25faf5d9879dd20eb0d433e9f2b94391c244a268bd2dea381e97aa",
+      "bytes": 56147,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/submission.jsonl",
+      "raw_sha256": "496842552e25faf5d9879dd20eb0d433e9f2b94391c244a268bd2dea381e97aa",
+      "transformation": "Byte-exact copy of raw diagnostic output/declaration; submission validation FAILED for 16 null hypotheses. Not a valid submission bundle. Failures and unknown verdicts must not receive credit."
+    },
+    {
+      "path": "full/provenance.json",
+      "sha256": "240f4e1bc6ca21d0d2463241bda0b0a4a9080624bb1b79c7968aa6be69b8eb93",
+      "bytes": 1666,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/provenance.json",
+      "raw_sha256": "240f4e1bc6ca21d0d2463241bda0b0a4a9080624bb1b79c7968aa6be69b8eb93",
+      "transformation": "Byte-exact copy of raw diagnostic output/declaration; submission validation FAILED for 16 null hypotheses. Not a valid submission bundle. Failures and unknown verdicts must not receive credit."
+    },
+    {
+      "path": "budget-authorization.json",
+      "sha256": "c9a3dcfae747f783cf69235dee2f16184dde524e7ed8fc99a57841bbca14db8c",
+      "bytes": 512,
+      "raw_path": "eval/reports/scoped-evidence-20261020/budget-authorization.json",
+      "raw_sha256": "c9a3dcfae747f783cf69235dee2f16184dde524e7ed8fc99a57841bbca14db8c",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/continuation-preflight.json",
+      "sha256": "87f2e37d8f57f2aad8965c3938747bd57394ac53053983180fdf4d8dd76529d3",
+      "bytes": 48582,
+      "raw_path": "eval/reports/scoped-evidence-20261020/continuation-preflight.json",
+      "raw_sha256": "87f2e37d8f57f2aad8965c3938747bd57394ac53053983180fdf4d8dd76529d3",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
     {
       "path": "failures-and-repairs/contracts-before.txt",
       "sha256": "634186e5d112c102fcd0b3ab2c1f198f6136de591c50084c413dbb2527a06d6d",
@@ -79,11 +128,139 @@
       "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
     },
     {
+      "path": "full/cost-reconciliation.json",
+      "sha256": "b42cb9c06c8674bfa17bdbf45b5236d06967c4c56221acd39aa273233c7e1d39",
+      "bytes": 2909,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/cost-reconciliation.json",
+      "raw_sha256": "b42cb9c06c8674bfa17bdbf45b5236d06967c4c56221acd39aa273233c7e1d39",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/failure-diagnostics.json",
+      "sha256": "070cb309675b25b07f24b490300af5800f82d089e6b4e2d910ecc6e2340a9106",
+      "bytes": 9094,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/failure-diagnostics.json",
+      "raw_sha256": "070cb309675b25b07f24b490300af5800f82d089e6b4e2d910ecc6e2340a9106",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/improvement-priorities.json",
+      "sha256": "f4711e65a8bff420bf992bccda4fb327d042619c38500a78553bff3d3d9523c5",
+      "bytes": 1971,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/improvement-priorities.json",
+      "raw_sha256": "f4711e65a8bff420bf992bccda4fb327d042619c38500a78553bff3d3d9523c5",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/interruption-history.json",
+      "sha256": "a5440235f5657f9eaccbfa08ff418fe226718e09a7afa2ace2e33fcbe4276aeb",
+      "bytes": 247,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/interruption-history.json",
+      "raw_sha256": "a5440235f5657f9eaccbfa08ff418fe226718e09a7afa2ace2e33fcbe4276aeb",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/invalid-case-ids.json",
+      "sha256": "a1452ef69a4cdd6435574adf171b5d5dd0f8895f332a63d122ce47d0eb7a029c",
+      "bytes": 565,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/invalid-case-ids.json",
+      "raw_sha256": "a1452ef69a4cdd6435574adf171b5d5dd0f8895f332a63d122ce47d0eb7a029c",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/judge-unknowns.json",
+      "sha256": "67f08fefebb0a4beb311d2634b6f4615ed20870d85afe073a9d20baf2f47c2b7",
+      "bytes": 6668,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/judge-unknowns.json",
+      "raw_sha256": "67f08fefebb0a4beb311d2634b6f4615ed20870d85afe073a9d20baf2f47c2b7",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/pilot-to-full-comparison.json",
+      "sha256": "1d606817eda0e76c5be0ca8c7b4f846e63728a0ac8858494a0d1ac32749c3bf1",
+      "bytes": 7136,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/pilot-to-full-comparison.json",
+      "raw_sha256": "1d606817eda0e76c5be0ca8c7b4f846e63728a0ac8858494a0d1ac32749c3bf1",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/plan.json",
+      "sha256": "0e46dd74476c867a629b19f604c686b499f71ffbf2e0cea620e15780ef8e035c",
+      "bytes": 45448,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/plan.json",
+      "raw_sha256": "0e46dd74476c867a629b19f604c686b499f71ffbf2e0cea620e15780ef8e035c",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/post-run-audit.json",
+      "sha256": "45e3628e5501b446e0fcf0dcd06b8c36065770ae62fb7f34d057a00e4a85ab36",
+      "bytes": 220473,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/post-run-audit.json",
+      "raw_sha256": "45e3628e5501b446e0fcf0dcd06b8c36065770ae62fb7f34d057a00e4a85ab36",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/submission-origin.json",
+      "sha256": "425d3a88c190b16e3760d129a7d0b8c6b9ff79b2b89bfcdf03130b67b05c25b3",
+      "bytes": 258,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/submission-origin.json",
+      "raw_sha256": "425d3a88c190b16e3760d129a7d0b8c6b9ff79b2b89bfcdf03130b67b05c25b3",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/submission-validation.json",
+      "sha256": "31dcfcd435918f0ab760523cf1e0ea863c0df0be04402b5df8c4ee5a976ba5e1",
+      "bytes": 1934,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/submission-validation.json",
+      "raw_sha256": "c501c2063c478ae2ced4610fe5c744f933e0a94e6b592ae46188d82e754b23e1",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/summary.json",
+      "sha256": "3c316552b9f662c2f5838e2c67277163b2d32266e3f1e517bf2e3e15a6687d1e",
+      "bytes": 819,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/summary.json",
+      "raw_sha256": "3c316552b9f662c2f5838e2c67277163b2d32266e3f1e517bf2e3e15a6687d1e",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/usage.json",
+      "sha256": "0faa353935a5479cc90c84e71df15f0d60c6fc6f0816348b8af1297271777ad9",
+      "bytes": 877,
+      "raw_path": "eval/reports/scoped-evidence-20261020/full-final-v2/usage.json",
+      "raw_sha256": "0faa353935a5479cc90c84e71df15f0d60c6fc6f0816348b8af1297271777ad9",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
       "path": "quality/installed-wheel.json",
       "sha256": "aa16161b4b3bb11ad74e37af7f1f92abf2d2ae21b4ad4316f1d8728e01574e8d",
       "bytes": 675,
       "raw_path": "eval/reports/scoped-evidence-20261020/installed-wheel/summary.json",
       "raw_sha256": "61e0998ab45cb75946e4678fb3c3419af2f102467df01c41adc66732215d3104",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/interruption-reconciliation.json",
+      "sha256": "8c76a107494322b52c8f813407b709bdbf9e8696636f5eb4fb6a4a2ad20a622d",
+      "bytes": 9943,
+      "raw_path": "eval/reports/scoped-evidence-20261020/interruption-reconciliation.json",
+      "raw_sha256": "8c76a107494322b52c8f813407b709bdbf9e8696636f5eb4fb6a4a2ad20a622d",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/judge-continuation-preflight.json",
+      "sha256": "34b9681ba97b3106718d2b036dc61ae570867f6bcfec75ea532cb427867bf124",
+      "bytes": 49853,
+      "raw_path": "eval/reports/scoped-evidence-20261020/judge-continuation-preflight.json",
+      "raw_sha256": "34b9681ba97b3106718d2b036dc61ae570867f6bcfec75ea532cb427867bf124",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "full/judge-continuation-v2-preflight.json",
+      "sha256": "f42bf0829a0ca266f1da999b54c012035360e198e73ad0b3721b575653ec94a5",
+      "bytes": 47714,
+      "raw_path": "eval/reports/scoped-evidence-20261020/judge-continuation-v2-preflight.json",
+      "raw_sha256": "f42bf0829a0ca266f1da999b54c012035360e198e73ad0b3721b575653ec94a5",
       "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
     },
     {
@@ -116,6 +293,38 @@
       "bytes": 27716,
       "raw_path": "eval/reports/scoped-evidence-20261020/paid-validation-proposal.json",
       "raw_sha256": "487a34c3ff0212f7e6e819541f4206ba5c555e40eb6b8743243f10454a2d88ab",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "pilot/plan.json",
+      "sha256": "668a48099c094eedd18e240c0036cea612a6adf5fc8a293bdbce462b513d68bd",
+      "bytes": 29588,
+      "raw_path": "eval/reports/scoped-evidence-20261020/pilot/plan.json",
+      "raw_sha256": "668a48099c094eedd18e240c0036cea612a6adf5fc8a293bdbce462b513d68bd",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "pilot/post-run-audit.json",
+      "sha256": "fd762c7494e0dd2796647598ac2d818e98620f697e3cae52f2f7a772b8104f79",
+      "bytes": 41213,
+      "raw_path": "eval/reports/scoped-evidence-20261020/pilot/post-run-audit.json",
+      "raw_sha256": "fd762c7494e0dd2796647598ac2d818e98620f697e3cae52f2f7a772b8104f79",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "pilot/summary.json",
+      "sha256": "bf59a889e3b964b6725fd1174e63f07f9bdcf8459e23e0883d71a1552bd15e0c",
+      "bytes": 566,
+      "raw_path": "eval/reports/scoped-evidence-20261020/pilot/summary.json",
+      "raw_sha256": "bf59a889e3b964b6725fd1174e63f07f9bdcf8459e23e0883d71a1552bd15e0c",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
+      "path": "pilot/usage.json",
+      "sha256": "5f10009c979d284b6f193db68ee8ea5aea7985abf949e3229292b5f69b34f7b4",
+      "bytes": 746,
+      "raw_path": "eval/reports/scoped-evidence-20261020/pilot/usage.json",
+      "raw_sha256": "5f10009c979d284b6f193db68ee8ea5aea7985abf949e3229292b5f69b34f7b4",
       "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
     },
     {
@@ -191,6 +400,14 @@
       "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
     },
     {
+      "path": "remote-checks.json",
+      "sha256": "5091d5935cedc99eabd0bba16fd454b2d16fe270811ca9447e61812ae6708a01",
+      "bytes": 8932,
+      "raw_path": "eval/reports/scoped-evidence-20261020/remote-checks.json",
+      "raw_sha256": "5091d5935cedc99eabd0bba16fd454b2d16fe270811ca9447e61812ae6708a01",
+      "transformation": "UTF-8 without BOM; LF; trailing whitespace removed; local repository/home paths replaced; no metrics changed"
+    },
+    {
       "path": "failures-and-repairs/types-first.txt",
       "sha256": "1cb64a605b067f32a8a72444a23928ef1f5381aeabb69ffa3bacd498cfb1a712",
       "bytes": 763,
@@ -200,8 +417,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "b3eca233cc5874220e87b2f4cca03cbb35200212d7d01a546db5364adaf70cab",
-      "bytes": 2115,
+      "sha256": "e86324adc1606138d5fbcd3ca00693241fdd22f5e08c4e40b409fd20b57cc118",
+      "bytes": 3215,
       "transformation": "Authored release explanation or separately recorded remote evidence"
     }
   ]

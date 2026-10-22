@@ -1,0 +1,23 @@
+{
+  "full_peak_cost_cny": "10.837932",
+  "cumulative_peak_cny": "49.880440",
+  "full_input_tokens": null,
+  "full_output_tokens": null,
+  "known_input_tokens": 3469322,
+  "known_output_tokens": 473591,
+  "missing_usage_calls": 3,
+  "full_attempted_calls": 1177,
+  "final_judge_segment": {
+    "attempted_calls": 260,
+    "completed_calls": 260,
+    "input_tokens": 39733,
+    "output_tokens": 1893,
+    "missing_usage_calls": 0,
+    "cost_cny": null,
+    "cost_note": "Unknown until current provider tariff/billing is supplied; never zero by omission."
+  },
+  "actual_provider_invoice_cny": null,
+  "single_uninterrupted_full_wall_seconds": null,
+  "final_judge_segment_wall_seconds": 250.72111050000058,
+  "note": "Three interrupted requests (one reader, two judges) retain full reservation; actual usage unknown. No uncertain request retried. No model answer regenerated."
+}

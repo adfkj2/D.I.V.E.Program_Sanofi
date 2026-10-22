@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "full_peak_cost_cny": "10.837932",
+  "cumulative_peak_cny": "49.880440",
+  "planning_limit_cny": "59",
+  "user_limit_cny": "60",
+  "ledgers": [
+    {
+      "path": "full/reader-ledger.json",
+      "sha256": "a8b7784f3043473fa2098e3b4a8c8b15d3505162a51205b20350689a5376fedb",
+      "attempted_calls": 176,
+      "states": {
+        "completed": 175,
+        "pending": 1
+      },
+      "models": {
+        "deepseek-flash": 175,
+        "unknown": 1
+      },
+      "known_input_tokens": 1109312,
+      "known_output_tokens": 171200,
+      "peak_cost_cny": "3.690122",
+      "rates_cny_per_million": {
+        "input": "2",
+        "output": "8"
+      }
+    },
+    {
+      "path": "full-continuation/reader-ledger.json",
+      "sha256": "a36ca92ca1ff1ce6f83a847f6ff70dc6277878cf2929bb16d36d6837c05db274",
+      "attempted_calls": 511,
+      "states": {
+        "completed": 511
+      },
+      "models": {
+        "deepseek-flash": 511
+      },
+      "known_input_tokens": 2280798,
+      "known_output_tokens": 298839,
+      "peak_cost_cny": "6.952308",
+      "rates_cny_per_million": {
+        "input": "2",
+        "output": "8"
+      }
+    },
+    {
+      "path": "full-continuation/judge-ledger.json",
+      "sha256": "b79086152cf0ea864a213e108eb58fa9309a72eb920a1cbf3955812a04a06204",
+      "attempted_calls": 94,
+      "states": {
+        "completed": 93,
+        "pending": 1
+      },
+      "models": {
+        "deepseek-flash": 93,
+        "unknown": 1
+      },
+      "known_input_tokens": 15978,
+      "known_output_tokens": 681,
+      "peak_cost_cny": "0.041684",
+      "rates_cny_per_million": {
+        "input": "2",
+        "output": "8"
+      }
+    },
+    {
+      "path": "full-final/judge-ledger.json",
+      "sha256": "b46f669f19a41a53cfa48218799407afedbfffb204f3c2a4d0045134230ec4c1",
+      "attempted_calls": 136,
+      "states": {
+        "completed": 135,
+        "pending": 1
+      },
+      "models": {
+        "deepseek-flash": 135,
+        "unknown": 1
+      },
+      "known_input_tokens": 23501,
+      "known_output_tokens": 978,
+      "peak_cost_cny": "0.059208",
+      "rates_cny_per_million": {
+        "input": "2",
+        "output": "8"
+      }
+    },
+    {
+      "path": "full-final-v2/judge-ledger.json",
+      "sha256": "457a25c92be3808d60a2f884956d2c98e4b08eaf2e6c8ac72005d45fca88de66",
+      "attempted_calls": 260,
+      "states": {
+        "completed": 260
+      },
+      "models": {
+        "deepseek-flash": 260
+      },
+      "known_input_tokens": 39733,
+      "known_output_tokens": 1893,
+      "peak_cost_cny": "0.094610",
+      "rates_cny_per_million": {
+        "input": "2",
+        "output": "8"
+      }
+    }
+  ],
+  "actual_invoice_cny": null,
+  "note": "Independent arithmetic over immutable request ledgers. All three interrupted requests are charged at their full reserved bounds, not zero. These peak estimates are not a settled invoice."
+}

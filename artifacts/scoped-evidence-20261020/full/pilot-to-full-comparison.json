@@ -1,0 +1,290 @@
+{
+  "selected": 40,
+  "pilot_correct": 38,
+  "full_correct": 38,
+  "full_unknown": 0,
+  "same_initial_context": 40,
+  "rows": [
+    {
+      "question_id": "c7dc5443",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_d31cdae3",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_c27434e8_abs",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "8b9d4367",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "c4a1ceb8",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "efc3f7c2",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "6aeb4375",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "gpt4_2f8be40d",
+      "pilot_correct": false,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "06f04340",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "66f24dbb",
+      "pilot_correct": false,
+      "full_correct": false,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "4c36ccef",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "15745da0_abs",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "a1cc6108",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "67e0d0f2",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_d84a3211",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "94f70d80",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "195a1a1b",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "09ba9854",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_a56e767c",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "6e984302",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_7ca326fa",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "f523d9fe",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "0db4c65d",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "60d45044",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "d6233ab6",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "eac54adc",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "7a8d0b71",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "f685340e_abs",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "28dc39ac",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_194be4b3",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "eeda8a6d",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_fe651585_abs",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "80ec1f4f",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_4edbafa2",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "57f827a0",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "1cea1afa",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "gpt4_93159ced",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "852ce960",
+      "pilot_correct": true,
+      "full_correct": false,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    },
+    {
+      "question_id": "603deb26",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": true
+    },
+    {
+      "question_id": "gpt4_cd90e484",
+      "pilot_correct": true,
+      "full_correct": true,
+      "same_initial_context": true,
+      "same_hypothesis": false
+    }
+  ],
+  "note": "Both runs used the same frozen candidate. The full result always uses the fresh full-run answer, never the better of two answers."
+}

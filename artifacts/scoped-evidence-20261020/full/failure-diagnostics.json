@@ -1,0 +1,368 @@
+{
+  "selected": 500,
+  "invalid_saved_outputs": 16,
+  "interrupted_failures": 1,
+  "rows": [
+    {
+      "question_id": "2a1811e2",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_days",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "dcfa8644",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_days",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "6613b389",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 3,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_months",
+          "validation_error": "operand label must be present in its quote",
+          "error": null
+        },
+        {
+          "action": "calculate",
+          "operation": "elapsed_months",
+          "validation_error": "unsupported or ambiguous relative date",
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": null,
+          "error": "repeated tool action"
+        }
+      ]
+    },
+    {
+      "question_id": "edced276_abs",
+      "category": "unanswerable",
+      "status": "INVALID",
+      "calls_used": 3,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": null,
+          "error": "repeated tool action"
+        }
+      ]
+    },
+    {
+      "question_id": "0ddfec37_abs",
+      "category": "unanswerable",
+      "status": "INVALID",
+      "calls_used": 2,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": null,
+          "error": "repeated tool action"
+        }
+      ]
+    },
+    {
+      "question_id": "b86304ba",
+      "category": "single-session-user",
+      "status": "INVALID",
+      "calls_used": 3,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": null,
+          "error": "repeated tool action"
+        }
+      ]
+    },
+    {
+      "question_id": "b46e15ed",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_months",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "gpt4_1d4ab0c9",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_days",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "gpt4_e072b769",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_weeks",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "gpt4_1d80365e",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_days",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "370a8ff4",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_weeks",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "gpt4_d6585ce8",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 4,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": "Reply must contain one valid JSON object: Expecting value",
+          "error": null
+        }
+      ]
+    },
+    {
+      "question_id": "8077ef71",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_days",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "gpt4_21adecb5",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 4,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_months",
+          "validation_error": "operand label must be present in its quote",
+          "error": null
+        },
+        {
+          "action": "calculate",
+          "operation": "elapsed_months",
+          "validation_error": "operand text is not in its exact quote",
+          "error": null
+        },
+        {
+          "action": "calculate",
+          "operation": "elapsed_months",
+          "validation_error": "operand quote is not exact visible evidence",
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": "citation quote is not a verbatim memory substring",
+          "error": null
+        }
+      ]
+    },
+    {
+      "question_id": "gpt4_a2d1d1f6",
+      "category": "temporal-reasoning",
+      "status": "INVALID",
+      "calls_used": 1,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "calculate",
+          "operation": "elapsed_days",
+          "validation_error": null,
+          "error": "invalid calculation action schema",
+          "missing_fields": [
+            "unit"
+          ],
+          "extra_fields": []
+        }
+      ]
+    },
+    {
+      "question_id": "6456829e_abs",
+      "category": "unanswerable",
+      "status": "INVALID",
+      "calls_used": 2,
+      "calls_limit": 4,
+      "turns": [
+        {
+          "action": "search",
+          "operation": null,
+          "validation_error": null,
+          "error": null
+        },
+        {
+          "action": null,
+          "operation": null,
+          "validation_error": null,
+          "error": "repeated tool action"
+        }
+      ]
+    }
+  ],
+  "note": "Offline diagnostics only. No retries, answer changes, relaxed validation or accuracy credit. Fields absent from tool requests are recorded, not repaired."
+}

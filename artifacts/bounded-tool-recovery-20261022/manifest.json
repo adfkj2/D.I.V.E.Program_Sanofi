@@ -7,8 +7,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 1751,
-      "sha256": "88165dc2987d25a2098cbbbcd12e499ac707be93e870165f0135f9b6c97c635b",
+      "bytes": 2189,
+      "sha256": "034cc978886a7c40fceee62053b6827fbf027a79b58beb54ab27208d38808dd7",
       "transformation": "authored documentation or exact remote verification record"
     },
     {
@@ -25,6 +25,30 @@
       "sha256": "d76fc700715c35d3fd9578bfe6e72d9f5503a7040f3136d38e5e7ba1ca1babee",
       "raw_path": "eval/reports/bounded-tool-recovery-20261022/content-audit.json",
       "raw_sha256": "d76fc700715c35d3fd9578bfe6e72d9f5503a7040f3136d38e5e7ba1ca1babee",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/browser-before.json",
+      "bytes": 464,
+      "sha256": "e6202df7ad77f58ae32553962d641c005c560bda55ce61533b2dd78d814e9c2f",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/browser-before/failure.json",
+      "raw_sha256": "ab2bd2d51ecf01b590606b545882bf18c1b51eab89a5419e7ea0c6cac005698f",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/browser-before.txt",
+      "bytes": 611,
+      "sha256": "e565794aae6dca384e85bee2dd753981d8e731f74413e2d54443a86e2e043c6b",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/browser-before.log",
+      "raw_sha256": "81c159db321fe5ede4a010ab45dd5be46efb6aa7ef7c40add9a98a77722e0874",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "failures-and-repairs/browser-format-v2.txt",
+      "bytes": 459,
+      "sha256": "76097f7ca5763a580a51aaa8150a1a5043f51c9354b3d0d0242eff8d29b8e929",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/browser-format-v2.log",
+      "raw_sha256": "57f9ab58b2f82488e3130979dace2eda3d095535982089510a8f415559d1e354",
       "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
     },
     {
@@ -52,11 +76,43 @@
       "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
     },
     {
+      "path": "failures-and-repairs/remote-checks-v1.json",
+      "bytes": 10331,
+      "sha256": "4b46584287bffa174383eac45250179ed760eaa453fb9d0506f6a3e6ed102c97",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/remote-checks-v1.json",
+      "raw_sha256": "4b46584287bffa174383eac45250179ed760eaa453fb9d0506f6a3e6ed102c97",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
       "path": "failures-and-repairs/wheel-build.txt",
       "bytes": 1534,
       "sha256": "023a31e64cd1639325d7bf5094a681658aaf91e0235b72ae2933c10fa05c4d53",
       "raw_path": "eval/reports/bounded-tool-recovery-20261022/wheel-build.log",
       "raw_sha256": "ee0cd25a80d2872087dac9ade1bc8be9cd454ea14185c6cf809e4786405df6ca",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "quality/browser-format.txt",
+      "bytes": 384,
+      "sha256": "cf683ef930d3af64f840553a0661bda81aea88252251abef0e9c1c69e3a0aebc",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/browser-format-v3.log",
+      "raw_sha256": "143e316a5457e89cc32fbd8bb5b337d0a91ffef1d0ba8915f1146d190caec12e",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "quality/browser-source-manifest.json",
+      "bytes": 995,
+      "sha256": "d3f1c59b3fe0f5ab6b6501790f1df5fc6497e6e1b88034f32671d49fe27a5858",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/browser-source-manifest.json",
+      "raw_sha256": "d3f1c59b3fe0f5ab6b6501790f1df5fc6497e6e1b88034f32671d49fe27a5858",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "quality/browser.json",
+      "bytes": 1743,
+      "sha256": "662aff8ac400528f5da701d8fb65bbe22b04f730c59ce1dc634e103443807e38",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/browser-after-v3/summary.json",
+      "raw_sha256": "6baf6cc6ae32035f4c831319abb4bcc252cce09f9cf778f1f524096cf5aa65f0",
       "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
     },
     {

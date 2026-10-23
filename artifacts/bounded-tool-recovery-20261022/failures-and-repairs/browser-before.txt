@@ -1,0 +1,12 @@
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#workspace-heading').getByText('个人论文 · 自动验证') to be visible
+    62 × locator resolved to hidden <h1 id="workspace-heading">个人论文 · 自动验证</h1>
+
+    at main (${REPOSITORY}\eval\reports\bounded-tool-recovery-20261022\workbench-race-before.cjs:62:8) {
+  log: [
+    "  - waiting for locator('#workspace-heading').getByText('个人论文 · 自动验证') to be visible",
+    '    62 × locator resolved to hidden <h1 id="workspace-heading">个人论文 · 自动验证</h1>'
+  ],
+  name: 'TimeoutError'
+}

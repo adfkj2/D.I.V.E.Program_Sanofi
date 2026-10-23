@@ -1,0 +1,14 @@
+{
+  "hash_normalization": "CRLF to LF",
+  "files": {
+    "src/dive_memory/static/app.css": "3f6f770ad3991c03e7194b410250074721236be043cf14d64b13ee93109d7f51",
+    "src/dive_memory/static/app.js": "7811e730a83db6e921dc338e2c4ba31304e0ed3c660af106c969eb0b14c966cf",
+    "src/dive_memory/static/assistant.js": "fec6ca2e49f0ee2552d0fc33528735d968d59e7af91c6a96ef53bd75341c9c0f",
+    "src/dive_memory/static/icon.svg": "0e1748ae5785ce00f0a3378f8022eda48c15863d0ac2f5eadfde8134232224e3",
+    "src/dive_memory/static/index.html": "bb22498fce6e6f37d960113f6d2584affd37bb35279ef14ce4c883fe3c3f110b",
+    "src/dive_memory/static/verification.json": "bd5b34b979b21cef1cd1f6978160ce9f904a76844f02a4398f0aa6abb9b5cb12",
+    "tools/verify_workbench.cjs": "8e86980f407f30705e880cdb42e99f4b2508ee9ede846655131d433c157210af",
+    "package.json": "d0be4d4be6dee219cf73d9e5958cec2531f0f2cb6572017d96e9235f3e6519d8",
+    "package-lock.json": "7ae4f6a0b0802861a5d06c9a2d39ecf99a9d37654fe952b8f4d00a956fb26986"
+  }
+}

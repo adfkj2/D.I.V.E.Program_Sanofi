@@ -44,12 +44,45 @@ async function main() {
     await page.locator("#new-project").click();
     await page.locator("#project-name").fill("个人论文 · 自动验证");
     await page.locator("#project-goal").fill("完成可复现的初稿");
+    // Hold a real activation request to exercise the loading boundary reliably.
+    let releaseActivation;
+    const activationGate = new Promise((resolve) => {
+      releaseActivation = resolve;
+    });
+    const activationStarted = page.waitForRequest(
+      (request) =>
+        request.method() === "GET" &&
+        new URL(request.url()).pathname === "/api/project",
+    );
+    await page.route(
+      "**/api/project?*",
+      async (route) => {
+        await activationGate;
+        await route.continue();
+      },
+      { times: 1 },
+    );
     await page.locator("#project-form button[type=submit]").click();
+    await activationStarted;
+    const visibleWhileLoading = await page.locator(".page:visible").count();
+    releaseActivation();
+    assert.equal(visibleWhileLoading, 0);
+    // Closing the dialog only confirms creation; activation still has to finish.
+    await page
+      .locator("#message")
+      .getByText("项目已创建。连接模型后，告诉助手你想推进什么。", {
+        exact: true,
+      })
+      .waitFor();
+    await page.locator("#assistant:not([hidden])").waitFor();
     await page.locator('[data-tab="brief"]').click();
     await page
       .locator("#workspace-heading")
       .getByText("个人论文 · 自动验证")
       .waitFor();
+    checks.push(
+      "project creation waits for real activation before navigating, including a delayed response",
+    );
     const personalProject = await page.locator("#project").inputValue();
     await page.locator("#add-record").click();
     await page.locator("#record-key").fill("实验进展");

@@ -21,6 +21,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .application.assistant import Assistant
 from .application.casebook import load_casebook
 from .application.demo import load_demo
+from .application.project_import import analyze_folder
 from .application.records import ProjectRecord
 from .application.runtime import MemoryApplication
 from .application.settings import application_from_environment
@@ -74,6 +75,27 @@ class ProjectInput(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     goal: str = Field(default="", max_length=1000)
     request_id: str = Field(min_length=1, max_length=200)
+
+
+class ImportDocument(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    path: str = Field(min_length=1, max_length=500)
+    content: str = Field(max_length=12000)
+
+
+class FolderInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(min_length=1, max_length=80)
+    paths: list[str] = Field(max_length=2000)
+    documents: list[ImportDocument] = Field(max_length=24)
+    skipped: int = Field(default=0, ge=0, strict=True)
+
+
+class ProjectCreateInput(ProjectInput):
+    folder: FolderInput | None = None
+    progress_note: str | None = Field(default=None, min_length=1, max_length=4000)
+    next_step: str | None = Field(default=None, max_length=500)
+    tasks: list[str] | None = Field(default=None, max_length=20)
 
 
 class TaskInput(Input):
@@ -277,9 +299,27 @@ def create_workbench(
     def project_details(project: str):
         return runtime.project_details(project)
 
+    @app.post("/api/project-import/preview")
+    def preview_project_import(body: FolderInput):
+        result = analyze_folder(body.model_dump())
+        # The browser already holds the documents; avoid echoing full contents.
+        result["sources"] = [
+            {key: source[key] for key in ("path", "sha256")}
+            for source in result["sources"]
+        ]
+        return result
+
     @app.post("/api/projects")
-    def create_project(body: ProjectInput):
-        return runtime.create_project(body.name, body.goal, body.request_id)
+    def create_project(body: ProjectCreateInput):
+        return runtime.create_project(
+            body.name,
+            body.goal,
+            body.request_id,
+            folder=body.folder.model_dump() if body.folder is not None else None,
+            progress_note=body.progress_note,
+            next_step=body.next_step,
+            tasks=body.tasks,
+        )
 
     @app.put("/api/project")
     def update_project(body: ProjectInput, project: str):

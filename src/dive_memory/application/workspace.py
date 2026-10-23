@@ -4,6 +4,7 @@ These are user-managed workflow data, not extracted facts or model answers.
 The caller holds the application's lock; writes share the core transaction.
 """
 
+import json
 from hashlib import sha256
 from typing import Any
 
@@ -26,6 +27,10 @@ CREATE TABLE IF NOT EXISTS app_checkpoints (
   next_step TEXT NOT NULL, created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS app_checkpoints_project ON app_checkpoints(namespace, created_at);
+CREATE TABLE IF NOT EXISTS app_project_imports (
+  namespace TEXT PRIMARY KEY, digest TEXT NOT NULL, payload TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
 """
 
 
@@ -83,12 +88,16 @@ class ProjectWorkspace:
             "SELECT id,namespace,title,completed,revision,created_at,updated_at FROM app_tasks WHERE namespace=? ORDER BY completed,created_at,id",
             (namespace,),
         ).fetchall()
+        imported = self.store.db.execute(
+            "SELECT payload FROM app_project_imports WHERE namespace=?", (namespace,)
+        ).fetchone()
         return {
             "namespace": namespace,
             "name": row["name"] if row else namespace,
             "goal": row["goal"] if row else "",
             "tasks": [dict(task) for task in tasks],
             "checkpoints": [dict(checkpoint) for checkpoint in checkpoints],
+            "initialization": json.loads(imported["payload"]) if imported else None,
         }
 
     def save_project(self, namespace: str, name: str, goal: str) -> dict:

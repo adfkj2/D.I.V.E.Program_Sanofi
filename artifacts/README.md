@@ -4,6 +4,7 @@
 
 | 目录或文件 | 内容 |
 |---|---|
+| [engineering-hygiene-20261023/](engineering-hygiene-20261023/README.md) | R64源码绑定、导入边界与目录清理；1487项本地检查、27项浏览器、独立安装、失败过程与清理摘要 |
 | [bounded-tool-recovery-20261022/](bounded-tool-recovery-20261022/README.md) | R63受限工具恢复、40个内容错误来源审计、1417项本地检查与独立安装；0模型调用，无新准确率 |
 | [scoped-evidence-20261020/](scoped-evidence-20261020/README.md) | R62作用域事实保留、查证/计算；40题38/40筛选、全量435/500（已确认87.0%，另8题未知）开发自评、1中断失败与费用对账、1390项本地工程证据 |
 | [closure-progress-20261019/](closure-progress-20261019/README.md) | R55–R61共享阅读层、五轮未推广筛选（含R60中断）、三态判分、费用及最终工程证据 |

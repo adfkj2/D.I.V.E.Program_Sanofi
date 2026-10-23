@@ -1,0 +1,11 @@
+{
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'z-docs/README.md',\n-   'z-docs/progress.md'\n- ]\n",
+  "checks": [
+    "analysis blocks premature save; removing the folder discards a delayed preview",
+    "Chinese folder and nested documents populate sourced progress and editable task selection",
+    "390px import dialog has no horizontal overflow",
+    "confirmed progress, selected tasks and source memories survive reload, exclude secrets and render text safely",
+    "existing project settings remain editable after folder initialization"
+  ],
+  "errors": []
+}

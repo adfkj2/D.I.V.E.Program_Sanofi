@@ -15,6 +15,60 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+PYTHON_SUFFIXES = frozenset({".py", ".pyi"})
+SCRIPT_SUFFIXES = PYTHON_SUFFIXES | {
+    ".js",
+    ".mjs",
+    ".cjs",
+    ".ps1",
+    ".sh",
+    ".bat",
+    ".cmd",
+}
+BINARY_ASSET_SUFFIXES = frozenset(
+    {
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".webp",
+        ".ico",
+        ".woff",
+        ".woff2",
+        ".ttf",
+        ".otf",
+        ".wasm",
+    }
+)
+PRODUCT_SUFFIXES = (
+    PYTHON_SUFFIXES
+    | BINARY_ASSET_SUFFIXES
+    | {".html", ".css", ".js", ".mjs", ".cjs", ".json", ".svg"}
+)
+DEPLOYMENT_CONFIG_SUFFIXES = frozenset(
+    {
+        ".yml",
+        ".yaml",
+        ".toml",
+        ".json",
+        ".conf",
+        ".ini",
+        ".sql",
+    }
+)
+IGNORED_SOURCE_DIRECTORIES = frozenset(
+    {
+        "__pycache__",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        "node_modules",
+        "artifacts",
+        "eval",
+        "build",
+        "dist",
+    }
+)
 
 
 def coverage_groups(report: dict, groups: dict, *, root: Path | None = None) -> dict:
@@ -81,18 +135,50 @@ def write_json(path: Path, value: Any) -> None:
     )
 
 
-def source_manifest() -> dict[str, str]:
-    paths = {
-        *ROOT.joinpath("src").rglob("*.py"),
-        *ROOT.joinpath("tests").rglob("*.py"),
-        *ROOT.joinpath("tools").rglob("*.py"),
-        *ROOT.joinpath("requirements").glob("*.lock"),
-        ROOT / "pyproject.toml",
-        ROOT / ".github/workflows/quality.yml",
-    }
+def source_manifest(*, root: Path | None = None) -> dict[str, str]:
+    """Bind shipped code/assets and engineering inputs, excluding local outputs."""
+    root = ROOT if root is None else root
+    paths = set()
+    for directory, suffixes, filenames in (
+        ("src", PRODUCT_SUFFIXES, set()),
+        ("tests", PYTHON_SUFFIXES, set()),
+        ("tools", SCRIPT_SUFFIXES, set()),
+        ("requirements", {".lock"}, set()),
+        (".github/workflows", {".yml", ".yaml"}, set()),
+        ("migrations", {".sql"}, set()),
+        (
+            "ops",
+            DEPLOYMENT_CONFIG_SUFFIXES,
+            {"Dockerfile", "Containerfile", ".dockerignore"},
+        ),
+        ("ops/docker", SCRIPT_SUFFIXES, set()),
+        ("ops/postgres", SCRIPT_SUFFIXES, set()),
+    ):
+        for path in root.joinpath(directory).rglob("*"):
+            relative = path.relative_to(root)
+            if (
+                path.is_file()
+                and not IGNORED_SOURCE_DIRECTORIES.intersection(relative.parts[:-1])
+                and (path.suffix in suffixes or path.name in filenames)
+            ):
+                paths.add(path)
+    for name in (
+        "pyproject.toml",
+        "package.json",
+        "package-lock.json",
+        ".dockerignore",
+        ".gitattributes",
+        ".gitignore",
+        "启动续研.cmd",
+    ):
+        path = root / name
+        if path.is_file():
+            paths.add(path)
     return {
-        path.relative_to(ROOT).as_posix(): hashlib.sha256(
-            path.read_bytes().replace(b"\r\n", b"\n")
+        path.relative_to(root).as_posix(): hashlib.sha256(
+            path.read_bytes()
+            if path.suffix in BINARY_ASSET_SUFFIXES
+            else path.read_bytes().replace(b"\r\n", b"\n")
         ).hexdigest()
         for path in sorted(paths)
     }
@@ -114,7 +200,10 @@ def main(argv: list[str] | None = None) -> int:
     manifest = source_manifest()
     write_json(
         output / "source-manifest.json",
-        {"hash_normalization": "UTF-8 source bytes, CRLF to LF", "files": manifest},
+        {
+            "hash_normalization": "Text bytes: CRLF to LF; binary assets: unchanged",
+            "files": manifest,
+        },
     )
     env = {
         key: value for key, value in os.environ.items() if not key.startswith("DIVE_")

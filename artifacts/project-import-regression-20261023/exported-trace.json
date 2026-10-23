@@ -1,0 +1,319 @@
+{
+  "trace_id": "trace_f8623da88bea4850b2115419de60da37",
+  "namespace": "demo-f56be884",
+  "question": "预算上限与当前基线",
+  "as_of": null,
+  "mode": "evidence_only",
+  "reader": null,
+  "status": "EVIDENCE_ONLY",
+  "answer": null,
+  "evidence": [
+    {
+      "id": "mem_4ff688edabc6455b1f2909d7dc831b74",
+      "namespace": "demo-f56be884",
+      "kind": "semantic_fact",
+      "evidence_state": "OBSERVATION",
+      "content": "当前基线: 方案 A\n[confirmed; decision]\nReason: 已采纳；延迟符合要求",
+      "structured_content": {
+        "key": "当前基线",
+        "value": "方案 A",
+        "category": "decision",
+        "disposition": "confirmed",
+        "reason": "已采纳；延迟符合要求",
+        "session": "session-1",
+        "source_title": "",
+        "source_path": "",
+        "source_excerpt": "",
+        "source_sha256": "",
+        "subject": "当前基线",
+        "predicate": "project_record",
+        "schema": "project-record-v1",
+        "role": "user",
+        "normalized_value": "方案 A|confirmed"
+      },
+      "status": "ACTIVE",
+      "importance": 0.8,
+      "confidence": 1,
+      "salience": 0.8,
+      "durability": "long_term",
+      "valid_from": "2026-10-01T09:10:00+00:00",
+      "valid_to": null,
+      "observed_at": "2026-10-01T09:10:00+00:00",
+      "created_at": "2026-10-23T02:34:51.642584+00:00",
+      "updated_at": "2026-10-23T02:34:51.642593+00:00",
+      "version": 1,
+      "source_event_ids": [
+        "evt_5980ad332e11ace1bd722bf421ee4221"
+      ],
+      "supersedes_id": null,
+      "contradicts_id": null,
+      "model_version": "deterministic-sha256-v1",
+      "extractor_version": "ProjectExtractionProvider"
+    },
+    {
+      "id": "mem_e7e46396343bd7f0bbb2b282eaeac56a",
+      "namespace": "demo-f56be884",
+      "kind": "semantic_fact",
+      "evidence_state": "OBSERVATION",
+      "content": "预算上限: 55 元\n[confirmed; constraint]\nReason: Second correction without losing timestamp precision",
+      "structured_content": {
+        "key": "预算上限",
+        "value": "55 元",
+        "category": "constraint",
+        "disposition": "confirmed",
+        "reason": "Second correction without losing timestamp precision",
+        "session": "session-3",
+        "source_title": "",
+        "source_path": "",
+        "source_excerpt": "",
+        "source_sha256": "",
+        "subject": "预算上限",
+        "predicate": "project_record",
+        "schema": "project-record-v1",
+        "role": "user",
+        "normalized_value": "55 元|confirmed"
+      },
+      "status": "ACTIVE",
+      "importance": 0.8,
+      "confidence": 1,
+      "salience": 0.8,
+      "durability": "long_term",
+      "valid_from": "2026-10-23T02:34:52.317Z",
+      "valid_to": null,
+      "observed_at": "2026-10-23T02:34:52.317Z",
+      "created_at": "2026-10-23T02:34:52.363726+00:00",
+      "updated_at": "2026-10-23T02:34:52.363741+00:00",
+      "version": 4,
+      "source_event_ids": [
+        "evt_9436bf412030b4a32188e61b998842a8"
+      ],
+      "supersedes_id": "mem_8df6e92cfcdb5f07b530df06e8656531",
+      "contradicts_id": null,
+      "model_version": "deterministic-sha256-v1",
+      "extractor_version": "ProjectExtractionProvider"
+    },
+    {
+      "id": "mem_fdae6a7985bc503fa0f1004b43f092e3",
+      "namespace": "demo-f56be884",
+      "kind": "semantic_fact",
+      "evidence_state": "OBSERVATION",
+      "content": "当前基线: 考虑方案 C\n[proposed; decision]\nReason: 尚未评测，也未确认采用",
+      "structured_content": {
+        "key": "当前基线",
+        "value": "考虑方案 C",
+        "category": "decision",
+        "disposition": "proposed",
+        "reason": "尚未评测，也未确认采用",
+        "session": "session-3",
+        "source_title": "",
+        "source_path": "",
+        "source_excerpt": "",
+        "source_sha256": "",
+        "subject": "当前基线",
+        "predicate": "project_record",
+        "schema": "project-record-v1",
+        "role": "user",
+        "normalized_value": "考虑方案 C|proposed"
+      },
+      "status": "ACTIVE",
+      "importance": 0.8,
+      "confidence": 1,
+      "salience": 0.8,
+      "durability": "long_term",
+      "valid_from": "2026-10-05T09:10:00+00:00",
+      "valid_to": null,
+      "observed_at": "2026-10-05T09:10:00+00:00",
+      "created_at": "2026-10-23T02:34:51.703840+00:00",
+      "updated_at": "2026-10-23T02:34:51.703854+00:00",
+      "version": 1,
+      "source_event_ids": [
+        "evt_7d0bc31df6e7de9a8e6b2fd41b2c89d0"
+      ],
+      "supersedes_id": null,
+      "contradicts_id": null,
+      "model_version": "deterministic-sha256-v1",
+      "extractor_version": "ProjectExtractionProvider"
+    }
+  ],
+  "context": "[0] id=mem_4ff688edabc6455b1f2909d7dc831b74; source=evt_5980ad332e11ace1bd722bf421ee4221; valid=2026-10-01T09:10:00+00:00..present; state=CURRENT; role=user; conflict_group=当前基线:project_record\n    当前基线: 方案 A\n[confirmed; decision]\nReason: 已采纳；延迟符合要求\n[1] id=mem_e7e46396343bd7f0bbb2b282eaeac56a; source=evt_9436bf412030b4a32188e61b998842a8; valid=2026-10-23T02:34:52.317Z..present; state=CURRENT; role=user\n    预算上限: 55 元\n[confirmed; constraint]\nReason: Second correction without losing timestamp precision\n[2] id=mem_fdae6a7985bc503fa0f1004b43f092e3; source=evt_7d0bc31df6e7de9a8e6b2fd41b2c89d0; valid=2026-10-05T09:10:00+00:00..present; state=CURRENT; role=user; conflict_group=当前基线:project_record\n    当前基线: 考虑方案 C\n[proposed; decision]\nReason: 尚未评测，也未确认采用",
+  "estimated_tokens": 188,
+  "token_counter": "utf8-character-heuristic-v1",
+  "token_budget": 1500,
+  "packing": [
+    {
+      "memory_id": "mem_4ff688edabc6455b1f2909d7dc831b74",
+      "decision": "INCLUDE",
+      "reason": "ranked_within_budget",
+      "cumulative_tokens": 53
+    },
+    {
+      "memory_id": "mem_e7e46396343bd7f0bbb2b282eaeac56a",
+      "decision": "INCLUDE",
+      "reason": "ranked_within_budget",
+      "cumulative_tokens": 117
+    },
+    {
+      "memory_id": "mem_fdae6a7985bc503fa0f1004b43f092e3",
+      "decision": "INCLUDE",
+      "reason": "ranked_within_budget",
+      "cumulative_tokens": 188
+    }
+  ],
+  "retrieval": {
+    "schema_version": "retrieval-trace-v1",
+    "request_id": "req_0274606d2ad4463fb9ff34f8d83c66ac",
+    "query_sha256": "d73b6f1787db5b40146d68ac1488ec749553efe80c62d8c6b2b707d7d9f493dc",
+    "config_version": "retrieval-config-v1",
+    "config_name": "default",
+    "executed_channels": [
+      "bm25",
+      "dense",
+      "predicate",
+      "temporal",
+      "entity",
+      "relation"
+    ],
+    "channels": {
+      "dense": {
+        "candidate_count": 0,
+        "latency_ms": 0.05109999983687885,
+        "degraded": false,
+        "model": "deterministic-sha256-v1",
+        "revision": "v1"
+      },
+      "bm25": {
+        "candidate_count": 0,
+        "latency_ms": 0.72090000139724
+      },
+      "entity": {
+        "candidate_count": 6,
+        "latency_ms": 0.3594999998313142
+      },
+      "relation": {
+        "candidate_count": 0,
+        "latency_ms": 0.3848000014841091
+      },
+      "temporal": {
+        "candidate_count": 6,
+        "latency_ms": 0.7476000009773998
+      },
+      "predicate": {
+        "candidate_count": 0,
+        "latency_ms": 0
+      }
+    },
+    "candidates": [
+      {
+        "memory_id": "mem_4ff688edabc6455b1f2909d7dc831b74",
+        "raw_scores": {
+          "dense": 0,
+          "bm25": 0
+        },
+        "matches": {
+          "entity": true,
+          "relation": false,
+          "predicate": false
+        },
+        "ranks": {
+          "entity": 1
+        },
+        "final_score": 0.016065573770491805,
+        "selected": true
+      },
+      {
+        "memory_id": "mem_5b36746e89a5018af530684e742c471b",
+        "raw_scores": {
+          "dense": 0,
+          "bm25": 0
+        },
+        "matches": {
+          "entity": false,
+          "relation": false,
+          "predicate": false
+        },
+        "ranks": {},
+        "final_score": 0,
+        "selected": false
+      },
+      {
+        "memory_id": "mem_c3b1f884c55a5a32f248a299158ab1bd",
+        "raw_scores": {
+          "dense": 0,
+          "bm25": 0
+        },
+        "matches": {
+          "entity": false,
+          "relation": false,
+          "predicate": false
+        },
+        "ranks": {},
+        "final_score": 0,
+        "selected": false
+      },
+      {
+        "memory_id": "mem_fdae6a7985bc503fa0f1004b43f092e3",
+        "raw_scores": {
+          "dense": 0,
+          "bm25": 0
+        },
+        "matches": {
+          "entity": true,
+          "relation": false,
+          "predicate": false
+        },
+        "ranks": {
+          "entity": 3
+        },
+        "final_score": 0.015555555555555557,
+        "selected": true
+      },
+      {
+        "memory_id": "mem_d4cb0abee29da4508e56566fc8c96d0a",
+        "raw_scores": {
+          "dense": 0,
+          "bm25": 0
+        },
+        "matches": {
+          "entity": false,
+          "relation": false,
+          "predicate": false
+        },
+        "ranks": {},
+        "final_score": 0,
+        "selected": false
+      },
+      {
+        "memory_id": "mem_e7e46396343bd7f0bbb2b282eaeac56a",
+        "raw_scores": {
+          "dense": 0,
+          "bm25": 0
+        },
+        "matches": {
+          "entity": true,
+          "relation": false,
+          "predicate": false
+        },
+        "ranks": {
+          "entity": 2
+        },
+        "final_score": 0.015806451612903227,
+        "selected": true
+      }
+    ],
+    "exclusions": {
+      "temporal": 0,
+      "model_generation": 0,
+      "deletion_status": 0
+    },
+    "hard_filters": {
+      "namespace": true,
+      "deletion_status": true
+    }
+  },
+  "timing_ms": {
+    "retrieve": 8.104900000034831,
+    "pack": 0.5096000004414236,
+    "total": 8.69299999976647
+  },
+  "cache_replay": false
+}

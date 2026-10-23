@@ -1,0 +1,27 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________ test_default_manifest_detects_frontend_change_during_checks _________
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-201/test_default_manifest_detects_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001E50A71AEA0>
+
+    def test_default_manifest_detects_frontend_change_during_checks(tmp_path, monkeypatch):
+        monkeypatch.setattr(quality, "ROOT", tmp_path)
+        for name in ("pyproject.toml", ".github/workflows/quality.yml"):
+            path = tmp_path / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b"config\n")
+        asset = tmp_path / "src/dive_memory/static/app.js"
+        asset.parent.mkdir(parents=True)
+        asset.write_bytes(b"first\n")
+        before = quality.source_manifest()
+        asset.write_bytes(b"second\n")
+>       assert quality.source_manifest() != before
+E       AssertionError: assert {'.github/workflows/quality.yml': 'f612b89bcdbc401379f644d7e48572e3470f77dcd4c39416405d80952ad7089e', 'pyproject.toml': 'f612b89bcdbc401379f644d7e48572e3470f77dcd4c39416405d80952ad7089e'} != {'.github/workflows/quality.yml': 'f612b89bcdbc401379f644d7e48572e3470f77dcd4c39416405d80952ad7089e', 'pyproject.toml': 'f612b89bcdbc401379f644d7e48572e3470f77dcd4c39416405d80952ad7089e'}
+E        +  where {'.github/workflows/quality.yml': 'f612b89bcdbc401379f644d7e48572e3470f77dcd4c39416405d80952ad7089e', 'pyproject.toml': 'f612b89bcdbc401379f644d7e48572e3470f77dcd4c39416405d80952ad7089e'} = <function source_manifest at 0x000001E50A8E7D70>()
+E        +    where <function source_manifest at 0x000001E50A8E7D70> = quality.source_manifest
+
+tests\test_quality_gate.py:172: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_quality_gate.py::test_default_manifest_detects_frontend_change_during_checks
+1 failed in 0.46s

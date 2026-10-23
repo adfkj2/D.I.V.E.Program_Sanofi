@@ -114,10 +114,12 @@ jobs:
             sleep 1
           done
           node tools/verify_workbench.cjs artifacts/workbench
+          node tools/verify_project_import.cjs artifacts/project-import
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: workbench
           path: |
             artifacts/workbench/
+            artifacts/project-import/
             artifacts/server.log

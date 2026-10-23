@@ -1,0 +1,12 @@
+{
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n",
+  "checks": [
+    "analysis blocks premature save; removing the folder discards a delayed preview",
+    "Chinese folder and nested documents populate sourced progress and editable task selection",
+    "390px import dialog has no horizontal overflow",
+    "confirmed progress, selected tasks and source memories survive reload, exclude secrets and render text safely",
+    "existing project settings remain editable after folder initialization",
+    "the 2000-path limit retains progress and README evidence in a real 2002-file folder"
+  ],
+  "errors": []
+}

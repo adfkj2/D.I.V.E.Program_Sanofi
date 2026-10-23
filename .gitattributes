@@ -3,6 +3,8 @@
 *.md text eol=lf
 *.txt text eol=lf
 .gitattributes text eol=lf
+.dockerignore text eol=lf
+.gitignore text eol=lf
 *.json text eol=lf
 *.jsonl text eol=lf
 *.xml text eol=lf

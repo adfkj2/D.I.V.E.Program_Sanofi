@@ -9,6 +9,7 @@ __pycache__/
 .venv-gpu/
 .venv-workbench/
 .workbench/
+.workbuddy/
 *.db
 *.sqlite
 *.sqlite3

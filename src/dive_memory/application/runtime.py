@@ -15,6 +15,7 @@ from ..reading.reader import ReaderRequest, reader_outcome
 from ..service import MemoryService
 from ..temporal import parse_instant, require_instant, visible_at
 from .briefing import build_brief, consult_records
+from .project_import import initialize_project
 from .readers import Reader
 from .records import ProjectExtractionProvider, ProjectRecord
 from .workspace import ProjectWorkspace
@@ -70,9 +71,21 @@ class MemoryApplication:
         with self._lock:
             return self.workspace.search(self._namespace(namespace), query)
 
-    def create_project(self, name: str, goal: str, request_id: str) -> dict:
+    def create_project(
+        self,
+        name: str,
+        goal: str,
+        request_id: str,
+        *,
+        folder: dict | None = None,
+        progress_note: str | None = None,
+        next_step: str | None = None,
+        tasks: list[str] | None = None,
+    ) -> dict:
         with self._lock:
-            return self.workspace.create_project(name, goal, request_id)
+            return initialize_project(
+                self, name, goal, request_id, folder, progress_note, next_step, tasks
+            )
 
     def update_project(self, namespace: str, name: str, goal: str) -> dict:
         with self._lock:

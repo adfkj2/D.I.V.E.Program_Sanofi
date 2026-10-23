@@ -1,0 +1,75 @@
+{
+  "scope": "Historical initial feature validation; current verification is R64. SQLite test outputs remain local.",
+  "files": [
+    {
+      "path": "engineering/casebook-sources.txt",
+      "bytes": 108,
+      "sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9"
+    },
+    {
+      "path": "engineering/coverage-json.txt",
+      "bytes": 94,
+      "sha256": "0408323b7aa36e16251a102ea97479cd729530a656295cd3a4974229e0f45451"
+    },
+    {
+      "path": "engineering/delivery-format.txt",
+      "bytes": 27,
+      "sha256": "5555688d20b6d738067feb4977a3cef821ec605eaa822842b54252fd1bf5a1fb"
+    },
+    {
+      "path": "engineering/delivery-lint.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "engineering/source-correctness.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "engineering/source-manifest.json",
+      "bytes": 26634,
+      "sha256": "57c68ca672ff938b0849ac7e583a99e5101dd5bd46ad0a585024c6df2431edc9"
+    },
+    {
+      "path": "engineering/summary.json",
+      "bytes": 9936,
+      "sha256": "69fbeaa6ae43de3360f1d79b3d5c7c196acb591ff1fa95265187fcd0f6fcfac8"
+    },
+    {
+      "path": "engineering/tests.txt",
+      "bytes": 3733,
+      "sha256": "cc2a7c223a705f4c6284ce9a5879937fa92c2b2e95f6b6bc738027f330e0c872"
+    },
+    {
+      "path": "engineering/types.txt",
+      "bytes": 44,
+      "sha256": "34df9cf38736563d4bb02e64b66effac851acb546ad0a3c3761547e25bbe3570"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1489,
+      "sha256": "2c3e5abe3e8b523b9f267b211cd6cecde4ad87655358c54ef2731d714e4b383c"
+    },
+    {
+      "path": "verified/01-import-desktop.png",
+      "bytes": 183329,
+      "sha256": "1ffc0251dfda07608eff5b84d8b7212669deec072313c7dace6cf208a7811413"
+    },
+    {
+      "path": "verified/02-import-mobile.png",
+      "bytes": 41447,
+      "sha256": "314b26cd0952cee6464b05e6bf8db9694b58199030932d00e263a86dce96671b"
+    },
+    {
+      "path": "verified/03-restored-progress-mobile.png",
+      "bytes": 148301,
+      "sha256": "2674d19a84f4472f0155c0eaada48297e84458e0eeb4d1c366d03dc4badf69cc"
+    },
+    {
+      "path": "verified/summary.json",
+      "bytes": 547,
+      "sha256": "790cf6f01aec1f197fa5e0343d533424a1a0f7f9ff1c441ce9a04c5ce4e8ee83"
+    }
+  ]
+}

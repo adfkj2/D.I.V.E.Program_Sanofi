@@ -586,6 +586,53 @@
             ×
           </button>
         </div>
+        <section id="project-import">
+          <h3>从已有项目开始（选填）</h3>
+          <p class="form-note">
+            选择本地文件夹，整理已有资料和进度，再确认保存。
+          </p>
+          <p class="form-note">
+            优先读取 README、进度文档和文本任务清单。PDF、Word 和图片暂不读取。
+          </p>
+          <label
+            >导入本地文件夹<input
+              id="project-folder"
+              type="file"
+              webkitdirectory
+              multiple
+          /></label>
+          <button id="project-import-clear" type="button" hidden>
+            移除文件夹
+          </button>
+          <p
+            id="project-import-status"
+            class="form-note"
+            role="status"
+            aria-live="polite"
+          ></p>
+          <div id="project-import-preview" hidden>
+            <label
+              >初始项目进度（可修改）<textarea
+                id="project-progress"
+                rows="7"
+                maxlength="4000"
+              ></textarea>
+            </label>
+            <label
+              >接下来先做什么？<input id="project-next-step" maxlength="500"
+            /></label>
+            <p class="form-note">下一步也会保存为待办；不需要时可清空。</p>
+            <fieldset>
+              <legend>从资料中提取的待办（勾选后保存）</legend>
+              <div id="project-import-tasks"></div>
+            </fieldset>
+            <details>
+              <summary>分析来源与范围</summary>
+              <ul id="project-import-sources"></ul>
+              <div id="project-import-warnings" class="form-note"></div>
+            </details>
+          </div>
+        </section>
         <label
           >项目名称<input
             id="project-name"
@@ -606,7 +653,9 @@
         </p>
         <div class="dialog-footer">
           <button type="button" data-close="project-dialog">取消</button
-          ><button type="submit" class="primary">保存项目</button>
+          ><button id="project-save" type="submit" class="primary">
+            保存项目
+          </button>
         </div>
       </form>
     </dialog>

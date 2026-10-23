@@ -1910,6 +1910,43 @@ summary {
 #assistant-settings {
   width: min(560px, calc(100vw - 32px));
 }
+#project-import {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #edf3ee;
+  border: 1px solid #dce4df;
+  border-radius: 10px;
+}
+#project-import h3 {
+  margin-top: 0;
+}
+#project-dialog .dialog-footer {
+  position: sticky;
+  bottom: -26px;
+  background: var(--paper, #fff);
+  padding: 16px 0;
+  z-index: 1;
+}
+#project-import-preview fieldset {
+  border: 1px solid #cbd8d0;
+  margin: 16px 0;
+  min-width: 0;
+}
+#project-import .import-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: normal;
+}
+#project-import .import-task input {
+  width: auto;
+  margin-top: 5px;
+}
+#project-import span,
+#project-import li,
+#project-import-status {
+  overflow-wrap: anywhere;
+}
 #assistant-model-form label {
   display: block;
   margin: 18px 0 6px;

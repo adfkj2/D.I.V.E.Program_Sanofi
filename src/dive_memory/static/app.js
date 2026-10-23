@@ -7,6 +7,8 @@ let project =
   projects = [],
   projectEditing = false,
   projectRequestId = null,
+  projectFolder = null,
+  projectImportVersion = 0,
   taskEditing = null,
   taskRequestId = null,
   checkpointRequestId = null,
@@ -1201,8 +1203,160 @@ function openProject(edit = false) {
     : "创建自己的项目";
   $("project-name").value = edit ? workspace.name : "";
   $("project-goal").value = edit ? workspace.goal : "";
+  clearProjectImport();
+  $("project-import").hidden = edit;
   $("project-dialog").showModal();
 }
+function clearProjectImport() {
+  projectImportVersion++;
+  projectFolder = null;
+  $("project-folder").value = "";
+  $("project-import-preview").hidden = true;
+  $("project-import-clear").hidden = true;
+  $("project-import-status").textContent =
+    "仅在本地读取所选文本，不调用模型。自动跳过隐藏文件、依赖目录和常见密钥文件。";
+  $("project-save").disabled = false;
+  $("project-folder").disabled = false;
+  $("project-import-clear").disabled = false;
+}
+function importPathAllowed(path) {
+  return (
+    !path
+      .split("/")
+      .some(
+        (part) =>
+          part.startsWith(".") ||
+          /^(node_modules|vendor|dist|build|__pycache__|venv|coverage)$/i.test(
+            part,
+          ),
+      ) &&
+    !/(?:^|[\W_])(?:credentials?|secrets?|id_rsa|id_ed25519)(?:$|[\W_])|\.(?:pem|key|p12|pfx|db|sqlite|sqlite3)$/i.test(
+      path,
+    )
+  );
+}
+function importPriority(path) {
+  const name = path.split("/").pop();
+  return /progress|进度|进展|status|todo|roadmap|交接/i.test(name)
+    ? 0
+    : /^readme/i.test(name)
+      ? 1
+      : 2;
+}
+async function previewProjectFolder() {
+  const files = Array.from($("project-folder").files);
+  if (!files.length) return;
+  const version = ++projectImportVersion;
+  projectFolder = null;
+  $("project-import-preview").hidden = true;
+  $("project-import-clear").hidden = false;
+  $("project-save").disabled = true;
+  $("project-import-status").textContent =
+    "正在读取文件夹，整理已有资料和进度…";
+  try {
+    const folder = {
+      name: files[0].webkitRelativePath.split("/")[0].slice(0, 80),
+      paths: [],
+      documents: [],
+      skipped: 0,
+    };
+    const entries = [];
+    for (const file of files) {
+      const path = file.webkitRelativePath.split("/").slice(1).join("/");
+      if (!path || path.length > 500 || !importPathAllowed(path)) {
+        folder.skipped++;
+        continue;
+      }
+      const document =
+        /\.(md|markdown|txt|rst)$/i.test(path) ||
+        /(?:^|\/)(package\.json|pyproject\.toml|Cargo\.toml|go\.mod)$/i.test(
+          path,
+        );
+      entries.push({
+        file,
+        path,
+        priority: document ? importPriority(path) : 3,
+      });
+    }
+    entries.sort(
+      (a, b) => a.priority - b.priority || a.path.localeCompare(b.path),
+    );
+    folder.skipped += Math.max(0, entries.length - 2000);
+    const retained = entries.slice(0, 2000);
+    folder.paths = retained.map((entry) => entry.path);
+    const candidates = retained.filter((entry) => entry.priority < 3);
+    folder.skipped += retained.length - candidates.length;
+    folder.skipped += Math.max(0, candidates.length - 24);
+    for (const { file, path } of candidates.slice(0, 24)) {
+      if (version !== projectImportVersion) return;
+      try {
+        const bytes = await file.slice(0, 65536).arrayBuffer();
+        const content = new TextDecoder("utf-8", { fatal: true })
+          .decode(bytes, { stream: true })
+          .slice(0, 12000);
+        if (
+          content.includes("\0") ||
+          /-----BEGIN [A-Z ]*PRIVATE KEY-----|\b(?:sk-[\w-]{16,}|AKIA[A-Z0-9]{16})|(?:api[_-]?key|password|secret|token)\s*["']?\s*[:=]\s*["']?[^\s"']{12,}/i.test(
+            content,
+          )
+        ) {
+          folder.skipped++;
+          continue;
+        }
+        folder.documents.push({ path, content });
+      } catch {
+        folder.skipped++;
+      }
+    }
+    const preview = await api("/api/project-import/preview", {
+      method: "POST",
+      body: JSON.stringify(folder),
+    });
+    if (version !== projectImportVersion) return;
+    projectFolder = folder;
+    if (!$("project-name").value.trim()) $("project-name").value = preview.name;
+    $("project-progress").value = preview.note;
+    $("project-next-step").value = preview.next_step;
+    $("project-import-tasks").replaceChildren(
+      ...preview.tasks.map((task) => {
+        const label = node("label", undefined, "import-task");
+        const input = node("input");
+        input.type = "checkbox";
+        input.checked = true;
+        input.value = task.title;
+        input.onchange = () => {
+          if (!input.checked && $("project-next-step").value === task.title)
+            $("project-next-step").value = "";
+        };
+        label.append(
+          input,
+          node("span", task.title + "（" + task.source + "）"),
+        );
+        return label;
+      }),
+    );
+    if (!preview.tasks.length)
+      $("project-import-tasks").append(
+        node("p", "没有找到明确的待办清单，可在创建后补充。", "form-note"),
+      );
+    $("project-import-sources").replaceChildren(
+      ...preview.sources.map((source) => node("li", source.path)),
+    );
+    $("project-import-warnings").replaceChildren(
+      ...preview.warnings.map((warning) => node("p", warning)),
+    );
+    $("project-import-status").textContent =
+      `已整理「${preview.name}」：${preview.paths.length} 个文件，阅读 ${preview.sources.length} 份资料。请核对初始进度，再保存项目。`;
+    $("project-import-preview").hidden = false;
+    $("project-save").disabled = false;
+  } catch (error) {
+    if (version !== projectImportVersion) return;
+    $("project-import-status").textContent =
+      error.message + " 请重新选择文件夹，或移除后创建空项目。";
+  }
+}
+$("project-folder").onchange = previewProjectFolder;
+$("project-import-clear").onclick = clearProjectImport;
 function openTask(task = null) {
   taskEditing = task;
   taskRequestId = crypto.randomUUID();
@@ -1210,13 +1364,13 @@ function openTask(task = null) {
   $("task-title").value = task?.title || "";
   $("task-dialog").showModal();
 }
-async function submitForm(event, handler) {
+async function submitForm(event, handler, isCurrent = () => true) {
   event.preventDefault();
   const button = event.submitter;
   if (button.disabled) return;
   button.disabled = true;
   await run(handler);
-  button.disabled = false;
+  if (isCurrent()) button.disabled = false;
 }
 $("new-project").onclick = () => openProject();
 $("edit-project").onclick = () => openProject(true);
@@ -1226,27 +1380,65 @@ $("project-select").onchange = () => {
   if ($("project-select").value)
     run(() => activateProject($("project-select").value));
 };
-$("project-form").onsubmit = (event) =>
-  submitForm(event, async () => {
-    const result = await api(
-      projectEditing ? "/api/project?" + params() : "/api/projects",
-      {
-        method: projectEditing ? "PUT" : "POST",
-        body: JSON.stringify({
-          name: $("project-name").value,
-          goal: $("project-goal").value,
-          request_id: projectRequestId,
-        }),
-      },
-    );
-    $("project-dialog").close();
-    await activateProject(result.namespace);
-    showMessage(
-      projectEditing
-        ? "项目设置已保存。"
-        : "项目已创建。连接模型后，告诉助手你想推进什么。",
-    );
-  });
+$("project-form").onsubmit = (event) => {
+  const requestId = projectRequestId;
+  const editing = projectEditing;
+  const dialog = $("project-dialog");
+  const isCurrent = () => projectRequestId === requestId;
+  return submitForm(
+    event,
+    async () => {
+      const imported = projectFolder;
+      // Freeze the reviewed snapshot until this save attempt finishes.
+      $("project-folder").disabled = true;
+      $("project-import-clear").disabled = true;
+      try {
+        const result = await api(
+          editing ? "/api/project?" + params() : "/api/projects",
+          {
+            method: editing ? "PUT" : "POST",
+            body: JSON.stringify({
+              name: $("project-name").value,
+              goal: $("project-goal").value,
+              request_id: requestId,
+              ...(!editing && imported
+                ? {
+                    folder: imported,
+                    progress_note: $("project-progress").value,
+                    next_step: $("project-next-step").value,
+                    tasks: Array.from(
+                      $("project-import-tasks").querySelectorAll(
+                        "input:checked",
+                      ),
+                    ).map((input) => input.value),
+                  }
+                : {}),
+            }),
+          },
+        );
+        if (!isCurrent() || !dialog.open) return;
+        dialog.close();
+        await activateProject(result.namespace);
+        if (isCurrent() && !dialog.open)
+          showMessage(
+            editing
+              ? "项目设置已保存。"
+              : imported
+                ? "项目已导入，初始进度、资料来源和下一步已保存。"
+                : "项目已创建。连接模型后，告诉助手你想推进什么。",
+          );
+      } catch (error) {
+        if (isCurrent()) throw error;
+      } finally {
+        if (isCurrent()) {
+          $("project-folder").disabled = false;
+          $("project-import-clear").disabled = false;
+        }
+      }
+    },
+    isCurrent,
+  );
+};
 $("add-task").onclick = () => openTask();
 $("task-form").onsubmit = (event) =>
   submitForm(event, async () => {

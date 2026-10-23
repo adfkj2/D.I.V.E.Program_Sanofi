@@ -1,0 +1,45 @@
+......s.FF                                                               [100%]
+================================== FAILURES ===================================
+_________ test_case_only_rename_cannot_bypass_tracked_file_protection _________
+
+repository = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-207/test_case_only_rename_cannot_b0')
+
+    def test_case_only_rename_cannot_bypass_tracked_file_protection(repository):
+        path = write(repository, "build/note.txt", "tracked source")
+        subprocess.run(["git", "add", "build/note.txt"], cwd=repository, check=True)
+        renamed = path.with_name("Note.txt")
+        path.rename(renamed)
+        plan = cleanup.plan_cleanup(repository)
+>       assert not plan["targets"] and plan["blocked"]
+E       AssertionError: assert (not [{'path': 'build', 'archive': False, 'files': {'build/Note.txt': 'ede1a88560849607d7bf69295f586075c781a3bb75c53ba8031fcc0b03cd34ef'}, 'bytes': 14}])
+
+tests\test_workspace_cleanup.py:133: AssertionError
+__________ test_write_between_deletions_preserves_the_changed_target __________
+
+repository = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-207/test_write_between_deletions_p0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A22D52B360>
+
+    def test_write_between_deletions_preserves_the_changed_target(repository, monkeypatch):
+        write(repository, ".pytest-a/old")
+        protected = write(repository, ".pytest-b/old")
+        plan = cleanup.plan_cleanup(repository)
+        original = cleanup.shutil.rmtree
+
+        def remove_then_write(path):
+            original(path)
+            if path.name == ".pytest-a":
+                protected.write_text("new result after archive verification")
+
+        monkeypatch.setattr(cleanup.shutil, "rmtree", remove_then_write)
+        result = cleanup.apply_cleanup(plan, repository / "eval/reports/cleanup")
+>       assert result["deleted"] == [".pytest-a"] and result["errors"]
+E       AssertionError: assert (['.pytest-a', '.pytest-b'] == ['.pytest-a']
+E
+E         Left contains one more item: '.pytest-b'
+E         Use -v to get more diff)
+
+tests\test_workspace_cleanup.py:150: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_workspace_cleanup.py::test_case_only_rename_cannot_bypass_tracked_file_protection
+FAILED tests/test_workspace_cleanup.py::test_write_between_deletions_preserves_the_changed_target
+2 failed, 7 passed, 1 skipped in 5.40s

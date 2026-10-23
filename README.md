@@ -144,7 +144,7 @@ dive-memory --db memory.db serve --port 8765
 | 记忆核心 | **92.01% 行 / 80.56% 分支** |
 | 共享阅读层 | **91.75% 行 / 84.45% 分支**；包含计算器与独立工具协议，门槛不变 |
 | 真实语义模型 | 固定BGE-M3完成40/40配对写入/检索，1题来源形成与可见性增加、0来源指标退步；未生成或判分答案 |
-| 远程服务检查 | R63首轮4/5成功，浏览器创建项目时序竞争已复现并修复，本地20项通过；[失败及修复证据](artifacts/bounded-tool-recovery-20261022/README.md)，最新提交逐项结果见[Actions](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions) |
+| 远程服务检查 | 修复提交`476ce1c`全部5项成功，PostgreSQL实际8/8且零跳过、浏览器20项通过；[逐项记录](artifacts/bounded-tool-recovery-20261022/remote-checks.json)，[首轮失败与修复](artifacts/bounded-tool-recovery-20261022/README.md)完整保留 |
 
 全源码行75.72%、分支69.64%，与局部覆盖分别披露。9项本地跳过包括8项PostgreSQL服务测试及1项普通环境缺模型依赖的测试；后者另有历史真实GPU验证。R63安装包已在全新环境通过重启、CLI/API、项目核查与交接验证；本轮远程结果发布后按精确提交核验。当前结果与历史证据见[五项质量复核入口](docs/32-code-quality-evidence.md)，不会按测试数折算评委分数。
 

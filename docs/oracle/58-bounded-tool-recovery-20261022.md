@@ -74,3 +74,5 @@ R62的16个无效输出中，9个缺unit和5个重复动作发生时仍有调用
 首修及请求等待收敛后均20项通过；格式检查发现新增长行，按Prettier修正，最终同一脚本格式通过且浏览器20项通过，控制台错误0、外部请求0。该本地浏览器采用Chrome155与真实本地API；Linux CI浏览器仍需按新提交单独核验。239个Python源码/测试/配置文件仍与完整门禁一致，静态页面与浏览器脚本另存哈希；安装包和应用源码未改，无需把旧门禁结果冒充重新运行。
 
 全部失败及修复证据见[精选证据](../../artifacts/bounded-tool-recovery-20261022/README.md)。新增模型请求与费用均为0，Benchmark历史结果不变。再次选择性推送后核验精确最新SHA，远程结果单独记录。
+
+最终远程核验：修复提交`476ce1ce0aa4f3c9d1d8d2478dc8c8c56489134a`已推送，运行[39885873227](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/39885873227)五项全部success；PostgreSQL实际8通过且零跳过、浏览器20项通过，远程main与提交一致。[逐项任务与日志摘录](../../artifacts/bounded-tool-recovery-20261022/remote-checks.json)。最后仅补文档与远程记录，后续记录提交仍按自身SHA单独核验，不以本次结果代替。

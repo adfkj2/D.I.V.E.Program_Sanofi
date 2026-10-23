@@ -4,7 +4,7 @@
 
 ## 当前工程证据
 
-2026-10-23发布补记：R63首轮远程4/5，浏览器检查提前导航导致标题隐藏超时；已用受控延迟复现并修复等待条件。最终本地浏览器20项、格式检查通过，保留全部旧断言；[失败及修复](oracle/58-bounded-tool-recovery-20261022.md)。应用源码和下列Python门禁绑定不变，新提交的远程五项仍单独核验。
+2026-10-23发布补记：R63首轮远程4/5，浏览器检查提前导航导致标题隐藏超时；已用受控延迟复现并修复等待条件。修复提交`476ce1c`的[远程五项全部成功](../artifacts/bounded-tool-recovery-20261022/remote-checks.json)，PostgreSQL8通过、零跳过，浏览器20项通过；[失败及修复](oracle/58-bounded-tool-recovery-20261022.md)完整保留。应用源码和下列Python门禁绑定不变。
 
 [R63记录](oracle/58-bounded-tool-recovery-20261022.md)说明可选阅读器的受限工具恢复、故障隔离和40个内容错误来源审计；0新模型请求，真实全量结果仍为R62的435正确/57错误/8未知，未达95%。最终完整本地门禁为**1417通过、9跳过、0失败**；类型检查覆盖36个文件，仍是局部范围且导入使用skip。[门禁与源码绑定](../artifacts/bounded-tool-recovery-20261022/quality/summary.json) · [复核说明](../artifacts/bounded-tool-recovery-20261022/README.md)。
 

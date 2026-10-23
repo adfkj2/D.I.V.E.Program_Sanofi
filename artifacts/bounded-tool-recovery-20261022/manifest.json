@@ -7,8 +7,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 2189,
-      "sha256": "034cc978886a7c40fceee62053b6827fbf027a79b58beb54ab27208d38808dd7",
+      "bytes": 2350,
+      "sha256": "e6bb177becdb614f5fd930ba77029f506a34a84e65eb89433a3c06d41137cd5a",
       "transformation": "authored documentation or exact remote verification record"
     },
     {
@@ -193,6 +193,14 @@
       "sha256": "60f28b94716a9681d0ca533e2fe42680ae0961635c17d3110675fc53df4ea115",
       "raw_path": "eval/reports/bounded-tool-recovery-20261022/quality-v1/types.txt",
       "raw_sha256": "60f28b94716a9681d0ca533e2fe42680ae0961635c17d3110675fc53df4ea115",
+      "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
+    },
+    {
+      "path": "remote-checks.json",
+      "bytes": 10709,
+      "sha256": "1d9b9c6aec6f61b3e0b395e26980c1b19e38b2bef5ed0e5805980f78eac2824c",
+      "raw_path": "eval/reports/bounded-tool-recovery-20261022/remote-checks-v2.json",
+      "raw_sha256": "1d9b9c6aec6f61b3e0b395e26980c1b19e38b2bef5ed0e5805980f78eac2824c",
       "transformation": "UTF-8/LF, trailing whitespace removed, local paths normalized; no metrics changed"
     }
   ]

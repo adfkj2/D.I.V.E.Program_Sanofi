@@ -54,7 +54,9 @@
     {
       "path": "exported-handoff.md",
       "bytes": 19852,
-      "sha256": "7778b0faeb5cca112cb1a4c02558e0df42af7c513b6b71dfae5f1330643b432f"
+      "sha256": "7778b0faeb5cca112cb1a4c02558e0df42af7c513b6b71dfae5f1330643b432f",
+      "raw_sha256": "bd3869515ded2a86e7b55e6552203a273075aca3d0e15369222811ea0779dc63",
+      "transformation": "UTF-8/LF; remove trailing whitespace; original byte-exact archive retained"
     },
     {
       "path": "exported-trace.json",
@@ -76,5 +78,9 @@
       "bytes": 1742,
       "sha256": "6baf6cc6ae32035f4c831319abb4bcc252cce09f9cf778f1f524096cf5aa65f0"
     }
-  ]
+  ],
+  "source_archive": {
+    "archive": "eval/reports/engineering-hygiene-20261023/pre-existing-workbench-regression.zip",
+    "archive_sha256": "5354516c0f5c3ebb612663c9c23823b6189ebd97e1abc452c9f7addfad3b16eb"
+  }
 }

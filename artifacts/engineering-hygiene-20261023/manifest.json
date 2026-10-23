@@ -7,8 +7,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 1790,
-      "sha256": "cb7f67b1613404ba702385eaf544a4dbb185bab2b4996dd2c2890528a39cd36c",
+      "bytes": 1963,
+      "sha256": "9e31bbf907a6a1393f6080fe4920d93e3eebb6557cf1720bc2347873341a5866",
       "transformation": "authored documentation or exact remote verification"
     },
     {
@@ -53,10 +53,10 @@
     },
     {
       "path": "cleanup-summary.json",
-      "bytes": 14178,
-      "sha256": "29bcaa592128b588ab1cd715e75ee42abf73ec3a920d3a7e62f2085f3c7ec428",
+      "bytes": 14769,
+      "sha256": "3159311e32895278d152aa1584c16a0d8cbdefc723c39d7367e79b417c5f9fc6",
       "raw_path": "eval/reports/engineering-hygiene-20261023/cleanup-summary.json",
-      "raw_sha256": "29bcaa592128b588ab1cd715e75ee42abf73ec3a920d3a7e62f2085f3c7ec428",
+      "raw_sha256": "3159311e32895278d152aa1584c16a0d8cbdefc723c39d7367e79b417c5f9fc6",
       "transformation": "UTF-8/LF; trim trailing whitespace; normalize machine paths; metrics unchanged"
     },
     {
@@ -265,6 +265,14 @@
       "sha256": "34df9cf38736563d4bb02e64b66effac851acb546ad0a3c3761547e25bbe3570",
       "raw_path": "eval/reports/engineering-hygiene-20261023/quality-v1/types.txt",
       "raw_sha256": "34df9cf38736563d4bb02e64b66effac851acb546ad0a3c3761547e25bbe3570",
+      "transformation": "UTF-8/LF; trim trailing whitespace; normalize machine paths; metrics unchanged"
+    },
+    {
+      "path": "remote-checks.json",
+      "bytes": 11603,
+      "sha256": "25deb011761832497d450fcc7ce2e6fc73cd28d8d294f549d3b68745924ad80b",
+      "raw_path": "eval/reports/engineering-hygiene-20261023/remote-checks-v1.json",
+      "raw_sha256": "25deb011761832497d450fcc7ce2e6fc73cd28d8d294f549d3b68745924ad80b",
       "transformation": "UTF-8/LF; trim trailing whitespace; normalize machine paths; metrics unchanged"
     }
   ]

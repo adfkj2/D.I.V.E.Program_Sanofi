@@ -78,3 +78,9 @@ Hindsight作者历史自报94.6%，但已核验的AMB实现使用S-cleaned、Gem
 wheel标准构建与全新环境安装通过，包内资源、数据持久化重启、CLI/API和交接均成功；SHA256为`ee05e5c81f8506b0ca2e05d649571584ba04a59ef1058d4cc39a83b7fd996f3c`。另在安装环境调用新工厂，使用明确的脚本模型替身验证3阶段与引用；首次检查脚本误用不存在的`ReaderOutcome.answer`字段，保留该准备失败，改用真实`hypothesis`字段后通过。这不是模型质量实测。
 
 其他保留的红测包括引用索引、重复短句语境、来源公平性、跑手中断汇总、数据重复及数据哈希遗漏；不是只保留最终绿灯。[精选工程与诊断证据](../../artifacts/deliberative-evidence-20261023/README.md) · [迭代总账](ITERATION_LOG.md)。
+
+## 真实挑战与源码交付补记
+
+32/32挑战完成并经主代理逐项语义复核通过，4道应拒答均正确、零观察到的来源越界；独立子代理仅审阅前20项，不宣称全部双重审阅。97次请求、81118输入/28237输出tokens，峰值费用¥0.388132，累计¥50.268572；实际账单未知。event_chronology-3的plan首轮精确引用失败，使用预设共享修复额度后成功，原失败保留。该32条属于手写reader-only开发场景，不是Oracle成绩。按授权进入固定100题的同期verified对照。
+
+源码提交`3ceefc88209a3fe778f7133e3e46bf6cc25b6550`已推送，[运行40056883002](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/40056883002)五项全success：Python3.12/3.14、Docker、PostgreSQL与浏览器；PG实际8通过且零跳过、浏览器27项通过。首次查询工具只筛PR事件，返回空不代表push没有检查，改查直接Actions集合并匹配SHA确认。[逐项证据](../../artifacts/deliberative-evidence-20261023/remote-checks-source.json)。后续文档提交仍核验自身最新SHA。

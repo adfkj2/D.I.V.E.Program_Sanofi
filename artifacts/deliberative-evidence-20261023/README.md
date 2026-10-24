@@ -9,10 +9,12 @@
 - [公开研究核验](research/frontier-review.md)：固定版本来源与协议限制。前沿自报与本项目输入、模型或judge不同，不作同协议排名。
 - `development-checks/`：保留引用索引、来源公平性、重复短句语境、跑手中止汇总及开发数据哈希遗漏的红测和后续验证。并非只保留成功日志。challenge-runner-after-v1的49项是该阶段结果，后续新增测试已进入完整1646项门禁。
 
-共享阅读层覆盖率为93.14%行/86.97%分支，交付层94.73%/90.50%，核心92.01%/80.56%；全包76.70%/71.05%分别披露。这里没有按工程测试数折算评分或Benchmark准确率。本轮远程CI尚未包含在此包，旧提交绿灯不能证明新提交。
+共享阅读层覆盖率为93.14%行/86.97%分支，交付层94.73%/90.50%，核心92.01%/80.56%；全包76.70%/71.05%分别披露。这里没有按工程测试数折算评分或Benchmark准确率。源码提交`3ceefc8`的五项远程检查已全部成功，PG8项零跳过、浏览器27项通过；[精确提交证据](remote-checks-source.json)。后续记录提交仍需按自身SHA核验。
 
 原始证据继续保存在本地 `eval/reports/accuracy-redesign-20261023/`，没有覆盖。公开包不含原问答、参考答案、模型回复全文、逐题轨迹、数据库、环境或wheel；历史聚合诊断保留原文件SHA256。文本只做路径匿名化、LF和尾空白规范化；JSON另做统一序列化。每份公开文件（manifest自身除外）在[哈希清单](manifest.json)列出原始/公开SHA256与转换；README是新撰说明，没有对应的历史原件。
 
 [完整分析与实现](../../docs/oracle/60-deliberative-evidence-20261023.md) · [迭代总账](../../docs/oracle/ITERATION_LOG.md) · [32条手写开发夹具](../../eval/datasets/reader_challenge_v1/cases.json)
 
 [固定100题清单](validation/pilot-selection.json)按题型与不可答标记分层哈希抽样，不按旧成绩挑题。真实验证驱动19项免费测试通过，原2项失败与修复日志已附；方案各阶段失败即停，不能把授权解释为无限次试跑。
+
+真实挑战已完成：[32条运行汇总](validation/challenge-summary.json)、[逐项语义复核及原始产物哈希](validation/challenge-semantic-review.json)、[费用对账](validation/challenge-reconciliation.json)。32/32通过开发者侧AI语义复核，4道应拒答正确，零观察到的来源越界；独立子代理只复核前20条。97次调用、¥0.388132，累计¥50.268572；一次plan精确引用失败按预定上限修复。此成绩只属于手写阅读场景，不更新Oracle分数；100题同期对照已开始。

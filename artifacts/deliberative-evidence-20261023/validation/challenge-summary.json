@@ -1,0 +1,161 @@
+{
+  "dataset_sha256": "27a20c4ada992347d5bdc03443096dafdefeb3b2ddcffb93530d0bb1fcea5804",
+  "cases": 32,
+  "strategy": "deliberative",
+  "model": "deepseek-flash",
+  "reasoning_effort": "high",
+  "scope": "READER_ONLY_HANDWRITTEN_DEVELOPMENT_FIXTURES",
+  "execution": "NEW_GENERATION",
+  "semantic_evaluation": "NOT_EVALUATED",
+  "official_benchmark": false,
+  "peak_rates_cny_per_million": {
+    "input": "2",
+    "output": "8"
+  },
+  "max_calls": 128,
+  "max_reserved_tokens": 16000000,
+  "max_cost_cny": "1.50",
+  "completed": 32,
+  "complete": true,
+  "stopped": null,
+  "results": [
+    {
+      "case_id": "identity-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "missing_comparison-0",
+      "status": "ABSTAIN"
+    },
+    {
+      "case_id": "updated_total-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "preference_advice-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "plan_vs_completion-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "complete_list-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "event_chronology-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "source_injection-0",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "identity-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "missing_comparison-1",
+      "status": "ABSTAIN"
+    },
+    {
+      "case_id": "updated_total-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "preference_advice-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "plan_vs_completion-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "complete_list-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "event_chronology-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "source_injection-1",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "identity-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "missing_comparison-2",
+      "status": "ABSTAIN"
+    },
+    {
+      "case_id": "updated_total-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "preference_advice-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "plan_vs_completion-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "complete_list-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "event_chronology-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "source_injection-2",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "identity-3",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "missing_comparison-3",
+      "status": "ABSTAIN"
+    },
+    {
+      "case_id": "updated_total-3",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "preference_advice-3",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "plan_vs_completion-3",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "complete_list-3",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "event_chronology-3",
+      "status": "ANSWER"
+    },
+    {
+      "case_id": "source_injection-3",
+      "status": "ANSWER"
+    }
+  ],
+  "usage": {
+    "attempted_calls": 97,
+    "completed_calls": 97,
+    "input_tokens": 81118,
+    "output_tokens": 28237,
+    "missing_usage_calls": 0,
+    "cost_cny": null,
+    "cost_note": "Unknown until current provider tariff/billing is supplied; never zero by omission."
+  },
+  "peak_cost_cny": "0.388132"
+}

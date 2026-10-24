@@ -203,8 +203,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3449,
-      "sha256": "ec6250c5a59d90cd38f6660e4bee55992dce32a1907adc6e9fa394158e37dcfc",
+      "bytes": 4116,
+      "sha256": "eba3962e8923303b766cf41c0e4ace6f8a89e2cf1352928fbe344ce17522a85a",
       "transformation": "Authored publication scope and evidence index; no historical raw counterpart"
     },
     {
@@ -246,6 +246,38 @@
       "raw_path": "eval/reports/accuracy-redesign-20261023/paid-driver-after-v2.txt",
       "raw_sha256": "9f5d0454a209e8652230ba191731d7f88e0aa480347b5b0bd82048dbe947bb5d",
       "transformation": "UTF-8/LF, trim trailing whitespace and normalize repository path; results unchanged"
+    },
+    {
+      "path": "remote-checks-source.json",
+      "bytes": 14686,
+      "sha256": "a33fefd524090dfa3eb0f022acfef95eb69730b139137a1ab7215c037c3a95cf",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/remote-checks-source.json",
+      "raw_sha256": "a33fefd524090dfa3eb0f022acfef95eb69730b139137a1ab7215c037c3a95cf",
+      "transformation": "Unchanged UTF-8 JSON; selected summary/review only"
+    },
+    {
+      "path": "validation/challenge-summary.json",
+      "bytes": 3336,
+      "sha256": "f35caeac066fa3a45d80aec47d9656d5ca0f8dc6e2e61c40938be5ab881f52f3",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/challenge/summary.json",
+      "raw_sha256": "b3cf27aa42d0e9ba95f7c9057637e057f47b5a57399b97ebd16957e7d86b6d9a",
+      "transformation": "Unchanged UTF-8 JSON; selected summary/review only; public CRLF normalized to LF, original raw hash retained"
+    },
+    {
+      "path": "validation/challenge-semantic-review.json",
+      "bytes": 30444,
+      "sha256": "ad1bebada959f19249b51150b93426e24fbd551aa640684b5b6fe704d57f7696",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/challenge-semantic-review.json",
+      "raw_sha256": "ad1bebada959f19249b51150b93426e24fbd551aa640684b5b6fe704d57f7696",
+      "transformation": "Unchanged UTF-8 JSON; selected summary/review only"
+    },
+    {
+      "path": "validation/challenge-reconciliation.json",
+      "bytes": 308,
+      "sha256": "a7053714542f18dfb56e506c5dbf444d314cb84b386aa874a6e483c78ed45024",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/challenge-reconciliation.json",
+      "raw_sha256": "edcfb5129c1f4161270d4997176f97c9c752ff5fe0a8ec3a600d6fe7fe8389b7",
+      "transformation": "Unchanged UTF-8 JSON; selected summary/review only; public CRLF normalized to LF, original raw hash retained"
     }
   ],
   "note": "Costs/new_model_requests describe the pre-network engineering snapshot; the separately recorded approved validation may execute afterward."

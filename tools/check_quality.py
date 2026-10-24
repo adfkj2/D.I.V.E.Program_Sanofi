@@ -146,6 +146,7 @@ def source_manifest(*, root: Path | None = None) -> dict[str, str]:
         ("requirements", {".lock"}, set()),
         (".github/workflows", {".yml", ".yaml"}, set()),
         ("migrations", {".sql"}, set()),
+        ("eval/datasets", {".json", ".jsonl"}, set()),
         (
             "ops",
             DEPLOYMENT_CONFIG_SUFFIXES,
@@ -154,11 +155,17 @@ def source_manifest(*, root: Path | None = None) -> dict[str, str]:
         ("ops/docker", SCRIPT_SUFFIXES, set()),
         ("ops/postgres", SCRIPT_SUFFIXES, set()),
     ):
-        for path in root.joinpath(directory).rglob("*"):
-            relative = path.relative_to(root)
+        source_root = root / directory
+        ignored = IGNORED_SOURCE_DIRECTORIES
+        if directory == "eval/datasets":
+            ignored |= {"reports", "external", "output", "outputs"}
+        for path in source_root.rglob("*"):
+            # Only the explicit source root is exempt; nested eval/cache/output
+            # directories remain excluded even inside the dataset allowlist.
+            relative = path.relative_to(source_root)
             if (
                 path.is_file()
-                and not IGNORED_SOURCE_DIRECTORIES.intersection(relative.parts[:-1])
+                and not ignored.intersection(relative.parts[:-1])
                 and (path.suffix in suffixes or path.name in filenames)
             ):
                 paths.add(path)

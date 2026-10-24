@@ -12,13 +12,13 @@ from dataclasses import asdict, replace
 from decimal import InvalidOperation
 from hashlib import sha256
 from time import perf_counter
-from typing import Any, Protocol, Sequence
+from typing import Any, Sequence
 
 from ..document_chunks import select_document_chunk, select_document_chunks
 from ..models import RetrievalItem
 from ..token_budget import ApproximateTokenCounter
 from .calculation import calculate
-from .contracts import ReaderStatus
+from .contracts import EvidenceSource, ReaderStatus
 from .evidence import build_evidence_views, render_evidence_block
 from .indexed_reader import RULES, parse_indexed
 from .reader import (
@@ -103,12 +103,6 @@ Return exactly ONE valid JSON object using one of these two forms, with actual v
 No prose, markdown, extra fields or additional objects. An invalid prior response is not evidence.
 """
 )
-
-
-class EvidenceSource(Protocol):
-    def search(self, query: str) -> Sequence[RetrievalItem]: ...
-
-    def read(self, memory_id: str) -> RetrievalItem: ...
 
 
 def _object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:

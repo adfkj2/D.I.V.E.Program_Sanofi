@@ -1,0 +1,258 @@
+...........................................FFFFF.                        [100%]
+================================== FAILURES ===================================
+_ test_budget_stop_returns_incomplete_and_does_not_attempt_another_case[calls] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_budget_stop_returns_incom0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002BD7F8CDA50>
+cap = 'calls'
+
+    @pytest.mark.parametrize("cap", ["calls", "tokens", "currency"])
+    def test_budget_stop_returns_incomplete_and_does_not_attempt_another_case(tmp_path, monkeypatch, cap):
+        path = dataset(tmp_path, [case(0), case(1), case(2)])
+        output = tmp_path / "run"
+        calls = fake_transport(monkeypatch)
+        args = execute_args(
+            path,
+            output,
+            calls=1 if cap == "calls" else 10,
+            tokens=1 if cap == "tokens" else 100000,
+            cost="0.000001" if cap == "currency" else "10",
+        )
+>       assert challenge.main(args) == 2
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_reader_challenge_runner.py:226:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\run_reader_challenge.py:176: in main
+    result = run_case(case, reader)
+             ^^^^^^^^^^^^^^^^^^^^^^
+tools\run_reader_challenge.py:124: in run_case
+    outcome = reader.generate(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+src\dive_memory\reading\indexed_reader.py:142: in generate
+    completion = self.client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <dive_memory.application.oracle_run.RequestLedger.wrap.<locals>.CappedClient object at 0x000002BD7F82E900>
+kwargs = {'model': 'deepseek-flash', 'messages': [{'role': 'system', 'content': 'Answer the question using the supplied convers...What is the approved budget?", "question_date": "2026-04-10T12:00:00Z"}'}], 'temperature': 0.0, 'max_tokens': 512, ...}
+
+    def complete(self, **kwargs):
+        # UTF-8 bytes plus envelope allowance is a conservative estimate,
+        # not the model's exact tokenizer. All reservations are retained.
+        reserved_input = (
+            len(json.dumps(kwargs["messages"], ensure_ascii=False).encode())
+            + 1024
+        )
+        reserved_output = kwargs["max_tokens"]
+        reserve = reserved_input + reserved_output
+        if (
+            len(ledger.rows) >= ledger.max_calls
+            or sum(r["reserved_tokens"] for r in ledger.rows) + reserve
+            > ledger.max_reserved_tokens
+        ):
+>           raise RunStopped(
+                "Request/reserved-token cap reached; no further request sent"
+            )
+E           dive_memory.application.oracle_run.RunStopped: Request/reserved-token cap reached; no further request sent
+
+src\dive_memory\application\oracle_run.py:129: RunStopped
+_ test_budget_stop_returns_incomplete_and_does_not_attempt_another_case[tokens] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_budget_stop_returns_incom1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002BD7F8CD450>
+cap = 'tokens'
+
+    @pytest.mark.parametrize("cap", ["calls", "tokens", "currency"])
+    def test_budget_stop_returns_incomplete_and_does_not_attempt_another_case(tmp_path, monkeypatch, cap):
+        path = dataset(tmp_path, [case(0), case(1), case(2)])
+        output = tmp_path / "run"
+        calls = fake_transport(monkeypatch)
+        args = execute_args(
+            path,
+            output,
+            calls=1 if cap == "calls" else 10,
+            tokens=1 if cap == "tokens" else 100000,
+            cost="0.000001" if cap == "currency" else "10",
+        )
+>       assert challenge.main(args) == 2
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_reader_challenge_runner.py:226:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\run_reader_challenge.py:176: in main
+    result = run_case(case, reader)
+             ^^^^^^^^^^^^^^^^^^^^^^
+tools\run_reader_challenge.py:124: in run_case
+    outcome = reader.generate(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+src\dive_memory\reading\indexed_reader.py:142: in generate
+    completion = self.client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <dive_memory.application.oracle_run.RequestLedger.wrap.<locals>.CappedClient object at 0x000002BD7F82EF90>
+kwargs = {'model': 'deepseek-flash', 'messages': [{'role': 'system', 'content': 'Answer the question using the supplied convers...What is the approved budget?", "question_date": "2026-04-10T12:00:00Z"}'}], 'temperature': 0.0, 'max_tokens': 512, ...}
+
+    def complete(self, **kwargs):
+        # UTF-8 bytes plus envelope allowance is a conservative estimate,
+        # not the model's exact tokenizer. All reservations are retained.
+        reserved_input = (
+            len(json.dumps(kwargs["messages"], ensure_ascii=False).encode())
+            + 1024
+        )
+        reserved_output = kwargs["max_tokens"]
+        reserve = reserved_input + reserved_output
+        if (
+            len(ledger.rows) >= ledger.max_calls
+            or sum(r["reserved_tokens"] for r in ledger.rows) + reserve
+            > ledger.max_reserved_tokens
+        ):
+>           raise RunStopped(
+                "Request/reserved-token cap reached; no further request sent"
+            )
+E           dive_memory.application.oracle_run.RunStopped: Request/reserved-token cap reached; no further request sent
+
+src\dive_memory\application\oracle_run.py:129: RunStopped
+_ test_budget_stop_returns_incomplete_and_does_not_attempt_another_case[currency] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_budget_stop_returns_incom2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002BD7F8963F0>
+cap = 'currency'
+
+    @pytest.mark.parametrize("cap", ["calls", "tokens", "currency"])
+    def test_budget_stop_returns_incomplete_and_does_not_attempt_another_case(tmp_path, monkeypatch, cap):
+        path = dataset(tmp_path, [case(0), case(1), case(2)])
+        output = tmp_path / "run"
+        calls = fake_transport(monkeypatch)
+        args = execute_args(
+            path,
+            output,
+            calls=1 if cap == "calls" else 10,
+            tokens=1 if cap == "tokens" else 100000,
+            cost="0.000001" if cap == "currency" else "10",
+        )
+>       assert challenge.main(args) == 2
+               ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_reader_challenge_runner.py:226:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\run_reader_challenge.py:176: in main
+    result = run_case(case, reader)
+             ^^^^^^^^^^^^^^^^^^^^^^
+tools\run_reader_challenge.py:124: in run_case
+    outcome = reader.generate(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+src\dive_memory\reading\indexed_reader.py:142: in generate
+    completion = self.client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <dive_memory.application.oracle_run.RequestLedger.wrap.<locals>.CappedClient object at 0x000002BD7F82F620>
+kwargs = {'model': 'deepseek-flash', 'messages': [{'role': 'system', 'content': 'Answer the question using the supplied convers...What is the approved budget?", "question_date": "2026-04-10T12:00:00Z"}'}], 'temperature': 0.0, 'max_tokens': 512, ...}
+
+    def complete(self, **kwargs):
+        # UTF-8 bytes plus envelope allowance is a conservative estimate,
+        # not the model's exact tokenizer. All reservations are retained.
+        reserved_input = (
+            len(json.dumps(kwargs["messages"], ensure_ascii=False).encode())
+            + 1024
+        )
+        reserved_output = kwargs["max_tokens"]
+        reserve = reserved_input + reserved_output
+        if (
+            len(ledger.rows) >= ledger.max_calls
+            or sum(r["reserved_tokens"] for r in ledger.rows) + reserve
+            > ledger.max_reserved_tokens
+        ):
+            raise RunStopped(
+                "Request/reserved-token cap reached; no further request sent"
+            )
+        if ledger.max_cost_cny is not None:
+            # Keep conservative token upper bounds, charging each at its
+            # own peak rate. Output tokens must not be priced as input.
+            projected = (
+                ledger.peak_cost_cny()
+                + (
+                    ledger.prices.input * reserved_input
+                    + ledger.prices.output * reserved_output
+                )
+                / 1_000_000
+            )
+            if projected > ledger.max_cost_cny:
+>               raise RunStopped(
+                    "Currency cap reached; no further request sent"
+                )
+E               dive_memory.application.oracle_run.RunStopped: Currency cap reached; no further request sent
+
+src\dive_memory\application\oracle_run.py:144: RunStopped
+_ test_uncertain_ledger_stops_even_when_reader_swallows_budget_stop[transport] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_uncertain_ledger_stops_ev0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002BD7F8954F0>
+failure = 'transport'
+
+    @pytest.mark.parametrize("failure", ["transport", "usage"])
+    def test_uncertain_ledger_stops_even_when_reader_swallows_budget_stop(tmp_path, monkeypatch, failure):
+        path = dataset(tmp_path, [case(0), case(1)])
+        output = tmp_path / "run"
+        calls = fake_transport(
+            monkeypatch, fail=failure == "transport", unknown_usage=failure == "usage"
+        )
+        attempted = []
+
+        def swallow(case_value, reader):
+            attempted.append(case_value["id"])
+            try:
+                reader.client.complete(messages=[], max_tokens=1)
+            except BaseException:
+                pass
+            return {"case_id": case_value["id"], "reader": {"status": "ANSWER"}}
+
+        monkeypatch.setattr(challenge, "run_case", swallow)
+>       assert challenge.main(execute_args(path, output)) == 2
+E       AssertionError: assert 0 == 2
+E        +  where 0 = <function main at 0x000002BD7F8A6B90>(['--dataset', '${USER_HOME}\\AppData\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev...ata\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev0\\run', '--execute', '--strategy', ...])
+E        +    where <function main at 0x000002BD7F8A6B90> = challenge.main
+E        +    and   ['--dataset', '${USER_HOME}\\AppData\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev...ata\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev0\\run', '--execute', '--strategy', ...] = execute_args(WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_uncertain_ledger_stops_ev0/cases.json'), WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_uncertain_ledger_stops_ev0/run'))
+
+tests\test_reader_challenge_runner.py:252: AssertionError
+---------------------------- Captured stdout call -----------------------------
+{"completed": 2, "semantic_evaluation": "NOT_EVALUATED", "output": "${USER_HOME}\\AppData\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev0\\run"}
+__ test_uncertain_ledger_stops_even_when_reader_swallows_budget_stop[usage] ___
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_uncertain_ledger_stops_ev1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002BD7F8858D0>
+failure = 'usage'
+
+    @pytest.mark.parametrize("failure", ["transport", "usage"])
+    def test_uncertain_ledger_stops_even_when_reader_swallows_budget_stop(tmp_path, monkeypatch, failure):
+        path = dataset(tmp_path, [case(0), case(1)])
+        output = tmp_path / "run"
+        calls = fake_transport(
+            monkeypatch, fail=failure == "transport", unknown_usage=failure == "usage"
+        )
+        attempted = []
+
+        def swallow(case_value, reader):
+            attempted.append(case_value["id"])
+            try:
+                reader.client.complete(messages=[], max_tokens=1)
+            except BaseException:
+                pass
+            return {"case_id": case_value["id"], "reader": {"status": "ANSWER"}}
+
+        monkeypatch.setattr(challenge, "run_case", swallow)
+>       assert challenge.main(execute_args(path, output)) == 2
+E       AssertionError: assert 0 == 2
+E        +  where 0 = <function main at 0x000002BD7F8A6B90>(['--dataset', '${USER_HOME}\\AppData\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev...ata\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev1\\run', '--execute', '--strategy', ...])
+E        +    where <function main at 0x000002BD7F8A6B90> = challenge.main
+E        +    and   ['--dataset', '${USER_HOME}\\AppData\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev...ata\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev1\\run', '--execute', '--strategy', ...] = execute_args(WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_uncertain_ledger_stops_ev1/cases.json'), WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-217/test_uncertain_ledger_stops_ev1/run'))
+
+tests\test_reader_challenge_runner.py:252: AssertionError
+---------------------------- Captured stdout call -----------------------------
+{"completed": 2, "semantic_evaluation": "NOT_EVALUATED", "output": "${USER_HOME}\\AppData\\Local\\Temp\\pytest-of-Li peng\\pytest-217\\test_uncertain_ledger_stops_ev1\\run"}
+=========================== short test summary info ===========================
+FAILED tests/test_reader_challenge_runner.py::test_budget_stop_returns_incomplete_and_does_not_attempt_another_case[calls]
+FAILED tests/test_reader_challenge_runner.py::test_budget_stop_returns_incomplete_and_does_not_attempt_another_case[tokens]
+FAILED tests/test_reader_challenge_runner.py::test_budget_stop_returns_incomplete_and_does_not_attempt_another_case[currency]
+FAILED tests/test_reader_challenge_runner.py::test_uncertain_ledger_stops_even_when_reader_swallows_budget_stop[transport]
+FAILED tests/test_reader_challenge_runner.py::test_uncertain_ledger_stops_even_when_reader_swallows_budget_stop[usage]
+5 failed, 44 passed in 1.06s

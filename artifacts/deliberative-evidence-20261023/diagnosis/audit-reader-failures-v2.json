@@ -1,0 +1,88 @@
+{
+  "publication_scope": "Aggregate fields only; no question-level rows, raw questions, answers or trace paths",
+  "raw_evidence_file": "audit-reader-failures-v2.json",
+  "raw_evidence_sha256": "528f438699614e110025acb4dc17b758a50a1806037b0f1780fc70ee384cd4e1",
+  "transformation": "Removed case/row arrays and input_sha256 trace-path mapping; aggregate values unchanged",
+  "results": {
+    "schema_version": "reader-failure-analysis-v1",
+    "scope": "Offline supplied verdicts and saved traces; visibility is not semantic sufficiency. No result changes, answer generation or accuracy prediction.",
+    "selected": 500,
+    "confirmed_correct": 435,
+    "confirmed_wrong": 57,
+    "unknown_verdicts": 8,
+    "confirmed_accuracy": 0.87,
+    "saved_traces": 499,
+    "missing_traces": 1,
+    "statuses": {
+      "ANSWER": 442,
+      "INVALID": 16,
+      "ABSTAIN": 41,
+      "ERROR": 1
+    },
+    "execution_failure_statuses": 17,
+    "invalid_final_types": {
+      "invalid calculation action schema": 9,
+      "repeated tool action": 5,
+      "Reply must contain one valid JSON object: Expecting value": 1,
+      "citation quote is not a verbatim memory substring": 1
+    },
+    "reader_call_counts": {
+      "1": 392,
+      "3": 34,
+      "2": 50,
+      "4": 23
+    },
+    "unknown_reader_call_cases": 1,
+    "logged_tool_actions": {
+      "calculate": 52,
+      "search": 88,
+      "read": 6
+    },
+    "calculation_outcomes": {
+      "operand label must be present in its quote": 23,
+      "unsupported or ambiguous relative date": 3,
+      "invalid calculation action schema": 9,
+      "question does not establish the requested operation": 2,
+      "unsupported numeric expression": 1,
+      "operand is not a complete numeric expression": 6,
+      "success": 3,
+      "operand quote is not exact visible evidence": 2,
+      "operand text is not in its exact quote": 2,
+      "week duration has a nonterminating decimal": 1
+    },
+    "source_visibility": {
+      "cases_with_initial_source_lost": 10,
+      "transitions_with_source_lost": 16,
+      "unknown_transition_count": 0
+    },
+    "reader_usage": {
+      "input_tokens": {
+        "known_subtotal": 3390110,
+        "unknown_records": 1,
+        "total": null
+      },
+      "output_tokens": {
+        "known_subtotal": 470039,
+        "unknown_records": 1,
+        "total": null
+      }
+    },
+    "judge_usage": {
+      "logged_attempts": 488,
+      "unlogged_unknown_outcomes": 2,
+      "input_tokens": {
+        "known_subtotal": 79212,
+        "unknown_records": 2,
+        "total": null
+      },
+      "output_tokens": {
+        "known_subtotal": 3552,
+        "unknown_records": 2,
+        "total": null
+      },
+      "scope": "Logged judge attempts plus unknown outcomes without completed attempts; exact interrupted request counts require the external ledger."
+    },
+    "cost_cny": null,
+    "cost_note": "Billing, pending request reservations and price assumptions are not inferred from traces."
+  }
+}

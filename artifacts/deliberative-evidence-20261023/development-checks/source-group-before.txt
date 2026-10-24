@@ -1,0 +1,23 @@
+.........F............................                                   [100%]
+================================== FAILURES ===================================
+__ test_multiple_memories_from_one_event_do_not_count_as_independent_sources __
+
+    def test_multiple_memories_from_one_event_do_not_count_as_independent_sources():
+        workspace = BoundedEvidenceWorkspace(request(budget=2000))
+        workspace.add([
+            item("Budget draft is 20.", "extracted", ("event-a",)),
+            item("Budget draft is 20, pending approval.", "original", ("event-a",)),
+            item("Budget approved is 30.", "update", ("event-b",)),
+        ])
+        visible, audit = workspace.pack()
+>       assert {tuple(i.source_refs) for i in visible[:2]} == {("event-a",), ("event-b",)}
+E       AssertionError: assert {('event-a',)} == {('event-a',), ('event-b',)}
+E
+E         Extra items in the right set:
+E         ('event-b',)
+E         Use -v to get more diff
+
+tests\test_evidence_workspace.py:189: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_evidence_workspace.py::test_multiple_memories_from_one_event_do_not_count_as_independent_sources
+1 failed, 37 passed in 0.64s

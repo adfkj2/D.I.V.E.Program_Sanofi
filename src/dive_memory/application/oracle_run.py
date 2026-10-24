@@ -281,7 +281,9 @@ def main(argv=None):
         "--model", choices=tuple(MODEL_PRICES), default="deepseek-flash"
     )
     parser.add_argument(
-        "--reader-strategy", choices=("r40", "adaptive", "verified"), default="r40"
+        "--reader-strategy",
+        choices=("r40", "adaptive", "verified", "deliberative"),
+        default="r40",
     )
     parser.add_argument(
         "--fact-policy", choices=("historical", "scoped"), default="historical"

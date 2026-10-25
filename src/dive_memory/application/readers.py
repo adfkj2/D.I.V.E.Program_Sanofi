@@ -16,7 +16,7 @@ from ..reading.adjudicated_reader import (
 from ..reading.advice_refusal_reader import AdviceRefusalReader
 from ..reading.current_state_reader import REVIEW_VERSION as STATE_VERSION
 from ..reading.current_state_reader import CurrentStateReader, CurrentStateReviewReader
-from ..reading.deliberation import VERSION as DELIBERATIVE_VERSION
+from ..reading.deliberation import LITERAL_PROTOCOL
 from ..reading.deliberative import DeliberativeEvidenceReader
 from ..reading.grounded_advice_reader import VERSION as ADVICE_VERSION
 from ..reading.grounded_advice_reader import GroundedAdviceReader
@@ -29,6 +29,7 @@ from ..reading.reader import (
     ReaderPolicy,
     ReaderSpec,
 )
+from ..reading.references import REFERENCE_PROTOCOL
 from ..reading.temporal_refusal_reader import TemporalRefusalReader
 
 
@@ -47,16 +48,20 @@ def create_reader(
     provider: str = "openai-compatible",
     strategy: str = "indexed",
 ) -> Reader:
-    if strategy == "deliberative":
+    if strategy in {"deliberative", "deliberative-refs"}:
+        protocol = (
+            REFERENCE_PROTOCOL if strategy == "deliberative-refs" else LITERAL_PROTOCOL
+        )
         return DeliberativeEvidenceReader(
             thinking or normal,
             ReaderSpec(
                 provider,
                 model,
-                prompt_version=DELIBERATIVE_VERSION,
+                prompt_version=protocol.version,
                 max_tokens=8192,
                 timeout_seconds=120,
             ),
+            protocol=protocol,
         )
     if strategy in {"adaptive", "verified"}:
         return AdaptiveEvidenceReader(
@@ -74,7 +79,7 @@ def create_reader(
         )
     if strategy not in {"indexed", "r40"}:
         raise ValueError(
-            "strategy must be indexed, r40, adaptive, verified or deliberative"
+            "strategy must be indexed, r40, adaptive, verified, deliberative or deliberative-refs"
         )
     policy = ReaderPolicy(
         name="indexed_evidence",

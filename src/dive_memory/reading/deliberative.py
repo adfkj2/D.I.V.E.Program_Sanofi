@@ -18,13 +18,9 @@ from ..document_chunks import select_document_chunks
 from ..models import RetrievalItem
 from .contracts import EvidenceSource, ReaderStatus
 from .deliberation import (
-    ANSWER_RULES,
-    PLAN_RULES,
-    REVIEW_RULES,
-    VERSION,
+    LITERAL_PROTOCOL,
+    DeliberationProtocol,
     EvidencePlan,
-    parse_decision,
-    parse_plan,
 )
 from .evidence import build_evidence_views, render_evidence_block
 from .reader import (
@@ -69,8 +65,9 @@ class DeliberativeEvidenceReader:
         source: EvidenceSource | None = None,
         max_calls: int = 4,
         passage_chars: int = 800,
+        protocol: DeliberationProtocol = LITERAL_PROTOCOL,
     ) -> None:
-        if spec.prompt_version != VERSION:
+        if spec.prompt_version != protocol.version:
             raise ValueError("deliberative reader requires its own prompt version")
         if type(max_calls) is not int or max_calls not in {3, 4}:
             raise ValueError("max_calls must be 3 or 4")
@@ -79,7 +76,8 @@ class DeliberativeEvidenceReader:
         self.client, self.spec, self.source = client, spec, source
         self.max_calls, self.passage_chars = max_calls, passage_chars
         self.policy = reader_policy("indexed_evidence")
-        self.version = VERSION
+        self.protocol = protocol
+        self.version = protocol.version
 
     def bind_evidence(self, source: EvidenceSource) -> DeliberativeEvidenceReader:
         return DeliberativeEvidenceReader(
@@ -88,6 +86,7 @@ class DeliberativeEvidenceReader:
             source=source,
             max_calls=self.max_calls,
             passage_chars=self.passage_chars,
+            protocol=self.protocol,
         )
 
     @staticmethod
@@ -147,12 +146,12 @@ class DeliberativeEvidenceReader:
             )
             return replace(
                 outcome,
-                policy_version=VERSION,
+                policy_version=self.version,
                 prompt_sha256=_digest([t["prompt_sha256"] for t in turns]),
                 response_sha256=_digest([t.get("response_sha256") for t in turns]),
                 detail=json.dumps(
                     {
-                        "version": VERSION,
+                        "version": self.version,
                         "max_calls": self.max_calls,
                         "turns": turns,
                         "actions": actions,
@@ -228,15 +227,13 @@ class DeliberativeEvidenceReader:
                 turn["response_sha256"] = sha256(response.text.encode()).hexdigest()
                 try:
                     parsed = (
-                        parse_plan(response.text, items)
+                        self.protocol.parse_plan(response.text, items)
                         if name == "plan"
-                        else parse_decision(response.text, items)
+                        else self.protocol.parse_decision(response.text, items)
                     )
-                    fields = json.loads(response.text)
-                    turn["citation_indices"] = [
-                        note["index"]
-                        for note in fields["notes" if name == "plan" else "citations"]
-                    ]
+                    turn["citation_indices"] = self.protocol.citation_indices(
+                        response.text, name
+                    )
                     return parsed
                 except (ValueError, TypeError) as exc:
                     validation_error = str(exc)
@@ -247,7 +244,7 @@ class DeliberativeEvidenceReader:
             initial = packet()
             plan = phase(
                 "plan",
-                PLAN_RULES,
+                self.protocol.plan_rules,
                 initial,
                 {
                     "catalog": [
@@ -314,7 +311,7 @@ class DeliberativeEvidenceReader:
             evidence = packet(notes)
             draft = phase(
                 "synthesize",
-                ANSWER_RULES,
+                self.protocol.answer_rules,
                 evidence,
                 {"selected_notes": self._quotes(notes, evidence, packets[-1])},
                 remaining_phases=1,
@@ -326,7 +323,7 @@ class DeliberativeEvidenceReader:
             reviewed = packet((*notes, *draft_pins))
             decision = phase(
                 "review",
-                REVIEW_RULES,
+                self.protocol.review_rules,
                 reviewed,
                 {
                     "selected_notes": self._quotes(notes, reviewed, packets[-1]),

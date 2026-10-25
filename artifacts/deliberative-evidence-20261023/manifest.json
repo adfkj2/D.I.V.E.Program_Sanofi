@@ -1,7 +1,7 @@
 {
   "round": "R65",
   "source_files_bound": 286,
-  "candidate_real_accuracy": "NOT_EVALUATED",
+  "candidate_real_accuracy": null,
   "official_benchmark": false,
   "publication_script_sha256": "cc14287095819ebfb7e302b87aa0c5b90152ca1125db004c58b5ac9d56f7ac1a",
   "manifest_scope": "Every file in this publication except manifest.json itself",
@@ -200,9 +200,9 @@
     },
     {
       "path": "README.md",
-      "bytes": 6402,
-      "sha256": "e8b32de2de43e1b65ce9555ac86967d6599d48b31555ba1d45d4f58bb7e28a0d",
-      "transformation": "Authored publication scope and evidence index; no historical raw counterpart"
+      "bytes": 7535,
+      "sha256": "8e7ce47026cbb09ed09b89ef253ebf6d504ed17c5160803e77448d61632674a1",
+      "transformation": "New publication explanation; no historical raw counterpart"
     },
     {
       "path": "validation/proposal.json",
@@ -459,9 +459,57 @@
       "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-v1/control-judge/summary.json",
       "raw_sha256": "0406545d8fcc53a89b49030e1a28d2da9e1f80f9edcb4d85b2feb54fde4c2524",
       "transformation": "Complete control summary; omit raw artifact-path hash map, preserve all result and cost fields"
+    },
+    {
+      "path": "validation/retry-stopped-cost-reconciliation.json",
+      "bytes": 1240,
+      "sha256": "84faae43d5f56563871742ca8132bc2d3e4e528d5d27a092a7307374b492b22d",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-stopped-cost-reconciliation.json",
+      "raw_sha256": "84faae43d5f56563871742ca8132bc2d3e4e528d5d27a092a7307374b492b22d",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/retry-terminal.json",
+      "bytes": 240,
+      "sha256": "6624bfda36fa5b971a80e5427be57a5b4e661c95f2af7f8cec62c2e89e32db42",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-background-v1/candidate/terminal.json",
+      "raw_sha256": "dd9f0ee59296103a7886254e1538f3ce48820e33658c152305540c7a645d8155",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "diagnosis/retry-plan-failure-audit.json",
+      "bytes": 7669,
+      "sha256": "de825eacba099e5cacd1589fe525de4863e8935a0288f1a5d677b3b3d1b2e04e",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-plan-failure-audit.json",
+      "raw_sha256": "51ef573eff163cde2b0143734dcd7827026248de8201f82a057c9dfe2b0234ef",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "remote-checks-retry-record.json",
+      "bytes": 11165,
+      "sha256": "e274c039dbf7402396e9b2b5d9d07080181afd58398d88f4dce4adf9b4231293",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/remote-checks-retry-record.json",
+      "raw_sha256": "e274c039dbf7402396e9b2b5d9d07080181afd58398d88f4dce4adf9b4231293",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/retry-stopped-summary.json",
+      "bytes": 541,
+      "sha256": "3a812e0ee4ddce267e445125623a6666a008cca694615c739e6a2ed54a17a354",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-v1/candidate/summary.json",
+      "raw_sha256": "fdd2eac2ad0aefbecfb66d6980ff0b80df77f7215a036e6c25b4b30ccd174fb3",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers; omit per-case results or raw artifact map as stated in publication script"
+    },
+    {
+      "path": "diagnosis/control-error-audit.json",
+      "bytes": 940,
+      "sha256": "2dfb332160023603134d4f34ca2d9557fc81dcd613dd46f3a6ab058b6e75c6a3",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/control-error-audit.json",
+      "raw_sha256": "a967c751c02d241f262f50430971e9f61039ede3b0d4b0061ca411001276a1b8",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers; omit per-case results or raw artifact map as stated in publication script"
     }
   ],
-  "note": "Accounting snapshot ends at the interrupted continuation. The separately authorized fresh retry has its own local request ledgers and is not yet reconciled here. Earlier engineering totals remain in engineering_snapshot. Proposals retain approved=false; separate authorization records bind their original hashes.",
+  "note": "Final retry included. 20 valid outputs, 1 INVALID, 79 unattempted, no judge results. No full run or additional paid retry authorized. Engineering results do not establish accuracy.",
   "engineering_snapshot": {
     "phase": "BEFORE_PAID_VALIDATION",
     "new_model_requests": 0,
@@ -469,15 +517,15 @@
     "shared_peak_cost_cny": "49.880440"
   },
   "accounting_snapshot": {
-    "as_of": "Before the separately authorized fresh retry",
-    "r65_attempted_requests": 357,
-    "r65_completed_requests": 356,
+    "as_of": "After the one authorized background retry stopped",
+    "r65_attempted_requests": 421,
+    "r65_completed_requests": 420,
     "r65_uncertain_usage_requests": 1,
-    "r65_additional_peak_cost_cny": "2.819214",
-    "shared_cumulative_peak_cny": "52.699654",
+    "r65_additional_peak_cost_cny": "3.859084",
+    "shared_cumulative_peak_cny": "53.739524",
     "includes_full_uncertain_reservation": true
   },
   "cost_basis": "Peak-rate estimate including uncertain reservations, not provider invoice",
-  "validation_status": "ONE_FRESH_RETRY_AUTHORIZED_AND_STARTED",
-  "new_retry_usage_included_in_accounting_snapshot": false
+  "validation_status": "RETRY_STOPPED_INVALID_PLAN_OUTPUT",
+  "new_retry_usage_included_in_accounting_snapshot": true
 }

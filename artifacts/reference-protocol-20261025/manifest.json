@@ -1,0 +1,221 @@
+{
+  "round": "R66",
+  "source_files_bound": 288,
+  "candidate_real_accuracy": null,
+  "official_benchmark": false,
+  "new_provider_requests": 0,
+  "additional_cost_cny": "0",
+  "shared_peak_cost_cny": "53.739524",
+  "paid_validation_authorized": false,
+  "publication_script_sha256": "f08b08b8f0f83a7088c7a33afd6278bc59bca17fa672cd6f075b0cfe266d8616",
+  "manifest_scope": "All publication files except manifest.json itself",
+  "files": [
+    {
+      "path": "quality/casebook-sources.txt",
+      "bytes": 108,
+      "sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/casebook-sources.txt",
+      "raw_sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/coverage-json.txt",
+      "bytes": 101,
+      "sha256": "9de906e35eed205c426c6db359fb262a7984133391a3c4c6b77328f7ea571b82",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/coverage-json.txt",
+      "raw_sha256": "9de906e35eed205c426c6db359fb262a7984133391a3c4c6b77328f7ea571b82",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/delivery-format.txt",
+      "bytes": 27,
+      "sha256": "3a21445bb7ec5bd865e583bec08d6571c4b3b289821acb041d1505c596e90257",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/delivery-format.txt",
+      "raw_sha256": "3a21445bb7ec5bd865e583bec08d6571c4b3b289821acb041d1505c596e90257",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/delivery-lint.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/delivery-lint.txt",
+      "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/source-correctness.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/source-correctness.txt",
+      "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/source-manifest.json",
+      "bytes": 31689,
+      "sha256": "aaaecafb89b18f951dee85e4f19b99126b5c5a1d63ed542b65d06532fe25bfc6",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/source-manifest.json",
+      "raw_sha256": "aaaecafb89b18f951dee85e4f19b99126b5c5a1d63ed542b65d06532fe25bfc6",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/summary.json",
+      "bytes": 11290,
+      "sha256": "18a77b200101633ce970a0599d79519f55d3477a81e2fdd41f83088a4b614cd6",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/summary.json",
+      "raw_sha256": "18a77b200101633ce970a0599d79519f55d3477a81e2fdd41f83088a4b614cd6",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/tests.txt",
+      "bytes": 4069,
+      "sha256": "340d5aa8f06270d6584b5962acd950276e9523d42c3c07ad4dde61669d241aa7",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/tests.txt",
+      "raw_sha256": "340d5aa8f06270d6584b5962acd950276e9523d42c3c07ad4dde61669d241aa7",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "quality/types.txt",
+      "bytes": 44,
+      "sha256": "02a88e044e14b966c27f6c162bdcba751601b93ba0a212fa2151bd889d9688ef",
+      "raw_path": "eval/reports/reference-protocol-20261025/quality-v1/types.txt",
+      "raw_sha256": "02a88e044e14b966c27f6c162bdcba751601b93ba0a212fa2151bd889d9688ef",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/protocol-before.txt",
+      "bytes": 939,
+      "sha256": "88312d2ff50d405bf74c0adb07ad3a207b463c2a3feb26e5227648692027d97a",
+      "raw_path": "eval/reports/reference-protocol-20261025/protocol-before.txt",
+      "raw_sha256": "ec81af3063ec18b95e437b95dd328fdc05eee71cee80024773e0cdce68194ecd",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/protocol-after-v1.txt",
+      "bytes": 1327,
+      "sha256": "779d55e72b48d20f506a62cc27e7c4fae8f21bb872c5d694bb189701dce9802b",
+      "raw_path": "eval/reports/reference-protocol-20261025/protocol-after-v1.txt",
+      "raw_sha256": "3e8be9eb12dd6f255e0aa25295d5b4a375d0f3a6c06c089ae30e00ac0db1b7b3",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/protocol-after-v2.txt",
+      "bytes": 180,
+      "sha256": "ef0e2a8f93e7c0c6fbd7b7b1304640952fab61936abffdd7d489b3e66e8373c0",
+      "raw_path": "eval/reports/reference-protocol-20261025/protocol-after-v2.txt",
+      "raw_sha256": "e0cc6947db1456fec509fed0a4d6f8c75969c1da8474b56a80c6d2f822c1bbbf",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/format-v1.txt",
+      "bytes": 44,
+      "sha256": "e5817cad76bb3e2b57b1839dccbcecdf6d8881cc948f67ed964194162c6b0758",
+      "raw_path": "eval/reports/reference-protocol-20261025/format-v1.txt",
+      "raw_sha256": "e9605fd9e9e5ab90fc0f013843ed07271f7d34756446affad9ec34b1f4d2d0ba",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/lint-v1.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/reference-protocol-20261025/lint-v1.txt",
+      "raw_sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/build-v1.txt",
+      "bytes": 22023,
+      "sha256": "52d5a33259a671b6169519a5f5963f0a7bab774ed08b43bfbd85b6aa512551ea",
+      "raw_path": "eval/reports/reference-protocol-20261025/build-v1.txt",
+      "raw_sha256": "abf5792cb217541ba6a370d1f9c71e157f341ab029c906a439869366ff79b27e",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "install/summary.json",
+      "bytes": 671,
+      "sha256": "709b6267799a3a11701aea106df73f277c4da0b56197f419aa0f373bcc512c07",
+      "raw_path": "eval/reports/reference-protocol-20261025/install-v1/summary.json",
+      "raw_sha256": "f2ae0318e3c5d445805a545f5d50f33e37d13ca84b52c1cd8daf6313964152fc",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "install/reference-smoke.json",
+      "bytes": 411,
+      "sha256": "1877d214322fcabf7140a3f493f103dce282defd071da96c3a28a1c4c14fe7cb",
+      "raw_path": "eval/reports/reference-protocol-20261025/install-v1/reference-smoke.json",
+      "raw_sha256": "6f2cef4715584aaa9a3ea5ea4fda3bb4a3fc216f889bd4c3cb2ecf3a561acbd0",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "install/reference-smoke.txt",
+      "bytes": 481,
+      "sha256": "eb27ca09a493c2c4bb8c8900209962c18fe085cbef5c5b4c6b2524825decb6c9",
+      "raw_path": "eval/reports/reference-protocol-20261025/install-v1/reference-smoke.txt",
+      "raw_sha256": "f75822490a7fbd60c6dc37db6f5897ae9a01ff9e3050e3248cf1db28e359e6f1",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2884,
+      "sha256": "5aa33c7ab4d34e20cb5f49ade20b8af08e65a15f2d69b0e5bfed423222eb41d5",
+      "transformation": "New publication explanation; no historical raw counterpart"
+    },
+    {
+      "path": "validation/validation-proposal.json",
+      "bytes": 95487,
+      "sha256": "a4568113d784a90f7123ecba549df459493023cdcfd46f11b7fb2cd4819c5e2a",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-proposal.json",
+      "raw_sha256": "a4568113d784a90f7123ecba549df459493023cdcfd46f11b7fb2cd4819c5e2a",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/validation-preflight-summary.json",
+      "bytes": 684,
+      "sha256": "5da52fd9faed772b98cac413fd926f5ad37e3cf7706f839cac91d50f415538c2",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-preflight-summary.json",
+      "raw_sha256": "5da52fd9faed772b98cac413fd926f5ad37e3cf7706f839cac91d50f415538c2",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/independent-code-review.json",
+      "bytes": 1422,
+      "sha256": "b1d172e1154dfc4d1c514f73c2d301273a9c2732ec71fb788984d04bcbc18c48",
+      "raw_path": "eval/reports/reference-protocol-20261025/independent-code-review.json",
+      "raw_sha256": "63ce0fe54ebd232f9d399ed4606067c32f6e4b20ef480a3d438318fa7b48ae0d",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/validation-tests-v1.txt",
+      "bytes": 99,
+      "sha256": "2667b34d7a1ce0623e5e329d9b4154f31fdb64dbff4f8d08ab13ff218f59cc79",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-tests-v1.txt",
+      "raw_sha256": "f13644438904c114d34f1cfed18862df5766e4963e0181f1e2712b2609658dfa",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/validation-tests-v2.txt",
+      "bytes": 99,
+      "sha256": "c23c44f2669dd2a644757823c5094f56206958fbcd6acdec9f6145e1ac6478f8",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-tests-v2.txt",
+      "raw_sha256": "33e75b4c5d6c89dee05a0b238ff552973ad04ce46380228174be3db031970f99",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/validation-tests-v3.txt",
+      "bytes": 99,
+      "sha256": "3fb53ff34d2d4d36ac43652082607c5d3dbf755dcaaa014e5d3927cf34cc351b",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-tests-v3.txt",
+      "raw_sha256": "97b6eefa4afbb0e77b87505a14bf5885729dbd1d6b896861eb4012f732351577",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "development-checks/validation-lint-v3.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-lint-v3.txt",
+      "raw_sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    }
+  ],
+  "validation_proposal_sha256": "a4568113d784a90f7123ecba549df459493023cdcfd46f11b7fb2cd4819c5e2a"
+}

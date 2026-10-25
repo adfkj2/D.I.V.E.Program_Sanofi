@@ -1,0 +1,24 @@
+{
+  "review": "Independent read-only R66 protocol review",
+  "reviewer": "prepare_r66_validation subagent",
+  "sources_sha256": {
+    "src/dive_memory/reading/references.py": "afdb65881a01e335ad3ca0b6c95ff1e558fe428b016273703333e24ef76b59f1",
+    "src/dive_memory/reading/deliberation.py": "5fe3245fc3b3a5d5497343211561839656a3a9b0caa4f7c7681d790e5476f7fa",
+    "src/dive_memory/reading/deliberative.py": "82e71b602ee3c7a513acb756da67f7b1d2595e698fab7d675f494778f90747b5",
+    "src/dive_memory/reading/workspace.py": "f6b1c835ae5df335e375bbb69fec5d351d39252e6b24af81db20b11dce992ded",
+    "src/dive_memory/reading/indexed_reader.py": "aae0762aa0e04ae115a074ec4061c1842a37b41e8439e60efa4f6898921a6591"
+  },
+  "blocking_findings": [],
+  "reviewed_boundaries": [
+    "strict distinct current integer indices; no bool/string/float or unseen labels",
+    "host extracts complete exact visible text and original provenance",
+    "original decision validation retained including abstention/answer constraints",
+    "protocol identity preserved on evidence binding; three phases and shared repair cap unchanged",
+    "workspace anchor mapping keeps the model indices paired with extracted citations"
+  ],
+  "limitations": [
+    "No semantic-entailment proof from source indices",
+    "Full passages may increase budget pressure; no real-model accuracy claim",
+    "No source edits or paid requests were made in this review"
+  ]
+}

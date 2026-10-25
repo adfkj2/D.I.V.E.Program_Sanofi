@@ -33,7 +33,13 @@ def application_from_environment(db_path: str | None = None) -> MemoryApplicatio
             endpoint, key, provider=provider, extra_body=normal_options
         )
         thinking = None
-        if strategy in {"r40", "adaptive", "verified", "deliberative"}:
+        if strategy in {
+            "r40",
+            "adaptive",
+            "verified",
+            "deliberative",
+            "deliberative-refs",
+        }:
             effort = os.getenv("DIVE_REASONING_EFFORT", "low")
             if effort not in {"low", "high", "max"}:
                 raise ValueError("DIVE_REASONING_EFFORT must be low, high or max")

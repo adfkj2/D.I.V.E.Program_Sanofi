@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 from ..answering import EvidenceCitation, GroundedAnswerDecision
 from ..models import RetrievalItem
@@ -189,3 +189,34 @@ def parse_decision(text: str, items: Sequence[RetrievalItem]) -> GroundedAnswerD
     if obj["status"] == "ANSWER" and decision.missing_requirements:
         raise ValueError("supported answer cannot declare missing necessary premises")
     return decision
+
+
+@dataclass(frozen=True, slots=True)
+class DeliberationProtocol:
+    """Inject a response contract without duplicating evidence orchestration."""
+
+    version: str
+    plan_rules: str
+    answer_rules: str
+    review_rules: str
+    parse_plan: Callable[[str, Sequence[RetrievalItem]], EvidencePlan]
+    parse_decision: Callable[[str, Sequence[RetrievalItem]], GroundedAnswerDecision]
+    citation_indices: Callable[[str, str], list[int]]
+
+
+def _literal_indices(text: str, phase: str) -> list[int]:
+    obj = load_object(text)
+    return [
+        entry["index"] for entry in obj["notes" if phase == "plan" else "citations"]
+    ]
+
+
+LITERAL_PROTOCOL = DeliberationProtocol(
+    VERSION,
+    PLAN_RULES,
+    ANSWER_RULES,
+    REVIEW_RULES,
+    parse_plan,
+    parse_decision,
+    _literal_indices,
+)

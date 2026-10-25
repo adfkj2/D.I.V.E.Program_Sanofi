@@ -201,7 +201,7 @@ def main(argv=None):
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--strategy",
-        choices=("indexed", "r40", "verified", "deliberative"),
+        choices=("indexed", "r40", "verified", "deliberative", "deliberative-refs"),
         default="deliberative",
     )
     parser.add_argument(

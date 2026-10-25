@@ -66,6 +66,7 @@ lint-targets = [
   "tests/test_project_briefing.py", "tests/test_project_resumption_cli.py",
   "tests/test_project_import.py",
   "tests/test_deliberation_protocol.py", "tests/test_deliberative_reader.py",
+  "tests/test_reference_protocol.py",
   "tests/test_evidence_workspace.py", "tests/test_reader_failure_analysis.py",
   "tests/test_reader_challenge_dataset.py", "tests/test_reader_challenge_runner.py",
   "tools/analyze_reader_failures.py", "tools/run_reader_challenge.py",

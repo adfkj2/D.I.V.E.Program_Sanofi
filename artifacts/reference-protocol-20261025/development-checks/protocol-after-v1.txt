@@ -1,0 +1,20 @@
+...................F.................................................... [ 57%]
+.....................................................                    [100%]
+================================== FAILURES ===================================
+________ test_factory_binding_preserves_three_phases_and_exact_quotes _________
+
+    def test_factory_binding_preserves_three_phases_and_exact_quotes():
+        text = "do keep this label: Project Z. The limit is 17."
+        client = ScriptedChatClient([plan([0]), decision([0]), decision([0])])
+        reader = create_reader(client, model="fixture", strategy="deliberative-refs").bind_evidence(Source())
+        result = reader.generate(ReaderRequest("What is the limit?", None, None, (item(text),), "", token_budget=1000))
+        assert result.hypothesis == "17" and result.calls == 3
+        assert result.policy_version == reader.spec.prompt_version == VERSION
+>       assert result.citations[0].quote == text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'quote'
+
+tests\test_reference_protocol.py:109: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/test_reference_protocol.py::test_factory_binding_preserves_three_phases_and_exact_quotes
+1 failed, 124 passed in 2.24s

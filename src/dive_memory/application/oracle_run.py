@@ -282,7 +282,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--reader-strategy",
-        choices=("r40", "adaptive", "verified", "deliberative"),
+        choices=("r40", "adaptive", "verified", "deliberative", "deliberative-refs"),
         default="r40",
     )
     parser.add_argument(

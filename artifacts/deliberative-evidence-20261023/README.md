@@ -1,6 +1,6 @@
 # R65 · 证据阅读重构的精选证据
 
-2026-10-23开始，2026-10-24完成本轮本地工程核验。新策略尚未真实测得答题准确率，没有推广为默认。本轮新增模型请求 **0**、费用 **¥0**，共享保守累计 **¥49.880440**。以上费用属于联网前工程阶段。2026-10-24用户已批准一套冻结候选的条件验证，最多新增¥42.50、累计上限¥100；[原始冻结提案](validation/proposal.json)保留创建时未授权状态，另有[后续明确授权](validation/authorization.json)。真实模型结果单独记录，当前尚无新Benchmark准确率。
+2026-10-23开始，2026-10-24完成本地工程核验，2026-10-25补齐停止与续测记录。新策略尚无完整Oracle准确率，没有推广为默认。联网前工程阶段为0请求/¥0，当时累计¥49.880440；之后完成32条开发挑战及100题对照，候选首批中断。重试前已对账累计 **¥52.699654**，含未知请求全额预留。现已明确批准并启动一次后台重试，其新费用另账累计，尚未纳入本包的费用快照。原提案始终保留创建时approved=false，后续授权独立绑定，不覆盖历史状态。
 
 - [完整质量汇总](quality/summary.json)：**1646通过 / 10环境跳过 / 0失败**；全src静态检查、声明范围格式及40文件类型检查通过。10个跳过为8项PostgreSQL服务、1项普通环境缺模型依赖、1项Windows符号链接权限，不计通过。
 - [源码与数据清单](quality/source-manifest.json)：286文件，检查前后哈希一致；新增开发数据绑定，仍排除外部数据及原始评测输出。三组90%行/80%分支门槛未降低。
@@ -17,4 +17,12 @@
 
 [固定100题清单](validation/pilot-selection.json)按题型与不可答标记分层哈希抽样，不按旧成绩挑题。真实验证驱动19项免费测试通过，原2项失败与修复日志已附；方案各阶段失败即停，不能把授权解释为无限次试跑。
 
-真实挑战已完成：[32条运行汇总](validation/challenge-summary.json)、[逐项语义复核及原始产物哈希](validation/challenge-semantic-review.json)、[费用对账](validation/challenge-reconciliation.json)。32/32通过开发者侧AI语义复核，4道应拒答正确，零观察到的来源越界；独立子代理只复核前20条。97次调用、¥0.388132，累计¥50.268572；一次plan精确引用失败按预定上限修复。此成绩只属于手写阅读场景，不更新Oracle分数；100题同期对照已开始。
+真实挑战已完成：[32条运行汇总](validation/challenge-summary.json)、[逐项语义复核及原始产物哈希](validation/challenge-semantic-review.json)、[费用对账](validation/challenge-reconciliation.json)。32/32通过开发者侧AI语义复核，4道应拒答正确，零观察到的来源越界；独立子代理只复核前20条。97次调用、¥0.388132，累计¥50.268572；一次plan精确引用失败按预定上限修复。此成绩只属于手写阅读场景，不更新Oracle分数；随后100题同期对照按下述条件停止。
+
+100题同期对照已按停止条件终止：[停止摘要](validation/control-stopped-summary.json)、[费用](validation/stopped-cost-reconciliation.json)、[判分格式诊断](validation/judge-contract-audit.json)。100题全部生成；判到第14题时两次嵌套output.verdict均不符合原顶层解析协议，保留未知并停止。当前11正确/2错误/1未知/86未判，不能报告100题准确率；新候选与500题均未启动。本轮真实调用共258次，峰值费用¥2.478912，累计¥52.359352。judge、金标和旧分数均不改；任何改变停止条件的续测须新授权，预算余额不自动构成许可。
+
+上述为首次停止时的快照。[随后批准的续测](validation/continuation-authorization.json)只补未尝试86条，完整对照成为[91正确、8错误、1未知](validation/control-completed-summary.json)。原未知不计正确、不缩分母，accuracy保持null。新候选生成4题后进程消失，第13条请求用量未知；[独立中断对账](validation/continuation-stopped-cost-reconciliation.json)保留98完成/1未知的99次续测请求，新增保守¥0.340302、累计¥52.699654。原请求不覆盖，没有把4题当100题成绩。
+
+[跨会话后台实测](validation/background-cross-turn-verification.json)确认180秒任务跨助手轮次持续并正常完成；[短期正常/故障测试](validation/background-runner-feasibility.json)同时保留。它们不证明主机重启恢复。独立重试入口[38项免费检查通过](development-checks/retry-tests-v5.txt)，[字段更名后的旧断言失败](development-checks/retry-tests-v4.txt)保留；运行前两阶段[免费预检](validation/retry-preflight-summary.json)正确拒绝未授权执行。
+
+[一次后台重试提案](validation/retry-proposal.json)与[明确授权](validation/retry-authorization.json)分别保留。100题从头生成，包括旧4条和中断题，旧产物及未知费用继续保留；已完成对照不重判。仍以≥97确认正确、保守对照、6道不可答和零执行失败为全量门槛；通过才做500条全新生成并要求≥475确认正确。新增上限¥36.25、累计最坏¥88.949654，总预算不增加。目前后台已启动，尚未形成完整候选结果。

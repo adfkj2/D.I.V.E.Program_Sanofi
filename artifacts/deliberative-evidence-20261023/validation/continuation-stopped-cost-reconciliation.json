@@ -1,0 +1,55 @@
+{
+  "scope": "R65 approved continuation stopped after candidate process loss; no retries",
+  "observed_at_utc": "2026-10-25T02:57:34.428961+00:00",
+  "prior_cumulative_peak_cny": "52.359352",
+  "new_attempted_requests": 99,
+  "new_completed_requests": 98,
+  "new_unknown_usage_requests": 1,
+  "known_input_tokens_partial": 69626,
+  "known_output_tokens_partial": 13004,
+  "total_input_tokens": null,
+  "total_output_tokens": null,
+  "new_peak_cost_including_uncertain_reservation_cny": "0.340302",
+  "cumulative_peak_cny": "52.699654",
+  "candidate_completed_outputs": 4,
+  "candidate_judged": 0,
+  "candidate_selected_denominator": 100,
+  "candidate_accuracy": null,
+  "candidate_known_cost_cny": "0.210654",
+  "candidate_uncertain_request_full_reservation_cny": "0.097018",
+  "candidate_conservative_cost_cny": "0.307672",
+  "control_complete": true,
+  "control_correct": 91,
+  "control_wrong": 8,
+  "control_unknown": 1,
+  "control_accuracy": null,
+  "control_additional_cost_cny": "0.032630",
+  "full_started": false,
+  "actual_invoice_cny": null,
+  "process_exit_cause": null,
+  "execution_session_missing": true,
+  "recorded_pid_exists": false,
+  "historical_pending_row_unchanged": true,
+  "no_request_resent": true,
+  "new_paid_retries_authorized": false,
+  "ledgers": {
+    "continuation-v1/control-judge/judge-ledger.json": {
+      "sha256": "d9d3c31952b4060d4251806a505f69ec03fc46c52552ee32a8becc1194743cb7",
+      "attempted": 86,
+      "peak_cost_including_uncertain_reservation_cny": "0.032630"
+    },
+    "continuation-v1/candidate/reader-ledger.json": {
+      "sha256": "c70e5a4412522dbc37eec3b1650dacab4270f1cf0081eec471563f8408bb3df5",
+      "attempted": 13,
+      "peak_cost_including_uncertain_reservation_cny": "0.307672"
+    },
+    "continuation-v1/candidate/judge-ledger.json": {
+      "sha256": "78a946446e357cc7ec99f271f93413719bb8d35c40bc2092976d44a3c7763860",
+      "attempted": 0,
+      "peak_cost_including_uncertain_reservation_cny": "0"
+    }
+  },
+  "original_authorization_sha256": "02e82929cf7ddb9b4640a40f42a5f664ff0df3eb3d07f689af8228d2194c28b3",
+  "original_proposal_sha256": "d5421952a921e50f290d9b542a66d1ba00f49c42222b1965bd64e4ca35380b3b",
+  "process_observation_sha256": "f9195bed451bdc6e112fa7264907f7d726c73d4125185d33aa2c9d4aa7edebf2"
+}

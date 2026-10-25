@@ -1,0 +1,21 @@
+{
+  "scope": "Observed Windows background survival across an assistant goal turn, followed by normal automatic completion",
+  "parent_exit_survival": true,
+  "cross_assistant_turn_survival": true,
+  "normal_completion": true,
+  "observed_duration_seconds": 180.51,
+  "heartbeat_count": 180,
+  "provider_requests": 0,
+  "host_restart_survival_tested": false,
+  "forced_termination_recovery_tested": false,
+  "actual_old_process_exit_cause": null,
+  "old_pending_request_unchanged": true,
+  "artifacts_sha256": {
+    "background-runner-feasibility.json": "86ed62b06dffc8065fa724924c13721363a2d7aa05325f00eae9c0f84f5191d9",
+    "background-probe-cross-turn-v1/after-turn-start-observation.json": "383eb10a04b861a5132b63d9b9abc78b4233a3f75d7147358eaad799f1606af7",
+    "background-probe-cross-turn-v1/before-turn-end-observation.json": "aaffc309ef5f7bf8f47a130c7269590658687359bde1d42e61933902f1dc17fe",
+    "background-probe-cross-turn-v1/child-status.json": "e20eb28ce6321f15866a69e356b170dffb426d5d9516b38d03bb90662f75b2ad",
+    "background-probe-cross-turn-v1/launch.json": "88ccc3f09a9e16bfb8adbc588ef1d6a8d2790f9585a09c366fd845b990d494ee",
+    "background-probe-cross-turn-v1/terminal.json": "e20eb28ce6321f15866a69e356b170dffb426d5d9516b38d03bb90662f75b2ad"
+  }
+}

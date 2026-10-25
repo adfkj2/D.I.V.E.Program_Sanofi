@@ -1,0 +1,10 @@
+{
+  "observed_at_utc": "2026-10-25T02:56:29.5239838Z",
+  "exec_session_id": 52490,
+  "exec_session_observation": "write_stdin returned Unknown process id 52490",
+  "lock_pid": 13112,
+  "lock_pid_exists": false,
+  "python_process_ids": [],
+  "process_exit_cause": null,
+  "no_restart_performed": true
+}

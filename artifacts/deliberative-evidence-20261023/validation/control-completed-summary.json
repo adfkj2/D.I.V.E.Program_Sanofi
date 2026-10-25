@@ -1,0 +1,20 @@
+{
+  "phase": "control-judge",
+  "selected": 100,
+  "judged": 100,
+  "correct": 91,
+  "wrong": 8,
+  "unknown": 1,
+  "unjudged": 0,
+  "confirmed_correct_fraction_of_full_denominator": 0.91,
+  "accuracy": null,
+  "judge_decision_fraction_of_full_denominator": 0.99,
+  "generated": 100,
+  "newly_generated": 0,
+  "invalid": 0,
+  "complete": true,
+  "official": false,
+  "target_95_confirmed_met": false,
+  "stopped": null,
+  "cumulative_peak_cny": "52.391982"
+}

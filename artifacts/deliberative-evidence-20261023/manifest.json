@@ -1,8 +1,5 @@
 {
   "round": "R65",
-  "new_model_requests": 0,
-  "additional_cost_cny": "0",
-  "shared_peak_cost_cny": "49.880440",
   "source_files_bound": 286,
   "candidate_real_accuracy": "NOT_EVALUATED",
   "official_benchmark": false,
@@ -203,8 +200,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4116,
-      "sha256": "eba3962e8923303b766cf41c0e4ace6f8a89e2cf1352928fbe344ce17522a85a",
+      "bytes": 6402,
+      "sha256": "e8b32de2de43e1b65ce9555ac86967d6599d48b31555ba1d45d4f58bb7e28a0d",
       "transformation": "Authored publication scope and evidence index; no historical raw counterpart"
     },
     {
@@ -278,7 +275,209 @@
       "raw_path": "eval/reports/accuracy-redesign-20261023/challenge-reconciliation.json",
       "raw_sha256": "edcfb5129c1f4161270d4997176f97c9c752ff5fe0a8ec3a600d6fe7fe8389b7",
       "transformation": "Unchanged UTF-8 JSON; selected summary/review only; public CRLF normalized to LF, original raw hash retained"
+    },
+    {
+      "path": "validation/control-stopped-summary.json",
+      "bytes": 575,
+      "sha256": "dffd974afd8ec41092549e2fe1660ee92f7cf1fdb3945e72d934597e32b503c2",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/pilot-control/summary.json",
+      "raw_sha256": "dffd974afd8ec41092549e2fe1660ee92f7cf1fdb3945e72d934597e32b503c2",
+      "transformation": "Selected diagnostic/summary JSON with LF normalization; no question or reference text"
+    },
+    {
+      "path": "validation/control-stopped-usage.json",
+      "bytes": 843,
+      "sha256": "31898d983419e6c8f27e58b79f9439e259be5070f81962a43967993be971d77a",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/pilot-control/usage.json",
+      "raw_sha256": "31898d983419e6c8f27e58b79f9439e259be5070f81962a43967993be971d77a",
+      "transformation": "Selected diagnostic/summary JSON with LF normalization; no question or reference text"
+    },
+    {
+      "path": "validation/stopped-cost-reconciliation.json",
+      "bytes": 1485,
+      "sha256": "58ed32c3cfc5412af40779394b42b328138972c5c558d976c900133dc65820aa",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/stopped-cost-reconciliation.json",
+      "raw_sha256": "58ed32c3cfc5412af40779394b42b328138972c5c558d976c900133dc65820aa",
+      "transformation": "Selected diagnostic/summary JSON with LF normalization; no question or reference text"
+    },
+    {
+      "path": "validation/judge-contract-audit.json",
+      "bytes": 1133,
+      "sha256": "987e3eab4b2b8a81497b1f9679775278c0227604a9b884d25c158e8783de9441",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/audit-judge-contract.json",
+      "raw_sha256": "987e3eab4b2b8a81497b1f9679775278c0227604a9b884d25c158e8783de9441",
+      "transformation": "Selected diagnostic/summary JSON with LF normalization; no question or reference text"
+    },
+    {
+      "path": "validation/continuation-proposal.json",
+      "bytes": 48005,
+      "sha256": "d5421952a921e50f290d9b542a66d1ba00f49c42222b1965bd64e4ca35380b3b",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-proposal.json",
+      "raw_sha256": "d5421952a921e50f290d9b542a66d1ba00f49c42222b1965bd64e4ca35380b3b",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "development-checks/continuation-tests-v1.txt",
+      "bytes": 6121,
+      "sha256": "d8e05f712f3b3864701cdfcf2591e71007b8ca5bf597d69386d0da7cd16b862d",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-tests-v1.txt",
+      "raw_sha256": "e5b2f32feb01a8853623a16090eb52d62156d461bd8c50ab0cebe1b2fac1d14a",
+      "transformation": "UTF-8/LF; remove trailing whitespace and normalize repository paths; preserve failure and success results"
+    },
+    {
+      "path": "development-checks/continuation-tests-v3.txt",
+      "bytes": 99,
+      "sha256": "90f0bfb56a84fa303302777404609fa6f88b58f3308b854c6f192f5d61c4b672",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-tests-v3.txt",
+      "raw_sha256": "ed8ecbb77092c60f5deabbdfb75b717b48a36c01ef1f589f45bab54fe4196f08",
+      "transformation": "UTF-8/LF; remove trailing whitespace and normalize repository paths; preserve failure and success results"
+    },
+    {
+      "path": "development-checks/continuation-lint-v2.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-lint-v2.txt",
+      "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "UTF-8/LF; remove trailing whitespace and normalize repository paths; preserve failure and success results"
+    },
+    {
+      "path": "development-checks/retry-tests-v4.txt",
+      "bytes": 1332,
+      "sha256": "e353df24f64bcdb3a3e42a52e04919964c2d6fcd7d763db108c192ea686bdbfa",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-tests-v4.txt",
+      "raw_sha256": "3f17bba2f9c66dafc7f47b712c17c5c7beb8bbd35c39a7cf7c129c9ca56499c5",
+      "transformation": "UTF-8/LF; remove trailing whitespace and normalize repository paths; preserve failure and success results"
+    },
+    {
+      "path": "development-checks/retry-tests-v5.txt",
+      "bytes": 99,
+      "sha256": "87d2033237310963de956fe44f23f051b007b6ceed80e9d3c331a54181e14aee",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-tests-v5.txt",
+      "raw_sha256": "b81783fd402e16bbfaf0bbd19e464a2cc11a573cc78c647134b62ed1ad6bd70d",
+      "transformation": "UTF-8/LF; remove trailing whitespace and normalize repository paths; preserve failure and success results"
+    },
+    {
+      "path": "development-checks/retry-lint-v2.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-lint-v2.txt",
+      "raw_sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "transformation": "UTF-8/LF; remove trailing whitespace and normalize repository paths; preserve failure and success results"
+    },
+    {
+      "path": "diagnosis/historical-judge-shapes.json",
+      "bytes": 313,
+      "sha256": "bfe8ed27091d917926a9256a91961e04a7b14de96ee301dbbb39092485455eea",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/audit-historical-judge-shapes.json",
+      "raw_sha256": "fc12f0fde7d5c438f6086e5f55d6a56146d47175c97632b0d5baa016983af308",
+      "transformation": "Aggregate only; remove question IDs and raw response rows; preserve original evidence hash"
+    },
+    {
+      "path": "remote-checks-record.json",
+      "bytes": 11290,
+      "sha256": "5205cddab31f9c6ef2191a61164a3a0f8e911d3ac1f865f594fbe4e0eade123d",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/remote-checks-record.json",
+      "raw_sha256": "5205cddab31f9c6ef2191a61164a3a0f8e911d3ac1f865f594fbe4e0eade123d",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/continuation-preflight-summary.json",
+      "bytes": 779,
+      "sha256": "b42f3a9ef819bf33787e8f962d21ab6434a67c0494d5cf3efd0df7a29b5ac7a7",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-preflight-summary.json",
+      "raw_sha256": "b42f3a9ef819bf33787e8f962d21ab6434a67c0494d5cf3efd0df7a29b5ac7a7",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/continuation-authorization.json",
+      "bytes": 829,
+      "sha256": "02e82929cf7ddb9b4640a40f42a5f664ff0df3eb3d07f689af8228d2194c28b3",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-authorization.json",
+      "raw_sha256": "02e82929cf7ddb9b4640a40f42a5f664ff0df3eb3d07f689af8228d2194c28b3",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/continuation-stopped-cost-reconciliation.json",
+      "bytes": 2281,
+      "sha256": "1909170a6f1fb9d043ea6cc67532604453393758ed6c78bcdb3b38144d6d1241",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-stopped-cost-reconciliation.json",
+      "raw_sha256": "1909170a6f1fb9d043ea6cc67532604453393758ed6c78bcdb3b38144d6d1241",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/continuation-process-loss-observation.json",
+      "bytes": 302,
+      "sha256": "8c26b4ce36238537e89079bc006259d4ac9673778aacc8bdbe93150927cc3c92",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-process-loss-observation.json",
+      "raw_sha256": "f9195bed451bdc6e112fa7264907f7d726c73d4125185d33aa2c9d4aa7edebf2",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/retry-proposal.json",
+      "bytes": 37351,
+      "sha256": "96bc9c0378379304b948dac62372ca9a1700868440a299b5ddd376f91fe4cd01",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-proposal.json",
+      "raw_sha256": "96bc9c0378379304b948dac62372ca9a1700868440a299b5ddd376f91fe4cd01",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/retry-authorization.json",
+      "bytes": 784,
+      "sha256": "f7292ab932a84e17784c90a1a4686c73111cef05e5236f7ebee7b0541ee804f8",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-authorization.json",
+      "raw_sha256": "f7292ab932a84e17784c90a1a4686c73111cef05e5236f7ebee7b0541ee804f8",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/retry-preflight-summary.json",
+      "bytes": 583,
+      "sha256": "c1b98fea078a7eb6a29cf5a5488f7f0022ccf7b37e148929281983ed55c1e3d2",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/retry-preflight-summary.json",
+      "raw_sha256": "c1b98fea078a7eb6a29cf5a5488f7f0022ccf7b37e148929281983ed55c1e3d2",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/background-cross-turn-verification.json",
+      "bytes": 1267,
+      "sha256": "b70d2598c92dd51922f7fac5580eb8ba9b7a0b319601641c3556ca2d14667157",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/background-cross-turn-verification.json",
+      "raw_sha256": "b70d2598c92dd51922f7fac5580eb8ba9b7a0b319601641c3556ca2d14667157",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/background-runner-feasibility.json",
+      "bytes": 3942,
+      "sha256": "26822d79ebbf0b194d8a7402a134abb4f987afb7b5a848616629944fce8f9c27",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/background-runner-feasibility.json",
+      "raw_sha256": "86ed62b06dffc8065fa724924c13721363a2d7aa05325f00eae9c0f84f5191d9",
+      "transformation": "Selected evidence; normalize CRLF to LF; no answers or credentials"
+    },
+    {
+      "path": "validation/control-completed-summary.json",
+      "bytes": 458,
+      "sha256": "a2445397d4d9ab7bcbb69d16d03a44f6dc6804b2e14f62aa2a71671924145bbf",
+      "raw_path": "eval/reports/accuracy-redesign-20261023/continuation-v1/control-judge/summary.json",
+      "raw_sha256": "0406545d8fcc53a89b49030e1a28d2da9e1f80f9edcb4d85b2feb54fde4c2524",
+      "transformation": "Complete control summary; omit raw artifact-path hash map, preserve all result and cost fields"
     }
   ],
-  "note": "Costs/new_model_requests describe the pre-network engineering snapshot; the separately recorded approved validation may execute afterward."
+  "note": "Accounting snapshot ends at the interrupted continuation. The separately authorized fresh retry has its own local request ledgers and is not yet reconciled here. Earlier engineering totals remain in engineering_snapshot. Proposals retain approved=false; separate authorization records bind their original hashes.",
+  "engineering_snapshot": {
+    "phase": "BEFORE_PAID_VALIDATION",
+    "new_model_requests": 0,
+    "additional_cost_cny": "0",
+    "shared_peak_cost_cny": "49.880440"
+  },
+  "accounting_snapshot": {
+    "as_of": "Before the separately authorized fresh retry",
+    "r65_attempted_requests": 357,
+    "r65_completed_requests": 356,
+    "r65_uncertain_usage_requests": 1,
+    "r65_additional_peak_cost_cny": "2.819214",
+    "shared_cumulative_peak_cny": "52.699654",
+    "includes_full_uncertain_reservation": true
+  },
+  "cost_basis": "Peak-rate estimate including uncertain reservations, not provider invoice",
+  "validation_status": "ONE_FRESH_RETRY_AUTHORIZED_AND_STARTED",
+  "new_retry_usage_included_in_accounting_snapshot": false
 }

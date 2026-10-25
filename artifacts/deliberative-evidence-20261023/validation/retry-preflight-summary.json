@@ -1,0 +1,21 @@
+{
+  "candidate": {
+    "selected": 100,
+    "execution_blockers": [
+      "Continuation conditions have not been explicitly approved",
+      "Shared paid-run lock exists; this adapter never deletes an old lock"
+    ],
+    "execute_rejected": true,
+    "output_created": false
+  },
+  "full": {
+    "selected": 500,
+    "execution_blockers": [
+      "Continuation conditions have not been explicitly approved",
+      "FileNotFoundError",
+      "Shared paid-run lock exists; this adapter never deletes an old lock"
+    ],
+    "execute_rejected": true,
+    "output_created": false
+  }
+}

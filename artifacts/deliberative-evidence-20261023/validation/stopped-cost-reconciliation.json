@@ -1,0 +1,43 @@
+{
+  "scope": "R65 challenge plus stopped control; no candidate/full requests",
+  "prior_cumulative_peak_cny": "49.880440",
+  "new_completed_requests": 258,
+  "known_input_tokens": 809896,
+  "known_output_tokens": 107390,
+  "new_missing_usage_calls": 0,
+  "new_peak_cost_cny": "2.478912",
+  "cumulative_peak_cny": "52.359352",
+  "reader_new_generated_challenge": 32,
+  "reader_new_generated_oracle_control": 100,
+  "control_judged": 14,
+  "control_correct": 11,
+  "control_wrong": 2,
+  "control_unknown": 1,
+  "control_unjudged": 86,
+  "control_accuracy": null,
+  "candidate_generated": 0,
+  "full_generated": 0,
+  "actual_invoice_cny": null,
+  "ledgers": {
+    "challenge/request-ledger.json": {
+      "sha256": "2b09d3557f7eabc4431f739c02a5cbc501da34c596e675d2e1155db93558c991",
+      "completed_calls": 97,
+      "input_tokens": 81118,
+      "output_tokens": 28237
+    },
+    "pilot-control/reader-ledger.json": {
+      "sha256": "83251f6003f766f31b5dee629e19cc94d7b3af4083fe8f736a3316793b711e92",
+      "completed_calls": 146,
+      "input_tokens": 726365,
+      "output_tokens": 79026
+    },
+    "pilot-control/judge-ledger.json": {
+      "sha256": "9b2d4897a1a32c58c3143e383facc68b939820cb3c61ce9e05f6d56a434e0e4c",
+      "completed_calls": 15,
+      "input_tokens": 2413,
+      "output_tokens": 127
+    }
+  },
+  "stopped_reason": "Original judge protocol remained unknown after its permitted format attempt",
+  "previous_uncertain_billing_remains_in_historical_baseline": true
+}

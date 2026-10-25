@@ -1,0 +1,19 @@
+{
+  "approved": true,
+  "approved_at": "2026-10-25T06:42:50.930986+00:00",
+  "authorization": "批准这一次后台重试（推荐）",
+  "proposal_sha256": "96bc9c0378379304b948dac62372ca9a1700868440a299b5ddd376f91fe4cd01",
+  "shared_budget_sha256": "746fcbfa2e7153c538b6121a6808715f7c5bd8a2f46a70228cbc8a6a04f10239",
+  "prior_cumulative_peak_cny": "52.699654",
+  "user_limit_cny": "100.00",
+  "planning_stop_cny": "99.00",
+  "settlement_reserve_cny": "1.00",
+  "additional_budget_cny": "0.00",
+  "total_stage_cap_cny": "36.25",
+  "worst_cumulative_peak_cny": "88.949654",
+  "single_fresh_retry_only": true,
+  "regenerate_previous_four_and_interrupted_question": true,
+  "preserve_old_uncertain_charge": true,
+  "retain_same_gates_and_judge": true,
+  "no_automatic_restart": true
+}

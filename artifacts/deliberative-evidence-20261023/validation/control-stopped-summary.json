@@ -1,0 +1,22 @@
+{
+  "phase": "pilot-control",
+  "selected": 100,
+  "generated": 100,
+  "judged": 14,
+  "correct": 11,
+  "wrong": 2,
+  "unknown": 1,
+  "invalid": 0,
+  "unjudged": 86,
+  "complete": false,
+  "official": false,
+  "accuracy": null,
+  "confirmed_correct_fraction_of_full_denominator": 0.11,
+  "target_95_met": false,
+  "stopped": {
+    "complete": false,
+    "reason": "Original judge protocol remained unknown after its permitted format attempt"
+  },
+  "cumulative_peak_cny": "52.359352",
+  "verdicts_sha256": "acaa5cd4c8f2d3919e4fed61d71c7e9f406b2d454677ae26d0250d7cadb03e8f"
+}

@@ -1,0 +1,19 @@
+{
+  "approved": true,
+  "approved_at": "2026-10-25T13:26:56.285875+00:00",
+  "authorization": "批准这个候选按上述条件验证（推荐）",
+  "proposal_sha256": "a4568113d784a90f7123ecba549df459493023cdcfd46f11b7fb2cd4819c5e2a",
+  "shared_budget_sha256": "fda8d429d78dbaada856936a7ad5a8b3a9ddd27d3d8c49af8fb8e0fda43626d3",
+  "prior_cumulative_peak_cny": "53.739524",
+  "user_limit_cny": "100.00",
+  "planning_stop_cny": "99.00",
+  "settlement_reserve_cny": "1.00",
+  "additional_budget_cny": "0.00",
+  "total_stage_cap_cny": "37.75",
+  "worst_cumulative_peak_cny": "91.489524",
+  "single_frozen_candidate_only": true,
+  "retain_original_judge_and_unknowns": true,
+  "no_automatic_restart": true,
+  "stop_on_execution_failure_or_unknown_usage": true,
+  "historical_uncertain_reservations_remain": true
+}

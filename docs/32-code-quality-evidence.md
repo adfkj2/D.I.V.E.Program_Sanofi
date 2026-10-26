@@ -4,7 +4,7 @@
 
 ## 当前工程证据
 
-历史R63发布补记：首轮远程4/5，浏览器检查提前导航导致标题隐藏超时；受控延迟复现后修复提交`476ce1c`的[远程五项全部成功](../artifacts/bounded-tool-recovery-20261022/remote-checks.json)，PostgreSQL8通过、零跳过，浏览器20项通过。[失败及修复](oracle/58-bounded-tool-recovery-20261022.md)完整保留，当前R64门禁见下方。
+历史R63发布补记：首轮远程4/5，浏览器检查提前导航导致标题隐藏超时；受控延迟复现后修复提交`476ce1c`的[远程五项全部成功](../artifacts/bounded-tool-recovery-20261022/remote-checks.json)，PostgreSQL8通过、零跳过，浏览器20项通过。[失败及修复](oracle/58-bounded-tool-recovery-20261022.md)完整保留，当前R66门禁见下方。
 
 [R66记录](oracle/61-reference-selection-protocol-20261025.md)新增可注入的阅读阶段协议和宿主程序原文提取，旧策略保持兼容。最新完整本地门禁**1671通过、10环境跳过、0失败**，41文件类型检查，288文件绑定Python、前端、浏览器、锁文件、迁移、部署配置与开发数据。类型检查仍为局部范围且使用skip导入。真实全量仍为R62的435正确/57错误/8未知；工程验证不能替代95%验收。[门禁](../artifacts/reference-protocol-20261025/quality/summary.json) · [精选证据](../artifacts/reference-protocol-20261025/README.md)。
 
@@ -22,6 +22,8 @@ R66 wheel已重新构建并在全新环境安装，隔离导入确认来源为si
 R64另外保留1项本机无符号链接权限的测试跳过，本地浏览器27项、独立安装通过。源码提交`0d0cbdf`的[远程五项全部成功](../artifacts/engineering-hygiene-20261023/remote-checks.json)，PG实际8项零跳过、Linux浏览器27项。清理初期16个目录补充只读核验后按同一归档流程完成清理；共移出87个遗留目录，用户数据与原始评测保持。[维护范围](36-workspace-maintenance.md)。
 
 R65记录提交`feee617b256ba2c0f24542a08673fbe73c6e906a`的[五项远程检查均成功](../artifacts/deliberative-evidence-20261023/remote-checks-retry-record.json)，PostgreSQL8项零跳过、浏览器20+7项通过；不能据此称R66最新改动已远程验证。R65后台重试因引用协议失败停止，候选无完整准确率；新来源编号协议只能降低抄写错误风险，语义支持仍须模型判断和真实评测。
+
+R66源码提交`b39afe9ad09c2c55d461733e28fe8597dc42e4a2`已另外完成[五项远程检查](../artifacts/reference-protocol-20261025/remote-checks-source.json)，PostgreSQL实际8项零跳过、浏览器20+7项、Python3.12/3.14及Docker均成功。后续真实开发挑战只属于32条手写阅读场景，不是工程分数或全量Benchmark准确率。
 
 ## 手册五项观察面
 

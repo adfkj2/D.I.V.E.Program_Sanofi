@@ -235,3 +235,5 @@ python tools/verify_wheel.py --wheel-dir dist --output artifacts/my-wheel-check
 <p align="center">续研 · 记得上次，也能推进下一步。</p>
 
 第三方依赖与许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
+R67源码提交`4c40eb19ca06b83639205236c6e787403eb58044`的五项远程任务均已完成并成功：PostgreSQL8项零跳过、浏览器20+7项、两版Python及Docker通过。[逐项证据](artifacts/staged-completion-20261026/remote-checks-source.json)。后续记录提交单独核验；工程通过不证明95%准确率。

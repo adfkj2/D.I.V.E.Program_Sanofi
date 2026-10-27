@@ -292,9 +292,17 @@
     },
     {
       "path": "README.md",
-      "bytes": 2524,
-      "sha256": "93473ab89a74481bc90019d681540333e1b1b706b8a5fc809b76b2f025673be0",
+      "bytes": 2778,
+      "sha256": "98930329b8924854c2aaf3f419cad39df6c00d1003f342d67e32d5a7fc0225b7",
       "transformation": "New publication explanation; no historical raw counterpart"
+    },
+    {
+      "path": "remote-checks-source.json",
+      "bytes": 14993,
+      "sha256": "5553df99438372d7745a935af5ce1fad1d90b409addf705aec38fd7a6bee5f3a",
+      "raw_path": "eval/reports/completion-budget-20261026/remote-checks-source.json",
+      "raw_sha256": "1636eb02e01ef4c93844c2c2e99b7b9a72e7e06040c28033e506adeab7866fa3",
+      "transformation": "Selected five job statuses and log excerpts; UTF-8/LF and machine-path normalization; no raw model results"
     }
   ]
 }

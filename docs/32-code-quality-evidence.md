@@ -49,3 +49,5 @@ python -m pytest tests/test_adaptive_reader.py tests/test_architecture_boundarie
 历史报告保留原范围，不把旧统计覆盖成新成绩：[R45](oracle/43-code-quality-20261014.md)、[R47 Agent](oracle/45-project-agent-20261015.md)、[R51产品边界](oracle/49-product-acceptance-20261016.md)、[R52真实PG修复](oracle/50-ci-postgres-20261017.md)、[R54交付可信度](oracle/55-scoring-readiness-20261018.md)。
 
 最新Oracle全量为R62的435/500（已确认87.0%，另8题未知）非官方开发自评；历史R40为451/500（90.2%）。40题开发筛选、工程通过率和覆盖率均不能作为500题95%验收结果；失败候选不替换默认策略。
+
+R67源码提交`4c40eb19ca06b83639205236c6e787403eb58044`的五项远程任务均已完成并成功：PostgreSQL8项零跳过、浏览器20+7项、两版Python及Docker通过。[运行记录](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/40511425763)。后续记录提交单独核验；工程通过不证明95%准确率。

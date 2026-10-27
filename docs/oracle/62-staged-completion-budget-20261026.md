@@ -48,3 +48,5 @@ R66旧288个受测文件已逐项验证，并完整归档为`source-before-r67.z
 独立wheel安装完成，SHA256 `8cea8a66f5690cbab9f90d95bfdff62b2899a1380159941dedfc6920a3bfc876`。136个打包文件逐项与当前源码一致；全新环境持久化重启、CLI/API、资源和交接通过。另在安装包内以假HTTP响应完成实际搜索、合成被截断、normal恢复和thinking复核，四次调用及已知用量保持，推理原文不保存、零真实API。首轮非隔离构建因普通环境缺setuptools失败，保留失败后采用标准隔离构建成功，未以旧wheel冒充新构建。
 
 [精选工程与冻结方案](../../artifacts/staged-completion-20261026/README.md)只公开必要摘要、合成检查与哈希，真实对话/答案/轨迹、数据库、wheel和环境保持本地。推送后按精确提交核验五项远程任务，不能以本地通过代替远程通过。
+
+R67源码提交`4c40eb19ca06b83639205236c6e787403eb58044`的五项远程任务均已完成并成功：PostgreSQL8项零跳过、浏览器20+7项、两版Python及Docker通过。[运行记录](https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/40511425763)。后续记录提交单独核验；工程通过不证明95%准确率。

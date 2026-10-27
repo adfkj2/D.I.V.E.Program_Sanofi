@@ -1,0 +1,199 @@
+............................................FFFF.F.FFFF.F............... [ 90%]
+........                                                                 [100%]
+================================== FAILURES ===================================
+__ test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens--1] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A804AEB0>
+value = -1, field = 'prompt_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert -1 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-2.0] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A80A7D20>
+value = 2.0, field = 'prompt_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert 2 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-2.5] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A80A7D90>
+value = 2.5, field = 'prompt_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert 2 is None
+
+tests\test_completion_transport.py:180: AssertionError
+__ test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-2] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A80A7F50>
+value = '2', field = 'prompt_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert 2 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-inf] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A80A54E0>
+value = inf, field = 'prompt_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:178:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+src\dive_memory\reading\providers.py:135: in complete
+    input_tokens=_as_int(usage.get("prompt_tokens")),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = inf
+
+    def _as_int(value: Any) -> int | None:
+        if isinstance(value, bool) or value is None:
+            return None
+        try:
+>           return int(value)
+                   ^^^^^^^^^^
+E           OverflowError: cannot convert float infinity to integer
+
+src\dive_memory\reading\providers.py:146: OverflowError
+_ test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens--1] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A81BD860>
+value = -1, field = 'completion_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert -1 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-2.0] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A81BD400>
+value = 2.0, field = 'completion_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert 2 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-2.5] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A81BD470>
+value = 2.5, field = 'completion_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert 2 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-2] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A81BD4E0>
+value = '2', field = 'completion_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+        response = complete(client)
+        observed = response.input_tokens if field == "prompt_tokens" else response.output_tokens
+>       assert observed is None
+E       assert 2 is None
+
+tests\test_completion_transport.py:180: AssertionError
+_ test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-inf] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002A8A81BD550>
+value = inf, field = 'completion_tokens'
+
+    @pytest.mark.parametrize("value", [True, -1, 2.0, 2.5, "2", float("nan"), float("inf")])
+    @pytest.mark.parametrize("field", ["prompt_tokens", "completion_tokens"])
+    def test_malformed_total_usage_never_becomes_a_known_charge(monkeypatch, value, field):
+        client, _ = client_for(monkeypatch, envelope(**{field: value}))
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:178:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+src\dive_memory\reading\providers.py:136: in complete
+    output_tokens=_as_int(usage.get("completion_tokens")),
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+value = inf
+
+    def _as_int(value: Any) -> int | None:
+        if isinstance(value, bool) or value is None:
+            return None
+        try:
+>           return int(value)
+                   ^^^^^^^^^^
+E           OverflowError: cannot convert float infinity to integer
+
+src\dive_memory\reading\providers.py:146: OverflowError
+=========================== short test summary info ===========================
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens--1]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-2.0]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-2.5]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-2]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[prompt_tokens-inf]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens--1]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-2.0]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-2.5]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-2]
+FAILED tests/test_completion_transport.py::test_malformed_total_usage_never_becomes_a_known_charge[completion_tokens-inf]
+10 failed, 70 passed in 1.14s

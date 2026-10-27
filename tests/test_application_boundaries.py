@@ -29,7 +29,7 @@ def isolated_environment(monkeypatch):
     return monkeypatch
 
 
-@pytest.mark.parametrize("strategy", ["indexed", "r40"])
+@pytest.mark.parametrize("strategy", ["indexed", "r40", "deliberative-staged"])
 def test_live_composition_configures_transports_without_sending(
     strategy, isolated_environment
 ):
@@ -48,16 +48,19 @@ def test_live_composition_configures_transports_without_sending(
         "READER_API_KEY": "test-key",
         "READER_STRATEGY": strategy,
         "READER_PROVIDER": "deepseek",
+        "REASONING_EFFORT": "high",
     }.items():
         patch.setenv("DIVE_" + key, value)
     app = settings.application_from_environment(":memory:")
     try:
         assert app.mode == "live_model"
         assert app.readiness()["reader"] == "configured_not_network_probed"
-        assert len(created) == (2 if strategy == "r40" else 1)
+        assert len(created) == (1 if strategy == "indexed" else 2)
         assert created[0][2]["extra_body"] == {"thinking": {"type": "disabled"}}
-        if strategy == "r40":
+        if strategy != "indexed":
             assert created[1][2]["extra_body"]["thinking"]["type"] == "enabled"
+        if strategy == "deliberative-staged":
+            assert app.reader.execution.synthesize.reasoning_effort == "high"
     finally:
         app.close()
 

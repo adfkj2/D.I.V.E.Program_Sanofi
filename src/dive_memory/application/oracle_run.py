@@ -179,6 +179,8 @@ class RequestLedger:
                     state="completed",
                     input_tokens=response.input_tokens,
                     output_tokens=response.output_tokens,
+                    finish_reason=getattr(response, "finish_reason", None),
+                    reasoning_tokens=getattr(response, "reasoning_tokens", None),
                     resolved_model=response.model,
                     elapsed_seconds=perf_counter() - started,
                 )
@@ -282,7 +284,14 @@ def main(argv=None):
     )
     parser.add_argument(
         "--reader-strategy",
-        choices=("r40", "adaptive", "verified", "deliberative", "deliberative-refs"),
+        choices=(
+            "r40",
+            "adaptive",
+            "verified",
+            "deliberative",
+            "deliberative-refs",
+            "deliberative-staged",
+        ),
         default="r40",
     )
     parser.add_argument(
@@ -397,12 +406,16 @@ def main(argv=None):
         model=args.model,
         provider="deepseek",
         strategy=args.reader_strategy,
+        reasoning_effort=args.reasoning_effort,
     )
     atomic_write_json(
         args.output / "execution-plan.json",
         {
             **plan,
             "reader": reader.spec.to_dict(),
+            "reader_execution": getattr(
+                reader, "execution_configuration", lambda: None
+            )(),
             "pipeline_fields": asdict(config),
             "dataset_sha256": dataset.sha256,
         },

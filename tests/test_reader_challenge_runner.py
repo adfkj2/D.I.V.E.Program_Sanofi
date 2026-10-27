@@ -310,7 +310,17 @@ def test_old_output_is_never_overwritten_or_reused(tmp_path, monkeypatch):
     assert calls == []
 
 
-@pytest.mark.parametrize("strategy", ["indexed", "r40", "verified", "deliberative"])
+@pytest.mark.parametrize(
+    "strategy",
+    [
+        "indexed",
+        "r40",
+        "verified",
+        "deliberative",
+        "deliberative-refs",
+        "deliberative-staged",
+    ],
+)
 def test_all_strategies_record_exact_raw_replies_without_credentials(
     tmp_path, monkeypatch, strategy
 ):
@@ -328,8 +338,27 @@ def test_all_strategies_record_exact_raw_replies_without_credentials(
             self.extra_body = kwargs.get("extra_body", {})
 
         def complete(self, **kwargs):
-            planning = "First gather evidence" in kwargs["messages"][0]["content"]
-            value = {"notes": [], "queries": [], "reads": []} if planning else ANSWER
+            rules = kwargs["messages"][0]["content"]
+            planning = (
+                "First gather evidence" in rules
+                or "Gather evidence before answering" in rules
+            )
+            references = strategy in {"deliberative-refs", "deliberative-staged"}
+            if planning:
+                value = {
+                    "source_indices" if references else "notes": [],
+                    "queries": [],
+                    "reads": [],
+                }
+            elif references:
+                value = {
+                    "status": "ANSWER",
+                    "answer": "73",
+                    "source_indices": [0],
+                    "missing": [],
+                }
+            else:
+                value = ANSWER
             raw = " \n" + json.dumps(value) + "\n "
             responses.append(raw)
             return ChatCompletion(raw, "fixture", input_tokens=10, output_tokens=5)
@@ -346,6 +375,21 @@ def test_all_strategies_record_exact_raw_replies_without_credentials(
     assert records and [record["response"] for record in records] == responses
     assert all(record["state"] == "completed" for record in records)
     assert all(record["request"]["messages"] for record in records)
+    if strategy == "deliberative-staged":
+        assert [record["mode"]["thinking"]["type"] for record in records] == [
+            "disabled",
+            "enabled",
+            "enabled",
+        ]
+        assert [record["request"]["max_tokens"] for record in records] == [
+            8192,
+            16384,
+            16384,
+        ]
+        plan = json.loads((output / "plan.json").read_text())
+        phases = plan["reader_execution"]["phases"]
+        assert phases["plan"]["profile"] == "normal"
+        assert phases["synthesize"]["reasoning_effort"] == plan["reasoning_effort"]
     for artifact in output.glob("*.json"):
         assert secret not in artifact.read_text(encoding="utf-8")
     for record in records:

@@ -1,0 +1,37 @@
+[
+  {
+    "url": "https://api-docs.deepseek.com/guides/thinking_mode",
+    "retrieved_at": "2026-10-26T14:29:29.697390+00:00",
+    "http_body_sha256": "7d9762238e92a7391173ba1726778e46ec11c7bc599e3e395265488f196618b7",
+    "extracted_text_file": "transport-budget-doc-thinking_mode.txt",
+    "extracted_text_sha256": "1ffe46a32cfcc303b341839ee96e3222a6d191221fb636fbe3e4768f2594e785"
+  },
+  {
+    "url": "https://api-docs.deepseek.com/api/create-chat-completion",
+    "retrieved_at": "2026-10-26T14:29:30.204823+00:00",
+    "http_body_sha256": "5f89e4bafbec8808896d7890ad23ca4caaa8a19ff226d881efae63a61a12d169",
+    "extracted_text_file": "transport-budget-doc-create_chat_completion.txt",
+    "extracted_text_sha256": "0c90313c0b6174b862f6115104e7b94d004496189bb628cf3053163f504454e2"
+  },
+  {
+    "url": "https://api-docs.deepseek.com/quick_start/pricing",
+    "retrieved_at": "2026-10-26T14:29:30.570787+00:00",
+    "http_body_sha256": "b856a6e93fa4793ecc8f3fd03a01bb7d8f7572f78a4739da8ce6dbdb09328d66",
+    "extracted_text_file": "transport-budget-doc-pricing_en.txt",
+    "extracted_text_sha256": "09018940af31e7ac12f4371d24f867c61e80e2436eb3d25c199f688676bae8b5"
+  },
+  {
+    "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+    "retrieved_at": "2026-10-26T14:29:30.947380+00:00",
+    "http_body_sha256": "556097caba8adfeeed6455714bffd731c7f60db520fcee06a922eba5840663a3",
+    "extracted_text_file": "transport-budget-doc-pricing_cn.txt",
+    "extracted_text_sha256": "3431cac92d07a9451626633a28a0a2896c9ce3916962e8ff6a3778cea7df3df2"
+  },
+  {
+    "url": "https://api-docs.deepseek.com/guides/json_mode",
+    "retrieved_at": "2026-10-26T14:29:31.374680+00:00",
+    "http_body_sha256": "994044aeaa03eed19a93623931e1cce8a9dc22396063d1832ad21a412554385d",
+    "extracted_text_file": "transport-budget-doc-json_mode.txt",
+    "extracted_text_sha256": "75ac738b3e659e064b2a713d3295b430c7b75483595205d25b1865e7a14f35cc"
+  }
+]

@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "auditor": "independent subagent /root/r66_accounting_audit",
+  "audited_at_utc": "2026-10-26T14:29:00.708877+00:00",
+  "scope": "Offline request, cost, source binding and terminal-failure audit; no semantic grading or API calls",
+  "new_provider_requests_in_audit": 0,
+  "candidate": {
+    "requests": 120,
+    "completed_requests": 120,
+    "missing_usage_requests": 0,
+    "input_tokens": 469905,
+    "output_tokens": 106078,
+    "estimated_peak_cost_cny": "1.788434",
+    "ledger_sha256": "7d05556496b8ccd9885d9b3d210505de5e7987ee298c35dd0d6efb9fe9bf11aa"
+  },
+  "challenge": {
+    "requests": 96,
+    "completed_requests": 96,
+    "missing_usage_requests": 0,
+    "input_tokens": 84224,
+    "output_tokens": 23953,
+    "estimated_peak_cost_cny": "0.360072",
+    "ledger_sha256": "5a772a0260fa3554d54f08a1c5847a2b03aab173f3c150e3481b2971c44ef203"
+  },
+  "new_request_totals": {
+    "attempted": 216,
+    "completed": 216,
+    "unknown_usage": 0,
+    "input_tokens": 554129,
+    "output_tokens": 130031
+  },
+  "candidate_output": {
+    "selected": 100,
+    "generated": 40,
+    "valid": 39,
+    "invalid": 1,
+    "unattempted": 60,
+    "judged": 0,
+    "accuracy": null,
+    "reader_status_counts": {
+      "ANSWER": 36,
+      "ABSTAIN": 3,
+      "INVALID": 1
+    },
+    "full_500_started": false
+  },
+  "cost_reconciliation": {
+    "historical_baseline_peak_cny": "53.739524",
+    "round_additional_peak_cny": "2.148506",
+    "cumulative_peak_cny": "55.888030",
+    "actual_provider_invoice_cny": null,
+    "historical_unknown_reserves_retained": true,
+    "historical_missing_usage_calls_in_latest_full_run": 3,
+    "historical_uncertain_calls_in_previous_continuation": 1,
+    "budget_snapshot_sha256": "fda8d429d78dbaada856936a7ad5a8b3a9ddd27d3d8c49af8fb8e0fda43626d3"
+  },
+  "failure": {
+    "question_id": "88432d0a",
+    "reason_code": "INVALID_PLAN_OUTPUT",
+    "calls": 2,
+    "trace_sha256": "a1f10363f4a08234d29b4e0b069f02bd4d81c336bcbfc467bb8fbbcb84fcedf5",
+    "requests": [
+      {
+        "request_number": 119,
+        "request_sha256": "42ccf3a27842f69e1c7110c5ec4ce3d31380b172ed0e5a66d1c5756b048aa513",
+        "stage": "plan",
+        "content_characters": 0,
+        "input_tokens": 6653,
+        "output_tokens": 8192,
+        "max_tokens": 8192,
+        "elapsed_seconds": 44.22488289999819
+      },
+      {
+        "request_number": 120,
+        "request_sha256": "769a7e3b8c6bf39545098d515e02b4ef0b6f8db4801e01ee34276c7b785e6ca8",
+        "stage": "plan",
+        "content_characters": 0,
+        "input_tokens": 6659,
+        "output_tokens": 8192,
+        "max_tokens": 8192,
+        "elapsed_seconds": 44.11256389999835
+      }
+    ],
+    "workspace": {
+      "context_tokens": 3823,
+      "context_token_counter_exact": false,
+      "budget": 6000,
+      "visible_fragments": 33,
+      "pin_errors": 0,
+      "tool_actions": 0
+    },
+    "observed": "Both plan calls returned empty final content while completion token usage exactly equalled the 8192-token output cap. The permitted repair repeated the same output cap and thinking/high mode. No source-index or pin validation was reached.",
+    "hypothesis": "Reasoning exhausted the combined completion budget before final content; strongly consistent with evidence but not confirmed because finish_reason and reasoning-token usage were not retained.",
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "suggested_generic_remedy": "Preserve completion termination metadata and reasoning counts where provided; distinguish truncation from malformed JSON and avoid identical-cap syntax repair after empty capped completions. Design bounded phase-specific budgets/modes, preserve strict parsing and evidence boundaries, validate as a new candidate before paid use."
+  },
+  "bindings": {
+    "proposal_sha256": "a4568113d784a90f7123ecba549df459493023cdcfd46f11b7fb2cd4819c5e2a",
+    "frozen_source_files_verified": 288,
+    "historical_artifacts_verified": 374,
+    "summary_sha256": "65fd955fb8e49be324bd573d65e6f06c19b497068da41f3919cdbe85b0feac42",
+    "usage_sha256": "89ab5e44ff4ffd955e42bc79e407d154b50ba7fb91079aff0da5d0d18d52150d",
+    "terminal_sha256": "9c31eb53858a94874c2b3c6d28f1882f0733c034992465413a66e4f0c9d67c66",
+    "judge_ledger_sha256": "78a946446e357cc7ec99f271f93413719bb8d35c40bc2092976d44a3c7763860",
+    "request_prompts_and_responses_matched_to_traces": 216,
+    "original_input_files_unchanged": 302
+  },
+  "authorization": "The authorized candidate stopped. No remaining generation, judgment, full-run, retry or new-candidate authority is implied by unspent budget.",
+  "audit_development_notes": [
+    "Initial read-only schema probe attempted absent challenge/usage.json and raised FileNotFoundError. It wrote no evidence. Actual challenge/request-ledger.json and summary.json were used."
+  ],
+  "publication": {
+    "omitted": "216 per-request bindings; full private audit retained unchanged",
+    "full_audit_sha256": "492e6fe92de80978ad1718f337ec073db1b2670649860ae1328fe2873b5b5074",
+    "supplement": "The later stopped-cost-reconciliation.json also audits request 97, an earlier empty capped completion that recovered within the permitted repair."
+  }
+}

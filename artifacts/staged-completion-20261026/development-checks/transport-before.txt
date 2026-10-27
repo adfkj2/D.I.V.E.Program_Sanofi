@@ -1,0 +1,1137 @@
+FFFF....FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                                   [100%]
+================================== FAILURES ===================================
+___ test_length_completion_retains_empty_or_partial_text_and_known_usage[] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8F60FC0>
+content = ''
+
+    @pytest.mark.parametrize("content", ["", None, '{"unfinished":'])
+    def test_length_completion_retains_empty_or_partial_text_and_known_usage(
+        monkeypatch, content
+    ):
+        client, calls = client_for(
+            monkeypatch,
+            envelope(
+                content,
+                "length",
+                completion_tokens_details={"reasoning_tokens": 8100},
+            ),
+        )
+        response = complete(client)
+        assert response.text == (content or "")
+>       assert response.finish_reason == "length"
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:73: AttributeError
+_ test_length_completion_retains_empty_or_partial_text_and_known_usage[None] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8F60C30>
+content = None
+
+    @pytest.mark.parametrize("content", ["", None, '{"unfinished":'])
+    def test_length_completion_retains_empty_or_partial_text_and_known_usage(
+        monkeypatch, content
+    ):
+        client, calls = client_for(
+            monkeypatch,
+            envelope(
+                content,
+                "length",
+                completion_tokens_details={"reasoning_tokens": 8100},
+            ),
+        )
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:71:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage") or {}
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        if content is None:
+>           raise ChatTransportError("response message has no content")
+E           dive_memory.reading.providers.ChatTransportError: response message has no content
+
+src\dive_memory\reading\providers.py:111: ChatTransportError
+_ test_length_completion_retains_empty_or_partial_text_and_known_usage[{"unfinished":] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FD3D10>
+content = '{"unfinished":'
+
+    @pytest.mark.parametrize("content", ["", None, '{"unfinished":'])
+    def test_length_completion_retains_empty_or_partial_text_and_known_usage(
+        monkeypatch, content
+    ):
+        client, calls = client_for(
+            monkeypatch,
+            envelope(
+                content,
+                "length",
+                completion_tokens_details={"reasoning_tokens": 8100},
+            ),
+        )
+        response = complete(client)
+        assert response.text == (content or "")
+>       assert response.finish_reason == "length"
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:73: AttributeError
+_____ test_normal_completion_and_older_provider_without_optional_metadata _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FDECF0>
+
+    def test_normal_completion_and_older_provider_without_optional_metadata(monkeypatch):
+        client, _ = client_for(monkeypatch, envelope(completion_tokens_details={}))
+        response = complete(client)
+>       assert response.finish_reason == "stop" and response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:85: AttributeError
+______________ test_invalid_finish_reason_remains_unknown[None] _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C90046E0>
+finish_reason = None
+
+    @pytest.mark.parametrize("finish_reason", [None, True, 7, [], {}])
+    def test_invalid_finish_reason_remains_unknown(monkeypatch, finish_reason):
+        client, _ = client_for(monkeypatch, envelope("{}", finish_reason))
+>       assert complete(client).finish_reason is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:107: AttributeError
+______________ test_invalid_finish_reason_remains_unknown[True] _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FA8F30>
+finish_reason = True
+
+    @pytest.mark.parametrize("finish_reason", [None, True, 7, [], {}])
+    def test_invalid_finish_reason_remains_unknown(monkeypatch, finish_reason):
+        client, _ = client_for(monkeypatch, envelope("{}", finish_reason))
+>       assert complete(client).finish_reason is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:107: AttributeError
+________________ test_invalid_finish_reason_remains_unknown[7] ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FA90F0>
+finish_reason = 7
+
+    @pytest.mark.parametrize("finish_reason", [None, True, 7, [], {}])
+    def test_invalid_finish_reason_remains_unknown(monkeypatch, finish_reason):
+        client, _ = client_for(monkeypatch, envelope("{}", finish_reason))
+>       assert complete(client).finish_reason is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:107: AttributeError
+_________ test_invalid_finish_reason_remains_unknown[finish_reason3] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C5D47EE0>
+finish_reason = []
+
+    @pytest.mark.parametrize("finish_reason", [None, True, 7, [], {}])
+    def test_invalid_finish_reason_remains_unknown(monkeypatch, finish_reason):
+        client, _ = client_for(monkeypatch, envelope("{}", finish_reason))
+>       assert complete(client).finish_reason is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:107: AttributeError
+_________ test_invalid_finish_reason_remains_unknown[finish_reason4] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8E8A750>
+finish_reason = {}
+
+    @pytest.mark.parametrize("finish_reason", [None, True, 7, [], {}])
+    def test_invalid_finish_reason_remains_unknown(monkeypatch, finish_reason):
+        client, _ = client_for(monkeypatch, envelope("{}", finish_reason))
+>       assert complete(client).finish_reason is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:107: AttributeError
+_ test_string_finish_reason_is_preserved_without_inventing_success[content_filter] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8E8A450>
+reason = 'content_filter'
+
+    @pytest.mark.parametrize("reason", ["content_filter", "tool_calls", "vendor-stop"])
+    def test_string_finish_reason_is_preserved_without_inventing_success(
+        monkeypatch, reason
+    ):
+        client, _ = client_for(monkeypatch, envelope("{}", reason))
+>       assert complete(client).finish_reason == reason
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:115: AttributeError
+_ test_string_finish_reason_is_preserved_without_inventing_success[tool_calls] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FA5A70>
+reason = 'tool_calls'
+
+    @pytest.mark.parametrize("reason", ["content_filter", "tool_calls", "vendor-stop"])
+    def test_string_finish_reason_is_preserved_without_inventing_success(
+        monkeypatch, reason
+    ):
+        client, _ = client_for(monkeypatch, envelope("{}", reason))
+>       assert complete(client).finish_reason == reason
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:115: AttributeError
+_ test_string_finish_reason_is_preserved_without_inventing_success[vendor-stop] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FBC890>
+reason = 'vendor-stop'
+
+    @pytest.mark.parametrize("reason", ["content_filter", "tool_calls", "vendor-stop"])
+    def test_string_finish_reason_is_preserved_without_inventing_success(
+        monkeypatch, reason
+    ):
+        client, _ = client_for(monkeypatch, envelope("{}", reason))
+>       assert complete(client).finish_reason == reason
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'finish_reason'
+
+tests\test_completion_transport.py:115: AttributeError
+_____ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[None] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FC0CD0>
+value = None
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+_____ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[True] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8FC0E10>
+value = True
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+______ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[-1] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8F54290>
+value = -1
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+______ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[2.0] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C906EA50>
+value = 2.0
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+_______ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[2] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C906F150>
+value = '2'
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+____ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[value5] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D010>
+value = []
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+____ test_reasoning_usage_accepts_only_nonnegative_integer_tokens[value6] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D160>
+value = {}
+
+    @pytest.mark.parametrize("value", [None, True, -1, 2.0, "2", [], {}])
+    def test_reasoning_usage_accepts_only_nonnegative_integer_tokens(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:124: AttributeError
+___________ test_zero_and_positive_reasoning_usage_are_preserved[0] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D2B0>
+value = 0
+
+    @pytest.mark.parametrize("value", [0, 14])
+    def test_zero_and_positive_reasoning_usage_are_preserved(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+>       assert complete(client).reasoning_tokens == value
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:133: AttributeError
+__________ test_zero_and_positive_reasoning_usage_are_preserved[14] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D240>
+value = 14
+
+    @pytest.mark.parametrize("value", [0, 14])
+    def test_zero_and_positive_reasoning_usage_are_preserved(monkeypatch, value):
+        client, _ = client_for(
+            monkeypatch, envelope(completion_tokens_details={"reasoning_tokens": value})
+        )
+>       assert complete(client).reasoning_tokens == value
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:133: AttributeError
+___ test_malformed_optional_details_do_not_discard_known_total_usage[None] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D4E0>
+details = None
+
+    @pytest.mark.parametrize("details", [None, [], "tokens", 7, True])
+    def test_malformed_optional_details_do_not_discard_known_total_usage(
+        monkeypatch, details
+    ):
+        client, _ = client_for(monkeypatch, envelope(completion_tokens_details=details))
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:142: AttributeError
+_ test_malformed_optional_details_do_not_discard_known_total_usage[details1] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D710>
+details = []
+
+    @pytest.mark.parametrize("details", [None, [], "tokens", 7, True])
+    def test_malformed_optional_details_do_not_discard_known_total_usage(
+        monkeypatch, details
+    ):
+        client, _ = client_for(monkeypatch, envelope(completion_tokens_details=details))
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:142: AttributeError
+__ test_malformed_optional_details_do_not_discard_known_total_usage[tokens] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903DA20>
+details = 'tokens'
+
+    @pytest.mark.parametrize("details", [None, [], "tokens", 7, True])
+    def test_malformed_optional_details_do_not_discard_known_total_usage(
+        monkeypatch, details
+    ):
+        client, _ = client_for(monkeypatch, envelope(completion_tokens_details=details))
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:142: AttributeError
+_____ test_malformed_optional_details_do_not_discard_known_total_usage[7] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C8F4F930>
+details = 7
+
+    @pytest.mark.parametrize("details", [None, [], "tokens", 7, True])
+    def test_malformed_optional_details_do_not_discard_known_total_usage(
+        monkeypatch, details
+    ):
+        client, _ = client_for(monkeypatch, envelope(completion_tokens_details=details))
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:142: AttributeError
+___ test_malformed_optional_details_do_not_discard_known_total_usage[True] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903DDA0>
+details = True
+
+    @pytest.mark.parametrize("details", [None, [], "tokens", 7, True])
+    def test_malformed_optional_details_do_not_discard_known_total_usage(
+        monkeypatch, details
+    ):
+        client, _ = client_for(monkeypatch, envelope(completion_tokens_details=details))
+        response = complete(client)
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:142: AttributeError
+_________ test_non_object_usage_is_unknown_without_fabrication[None] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903E120>
+usage = None
+
+    @pytest.mark.parametrize("usage", [None, [], [1], "tokens", 7, True])
+    def test_non_object_usage_is_unknown_without_fabrication(monkeypatch, usage):
+        payload = envelope()
+        payload["usage"] = usage
+        client, calls = client_for(monkeypatch, payload)
+        response = complete(client)
+        assert response.input_tokens is None and response.output_tokens is None
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:153: AttributeError
+________ test_non_object_usage_is_unknown_without_fabrication[usage1] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903E430>
+usage = []
+
+    @pytest.mark.parametrize("usage", [None, [], [1], "tokens", 7, True])
+    def test_non_object_usage_is_unknown_without_fabrication(monkeypatch, usage):
+        payload = envelope()
+        payload["usage"] = usage
+        client, calls = client_for(monkeypatch, payload)
+        response = complete(client)
+        assert response.input_tokens is None and response.output_tokens is None
+>       assert response.reasoning_tokens is None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'ChatCompletion' object has no attribute 'reasoning_tokens'
+
+tests\test_completion_transport.py:153: AttributeError
+________ test_non_object_usage_is_unknown_without_fabrication[usage2] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903E6D0>
+usage = [1]
+
+    @pytest.mark.parametrize("usage", [None, [], [1], "tokens", 7, True])
+    def test_non_object_usage_is_unknown_without_fabrication(monkeypatch, usage):
+        payload = envelope()
+        payload["usage"] = usage
+        client, calls = client_for(monkeypatch, payload)
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:151:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage") or {}
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        if content is None:
+            raise ChatTransportError("response message has no content")
+        if not isinstance(content, str):
+            content = json.dumps(content, ensure_ascii=False)
+        return ChatCompletion(
+            text=content,
+            model=resolved,
+            revision=str(payload.get("system_fingerprint"))
+            if payload.get("system_fingerprint")
+            else None,
+>           input_tokens=_as_int(usage.get("prompt_tokens")),
+                                 ^^^^^^^^^
+            output_tokens=_as_int(usage.get("completion_tokens")),
+        )
+E       AttributeError: 'list' object has no attribute 'get'
+
+src\dive_memory\reading\providers.py:120: AttributeError
+________ test_non_object_usage_is_unknown_without_fabrication[tokens] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903EAC0>
+usage = 'tokens'
+
+    @pytest.mark.parametrize("usage", [None, [], [1], "tokens", 7, True])
+    def test_non_object_usage_is_unknown_without_fabrication(monkeypatch, usage):
+        payload = envelope()
+        payload["usage"] = usage
+        client, calls = client_for(monkeypatch, payload)
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:151:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage") or {}
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        if content is None:
+            raise ChatTransportError("response message has no content")
+        if not isinstance(content, str):
+            content = json.dumps(content, ensure_ascii=False)
+        return ChatCompletion(
+            text=content,
+            model=resolved,
+            revision=str(payload.get("system_fingerprint"))
+            if payload.get("system_fingerprint")
+            else None,
+>           input_tokens=_as_int(usage.get("prompt_tokens")),
+                                 ^^^^^^^^^
+            output_tokens=_as_int(usage.get("completion_tokens")),
+        )
+E       AttributeError: 'str' object has no attribute 'get'
+
+src\dive_memory\reading\providers.py:120: AttributeError
+___________ test_non_object_usage_is_unknown_without_fabrication[7] ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903F690>
+usage = 7
+
+    @pytest.mark.parametrize("usage", [None, [], [1], "tokens", 7, True])
+    def test_non_object_usage_is_unknown_without_fabrication(monkeypatch, usage):
+        payload = envelope()
+        payload["usage"] = usage
+        client, calls = client_for(monkeypatch, payload)
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:151:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage") or {}
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        if content is None:
+            raise ChatTransportError("response message has no content")
+        if not isinstance(content, str):
+            content = json.dumps(content, ensure_ascii=False)
+        return ChatCompletion(
+            text=content,
+            model=resolved,
+            revision=str(payload.get("system_fingerprint"))
+            if payload.get("system_fingerprint")
+            else None,
+>           input_tokens=_as_int(usage.get("prompt_tokens")),
+                                 ^^^^^^^^^
+            output_tokens=_as_int(usage.get("completion_tokens")),
+        )
+E       AttributeError: 'int' object has no attribute 'get'
+
+src\dive_memory\reading\providers.py:120: AttributeError
+_________ test_non_object_usage_is_unknown_without_fabrication[True] __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C903D940>
+usage = True
+
+    @pytest.mark.parametrize("usage", [None, [], [1], "tokens", 7, True])
+    def test_non_object_usage_is_unknown_without_fabrication(monkeypatch, usage):
+        payload = envelope()
+        payload["usage"] = usage
+        client, calls = client_for(monkeypatch, payload)
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:151:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage") or {}
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        if content is None:
+            raise ChatTransportError("response message has no content")
+        if not isinstance(content, str):
+            content = json.dumps(content, ensure_ascii=False)
+        return ChatCompletion(
+            text=content,
+            model=resolved,
+            revision=str(payload.get("system_fingerprint"))
+            if payload.get("system_fingerprint")
+            else None,
+>           input_tokens=_as_int(usage.get("prompt_tokens")),
+                                 ^^^^^^^^^
+            output_tokens=_as_int(usage.get("completion_tokens")),
+        )
+E       AttributeError: 'bool' object has no attribute 'get'
+
+src\dive_memory\reading\providers.py:120: AttributeError
+__ test_termination_metadata_is_durable_and_reasoning_is_not_double_charged ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C6C90F0EC0>
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-241/test_termination_metadata_is_d0')
+
+    def test_termination_metadata_is_durable_and_reasoning_is_not_double_charged(
+        monkeypatch, tmp_path
+    ):
+        client, _ = client_for(
+            monkeypatch,
+            envelope(None, "length", completion_tokens_details={"reasoning_tokens": 8192}),
+        )
+        ledger = RequestLedger(tmp_path / "ledger.json", 1, 20000)
+>       response = complete(ledger.wrap(recorder(tmp_path).wrap(client)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:176:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <dive_memory.application.oracle_run.RequestLedger.wrap.<locals>.CappedClient object at 0x000001C6C8F07230>
+kwargs = {'model': 'fixture', 'messages': [{'role': 'user', 'content': 'Return a JSON object.'}], 'temperature': 0, 'max_tokens': 8192, ...}
+
+    def complete(self, **kwargs):
+        # UTF-8 bytes plus envelope allowance is a conservative estimate,
+        # not the model's exact tokenizer. All reservations are retained.
+        reserved_input = (
+            len(json.dumps(kwargs["messages"], ensure_ascii=False).encode())
+            + 1024
+        )
+        reserved_output = kwargs["max_tokens"]
+        reserve = reserved_input + reserved_output
+        if (
+            len(ledger.rows) >= ledger.max_calls
+            or sum(r["reserved_tokens"] for r in ledger.rows) + reserve
+            > ledger.max_reserved_tokens
+        ):
+            raise RunStopped(
+                "Request/reserved-token cap reached; no further request sent"
+            )
+        if ledger.max_cost_cny is not None:
+            # Keep conservative token upper bounds, charging each at its
+            # own peak rate. Output tokens must not be priced as input.
+            projected = (
+                ledger.peak_cost_cny()
+                + (
+                    ledger.prices.input * reserved_input
+                    + ledger.prices.output * reserved_output
+                )
+                / 1_000_000
+            )
+            if projected > ledger.max_cost_cny:
+                raise RunStopped(
+                    "Currency cap reached; no further request sent"
+                )
+        row = {
+            "state": "pending",
+            "reserved_tokens": reserve,
+            "reserved_input_tokens": reserved_input,
+            "reserved_output_tokens": reserved_output,
+            "request_sha256": hashlib.sha256(
+                json.dumps(
+                    {
+                        "request": kwargs,
+                        "endpoint": client.endpoint,
+                        "mode": client.extra_body,
+                    },
+                    sort_keys=True,
+                ).encode()
+            ).hexdigest(),
+        }
+        ledger.rows.append(row)
+        ledger.save()
+        started = perf_counter()
+        try:
+            response = client.complete(**kwargs)
+        except Exception as exc:  # noqa: BLE001 - persist uncertainty, never serialize provider text
+            row.update(
+                state="failed",
+                error_type=type(exc).__name__,
+                elapsed_seconds=perf_counter() - started,
+            )
+            ledger.save()
+>           raise RunStopped(
+                "Transport failed; inspect the ledger before resuming"
+            ) from None
+E           dive_memory.application.oracle_run.RunStopped: Transport failed; inspect the ledger before resuming
+
+src\dive_memory\application\oracle_run.py:175: RunStopped
+___________ test_recorders_keep_legacy_client_responses_compatible ____________
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-241/test_recorders_keep_legacy_cli0')
+
+    def test_recorders_keep_legacy_client_responses_compatible(tmp_path):
+        response = SimpleNamespace(text="{}", model="legacy", input_tokens=3, output_tokens=2)
+        client = SimpleNamespace(
+            endpoint="https://example.invalid",
+            extra_body={},
+            complete=lambda **kwargs: response,
+        )
+        ledger = RequestLedger(tmp_path / "ledger.json", 1, 20000)
+        assert complete(ledger.wrap(recorder(tmp_path).wrap(client))) is response
+        for row in (
+            ledger.rows[0],
+            json.loads((tmp_path / "request-0001.json").read_text()),
+        ):
+>           assert row["finish_reason"] is None and row["reasoning_tokens"] is None
+                   ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'finish_reason'
+
+tests\test_completion_transport.py:202: KeyError
+=========================== short test summary info ===========================
+FAILED tests/test_completion_transport.py::test_length_completion_retains_empty_or_partial_text_and_known_usage[]
+FAILED tests/test_completion_transport.py::test_length_completion_retains_empty_or_partial_text_and_known_usage[None]
+FAILED tests/test_completion_transport.py::test_length_completion_retains_empty_or_partial_text_and_known_usage[{"unfinished":]
+FAILED tests/test_completion_transport.py::test_normal_completion_and_older_provider_without_optional_metadata
+FAILED tests/test_completion_transport.py::test_invalid_finish_reason_remains_unknown[None]
+FAILED tests/test_completion_transport.py::test_invalid_finish_reason_remains_unknown[True]
+FAILED tests/test_completion_transport.py::test_invalid_finish_reason_remains_unknown[7]
+FAILED tests/test_completion_transport.py::test_invalid_finish_reason_remains_unknown[finish_reason3]
+FAILED tests/test_completion_transport.py::test_invalid_finish_reason_remains_unknown[finish_reason4]
+FAILED tests/test_completion_transport.py::test_string_finish_reason_is_preserved_without_inventing_success[content_filter]
+FAILED tests/test_completion_transport.py::test_string_finish_reason_is_preserved_without_inventing_success[tool_calls]
+FAILED tests/test_completion_transport.py::test_string_finish_reason_is_preserved_without_inventing_success[vendor-stop]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[None]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[True]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[-1]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[2.0]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[2]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[value5]
+FAILED tests/test_completion_transport.py::test_reasoning_usage_accepts_only_nonnegative_integer_tokens[value6]
+FAILED tests/test_completion_transport.py::test_zero_and_positive_reasoning_usage_are_preserved[0]
+FAILED tests/test_completion_transport.py::test_zero_and_positive_reasoning_usage_are_preserved[14]
+FAILED tests/test_completion_transport.py::test_malformed_optional_details_do_not_discard_known_total_usage[None]
+FAILED tests/test_completion_transport.py::test_malformed_optional_details_do_not_discard_known_total_usage[details1]
+FAILED tests/test_completion_transport.py::test_malformed_optional_details_do_not_discard_known_total_usage[tokens]
+FAILED tests/test_completion_transport.py::test_malformed_optional_details_do_not_discard_known_total_usage[7]
+FAILED tests/test_completion_transport.py::test_malformed_optional_details_do_not_discard_known_total_usage[True]
+FAILED tests/test_completion_transport.py::test_non_object_usage_is_unknown_without_fabrication[None]
+FAILED tests/test_completion_transport.py::test_non_object_usage_is_unknown_without_fabrication[usage1]
+FAILED tests/test_completion_transport.py::test_non_object_usage_is_unknown_without_fabrication[usage2]
+FAILED tests/test_completion_transport.py::test_non_object_usage_is_unknown_without_fabrication[tokens]
+FAILED tests/test_completion_transport.py::test_non_object_usage_is_unknown_without_fabrication[7]
+FAILED tests/test_completion_transport.py::test_non_object_usage_is_unknown_without_fabrication[True]
+FAILED tests/test_completion_transport.py::test_termination_metadata_is_durable_and_reasoning_is_not_double_charged
+FAILED tests/test_completion_transport.py::test_recorders_keep_legacy_client_responses_compatible
+34 failed, 4 passed in 2.09s

@@ -3,7 +3,7 @@
   "source_files_bound": 288,
   "candidate_real_accuracy": null,
   "official_benchmark": false,
-  "paid_validation_authorized": true,
+  "paid_validation_authorized": false,
   "publication_script_sha256": "f08b08b8f0f83a7088c7a33afd6278bc59bca17fa672cd6f075b0cfe266d8616",
   "manifest_scope": "All publication files except manifest.json itself",
   "files": [
@@ -153,8 +153,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3982,
-      "sha256": "0badb61a2ed050cbc6d96a227907840c7221434d22ce29d7531619ee3ff3e9f8",
+      "bytes": 5210,
+      "sha256": "3b931064bcbec1e3cdc26b3c423b7b21a7fc3eb590fe47738dbbf774f87f6a80",
       "transformation": "New publication explanation; no historical raw counterpart"
     },
     {
@@ -268,6 +268,46 @@
       "raw_path": "eval/reports/reference-protocol-20261025/validation-background-v1/challenge/terminal.json",
       "raw_sha256": "7eea3756c6d34989817ff29d2494ab0f923fd582950569de2a72e41cab29b368",
       "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/candidate-stopped-summary.json",
+      "bytes": 569,
+      "sha256": "65fd955fb8e49be324bd573d65e6f06c19b497068da41f3919cdbe85b0feac42",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-v1/candidate/summary.json",
+      "raw_sha256": "65fd955fb8e49be324bd573d65e6f06c19b497068da41f3919cdbe85b0feac42",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/candidate-terminal.json",
+      "bytes": 250,
+      "sha256": "76aa6c425ad01eaf8b2652f6b46584871d35aab8c2012e86a55ce84f1426fe4a",
+      "raw_path": "eval/reports/reference-protocol-20261025/validation-background-v1/candidate/terminal.json",
+      "raw_sha256": "9c31eb53858a94874c2b3c6d28f1882f0733c034992465413a66e4f0c9d67c66",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/stopped-cost-reconciliation.json",
+      "bytes": 5002,
+      "sha256": "0d102c68b819c66aa48cc232212ea66bb5f9600f1ec3d2f8d7d676671670dc3a",
+      "raw_path": "eval/reports/reference-protocol-20261025/stopped-cost-reconciliation.json",
+      "raw_sha256": "0d102c68b819c66aa48cc232212ea66bb5f9600f1ec3d2f8d7d676671670dc3a",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "remote-checks-record.json",
+      "bytes": 12437,
+      "sha256": "e5672c79c510b434ee60729706b468094b7a0004592d448a68112afd950dbf35",
+      "raw_path": "eval/reports/reference-protocol-20261025/remote-checks-record.json",
+      "raw_sha256": "e5672c79c510b434ee60729706b468094b7a0004592d448a68112afd950dbf35",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "diagnosis/failure-independent-audit.json",
+      "bytes": 5208,
+      "sha256": "a91ad05d92d38d73fe85ebe193c97cd347c9c420136a3e8b5a5bb35196b3e733",
+      "raw_path": "eval/reports/reference-protocol-20261025/failure-independent-audit.json",
+      "raw_sha256": "492e6fe92de80978ad1718f337ec073db1b2670649860ae1328fe2873b5b5074",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers; omit per-case results or raw artifact map as stated in publication script"
     }
   ],
   "validation_proposal_sha256": "a4568113d784a90f7123ecba549df459493023cdcfd46f11b7fb2cd4819c5e2a",
@@ -276,13 +316,20 @@
     "additional_cost_cny": "0",
     "shared_peak_cost_cny": "53.739524"
   },
-  "validation_status": "CANDIDATE_STARTED_AFTER_CHALLENGE_PASS",
+  "validation_status": "STOPPED_INVALID_PLAN_OUTPUT",
   "accounting_snapshot": {
-    "as_of": "Completed 32 challenge cases; before candidate costs",
-    "new_completed_requests": 96,
-    "additional_peak_cost_cny": "0.360072",
-    "shared_cumulative_peak_cny": "54.099596",
-    "candidate_costs_included": false,
+    "as_of": "After R66 candidate stopped",
+    "attempted_calls": 216,
+    "completed_calls": 216,
+    "missing_usage_calls": 0,
+    "additional_peak_cny": "2.148506",
+    "shared_cumulative_peak_cny": "55.888030",
+    "historical_unknown_reserves_preserved": true,
     "actual_invoice_cny": null
-  }
+  },
+  "original_paid_validation_authorized": true,
+  "remaining_paid_execution_authorized": false,
+  "new_candidate_retries_authorized": false,
+  "stop_publication_script_sha256": "531cf906daafa373015e6682114da2ed0d669fcdd4827cc8916d4acee2af60da",
+  "note": "R66 candidate stopped after 40 generated cases: 39 valid, 1 invalid, 60 unattempted, 0 judged. No candidate accuracy, no full run and no remaining paid execution authority. Original authorization and failure evidence retained."
 }

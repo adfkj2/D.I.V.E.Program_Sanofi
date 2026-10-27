@@ -33,12 +33,14 @@ def application_from_environment(db_path: str | None = None) -> MemoryApplicatio
             endpoint, key, provider=provider, extra_body=normal_options
         )
         thinking = None
+        effort = None
         if strategy in {
             "r40",
             "adaptive",
             "verified",
             "deliberative",
             "deliberative-refs",
+            "deliberative-staged",
         }:
             effort = os.getenv("DIVE_REASONING_EFFORT", "low")
             if effort not in {"low", "high", "max"}:
@@ -57,6 +59,11 @@ def application_from_environment(db_path: str | None = None) -> MemoryApplicatio
                 },
             )
         reader = create_reader(
-            normal, thinking, provider=provider, model=model, strategy=strategy
+            normal,
+            thinking,
+            provider=provider,
+            model=model,
+            strategy=strategy,
+            reasoning_effort=effort,
         )
     return MemoryApplication(path, reader=reader)

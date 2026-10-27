@@ -237,7 +237,7 @@ class OracleRunner:
 
     def configuration(self) -> dict[str, Any]:
         spec = self.reader_spec()
-        return {
+        configuration = {
             "adapter": "longmemeval-adapter-v2",
             "code_snapshot": code_snapshot(Path(__file__).resolve().parents[3]),
             "oracle_pipeline": self.pipeline_config.to_dict(),
@@ -286,6 +286,11 @@ class OracleRunner:
                 "question_date and the budget-limited retrieved context"
             ),
         }
+        describe_execution = getattr(self.reader, "execution_configuration", None)
+        execution = describe_execution() if callable(describe_execution) else None
+        if execution is not None:
+            configuration["reader_execution"] = execution
+        return configuration
 
     def resume_key(self) -> dict[str, Any]:
         configuration = self.configuration()

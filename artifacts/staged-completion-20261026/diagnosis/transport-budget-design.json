@@ -1,0 +1,218 @@
+{
+  "schema_version": "r66-transport-budget-design-v1",
+  "created_at": "2026-10-26T14:32:35.562636+00:00",
+  "model_api_requests": 0,
+  "source_mutations": 0,
+  "scope": "Independent read-only diagnosis and proposed general next-candidate design. No historical output, score, driver, authorization or cost was changed.",
+  "evidence": {
+    "trace_count": 40,
+    "matched_requests": 120,
+    "raw_request_count": 120,
+    "empty_call_count": 3,
+    "distinct_affected_traces": 2,
+    "empty_calls": [
+      {
+        "path": "eval/reports/reference-protocol-20261025/validation-v1/candidate/request-0097.json",
+        "sha256": "9e48655b1ca7254a898b7e670cb8cef6ab0a3c32428d1a4c8fa7e12b053f58ff",
+        "input_tokens": 1290,
+        "output_tokens": 8192,
+        "max_tokens": 8192,
+        "response_chars": 0,
+        "response_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "empty": true,
+        "state": "completed",
+        "finish_reason_saved": false,
+        "reasoning_tokens_saved": false,
+        "mode": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "high"
+        },
+        "trace": "eval/reports/reference-protocol-20261025/validation-v1/candidate/run/traces/8752c811.json",
+        "trace_sha256": "34ccafed93ffc41f032f36e68628a0e0f5e55e966adac4cd4efc71eb05c7eaf4",
+        "trace_outcome": "ANSWER",
+        "trace_reason_code": "INDEXED_SUPPORTED",
+        "phase": "plan",
+        "turn_index_zero_based": 0,
+        "turn_prompt_sha256": "203b6670f1a228c7b9ada18b797993009e2b144140a0ab5073a9e14151f5fb6d",
+        "validation_error": "return exactly one valid JSON object",
+        "trace_turn_count": 4,
+        "context_chars": 1623,
+        "visible_source_count": 3,
+        "workspace_pin_errors": [],
+        "tool_action_count": 3
+      },
+      {
+        "path": "eval/reports/reference-protocol-20261025/validation-v1/candidate/request-0119.json",
+        "sha256": "42ccf3a27842f69e1c7110c5ec4ce3d31380b172ed0e5a66d1c5756b048aa513",
+        "input_tokens": 6653,
+        "output_tokens": 8192,
+        "max_tokens": 8192,
+        "response_chars": 0,
+        "response_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "empty": true,
+        "state": "completed",
+        "finish_reason_saved": false,
+        "reasoning_tokens_saved": false,
+        "mode": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "high"
+        },
+        "trace": "eval/reports/reference-protocol-20261025/validation-v1/candidate/run/traces/88432d0a.json",
+        "trace_sha256": "a1f10363f4a08234d29b4e0b069f02bd4d81c336bcbfc467bb8fbbcb84fcedf5",
+        "trace_outcome": "INVALID",
+        "trace_reason_code": "INVALID_PLAN_OUTPUT",
+        "phase": "plan",
+        "turn_index_zero_based": 0,
+        "turn_prompt_sha256": "7ce7544d6d852d7c7d1d1b2b0610f629a2940c132b6e37fe8172f7ead77fe15d",
+        "validation_error": "return exactly one valid JSON object",
+        "trace_turn_count": 2,
+        "context_chars": 15292,
+        "visible_source_count": 33,
+        "workspace_pin_errors": [],
+        "tool_action_count": 0
+      },
+      {
+        "path": "eval/reports/reference-protocol-20261025/validation-v1/candidate/request-0120.json",
+        "sha256": "769a7e3b8c6bf39545098d515e02b4ef0b6f8db4801e01ee34276c7b785e6ca8",
+        "input_tokens": 6659,
+        "output_tokens": 8192,
+        "max_tokens": 8192,
+        "response_chars": 0,
+        "response_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "empty": true,
+        "state": "completed",
+        "finish_reason_saved": false,
+        "reasoning_tokens_saved": false,
+        "mode": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "high"
+        },
+        "trace": "eval/reports/reference-protocol-20261025/validation-v1/candidate/run/traces/88432d0a.json",
+        "trace_sha256": "a1f10363f4a08234d29b4e0b069f02bd4d81c336bcbfc467bb8fbbcb84fcedf5",
+        "trace_outcome": "INVALID",
+        "trace_reason_code": "INVALID_PLAN_OUTPUT",
+        "phase": "plan",
+        "turn_index_zero_based": 1,
+        "turn_prompt_sha256": "451cee1ae1e402bf7f8df31e1c80aca3a81ba65788aba4aca9d16ef169c0627a",
+        "validation_error": "return exactly one valid JSON object",
+        "trace_turn_count": 2,
+        "context_chars": 15292,
+        "visible_source_count": 33,
+        "workspace_pin_errors": [],
+        "tool_action_count": 0
+      }
+    ],
+    "phase_output_statistics": {
+      "plan": {
+        "calls": 42,
+        "minimum": 89,
+        "median": 634.5,
+        "p90_nearest_rank": 5598,
+        "maximum": 8192,
+        "total_output_tokens": 74842,
+        "empty_count": 3,
+        "at_output_cap": 3
+      },
+      "synthesize": {
+        "calls": 39,
+        "minimum": 64,
+        "median": 238,
+        "p90_nearest_rank": 1153,
+        "maximum": 1737,
+        "total_output_tokens": 15733,
+        "empty_count": 0,
+        "at_output_cap": 0
+      },
+      "review": {
+        "calls": 39,
+        "minimum": 72,
+        "median": 284,
+        "p90_nearest_rank": 799,
+        "maximum": 1947,
+        "total_output_tokens": 15503,
+        "empty_count": 0,
+        "at_output_cap": 0
+      }
+    }
+  },
+  "diagnosis": {
+    "confirmed": [
+      "Three completed planning requests have empty final content and completion_tokens equal to max_tokens=8192. One earlier case recovered in the existing single format-repair slot; the last case exhausted both plan attempts and stopped.",
+      "The current transport discards finish_reason and completion_tokens_details.reasoning_tokens. Traces classify these replies as ordinary JSON parse failures.",
+      "The earlier empty response has only 1290 input tokens, so long context alone does not explain this pattern.",
+      "Official DeepSeek documentation separately acknowledges occasional empty JSON output, so exhaustion of reasoning budget remains a strong hypothesis rather than a proven sole cause."
+    ],
+    "unproven": [
+      "No finish_reason or reasoning token breakdown was persisted for these requests. It is not possible to retrospectively prove how many of the 8192 output tokens were reasoning or whether provider JSON mode malfunctioned.",
+      "A syntactically valid output is not a correct answer. None of these 40 candidate results was judged."
+    ]
+  },
+  "official_documentation": {
+    "sources_file": "transport-budget-doc-sources.json",
+    "sources_sha256": "1be72a9c43bebf89289def888633dabb821a5345cb6d1411b5455f0ae95a642b",
+    "facts": [
+      "Current max_tokens range is 1..393216; default in thinking mode is 64K, or 128K at maximum effort; explicit max_tokens=8192 overrides that default.",
+      "Thinking mode supports low/high/max effort and is enabled by default at high; temperature has no effect in thinking mode.",
+      "finish_reason length means the requested output limit was reached. content_filter, tool_calls and insufficient_system_resource are other terminal categories.",
+      "reasoning_content is separate from final content, and usage.completion_tokens_details.reasoning_tokens is the reasoning usage breakdown.",
+      "Official JSON guide says occasional empty content can occur. The existing prompt already contains JSON and schema examples, so simply adding the word JSON is not a substantive fix.",
+      "Current Chinese peak uncached Flash input/output rates remain CNY 2/8 per million tokens; off-peak is half. Historical conservative peak costs must not be revised downward.",
+      "Current deepseek-flash alias is documented as DeepSeek-V4.1-Flash-1017; the alias is not an immutable version guarantee."
+    ]
+  },
+  "proposed_candidate_review": {
+    "strategy": "deliberative-staged (proposed by parent; independent assessment)",
+    "decision": "Reasonable as an explicit new experimental candidate, with semantic and cost risks; not an equivalent engineering-only fix and no verified accuracy gain.",
+    "normal_plan_max_tokens": 8192,
+    "thinking_synthesize_max_tokens": 16384,
+    "thinking_review_max_tokens": 16384,
+    "normal_recovery_max_tokens": 8192,
+    "required_phases": 3,
+    "max_total_calls": 4,
+    "shared_recovery_slots": 1,
+    "benefits": [
+      "Planning selects sources and proposes bounded retrieval operations; assigning it the explicit non-thinking transport removes hidden reasoning consumption from that phase.",
+      "Synthesis and review retain a higher thinking ceiling where semantic reasoning is required.",
+      "One shared normal-mode recovery changes the mode after a thinking truncation instead of repeating the same capped reasoning call; it cannot skip synthesis or review."
+    ],
+    "required_invariants": [
+      "Normal means explicitly disabled thinking in the provider adapter; a bare default DeepSeek client is thinking-enabled. Domain orchestration should only receive named injected phase clients/specs.",
+      "Record phase, effective mode/policy, max_tokens, finish_reason, optional reasoning_tokens, actual total tokens and recovery cause in reproducible metadata. Never store or pass reasoning_content.",
+      "Unknown total usage, transport exceptions, content_filter, tool_calls, insufficient_system_resource and unexpected nonempty terminal reasons stop immediately without spending the recovery slot.",
+      "An explicit length finish rejects even superficially parseable JSON. A blank or null final content remains no output, not ABSTAIN.",
+      "Only empty/truncated final output or strict parse failure with completed known usage may consume the single shared normal recovery.",
+      "Rebuild the same phase input from the same visible evidence and stage payload plus a short failure-category message. Do not include prior truncated/malformed content or reasoning text.",
+      "After recovery the strict source/schema/provenance validation is identical; no fallback answer, salvaged JSON, inferred refusal or hidden API retry.",
+      "Binding to an evidence source must preserve phase clients, specs and recovery policy; repeated generation must start with a fresh per-question recovery slot.",
+      "Keep existing strategy names, prompts, call modes and defaults unchanged. New configuration/version/fingerprint must distinguish the staged behavior."
+    ],
+    "risks": [
+      "Normal planning may miss a premise, contradiction or useful search/read. Existing 32 real challenges performed no search/read and cannot validate the semantic quality of changed planning.",
+      "Normal recovery for a complex synthesis/review may be less accurate than high-effort reasoning; successful schema validation does not prove semantic preservation.",
+      "DeepSeek JSON mode can still return empty content in non-thinking mode; one bounded recovery is a robustness hypothesis, not a guarantee.",
+      "Higher per-call ceilings increase conservative reservations and latency; budget guards must reserve each actual selected phase cap before sending."
+    ],
+    "cost_bounds": {
+      "base_max_output_tokens_per_question": 40960,
+      "with_one_shared_recovery_max_output_tokens_per_question": 49152,
+      "output_only_peak_cny_per_question_upper_bound": "0.393216",
+      "output_only_peak_cny_100_upper_bound": "39.321600",
+      "note": "These are all-calls-saturate theoretical maxima, not expected spend. Existing stage currency caps must still stop before a request whose reservation would exceed the cap; no assumption that the entire 100/500 will fit based only on early mean costs."
+    },
+    "free_checks": [
+      "Fake HTTP responses preserve finish_reason/optional reasoning-token counts, known total usage with null final content, and reject malformed envelopes without leaking provider body or credentials.",
+      "All three stages: empty/whitespace/null, explicit length with empty/partial/valid-looking JSON, normal parse error, content filter/tool/system-resource terminal, transport timeout and missing/negative/bool/float usage.",
+      "Recovery uses normal8K at every phase; mandatory stage order remains plan/synthesize/review, max4 total, and two defects in separate stages exhaust one shared slot without draft promotion.",
+      "Bind/source reset and per-call recording retain exact injected modes/caps; capped ledger accounts larger output reservations at output rate and no retry occurs after unknown usage.",
+      "Independent synthetic evidence cases exercise necessary search, later document read, contradictory updates, multi-source enumeration, source re-numbering and unavailable evidence; tests of this wiring must not be reported as true model semantic accuracy.",
+      "Full engineering quality gates, independent installed-wheel smoke, and exact-SHA remote CI before proposing a new frozen paid validation."
+    ],
+    "paid_validation": "The previous one-candidate authorization is exhausted by R66 stop. Prepare a separately hashed proposal with disclosed mode/cap changes, unchanged dataset/judge/denominators, unchanged stop rules and bounded stage costs; obtain specific authorization before any new model call."
+  }
+}

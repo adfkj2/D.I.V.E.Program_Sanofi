@@ -121,11 +121,36 @@ def build_request(case, *, token_budget=6000):
                 [source_id],
             )
         )
+    initial_items = items
+    if "initial_source_ids" in case:
+        selected = case["initial_source_ids"]
+        by_ref = {item.source_refs[0]: item for item in items}
+        if (
+            not isinstance(selected, list)
+            or any(
+                not isinstance(value, str) or value not in by_ref for value in selected
+            )
+            or len(set(selected)) != len(selected)
+        ):
+            raise ValueError("initial_source_ids must be unique admitted source IDs")
+        initial_items = [by_ref[value] for value in selected]
+    if "initial_content_chars" in case:
+        cap = case["initial_content_chars"]
+        if type(cap) is not int or cap <= 0:
+            raise ValueError("initial_content_chars must be a positive integer")
+        initial_items = [
+            replace(
+                item, memory=replace(item.memory, content=item.memory.content[:cap])
+            )
+            for item in initial_items
+        ]
+        if any(not item.memory.content.strip() for item in initial_items):
+            raise ValueError("initial_content_chars must retain nonempty evidence")
     request = ReaderRequest(
-        question, date, date, tuple(items), "", token_budget=token_budget
+        question, date, date, tuple(initial_items), "", token_budget=token_budget
     )
     workspace = BoundedEvidenceWorkspace(request)
-    workspace.add(items)
+    workspace.add(initial_items)
     initial, _ = workspace.pack()
     return replace(request, items=initial), ChallengeSource(items, initial)
 
@@ -186,6 +211,8 @@ class RequestRecorder:
                     resolved_model=response.model,
                     input_tokens=response.input_tokens,
                     output_tokens=response.output_tokens,
+                    finish_reason=getattr(response, "finish_reason", None),
+                    reasoning_tokens=getattr(response, "reasoning_tokens", None),
                 )
                 path.write_text(
                     json.dumps(row, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -201,7 +228,14 @@ def main(argv=None):
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--strategy",
-        choices=("indexed", "r40", "verified", "deliberative", "deliberative-refs"),
+        choices=(
+            "indexed",
+            "r40",
+            "verified",
+            "deliberative",
+            "deliberative-refs",
+            "deliberative-staged",
+        ),
         default="deliberative",
     )
     parser.add_argument(
@@ -277,8 +311,16 @@ def main(argv=None):
         )
     )
     reader = create_reader(
-        normal, thinking, provider="deepseek", model=args.model, strategy=args.strategy
+        normal,
+        thinking,
+        provider="deepseek",
+        model=args.model,
+        strategy=args.strategy,
+        reasoning_effort=args.reasoning_effort,
     )
+    execution = getattr(reader, "execution_configuration", lambda: None)()
+    if execution is not None:
+        plan["reader_execution"] = execution
     (args.output / "plan.json").write_text(json.dumps(plan, indent=2), encoding="utf-8")
     rows = []
     stopped = None

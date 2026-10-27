@@ -1,0 +1,28 @@
+........................F............................................... [ 88%]
+.........                                                                [100%]
+================================== FAILURES ===================================
+______ test_omitting_new_fields_keeps_old_initial_packet_and_full_source ______
+
+    def test_omitting_new_fields_keeps_old_initial_packet_and_full_source():
+        case = deepcopy(DATA["cases"][0])
+        case.pop("initial_source_ids")
+        before, source = challenge.build_request(case)
+        explicit = deepcopy(case)
+        explicit["initial_source_ids"] = [s["id"] for s in case["sources"]]
+        after, other = challenge.build_request(explicit)
+>       assert before == after and source.items == other.items
+E       AssertionError: assert (ReaderRequest..., policy=None) == ReaderRequest..., policy=None)
+E
+E         Omitting 7 identical items, use -vv to show
+E         Differing attributes:
+E         ['items']
+E
+E         Drill down into differing attribute items:
+E           items: (RetrievalItem(memory=Memory(id='source-0', namespace='challenge', kind='semantic_fact', evidence_state=<EvidenceState.OBSERVATION: 'OBSERVATION'>, content='夜航项目索引：负责人分配在人员确认便笺，最终预算在审批便笺。索引页不载负责人和金额。', structured_content={'_reader_statement_sources': [{'source_ref': 'index', 'role': 'user', 'statement_at': '2026-05-02T09:00:00Z'}]}, status=<MemoryStatus.ACTIVE: 'ACTIVE'>, importance=0.5, confidence=0.5, salience=0.5, durability='medium_term', valid...
+E
+E         ...Full output truncated (3 lines hidden), use '-vv' to show)
+
+tests\test_reader_tool_challenge_dataset.py:150: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_reader_tool_challenge_dataset.py::test_omitting_new_fields_keeps_old_initial_packet_and_full_source
+1 failed, 80 passed in 1.85s

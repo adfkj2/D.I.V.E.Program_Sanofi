@@ -1,0 +1,207 @@
+{
+  "reviewer": "independent subagent /root/r67_independent_review",
+  "date": "2026-10-27",
+  "scope": "Eight handwritten bilingual tool fixtures and build_request initial-visibility extension; no model responses reviewed",
+  "provider_requests": 0,
+  "result": "NO_OPEN_BLOCKING_FINDINGS_IN_REVIEWED_SCOPE",
+  "cases_reviewed": [
+    {
+      "case_id": "tool-search-identity-zh",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "128元",
+      "rationale": "Approval assigns 128 to 夜航 and 82 to a different project; the initial index has no amount.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 2,
+      "future_refs_excluded": [],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": null,
+      "initial_sources": [
+        "index"
+      ],
+      "permitted_tool_sources": [
+        "approval",
+        "assignment",
+        "index"
+      ]
+    },
+    {
+      "case_id": "tool-search-components-en",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "23 completed field kits",
+      "rationale": "Disjoint completed batches total 9+14=23; the planned 4 are excluded. No initial counts.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 2,
+      "future_refs_excluded": [],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": null,
+      "initial_sources": [
+        "index"
+      ],
+      "permitted_tool_sources": [
+        "index",
+        "north",
+        "south"
+      ]
+    },
+    {
+      "case_id": "tool-search-timeline-zh",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "2026-05-09",
+      "rationale": "Receipt explicitly records actual acceptance on May 9, replacing schedules May 6/8. Initial index has no completion date.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 2,
+      "future_refs_excluded": [],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": null,
+      "initial_sources": [
+        "index"
+      ],
+      "permitted_tool_sources": [
+        "index",
+        "receipt",
+        "schedule"
+      ]
+    },
+    {
+      "case_id": "tool-search-constraints-en",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "Birch Room",
+      "rationale": "Step-free access and at least 16 capacity are mandatory; Birch satisfies both, Maple fails access. Initial index has no venue facts.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 2,
+      "future_refs_excluded": [],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": null,
+      "initial_sources": [
+        "index"
+      ],
+      "permitted_tool_sources": [
+        "index",
+        "needs",
+        "venues"
+      ]
+    },
+    {
+      "case_id": "tool-read-appendix-zh",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "18人",
+      "rationale": "Final appendix states 18 completed participants =12 local+6 remote, excluding 2 merely registered. Initial prefix omits counts.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 1,
+      "future_refs_excluded": [],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": 720,
+      "initial_sources": [
+        "memo"
+      ],
+      "permitted_tool_sources": [
+        "cover",
+        "memo"
+      ]
+    },
+    {
+      "case_id": "tool-read-inventory-en",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "blue label printer and two brass calibration weights",
+      "rationale": "Final inventory explicitly returns these items and excludes the still-loaned red scanner. Initial prefix contains no inventory.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 1,
+      "future_refs_excluded": [],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": 640,
+      "initial_sources": [
+        "memo"
+      ],
+      "permitted_tool_sources": [
+        "cover",
+        "memo"
+      ]
+    },
+    {
+      "case_id": "tool-search-counterevidence-zh",
+      "expected_status": "ANSWER",
+      "manually_reviewed_semantics": "8个",
+      "rationale": "May 18 confirmation replaces the draft 11 with final 8; June 1 future change to 6 is excluded at the May 20 question date.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": true,
+      "undiscovered_read_denials": 1,
+      "future_refs_excluded": [
+        "future"
+      ],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": null,
+      "initial_sources": [
+        "draft"
+      ],
+      "permitted_tool_sources": [
+        "confirmed",
+        "draft"
+      ]
+    },
+    {
+      "case_id": "tool-search-missing-premise-en",
+      "expected_status": "ABSTAIN",
+      "manually_reviewed_semantics": "ABSTAIN",
+      "rationale": "Harbor confirmed capacity remains unavailable after the required enquiry; Cedar 36 alone cannot support a difference. Future 24 is excluded.",
+      "expected_semantically_supported": true,
+      "initial_answer_fact_absent": false,
+      "undiscovered_read_denials": 1,
+      "future_refs_excluded": [
+        "future"
+      ],
+      "evaluator_metadata_excluded": true,
+      "appendix_offset_verified": null,
+      "initial_sources": [
+        "index"
+      ],
+      "permitted_tool_sources": [
+        "index",
+        "reply"
+      ]
+    }
+  ],
+  "answer_cases": 7,
+  "abstention_cases": 1,
+  "dataset_sha256": "409be4cb818333ebb19629511e532760af2a6c448a1f17acfeb35b4d3b9d9abe",
+  "reviewed_source_matches_quality_v2_manifest": true,
+  "changed_since_prior_code_review": [
+    "tools/run_reader_challenge.py"
+  ],
+  "reviewed_files_raw_sha256": {
+    "src/dive_memory/reading/execution.py": "97088588fec17e350045e17212425eea6179961a9bbd2dc3ed8ad85fb1dfbe07",
+    "src/dive_memory/reading/deliberative.py": "4ab68b80ac5e2ed0e55869ad02f4fdc40b5effab30edf066c945e8b76e78bb87",
+    "src/dive_memory/reading/providers.py": "7fc9a65070364d6b29bac9eb478f38a616c0167c0f8e0fd40aff27510c938946",
+    "src/dive_memory/reading/reader.py": "a687580b3b17baafe8d3ed0a67e91212b1cda4baf6a606d4fdecdc322e1c4c7a",
+    "src/dive_memory/application/readers.py": "c76c74a041c7fadd253db50b15b97e466196ed4d3e4ea432ceb03de2adcfa351",
+    "src/dive_memory/application/settings.py": "e4fc47bc88fc30158407028d909ef60cb24393e9c9249f8e84edd0214838e6a8",
+    "src/dive_memory/application/oracle_run.py": "23c9dd6fbb5a9b5040ec9d220dda16df0d91b494916df5d573e4099967a16b29",
+    "src/dive_memory/oracle/runner.py": "8cc790cc38de2a62ebd63055e576504fc2c45f97d1b8c7c1b60e3a0d63cea85f",
+    "tools/run_reader_challenge.py": "555bb551d6dfe708ff289771207328b6d211c8a94b89d6d086126a8cb4d20f69",
+    "tests/test_completion_transport.py": "1acdac88d1c87efc630b29c808eec9f7a1b1141f938d23ad20234f3f4c953215",
+    "tests/test_staged_deliberation.py": "775336d70e03fa9a3cab5d709c7b40e981c2ff6c4c1274f6d28a274a65a8d62a",
+    "eval/datasets/reader_challenge_tools_v1/cases.json": "409be4cb818333ebb19629511e532760af2a6c448a1f17acfeb35b4d3b9d9abe",
+    "tests/test_reader_tool_challenge_dataset.py": "c5429c03a1caf166e60861321ae3eb8743bbd64a1fa52b3ac9efb15297c6455f"
+  },
+  "script_sha256": "31230dd3e836cab4586240cc5b3ae5b632a1869c350dd45f9d8ac69b4d791ecd",
+  "audit_preparation_failures": [
+    "First audit compared whole Memory objects with generated creation timestamps. Original script and failure note retained; corrected audit compares actual model-visible rendering and stable evidence fields.",
+    "Second audit used nonexistent metadata field instead of structured_content; script and failure note retained. Product and fixtures were not changed by reviewer.",
+    "Third audit matched bare number 18 in date metadata rather than passage content; retained failed script, then narrowed the assertion to the initial passage."
+  ],
+  "limitations": [
+    "Seven ANSWER cases need tool evidence to justify the expected fact. The ABSTAIN case could reasonably refuse with initial evidence alone; its separate tool contract requires checking the reply before concluding the premise is unavailable.",
+    "Each fixture has at most three sources and search returns up to eight. This evaluates invoking tools and using returned evidence, not query quality, retrieval ranking or a large distractor collection.",
+    "The two appendix fixtures permit either search or read. They do not prove that the model selected the explicit read operation.",
+    "Forbidden facts are semantic assertions, not banned substrings. Mentioning old draft 11 while clearly stating current final 8 is not an error.",
+    "The identity question presupposes the named project assignment. Prior overly strict required assignment citation was clarified before any paid evaluation; final fixture requires approval evidence. The unseen approval amount is the necessary tool evidence.",
+    "These are synthetic development fixtures, not an independent holdout or benchmark accuracy result."
+  ],
+  "source_changed_by_reviewer": false,
+  "historical_outputs_changed": false
+}

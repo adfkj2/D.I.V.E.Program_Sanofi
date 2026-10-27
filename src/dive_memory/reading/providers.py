@@ -101,16 +101,31 @@ class OpenAICompatibleChatClient:
         try:
             choice = payload["choices"][0]
             content = choice["message"]["content"]
-            usage = payload.get("usage") or {}
+            usage = payload.get("usage")
             resolved = str(payload.get("model") or model)
         except (KeyError, IndexError, TypeError) as exc:
             raise ChatTransportError(
                 "response envelope is missing choices/message/content"
             ) from exc
+        finish_reason = choice.get("finish_reason")
+        if not isinstance(finish_reason, str) or not finish_reason:
+            finish_reason = None
+        # A completed response may be truncated, filtered, or otherwise end
+        # without content. Preserve its explicit termination and known usage;
+        # a missing content field or null without a termination is still an error.
+        if content is None and finish_reason is not None:
+            content = ""
         if content is None:
             raise ChatTransportError("response message has no content")
         if not isinstance(content, str):
             content = json.dumps(content, ensure_ascii=False)
+        usage = usage if isinstance(usage, dict) else {}
+        details = usage.get("completion_tokens_details")
+        reasoning_tokens = (
+            details.get("reasoning_tokens") if isinstance(details, dict) else None
+        )
+        if type(reasoning_tokens) is not int or reasoning_tokens < 0:
+            reasoning_tokens = None
         return ChatCompletion(
             text=content,
             model=resolved,
@@ -119,16 +134,15 @@ class OpenAICompatibleChatClient:
             else None,
             input_tokens=_as_int(usage.get("prompt_tokens")),
             output_tokens=_as_int(usage.get("completion_tokens")),
+            finish_reason=finish_reason,
+            reasoning_tokens=reasoning_tokens,
         )
 
 
 def _as_int(value: Any) -> int | None:
-    if isinstance(value, bool) or value is None:
-        return None
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
+    # Usage is billing evidence. Coercing floats or strings could silently
+    # undercount a response and bypass the caller's unknown-usage stop.
+    return value if type(value) is int and value >= 0 else None
 
 
 @dataclass(slots=True)

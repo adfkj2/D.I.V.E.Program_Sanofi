@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "strategy": "deliberative-staged",
+  "provider_requests": 0,
+  "fake_http_requests": 4,
+  "three_mandatory_phases": true,
+  "required_search": true,
+  "truncated_synthesis_recovered_once": true,
+  "known_total_usage_retained": true,
+  "private_reasoning_not_recorded": true,
+  "source_path_injected": false,
+  "import_file": "${REPOSITORY}\\eval\\reports\\completion-budget-20261026\\install-v1\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "real_model_accuracy": null
+}

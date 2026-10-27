@@ -1,0 +1,436 @@
+..........FFFF...............................                            [100%]
+================================== FAILURES ===================================
+____ test_null_content_with_explicit_termination_retains_known_usage[stop] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F026DA5010>
+reason = 'stop'
+
+    @pytest.mark.parametrize("reason", ["stop", "content_filter", "tool_calls", "insufficient_system_resource"])
+    def test_null_content_with_explicit_termination_retains_known_usage(monkeypatch, reason):
+        client, calls = client_for(monkeypatch, envelope(None, reason))
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:107:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage")
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        finish_reason = choice.get("finish_reason")
+        if not isinstance(finish_reason, str) or not finish_reason:
+            finish_reason = None
+        # A completed response can exhaust its output budget before emitting
+        # content. Preserve that termination and its usage for the caller;
+        # an absent message without this explicit signal is still an error.
+        if content is None and finish_reason == "length":
+            content = ""
+        if content is None:
+>           raise ChatTransportError("response message has no content")
+E           dive_memory.reading.providers.ChatTransportError: response message has no content
+
+src\dive_memory\reading\providers.py:119: ChatTransportError
+_ test_null_content_with_explicit_termination_retains_known_usage[content_filter] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F026CDAD00>
+reason = 'content_filter'
+
+    @pytest.mark.parametrize("reason", ["stop", "content_filter", "tool_calls", "insufficient_system_resource"])
+    def test_null_content_with_explicit_termination_retains_known_usage(monkeypatch, reason):
+        client, calls = client_for(monkeypatch, envelope(None, reason))
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:107:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage")
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        finish_reason = choice.get("finish_reason")
+        if not isinstance(finish_reason, str) or not finish_reason:
+            finish_reason = None
+        # A completed response can exhaust its output budget before emitting
+        # content. Preserve that termination and its usage for the caller;
+        # an absent message without this explicit signal is still an error.
+        if content is None and finish_reason == "length":
+            content = ""
+        if content is None:
+>           raise ChatTransportError("response message has no content")
+E           dive_memory.reading.providers.ChatTransportError: response message has no content
+
+src\dive_memory\reading\providers.py:119: ChatTransportError
+_ test_null_content_with_explicit_termination_retains_known_usage[tool_calls] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F026C82690>
+reason = 'tool_calls'
+
+    @pytest.mark.parametrize("reason", ["stop", "content_filter", "tool_calls", "insufficient_system_resource"])
+    def test_null_content_with_explicit_termination_retains_known_usage(monkeypatch, reason):
+        client, calls = client_for(monkeypatch, envelope(None, reason))
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:107:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage")
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        finish_reason = choice.get("finish_reason")
+        if not isinstance(finish_reason, str) or not finish_reason:
+            finish_reason = None
+        # A completed response can exhaust its output budget before emitting
+        # content. Preserve that termination and its usage for the caller;
+        # an absent message without this explicit signal is still an error.
+        if content is None and finish_reason == "length":
+            content = ""
+        if content is None:
+>           raise ChatTransportError("response message has no content")
+E           dive_memory.reading.providers.ChatTransportError: response message has no content
+
+src\dive_memory\reading\providers.py:119: ChatTransportError
+_ test_null_content_with_explicit_termination_retains_known_usage[insufficient_system_resource] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F026C82BD0>
+reason = 'insufficient_system_resource'
+
+    @pytest.mark.parametrize("reason", ["stop", "content_filter", "tool_calls", "insufficient_system_resource"])
+    def test_null_content_with_explicit_termination_retains_known_usage(monkeypatch, reason):
+        client, calls = client_for(monkeypatch, envelope(None, reason))
+>       response = complete(client)
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_completion_transport.py:107:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_completion_transport.py:49: in complete
+    return client.complete(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = OpenAICompatibleChatClient(endpoint='https://example.invalid/chat', api_key='test-key', provider='openai-compatible', extra_headers={}, extra_body={})
+model = 'fixture'
+messages = [{'role': 'user', 'content': 'Return a JSON object.'}]
+temperature = 0, max_tokens = 8192, timeout_seconds = 5
+response_format = {'type': 'json_object'}
+
+    def complete(
+        self,
+        *,
+        model: str,
+        messages: Sequence[Mapping[str, str]],
+        temperature: float,
+        max_tokens: int,
+        timeout_seconds: float,
+        response_format: Mapping[str, Any] | None = None,
+    ) -> ChatCompletion:
+        body: dict[str, Any] = {
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "messages": [dict(message) for message in messages],
+            **dict(self.extra_body),
+        }
+        if response_format is not None:
+            body["response_format"] = dict(response_format)
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                **dict(self.extra_headers),
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:  # pragma: no cover - network path
+            detail = ""
+            try:
+                detail = exc.read().decode("utf-8")[:500]
+            except Exception:  # noqa: BLE001 - best-effort diagnostics
+                detail = ""
+            raise ChatTransportError(
+                f"HTTP {exc.code} from {self.endpoint}: {detail}"
+            ) from exc
+        except TimeoutError as exc:
+            # ``urllib`` surfaces a socket timeout as ``TimeoutError`` on 3.10+
+            # and as ``socket.timeout`` (an alias) earlier; both are caught here
+            # so the reader status can be TIMEOUT rather than ERROR.
+            raise TimeoutError(f"reader request exceeded {timeout_seconds}s") from exc
+        except urllib.error.URLError as exc:
+            reason = getattr(exc, "reason", exc)
+            if isinstance(reason, TimeoutError):
+                raise TimeoutError(
+                    f"reader request exceeded {timeout_seconds}s"
+                ) from exc
+            raise ChatTransportError(f"cannot reach {self.endpoint}: {reason}") from exc
+        except OSError as exc:
+            raise ChatTransportError(
+                f"transport failure for {self.endpoint}: {exc}"
+            ) from exc
+
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ChatTransportError("response envelope is not JSON") from exc
+        try:
+            choice = payload["choices"][0]
+            content = choice["message"]["content"]
+            usage = payload.get("usage")
+            resolved = str(payload.get("model") or model)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ChatTransportError(
+                "response envelope is missing choices/message/content"
+            ) from exc
+        finish_reason = choice.get("finish_reason")
+        if not isinstance(finish_reason, str) or not finish_reason:
+            finish_reason = None
+        # A completed response can exhaust its output budget before emitting
+        # content. Preserve that termination and its usage for the caller;
+        # an absent message without this explicit signal is still an error.
+        if content is None and finish_reason == "length":
+            content = ""
+        if content is None:
+>           raise ChatTransportError("response message has no content")
+E           dive_memory.reading.providers.ChatTransportError: response message has no content
+
+src\dive_memory\reading\providers.py:119: ChatTransportError
+=========================== short test summary info ===========================
+FAILED tests/test_completion_transport.py::test_null_content_with_explicit_termination_retains_known_usage[stop]
+FAILED tests/test_completion_transport.py::test_null_content_with_explicit_termination_retains_known_usage[content_filter]
+FAILED tests/test_completion_transport.py::test_null_content_with_explicit_termination_retains_known_usage[tool_calls]
+FAILED tests/test_completion_transport.py::test_null_content_with_explicit_termination_retains_known_usage[insufficient_system_resource]
+4 failed, 41 passed in 0.89s

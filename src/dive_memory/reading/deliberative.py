@@ -23,6 +23,7 @@ from .deliberation import (
     EvidencePlan,
 )
 from .evidence import build_evidence_views, render_evidence_block
+from .execution import DeliberationExecution, PhaseCall, completion_problem
 from .reader import (
     ChatClient,
     ReaderOutcome,
@@ -66,6 +67,7 @@ class DeliberativeEvidenceReader:
         max_calls: int = 4,
         passage_chars: int = 800,
         protocol: DeliberationProtocol = LITERAL_PROTOCOL,
+        execution: DeliberationExecution | None = None,
     ) -> None:
         if spec.prompt_version != protocol.version:
             raise ValueError("deliberative reader requires its own prompt version")
@@ -78,6 +80,14 @@ class DeliberativeEvidenceReader:
         self.policy = reader_policy("indexed_evidence")
         self.protocol = protocol
         self.version = protocol.version
+        self.execution = execution
+        if execution is not None:
+            profiles = [execution.primary(p) for p in ("plan", "synthesize", "review")]
+            if any(
+                call.spec.prompt_version != protocol.version
+                for call in (*profiles, execution.recovery)
+            ):
+                raise ValueError("phase specs must match the deliberation protocol")
 
     def bind_evidence(self, source: EvidenceSource) -> DeliberativeEvidenceReader:
         return DeliberativeEvidenceReader(
@@ -87,7 +97,18 @@ class DeliberativeEvidenceReader:
             max_calls=self.max_calls,
             passage_chars=self.passage_chars,
             protocol=self.protocol,
+            execution=self.execution,
         )
+
+    def execution_configuration(self) -> dict[str, Any] | None:
+        """Public run identity; no injected transport or credential is serialized."""
+        if self.execution is None:
+            return None
+        return {
+            "phases": self.execution.to_dict(),
+            "max_calls": self.max_calls,
+            "passage_chars": self.passage_chars,
+        }
 
     @staticmethod
     def _quotes(
@@ -156,6 +177,16 @@ class DeliberativeEvidenceReader:
                         "turns": turns,
                         "actions": actions,
                         "workspace_packets": packets,
+                        **(
+                            {
+                                "execution_policy": self.execution.to_dict(),
+                                "execution_policy_sha256": _digest(
+                                    self.execution.to_dict()
+                                ),
+                            }
+                            if self.execution is not None
+                            else {}
+                        ),
                     },
                     ensure_ascii=False,
                 ),
@@ -176,7 +207,16 @@ class DeliberativeEvidenceReader:
             remaining_phases: int,
         ) -> EvidencePlan | GroundedAnswerDecision:
             validation_error: str | None = None
+            failure_reason = f"INVALID_{name.upper()}_OUTPUT"
             while len(turns) < self.max_calls - remaining_phases:
+                recovering = validation_error is not None
+                call = (
+                    self.execution.recovery
+                    if self.execution is not None and recovering
+                    else self.execution.primary(name)
+                    if self.execution is not None
+                    else PhaseCall(self.client, self.spec, "legacy")
+                )
                 payload = {
                     "question": request.question,
                     "question_date": request.question_date,
@@ -202,13 +242,19 @@ class DeliberativeEvidenceReader:
                     "workspace_packet": len(packets) - 1,
                 }
                 turns.append(turn)
+                if self.execution is not None:
+                    turn.update(
+                        call_profile=call.profile,
+                        call_spec=call.spec.to_dict(),
+                        recovery=recovering,
+                    )
                 try:
-                    response = self.client.complete(
-                        model=self.spec.model,
+                    response = call.client.complete(
+                        model=call.spec.model,
                         messages=messages,
-                        temperature=self.spec.temperature,
-                        max_tokens=self.spec.max_tokens,
-                        timeout_seconds=self.spec.timeout_seconds,
+                        temperature=call.spec.temperature,
+                        max_tokens=call.spec.max_tokens,
+                        timeout_seconds=call.spec.timeout_seconds,
                         response_format={"type": "json_object"},
                     )
                 except Exception as exc:  # noqa: BLE001 - fail once; never retry uncertain transport
@@ -225,6 +271,29 @@ class DeliberativeEvidenceReader:
                 outputs.append(response.output_tokens)
                 turn["response"] = response.text
                 turn["response_sha256"] = sha256(response.text.encode()).hexdigest()
+                if self.execution is not None:
+                    turn.update(
+                        finish_reason=response.finish_reason,
+                        reasoning_tokens=response.reasoning_tokens,
+                        input_tokens=response.input_tokens,
+                        output_tokens=response.output_tokens,
+                        resolved_model=response.model,
+                        resolved_revision=response.revision,
+                    )
+                    problem = completion_problem(response)
+                    if problem is not None:
+                        failure_reason, recoverable = problem
+                        turn["completion_problem"] = failure_reason
+                        if not recoverable:
+                            raise _PhaseFailure(ReaderStatus.ERROR, failure_reason)
+                        # Rebuild from admitted sources, never from a partial response
+                        # or hidden reasoning. The recovery shares the format slot.
+                        validation_error = (
+                            "Previous completion was truncated. Return a complete JSON object."
+                            if failure_reason == "OUTPUT_TRUNCATED"
+                            else "Previous completion was empty. Return a complete JSON object."
+                        )
+                        continue
                 try:
                     parsed = (
                         self.protocol.parse_plan(response.text, items)
@@ -238,7 +307,8 @@ class DeliberativeEvidenceReader:
                 except (ValueError, TypeError) as exc:
                     validation_error = str(exc)
                     turn["validation_error"] = validation_error
-            raise _PhaseFailure(ReaderStatus.INVALID, f"INVALID_{name.upper()}_OUTPUT")
+                    failure_reason = f"INVALID_{name.upper()}_OUTPUT"
+            raise _PhaseFailure(ReaderStatus.INVALID, failure_reason)
 
         try:
             initial = packet()

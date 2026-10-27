@@ -240,6 +240,10 @@ class ChatCompletion:
     revision: str | None = None
     input_tokens: int | None = None
     output_tokens: int | None = None
+    finish_reason: str | None = None
+    # A breakdown of output_tokens, never additional billable output.
+    # Deliberately retain counts without exposing provider reasoning text.
+    reasoning_tokens: int | None = None
 
 
 class ChatClient(Protocol):

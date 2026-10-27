@@ -4,6 +4,7 @@ The r40 strategy preserves the historical prompt/parameter composition. It is
 an explicitly selected development strategy, not a claim of official accuracy.
 """
 
+from dataclasses import replace
 from typing import Protocol
 
 from ..reading.adaptive import VERIFIED_VERSION, AdaptiveEvidenceReader
@@ -18,6 +19,7 @@ from ..reading.current_state_reader import REVIEW_VERSION as STATE_VERSION
 from ..reading.current_state_reader import CurrentStateReader, CurrentStateReviewReader
 from ..reading.deliberation import LITERAL_PROTOCOL
 from ..reading.deliberative import DeliberativeEvidenceReader
+from ..reading.execution import DeliberationExecution, PhaseCall
 from ..reading.grounded_advice_reader import VERSION as ADVICE_VERSION
 from ..reading.grounded_advice_reader import GroundedAdviceReader
 from ..reading.indexed_reader import IndexedEvidenceReader
@@ -47,7 +49,29 @@ def create_reader(
     model: str,
     provider: str = "openai-compatible",
     strategy: str = "indexed",
+    reasoning_effort: str | None = None,
 ) -> Reader:
+    if strategy == "deliberative-staged":
+        if thinking is None:
+            raise ValueError(
+                "deliberative-staged requires an explicit reasoning transport"
+            )
+        protocol = replace(REFERENCE_PROTOCOL, version="staged-reference-reader-v1")
+        spec = ReaderSpec(
+            provider,
+            model,
+            prompt_version=protocol.version,
+            max_tokens=16384,
+            timeout_seconds=120,
+        )
+        ordinary = PhaseCall(normal, replace(spec, max_tokens=8192), "normal")
+        reasoning = PhaseCall(thinking, spec, "reasoning", reasoning_effort)
+        return DeliberativeEvidenceReader(
+            thinking,
+            spec,
+            protocol=protocol,
+            execution=DeliberationExecution(ordinary, reasoning, reasoning, ordinary),
+        )
     if strategy in {"deliberative", "deliberative-refs"}:
         protocol = (
             REFERENCE_PROTOCOL if strategy == "deliberative-refs" else LITERAL_PROTOCOL
@@ -79,7 +103,8 @@ def create_reader(
         )
     if strategy not in {"indexed", "r40"}:
         raise ValueError(
-            "strategy must be indexed, r40, adaptive, verified, deliberative or deliberative-refs"
+            "strategy must be indexed, r40, adaptive, verified, deliberative, "
+            "deliberative-refs or deliberative-staged"
         )
     policy = ReaderPolicy(
         name="indexed_evidence",

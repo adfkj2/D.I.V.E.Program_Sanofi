@@ -1,0 +1,453 @@
+{
+  "schema_version": "r67-remote-engineering-checks-v1",
+  "head_sha": "4c40eb19ca06b83639205236c6e787403eb58044",
+  "run_id": 40511425763,
+  "url": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi/actions/runs/40511425763",
+  "all_five_job_conclusions_success": true,
+  "run_aggregate_status_at_last_fetch": "in_progress",
+  "run_aggregate_conclusion_at_last_fetch": null,
+  "remote_main_sha": "4c40eb19ca06b83639205236c6e787403eb58044",
+  "jobs": [
+    {
+      "id": 122214046743,
+      "name": "postgres-contract",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run python -m pip install -r requirements/postgres.lock",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run python -m pytest tests/integration/postgres -q --junitxml=postgres-tests.xml",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Require PostgreSQL contracts to run without skips",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        }
+      ]
+    },
+    {
+      "id": 122214047012,
+      "name": "workbench",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run python -m pip install -r requirements/runtime.lock && python -m pip install --no-deps .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run npm ci && npx playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run npm run format:check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Exercise the real workbench",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    },
+    {
+      "id": 122214047098,
+      "name": "docker",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run docker build -f ops/docker/Dockerfile -t dive-memory:ci .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run the image and probe the real readiness endpoint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ]
+    },
+    {
+      "id": 122214047303,
+      "name": "local-runtime (3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python -m pip install -r requirements/dev.lock",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run python -m pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run python tools/check_quality.py --output artifacts/quality",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run python eval/run_project_validation.py --output artifacts/structured",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run python -m build --wheel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Run python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        }
+      ]
+    },
+    {
+      "id": 122214047307,
+      "name": "local-runtime (3.14)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python -m pip install -r requirements/dev.lock",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run python -m pip install --no-deps -e .",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run python tools/check_quality.py --output artifacts/quality",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run python eval/run_project_validation.py --output artifacts/structured",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run python -m build --wheel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Run python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        }
+      ]
+    }
+  ],
+  "runtime_evidence": [
+    {
+      "job": "postgres-contract",
+      "id": 122214046743,
+      "evidence": [
+        "2026-10-27T13:22:54.0633846Z 8 passed in 1.73s"
+      ]
+    },
+    {
+      "job": "workbench",
+      "id": 122214047012,
+      "evidence": [
+        "2026-10-27T13:22:26.1521570Z Successfully built dive-memory",
+        "2026-10-27T13:33:02.4035264Z {\"status\":\"alive\"}{\"passed\":true,\"checks\":20,\"output\":\"/home/runner/work/D.I.V.E.Program_Sanofi/D.I.V.E.Program_Sanofi/artifacts/workbench\"}",
+        "2026-10-27T13:33:05.5828643Z {\"passed\":true,\"checks\":[\"analysis blocks premature save; removing the folder discards a delayed preview\",\"Chinese folder and nested documents populate sourced progress and editable task selection\",\"390px import dialog has no horizontal overflow\",\"confirmed progress, selected tasks and source memories survive reload, exclude secrets and render text safely\",\"existing project settings remain editable after folder initialization\",\"the 2000-path limit retains progress and README evidence in a real 2002-file folder\",\"a delayed real project save preserves a newer draft and its usable folder selection\"],\"consoleErrors\":[],\"externalRequests\":0,\"browser\":\"151.0.7922.34\"}"
+      ]
+    },
+    {
+      "job": "docker",
+      "id": 122214047098,
+      "evidence": [
+        "2026-10-27T13:22:33.9364490Z #12 3.668 Successfully built dive-memory"
+      ]
+    },
+    {
+      "job": "local-runtime (3.12)",
+      "id": 122214047303,
+      "evidence": [
+        "2026-10-27T13:22:26.4738684Z Successfully built dive-memory",
+        "2026-10-27T13:23:07.7366430Z   \"passed\": true,",
+        "2026-10-27T13:23:20.7542336Z Successfully built dive_memory-0.4.0-py3-none-any.whl",
+        "2026-10-27T13:23:29.8118904Z {\"passed\": true, \"import_file\": \"/home/runner/work/D.I.V.E.Program_Sanofi/D.I.V.E.Program_Sanofi/artifacts/wheel/environment/lib/python3.12/site-packages/dive_memory/__init__.py\", \"cwd\": \"/home/runner/work/D.I.V.E.Program_Sanofi/D.I.V.E.Program_Sanofi/artifacts/wheel\", \"package_assets\": 6, \"persistence_restart\": true, \"cli_api\": true, \"packaged_casebook\": true, \"local_consult\": true, \"handoff_markdown\": true, \"wheel\": \"dive_memory-0.4.0-py3-none-any.whl\", \"wheel_sha256\": \"1c73a1c38251a40bd112ab283eeb7a72cbef2fdb7aa99cfad7760d16ad7c6c6a\", \"python\": \"3.12.15 (main, Oct  1 2026, 02:35:59) [GCC 13.3.0]\", \"source_path_injected\": false}"
+      ]
+    },
+    {
+      "job": "local-runtime (3.14)",
+      "id": 122214047307,
+      "evidence": [
+        "2026-10-27T13:22:28.8650242Z Successfully built dive-memory",
+        "2026-10-27T13:23:01.7823143Z   \"passed\": true,",
+        "2026-10-27T13:23:11.1095593Z Successfully built dive_memory-0.4.0-py3-none-any.whl",
+        "2026-10-27T13:23:19.0330616Z {\"passed\": true, \"import_file\": \"/home/runner/work/D.I.V.E.Program_Sanofi/D.I.V.E.Program_Sanofi/artifacts/wheel/environment/lib/python3.14/site-packages/dive_memory/__init__.py\", \"cwd\": \"/home/runner/work/D.I.V.E.Program_Sanofi/D.I.V.E.Program_Sanofi/artifacts/wheel\", \"package_assets\": 6, \"persistence_restart\": true, \"cli_api\": true, \"packaged_casebook\": true, \"local_consult\": true, \"handoff_markdown\": true, \"wheel\": \"dive_memory-0.4.0-py3-none-any.whl\", \"wheel_sha256\": \"8f40c0ab828d55b507aeb093fd7a2f75fa756ed69f8d3b12106d102b59c05672\", \"python\": \"3.14.8 (main, Oct  1 2026, 02:38:33) [GCC 13.3.0]\", \"source_path_injected\": false}"
+      ]
+    }
+  ],
+  "paid_provider_requests": 0,
+  "note": "The five job endpoints each report completed/success. Workflow aggregate may lag; recorded separately rather than inferred."
+}

@@ -75,6 +75,7 @@ lint-targets = [
   "tests/test_dialogue_evidence_extent.py", "tests/test_oracle_source_grounding_config.py",
   "tests/test_source_grounding_boundaries.py",
   "tests/test_reader_grounding_challenge_dataset.py", "tests/integration/postgres/test_postgres_dialogue_retention.py",
+  "tests/integration/postgres/test_postgres_outbox_adapter.py",
   "tests/test_evidence_workspace.py", "tests/test_reader_failure_analysis.py",
   "tests/test_reader_challenge_dataset.py", "tests/test_reader_challenge_runner.py",
   "tools/analyze_reader_failures.py", "tools/run_reader_challenge.py",

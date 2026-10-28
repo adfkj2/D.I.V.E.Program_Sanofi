@@ -145,6 +145,25 @@ class PostgresStore:
         ).fetchone()
         return self.get_event(row["id"]) if row else None
 
+    def pending_events(self, limit: int = 100) -> list[Event]:
+        rows = self.connection.execute(
+            "SELECT event_id FROM outbox WHERE status IN ('PENDING','FAILED') AND attempts < 3 "
+            "ORDER BY created_at,event_id LIMIT %s", (limit,),
+        ).fetchall()
+        return [event for row in rows if (event := self.get_event(row["event_id"])) is not None]
+
+    def claim_pending_events(self, limit: int = 100, *, max_attempts: int = 3) -> list[Event]:
+        """Use the native atomic claim/recovery primitive shared with SQL workers.
+
+        Its stale-claim recovery threshold is the migration's five minutes.
+        Claims commit before projection; independent workers use SKIP LOCKED.
+        """
+        with self.transaction():
+            rows = self.connection.execute(
+                "SELECT event_id FROM claim_memory_outbox(%s,%s)", (limit, max_attempts),
+            ).fetchall()
+        return [event for row in rows if (event := self.get_event(row["event_id"])) is not None]
+
     def mark_event_processed(self, event_id: str, processed_at: str) -> None:
         self.connection.execute(
             "UPDATE outbox SET status='DONE',processed_at=%s,claimed_at=NULL,last_error=NULL WHERE event_id=%s",

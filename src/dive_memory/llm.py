@@ -30,6 +30,7 @@ class ExtractionOutcome:
     prompt_version: str = "candidate-extraction-v1"
     schema_version: str = "candidate-memory-v1"
     fallback_used: bool = False
+    exclude_from_replay: bool = False
 
 
 class ExtractionProvider(Protocol):
@@ -55,11 +56,23 @@ class HeuristicExtractionProvider:
         self, text: str, *, observed_at: str | None = None, explicit: bool = False,
         source_type: str | None = None,
     ) -> ExtractionOutcome:
+        blocks_turn = getattr(self.episodic_policy, "blocks_turn", None)
+        if callable(blocks_turn) and blocks_turn(text, source_type=source_type):
+            return ExtractionOutcome(
+                ExtractionOutcomeCode.POLICY_SKIP,
+                reason="user turn excluded by retention consent or sensitivity policy",
+                provider=type(self).__name__,
+                model="heuristic-v1",
+                exclude_from_replay=True,
+            )
         candidates = tuple(extract_candidates(text, explicit=explicit, observed_at=observed_at,
                                               gate=self.gate, source_type=source_type))
         if self.episodic_policy is not None:
             candidates += tuple(self.episodic_policy.candidates(
                 text, source_type=source_type, observed_at=observed_at, existing=list(candidates)))
+        protect_candidates = getattr(self.episodic_policy, "protect_candidates", None)
+        if callable(protect_candidates):
+            candidates = tuple(protect_candidates(candidates, source_type=source_type))
         if candidates:
             code = ExtractionOutcomeCode.COMMITTED
             reason = "heuristic candidates accepted"

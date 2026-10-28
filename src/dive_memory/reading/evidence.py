@@ -44,6 +44,8 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any, Iterable, Sequence
 
+from ..dialogue_retention import PREDICATE as DIALOGUE_PREDICATE
+from ..dialogue_retention import VERSION as DIALOGUE_VERSION
 from ..models import DOCUMENT_ASSERTION, DOCUMENT_PREDICATE, MemoryStatus, RetrievalItem
 
 # --------------------------------------------------------------------------- #
@@ -241,6 +243,7 @@ class EvidenceView:
     conflict_group: str | None = None
     source_positions: tuple[dict[str, Any], ...] = ()
     statement_sources: tuple[dict[str, Any], ...] = ()
+    retention_extent: dict[str, Any] | None = None
 
     @property
     def is_current(self) -> bool:
@@ -266,6 +269,8 @@ class EvidenceView:
         if self.statement_sources:
             result["statement_sources"] = list(self.statement_sources)
             result["observed_at"] = self.observed_at
+        if self.retention_extent is not None:
+            result["retention_extent"] = dict(self.retention_extent)
         return result
 
 
@@ -326,6 +331,35 @@ def _role_of(memory: Any, item: RetrievalItem) -> str:
     return "unknown"
 
 
+def _retention_extent(memory: Any) -> dict[str, Any] | None:
+    """Describe stored source retention without claiming its full span is shown."""
+    data = memory.structured_content or {}
+    if (
+        data.get("predicate") != DIALOGUE_PREDICATE
+        or data.get("retention_policy") != DIALOGUE_VERSION
+    ):
+        return None
+    span = data.get("source_span")
+    total, retained = data.get("source_chars"), data.get("retained_chars")
+    truncated = data.get("truncated")
+    if (
+        not isinstance(span, (list, tuple))
+        or len(span) != 2
+        or any(type(value) is not int for value in (*span, total, retained))
+        or type(truncated) is not bool
+        or not 0 <= span[0] < span[1] <= total
+        or retained != span[1] - span[0]
+    ):
+        return None
+    return {
+        "retained_source_span": list(span),
+        "original_source_chars": total,
+        "retained_chars": retained,
+        "truncated": truncated,
+        "displayed_chars": len(memory.content),
+    }
+
+
 def build_evidence_views(
     items: Sequence[RetrievalItem],
     *,
@@ -371,6 +405,7 @@ def build_evidence_views(
                         "_reader_statement_sources", ()
                     )
                 ),
+                retention_extent=_retention_extent(memory),
             )
         )
     return views
@@ -814,6 +849,18 @@ def render_evidence_block(views: Sequence[EvidenceView]) -> str:
                     f"{i}:{sources.get(ref, {}).get('role') or 'unknown'}"
                     f"@statement_at={sources.get(ref, {}).get('statement_at') or '?'}"
                     for i, ref in enumerate(view.source_refs, 1)
+                )
+            )
+        if view.retention_extent is not None:
+            extent = view.retention_extent
+            start, end = extent["retained_source_span"]
+            bits.extend(
+                (
+                    f"retained_source_span={start}:{end}",
+                    f"original_source_chars={extent['original_source_chars']}",
+                    f"retained_chars={extent['retained_chars']}",
+                    f"retention_truncated={str(extent['truncated']).lower()}",
+                    f"displayed_chars={extent['displayed_chars']}",
                 )
             )
         lines.append(f"[{view.index}] {'; '.join(bits)}\n    {view.content}")

@@ -10,6 +10,7 @@ from typing import Any
 from . import hot_memory, temporal
 from .context import pack_context
 from .decay import apply_decay
+from .dialogue_retention import is_dialogue_observation
 from .embeddings import EmbeddingProvider
 from .entities import entity_candidates, is_user_subject
 from .gate import decide as decide
@@ -116,6 +117,7 @@ class MemoryService:
             # The event remains auditable, but it has been intentionally
             # rejected for memory projection and must not be retried later.
             with self.store.transaction():
+                self.store.block_event_projection(namespace, event.id, "memory disabled", utc_now())
                 self.store.mark_event_processed(event.id, utc_now())
             return {"event_id": event.id, "accepted": True, "duplicate": False, "memory_ids": [],
                     "memory_disabled": True}
@@ -154,6 +156,8 @@ class MemoryService:
         return str(tier) if tier is not None else None
 
     def _process_event(self, event: Event, *, text: str | None = None, explicit: bool = False) -> list[str]:
+        if self.store.event_projection_blocked(event.namespace, event.id):
+            return []
         text = text if text is not None else str(event.payload.get("text", ""))
         explicit = explicit or bool(event.payload.get("explicit", False))
         # Provenance tier recorded at ingest time. Events written before v2 (or
@@ -192,6 +196,11 @@ class MemoryService:
                 "legacy-candidate",
             )
         extractor_version = type(self.extractor).__name__
+        if getattr(outcome, "exclude_from_replay", False):
+            # Explicit consent/sensitivity exclusions must survive replacing
+            # the extractor. Ordinary low-utility skips remain replayable.
+            self.store.block_event_projection(event.namespace, event.id, outcome.reason, utc_now())
+            candidates = []
         if not candidates:
             reason = outcome.reason or "extractor returned no accepted candidates"
             self.store.record_write_decision(
@@ -203,19 +212,34 @@ class MemoryService:
                 schema_version=outcome.schema_version,
             )
         for index, candidate in enumerate(candidates):
+            is_dialogue = is_dialogue_observation(candidate.structured_content)
+            dialogue_blocked = is_dialogue and self.store.dialogue_source_blocked(event.namespace, event.id)
+            projection_blocked = self.store.memory_projection_blocked(event.namespace, event.id, candidate.content)
+            excluded = dialogue_blocked or projection_blocked
             self.store.record_write_decision(
-                event.id, index, accepted=True, importance=candidate.decision.importance,
+                event.id, index, accepted=not excluded, importance=candidate.decision.importance,
                 confidence=candidate.decision.confidence, salience=candidate.decision.salience,
-                durability=candidate.decision.durability, reason=candidate.decision.reason,
+                durability=candidate.decision.durability,
+                reason="same-source projection excluded by a prior forget request" if excluded else candidate.decision.reason,
                 extractor_version=extractor_version, processed_at=utc_now(),
-                outcome_code=outcome.code.value, features=candidate.decision.features,
+                outcome_code=ExtractionOutcomeCode.POLICY_SKIP.value if excluded else outcome.code.value,
+                features=candidate.decision.features,
                 policy_version=candidate.decision.policy_version,
                 prompt_version=outcome.prompt_version, model_version=outcome.model,
                 schema_version=outcome.schema_version,
             )
+            if excluded:
+                continue
             memory_id = stable_id("mem", event.id, str(index))
             if self.store.is_tombstoned("memory", memory_id):
-                continue
+                # A new content guard can distinguish a forgotten projection
+                # from an independent candidate shifted into its old index.
+                # Legacy tombstones without that guard remain conservative.
+                if not self.store.dialogue_source_blocked(event.namespace, event.id):
+                    continue
+                memory_id = stable_id("mem", event.id, "unforgotten_projection", candidate.content.strip())
+                if self.store.is_tombstoned("memory", memory_id):
+                    continue
             memory = Memory(memory_id, event.namespace, candidate.kind, EvidenceState(candidate.evidence_state), candidate.content,
                             candidate.structured_content, MemoryStatus.ACTIVE, candidate.decision.importance,
                             candidate.decision.confidence, candidate.decision.salience, candidate.decision.durability,
@@ -224,8 +248,12 @@ class MemoryService:
                             extractor_version=extractor_version)
             if memory.valid_to is None:
                 memory.valid_to = event.occurred_to
-            existing = forced if index == 0 and forced is not None else self.store.find_related_memory(
-                memory, allow_different_value=is_single_valued(memory.structured_content.get("predicate")))
+            # A dialogue observation describes one event, even when another
+            # event has identical words. It must not merge their clocks or
+            # become the target of a semantic-fact correction.
+            existing = None if is_dialogue else (
+                forced if index == 0 and forced is not None else self.store.find_related_memory(
+                    memory, allow_different_value=is_single_valued(memory.structured_content.get("predicate"))))
             proposal = self.resolver.classify(
                 existing, memory,
                 ResolutionContext(
@@ -417,6 +445,7 @@ class MemoryService:
             try:
                 with self.store.transaction():
                     if not self.store.memory_enabled(event.namespace):
+                        self.store.block_event_projection(event.namespace, event.id, "memory disabled", utc_now())
                         self.store.mark_event_processed(event.id, utc_now())
                         results.append({"event_id": event.id, "memory_ids": [], "memory_disabled": True})
                         continue
@@ -546,7 +575,8 @@ class MemoryService:
     @_synchronized
     def rebuild_projections(self, namespace: str | None = None, *, dry_run: bool = False) -> dict:
         events = list(self.store.events_for_namespace(namespace)) if namespace else self.store.all_events()
-        replayable = [event for event in events if not self.store.is_tombstoned("event", event.id)]
+        replayable = [event for event in events if not self.store.is_tombstoned("event", event.id)
+                      and not self.store.event_projection_blocked(event.namespace, event.id)]
         if dry_run:
             return {"namespace": namespace, "events": len(replayable), "memories": 0, "dry_run": True}
         memory_count = 0

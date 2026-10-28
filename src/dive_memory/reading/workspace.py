@@ -21,6 +21,8 @@ from ..models import RetrievalItem
 from ..token_budget import ApproximateTokenCounter
 from .evidence import build_evidence_views, relevance_proxy, render_evidence_block
 from .reader import ReaderRequest
+from .snapshots import VERSION as SNAPSHOT_VERSION
+from .snapshots import AdmittedSnapshot, acquisition_annotations
 
 
 def _digest(value: Any) -> str:
@@ -92,20 +94,40 @@ class BoundedEvidenceWorkspace:
     live in audit data; model citation indices always refer to the current pack.
     """
 
-    def __init__(self, request: ReaderRequest, *, passage_chars: int = 800) -> None:
+    def __init__(
+        self,
+        request: ReaderRequest,
+        *,
+        passage_chars: int = 800,
+        identity_policy: str = "retrieval-v1",
+    ) -> None:
         if type(passage_chars) is not int or not 256 <= passage_chars <= 4800:
             raise ValueError("passage_chars must be an integer between 256 and 4800")
         if type(request.token_budget) is not int or request.token_budget < 0:
             raise ValueError("token_budget must be a nonnegative integer")
+        if not isinstance(identity_policy, str) or identity_policy not in {
+            "retrieval-v1",
+            "admitted-v1",
+        }:
+            raise ValueError("identity_policy must be retrieval-v1 or admitted-v1")
         self.question = request.question
         self.question_date = request.question_date
         self.token_budget = request.token_budget
         self.passage_chars = passage_chars
+        self.identity_policy = identity_policy
         self._documents: dict[str, _Document] = {}
         self._fragments: dict[str, _Fragment] = {}
         self._batches = 0
         self._counter = ApproximateTokenCounter()
         self._visible_spans: dict[int, tuple[RetrievalItem, _Fragment]] = {}
+        self._acquisitions: list[dict[str, Any]] = []
+
+    def _document_id(self, item: RetrievalItem) -> str:
+        return (
+            AdmittedSnapshot.from_item(item).fingerprint()
+            if self.identity_policy == "admitted-v1"
+            else _digest(asdict(item))
+        )
 
     def add(self, items: Sequence[RetrievalItem]) -> dict[str, Any]:
         """Snapshot and register exact passages without merging unlike evidence."""
@@ -113,9 +135,23 @@ class BoundedEvidenceWorkspace:
         self._batches += 1
         added: list[str] = []
         duplicates: list[str] = []
-        for supplied in items:
+        acquisitions: list[dict[str, Any]] = []
+        for position, supplied in enumerate(items):
             item = deepcopy(supplied)
-            document_id = _digest(asdict(item))
+            document_id = self._document_id(item)
+            if self.identity_policy == "admitted-v1":
+                acquisition = {
+                    "batch": batch,
+                    "position": position,
+                    "document_id": document_id,
+                    "duplicate": document_id in self._documents,
+                    "score": item.score,
+                    "channels": list(item.channels),
+                    "source_refs": list(item.source_refs),
+                    "decorations": acquisition_annotations(item),
+                }
+                self._acquisitions.append(acquisition)
+                acquisitions.append(acquisition)
             if document_id in self._documents:
                 duplicates.append(document_id)
                 continue
@@ -143,13 +179,19 @@ class BoundedEvidenceWorkspace:
                 self._fragments[fragment_id] = _Fragment(
                     fragment_id, document, chunk.start, chunk.end
                 )
-        return {
+        audit = {
             "batch": batch,
             "added_document_ids": added,
             "duplicate_document_ids": duplicates,
             "registered_documents": len(self._documents),
             "registered_fragments": len(self._fragments),
         }
+        if self.identity_policy == "admitted-v1":
+            audit.update(
+                identity_policy=self.identity_policy,
+                acquisitions=deepcopy(acquisitions),
+            )
+        return audit
 
     def _render(self, items: Sequence[RetrievalItem]) -> str:
         return render_evidence_block(
@@ -238,7 +280,7 @@ class BoundedEvidenceWorkspace:
                     if asdict(item) != asdict(fragment.item):
                         continue
                 else:
-                    document = self._documents.get(_digest(asdict(item)))
+                    document = self._documents.get(self._document_id(item))
                     if document is None:
                         continue
                     fragment = _Fragment(
@@ -440,4 +482,11 @@ class BoundedEvidenceWorkspace:
                 if not d.item.memory.content
             ],
         }
+        if self.identity_policy == "admitted-v1":
+            audit.update(
+                version="bounded-evidence-workspace-admitted-v1",
+                identity_policy=self.identity_policy,
+                snapshot_version=SNAPSHOT_VERSION,
+                acquisitions=deepcopy(self._acquisitions),
+            )
         return items, audit

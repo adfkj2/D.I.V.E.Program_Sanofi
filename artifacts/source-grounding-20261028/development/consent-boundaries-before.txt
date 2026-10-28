@@ -1,0 +1,230 @@
+FF...FFFFFF                                                              [100%]
+================================== FAILURES ===================================
+_ test_disabled_turn_remains_excluded_after_reenable_restart_and_full_rebuild[False] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-274/test_disabled_turn_remains_exc0')
+deferred = False
+
+    @pytest.mark.parametrize("deferred", [False, True])
+    def test_disabled_turn_remains_excluded_after_reenable_restart_and_full_rebuild(
+        tmp_path, deferred
+    ):
+        path = str(tmp_path / "consent.sqlite")
+        service = MemoryService(path, gate=skip, episodic_policy=DialogueRetentionPolicy())
+        try:
+            if not deferred:
+                service.set_memory_enabled("project", False)
+            result = service.ingest(
+                "project",
+                "The copper observatory houses a violet sundial.",
+                source_type="user",
+                defer=deferred,
+            )
+            if deferred:
+                service.set_memory_enabled("project", False)
+                assert service.process_pending()[0]["memory_disabled"]
+            else:
+                assert result["memory_disabled"]
+            assert not service.list_memories("project")
+            service.set_memory_enabled("project", True)
+        finally:
+            service.store.close()
+
+        reopened = MemoryService(
+            path, gate=skip, episodic_policy=DialogueRetentionPolicy()
+        )
+        try:
+            reopened.rebuild_projections("project")
+>           assert not reopened.list_memories("project")
+E           AssertionError: assert not [Memory(id='mem_bc2ee5366df5c9aadd45fa3b8fd20ac2', namespace='project', kind='episode', evidence_state=<EvidenceState....d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')]
+E            +  where [Memory(id='mem_bc2ee5366df5c9aadd45fa3b8fd20ac2', namespace='project', kind='episode', evidence_state=<EvidenceState....d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')] = list_memories('project')
+E            +    where list_memories = <dive_memory.service.MemoryService object at 0x00000203BC5E3110>.list_memories
+
+tests\test_source_grounding_boundaries.py:50: AssertionError
+_ test_disabled_turn_remains_excluded_after_reenable_restart_and_full_rebuild[True] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-274/test_disabled_turn_remains_exc1')
+deferred = True
+
+    @pytest.mark.parametrize("deferred", [False, True])
+    def test_disabled_turn_remains_excluded_after_reenable_restart_and_full_rebuild(
+        tmp_path, deferred
+    ):
+        path = str(tmp_path / "consent.sqlite")
+        service = MemoryService(path, gate=skip, episodic_policy=DialogueRetentionPolicy())
+        try:
+            if not deferred:
+                service.set_memory_enabled("project", False)
+            result = service.ingest(
+                "project",
+                "The copper observatory houses a violet sundial.",
+                source_type="user",
+                defer=deferred,
+            )
+            if deferred:
+                service.set_memory_enabled("project", False)
+                assert service.process_pending()[0]["memory_disabled"]
+            else:
+                assert result["memory_disabled"]
+            assert not service.list_memories("project")
+            service.set_memory_enabled("project", True)
+        finally:
+            service.store.close()
+
+        reopened = MemoryService(
+            path, gate=skip, episodic_policy=DialogueRetentionPolicy()
+        )
+        try:
+            reopened.rebuild_projections("project")
+>           assert not reopened.list_memories("project")
+E           AssertionError: assert not [Memory(id='mem_50ab2e9a7b5a28e398d34545619be397', namespace='project', kind='episode', evidence_state=<EvidenceState....d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')]
+E            +  where [Memory(id='mem_50ab2e9a7b5a28e398d34545619be397', namespace='project', kind='episode', evidence_state=<EvidenceState....d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')] = list_memories('project')
+E            +    where list_memories = <dive_memory.service.MemoryService object at 0x00000203BC968E90>.list_memories
+
+tests\test_source_grounding_boundaries.py:50: AssertionError
+_ test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes[False] _
+
+hard = False
+
+    @pytest.mark.parametrize("hard", [False, True])
+    def test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes(hard):
+        service = MemoryService(
+            gate=SegmentGate(), episodic_policy=DialogueRetentionPolicy()
+        )
+        try:
+            result = service.ingest(
+                "project",
+                "I work at Northfield. I own a jade compass. How should I catalogue it?",
+                source_type="user",
+            )
+            first, forgotten, observation = result["memory_ids"]
+            assert service.get_memory(forgotten).content == "I own a jade compass."
+            service.forget(forgotten, hard=hard)
+            assert service.get_memory(first).status.value == "ACTIVE"
+            assert not service.retrieve("project", "jade compass").items
+            service.extractor = HeuristicExtractionProvider(
+                gate=SegmentGate(exclude_work=True), episodic_policy=DialogueRetentionPolicy()
+            )
+            service.rebuild_projections("project")
+>           assert not any(
+                "jade compass" in memory.content
+                for memory in service.list_memories("project")
+            )
+E           assert not True
+E            +  where True = any(<generator object test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes.<locals>.<genexpr> at 0x00000203BC7D7E00>)
+
+tests\test_source_grounding_boundaries.py:153: AssertionError
+_ test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes[True] _
+
+hard = True
+
+    @pytest.mark.parametrize("hard", [False, True])
+    def test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes(hard):
+        service = MemoryService(
+            gate=SegmentGate(), episodic_policy=DialogueRetentionPolicy()
+        )
+        try:
+            result = service.ingest(
+                "project",
+                "I work at Northfield. I own a jade compass. How should I catalogue it?",
+                source_type="user",
+            )
+            first, forgotten, observation = result["memory_ids"]
+            assert service.get_memory(forgotten).content == "I own a jade compass."
+            service.forget(forgotten, hard=hard)
+            assert service.get_memory(first).status.value == "ACTIVE"
+            assert not service.retrieve("project", "jade compass").items
+            service.extractor = HeuristicExtractionProvider(
+                gate=SegmentGate(exclude_work=True), episodic_policy=DialogueRetentionPolicy()
+            )
+            service.rebuild_projections("project")
+>           assert not any(
+                "jade compass" in memory.content
+                for memory in service.list_memories("project")
+            )
+E           assert not True
+E            +  where True = any(<generator object test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes.<locals>.<genexpr> at 0x00000203BC9DC450>)
+
+tests\test_source_grounding_boundaries.py:153: AssertionError
+_ test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[human] _
+
+role = 'human'
+
+    @pytest.mark.parametrize("role", ["human", "user_correction", "USER", " user "])
+    def test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout(role):
+        service = MemoryService(episodic_policy=DialogueRetentionPolicy())
+        try:
+            result = service.ingest(
+                "project", "Do not remember this: I live in Cedar.", source_type=role
+            )
+>           assert result["memory_ids"] == []
+E           AssertionError: assert ['mem_d12c3bb...589fd7f5acf0'] == []
+E
+E             Left contains one more item: 'mem_d12c3bb347fd301dd76d589fd7f5acf0'
+E             Use -v to get more diff
+
+tests\test_source_grounding_boundaries.py:169: AssertionError
+_ test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[user_correction] _
+
+role = 'user_correction'
+
+    @pytest.mark.parametrize("role", ["human", "user_correction", "USER", " user "])
+    def test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout(role):
+        service = MemoryService(episodic_policy=DialogueRetentionPolicy())
+        try:
+            result = service.ingest(
+                "project", "Do not remember this: I live in Cedar.", source_type=role
+            )
+>           assert result["memory_ids"] == []
+E           AssertionError: assert ['mem_c7085fc...25eafe9e26fb'] == []
+E
+E             Left contains one more item: 'mem_c7085fc9b3d29ef762b425eafe9e26fb'
+E             Use -v to get more diff
+
+tests\test_source_grounding_boundaries.py:169: AssertionError
+_ test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[USER] _
+
+role = 'USER'
+
+    @pytest.mark.parametrize("role", ["human", "user_correction", "USER", " user "])
+    def test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout(role):
+        service = MemoryService(episodic_policy=DialogueRetentionPolicy())
+        try:
+            result = service.ingest(
+                "project", "Do not remember this: I live in Cedar.", source_type=role
+            )
+>           assert result["memory_ids"] == []
+E           AssertionError: assert ['mem_19290f0...2ecc1f509be0'] == []
+E
+E             Left contains one more item: 'mem_19290f06cec41c17f2b32ecc1f509be0'
+E             Use -v to get more diff
+
+tests\test_source_grounding_boundaries.py:169: AssertionError
+_ test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[ user ] _
+
+role = ' user '
+
+    @pytest.mark.parametrize("role", ["human", "user_correction", "USER", " user "])
+    def test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout(role):
+        service = MemoryService(episodic_policy=DialogueRetentionPolicy())
+        try:
+            result = service.ingest(
+                "project", "Do not remember this: I live in Cedar.", source_type=role
+            )
+>           assert result["memory_ids"] == []
+E           AssertionError: assert ['mem_13719ea...48c7606c96d9'] == []
+E
+E             Left contains one more item: 'mem_13719ea3989bae0c3cee48c7606c96d9'
+E             Use -v to get more diff
+
+tests\test_source_grounding_boundaries.py:169: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_source_grounding_boundaries.py::test_disabled_turn_remains_excluded_after_reenable_restart_and_full_rebuild[False]
+FAILED tests/test_source_grounding_boundaries.py::test_disabled_turn_remains_excluded_after_reenable_restart_and_full_rebuild[True]
+FAILED tests/test_source_grounding_boundaries.py::test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes[False]
+FAILED tests/test_source_grounding_boundaries.py::test_forgotten_semantic_fact_does_not_return_when_candidate_index_changes[True]
+FAILED tests/test_source_grounding_boundaries.py::test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[human]
+FAILED tests/test_source_grounding_boundaries.py::test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[user_correction]
+FAILED tests/test_source_grounding_boundaries.py::test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[USER]
+FAILED tests/test_source_grounding_boundaries.py::test_supported_user_role_aliases_cannot_bypass_explicit_memory_optout[ user ]
+8 failed, 3 passed in 1.21s

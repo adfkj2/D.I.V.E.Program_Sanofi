@@ -1,11 +1,11 @@
 {
   "round": "R67",
   "source_files_bound": 294,
-  "new_provider_requests": 0,
+  "new_provider_requests": 522,
   "candidate_real_accuracy": null,
   "official_benchmark": false,
   "paid_validation_authorized": false,
-  "shared_cumulative_peak_cny": "55.888030",
+  "shared_cumulative_peak_cny": "60.610976",
   "validation_proposal_sha256": "b29e034f0be206a5f5c91a47addb43f2c9a08b9c1764dbf11b17bc617625dc12",
   "publication_script_sha256": "5e7222f9789d5aeaeb6911fbb7eab3c7da62ce4845d0ac40f1d776d817a7fdaf",
   "manifest_scope": "All publication files except manifest.json itself",
@@ -292,8 +292,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2778,
-      "sha256": "98930329b8924854c2aaf3f419cad39df6c00d1003f342d67e32d5a7fc0225b7",
+      "bytes": 4450,
+      "sha256": "ff3897a853e221536dba6f67887b570ccefce1aeb662994f7eb7c08282d6d3ad",
       "transformation": "New publication explanation; no historical raw counterpart"
     },
     {
@@ -303,6 +303,108 @@
       "raw_path": "eval/reports/completion-budget-20261026/remote-checks-source.json",
       "raw_sha256": "1636eb02e01ef4c93844c2c2e99b7b9a72e7e06040c28033e506adeab7866fa3",
       "transformation": "Selected five job statuses and log excerpts; UTF-8/LF and machine-path normalization; no raw model results"
+    },
+    {
+      "path": "validation/validation-authorization.json",
+      "bytes": 869,
+      "sha256": "aae4a0e5a4776a0b460f7fd4dcf2ada1016949a2761695bf4c433fc3646dee87",
+      "raw_path": "eval/reports/completion-budget-20261026/validation-authorization.json",
+      "raw_sha256": "e7af9f7d7428c4b1a028627927d37dcb70386891f14801c60f5c172531a72943",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/challenge-semantic-review.json",
+      "bytes": 38071,
+      "sha256": "2cf618c20a4145f9174ec891e4077aa9637270fe2291eba31fb938bee2538136",
+      "raw_path": "eval/reports/completion-budget-20261026/challenge-semantic-review.json",
+      "raw_sha256": "ed979e9d5ea32cb54254dfe4f123f2d28ddcd2838d57f0e5aa17e376572251ac",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic development-fixture semantic descriptions may include generated answers; no raw Benchmark dialogue, per-case answers or traces"
+    },
+    {
+      "path": "validation/challenge-reconciliation.json",
+      "bytes": 15791,
+      "sha256": "877a6824913916f2c7479918d1f7c93f82b0961d77ca459b90a0f6f6ae5b7b79",
+      "raw_path": "eval/reports/completion-budget-20261026/challenge-reconciliation.json",
+      "raw_sha256": "f07bf69a32b3280b26ee2e28b4d654156f8e62baeaa9d61f33a619c0aea97e21",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/challenge-terminal.json",
+      "bytes": 254,
+      "sha256": "5de80fd96053bfb11b1c36c6603048133cbd762468f331cf3925e7497c332893",
+      "raw_path": "eval/reports/completion-budget-20261026/validation-background-v1/challenge/terminal.json",
+      "raw_sha256": "7ab03f5741c565182e468732ff710b6a0759af21b2c239e448c3fedc3c700f6d",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/candidate-terminal.json",
+      "bytes": 253,
+      "sha256": "ca875f4be32a120f440af73ad8c21cf414c9a5775dac9422a3e336be3d523cb0",
+      "raw_path": "eval/reports/completion-budget-20261026/validation-background-v1/candidate/terminal.json",
+      "raw_sha256": "e8ff1da7304568a3a5d13f91f1774e839f1801fb9524899119d755a268eaadbb",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/completed-pilot-cost-reconciliation.json",
+      "bytes": 2075,
+      "sha256": "4fa7d906b6809fe5797fc9568eadd8b566da943f0c44caf7a3ac4efdb2673f07",
+      "raw_path": "eval/reports/completion-budget-20261026/completed-pilot-cost-reconciliation.json",
+      "raw_sha256": "4fa7d906b6809fe5797fc9568eadd8b566da943f0c44caf7a3ac4efdb2673f07",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "remote-checks-record.json",
+      "bytes": 12304,
+      "sha256": "dc663660636d3437924567b010a6dedbaf98550bfacb919604e7a4571286644d",
+      "raw_path": "eval/reports/completion-budget-20261026/remote-checks-record.json",
+      "raw_sha256": "ffd974571f26ac90149aa4fc64f6e7db3cc13fd94a945979b1be9defcf95cc7a",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+    },
+    {
+      "path": "validation/candidate-summary.json",
+      "bytes": 456,
+      "sha256": "a7b5e88b64caf9a97bb9b434c0e11ac1d97051a623c3b2536bc1d182fc3883f6",
+      "raw_path": "eval/reports/completion-budget-20261026/validation-v1/candidate/summary.json",
+      "raw_sha256": "9136fdb48bc4f498dbbf1df540eec0604afd30d9492767a7bd5aee8f5e342ead",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers; omit per-case results or raw artifact map as stated in publication script"
+    },
+    {
+      "path": "validation/challenge-summary.json",
+      "bytes": 2521,
+      "sha256": "3e74b91ad01fdc156e26680c57939a708dc2e62ea46e6a9d895aba19979a681d",
+      "raw_path": "eval/reports/completion-budget-20261026/validation-v1/challenge/summary.json",
+      "raw_sha256": "0014cd521756a46c9450b930c73ade06ded21099beb202c5359907c5548db563",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers; omit per-case results or raw artifact map as stated in publication script"
+    },
+    {
+      "path": "review/result-independent-audit.json",
+      "bytes": 5150,
+      "sha256": "27f0f905afc5b52e9579b6e5cf437422ff136ba97adcba86649114632e00c6bb",
+      "raw_path": "eval/reports/completion-budget-20261026/r67-result-independent-audit.json",
+      "raw_sha256": "1d01194b2ad697142b427941c6916cf256256aac927207f288faa97755ca123a",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers; omit per-case results or raw artifact map as stated in publication script"
+    },
+    {
+      "path": "review/challenge-independent-review.json",
+      "bytes": 26351,
+      "sha256": "95f014c7ee47c4c221602558d3b30625e457c3a85e1e33d748bcd060c52d7284",
+      "raw_path": "eval/reports/completion-budget-20261026/challenge-independent-review.json",
+      "raw_sha256": "811e22732bde28395a84aa43d26591753a4a1698e9df2c0cce609ccf9c73a91a",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic development-fixture semantic descriptions may include generated answers; no raw Benchmark dialogue, per-case answers or traces; omit per-case results or raw artifact map as stated in publication script"
     }
-  ]
+  ],
+  "original_paid_validation_authorized": true,
+  "remaining_paid_execution_authorized": false,
+  "validation_status": "PILOT_COMPLETE_GATE_NOT_MET",
+  "candidate_confirmed_correct_fraction": 0.91,
+  "candidate_counts": {
+    "correct": 91,
+    "wrong": 8,
+    "unknown": 1,
+    "invalid": 0,
+    "judged": 100
+  },
+  "full_started": false,
+  "additional_peak_cost_cny": "4.722946",
+  "historical_unknown_reservations_preserved": true
 }

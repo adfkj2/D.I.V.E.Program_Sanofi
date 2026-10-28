@@ -41,6 +41,7 @@ def application_from_environment(db_path: str | None = None) -> MemoryApplicatio
             "deliberative",
             "deliberative-refs",
             "deliberative-staged",
+            "deliberative-grounded",
         }:
             effort = os.getenv("DIVE_REASONING_EFFORT", "low")
             if effort not in {"low", "high", "max"}:

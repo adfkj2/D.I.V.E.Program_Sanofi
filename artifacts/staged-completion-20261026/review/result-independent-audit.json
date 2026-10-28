@@ -1,0 +1,188 @@
+{
+  "reviewer": "Independent subagent /root/r67_result_audit",
+  "created_at": "2026-10-28T02:18:09.251541+00:00",
+  "result": "VERIFIED_COMPLETE_CANDIDATE_FAILED_PROMOTION_GATES",
+  "provider_requests_in_audit": 0,
+  "candidate_counts": {
+    "selected": 100,
+    "judged": 100,
+    "correct": 91,
+    "wrong": 8,
+    "unknown": 1,
+    "unjudged": 0,
+    "generated": 100,
+    "newly_generated": 100,
+    "invalid": 0,
+    "accuracy": null,
+    "confirmed_correct_fraction_of_full_denominator": 0.91
+  },
+  "candidate_upper_bound_if_unknown_correct": 0.92,
+  "terminal": {
+    "phase": "candidate",
+    "pid": 17388,
+    "proxy_pid": 3880,
+    "started_at": "2026-10-27T13:59:15.998719+00:00",
+    "status": "COMPLETED",
+    "exit_code": 0,
+    "finished_at": "2026-10-27T14:26:41.099270+00:00",
+    "elapsed_seconds": 1645.0939999999973
+  },
+  "ledgers": {
+    "reader": {
+      "requests": 300,
+      "completed": 300,
+      "pending": 0,
+      "unknown_usage": 0,
+      "input_tokens": 1376499,
+      "output_tokens": 187848,
+      "peak_cost_cny": "4.255782"
+    },
+    "judge": {
+      "requests": 102,
+      "completed": 102,
+      "pending": 0,
+      "unknown_usage": 0,
+      "input_tokens": 16471,
+      "output_tokens": 747,
+      "peak_cost_cny": "0.038918"
+    },
+    "challenge": {
+      "requests": 120,
+      "completed": 120,
+      "pending": 0,
+      "unknown_usage": 0,
+      "input_tokens": 107799,
+      "output_tokens": 26581,
+      "peak_cost_cny": "0.428246"
+    }
+  },
+  "additional_peak_cost_cny": "4.722946",
+  "candidate_peak_cost_cny": "4.294700",
+  "cumulative_peak_cny": "60.610976",
+  "actual_provider_invoice_cny": null,
+  "historical_missing_usage_full_requests_preserved": 3,
+  "historical_uncertain_continuation_requests_preserved": 1,
+  "frozen_source_files_verified": 294,
+  "source_archive_sha256": "e06f0adbb8103c4bff52902f1e0b3bf4bb978bfce88094c0f919c9b62332e2b5",
+  "frozen_historical_files_verified": 690,
+  "original_judge_request_templates_verified": 102,
+  "original_parser_protocol_preserved": true,
+  "reader_trace_requests_bound": 300,
+  "reader_empty_length_repair_count": 0,
+  "unanswerables": [
+    {
+      "question_id": "gpt4_fe651585_abs",
+      "status": "ABSTAIN",
+      "correct": true
+    },
+    {
+      "question_id": "2698e78f_abs",
+      "status": "ABSTAIN",
+      "correct": null
+    },
+    {
+      "question_id": "f4f1d8a4_abs",
+      "status": "ABSTAIN",
+      "correct": true
+    },
+    {
+      "question_id": "gpt4_372c3eed_abs",
+      "status": "ABSTAIN",
+      "correct": true
+    },
+    {
+      "question_id": "60bf93ed_abs",
+      "status": "ABSTAIN",
+      "correct": true
+    },
+    {
+      "question_id": "edced276_abs",
+      "status": "ABSTAIN",
+      "correct": true
+    }
+  ],
+  "judge_format_unknown_attempts": [
+    {
+      "question_id": "2698e78f_abs",
+      "top_level_keys": [
+        "type",
+        "output"
+      ],
+      "nested_output_keys": [
+        "verdict"
+      ],
+      "preserved_correct": null
+    },
+    {
+      "question_id": "2698e78f_abs",
+      "top_level_keys": [
+        "output"
+      ],
+      "nested_output_keys": [
+        "verdict"
+      ],
+      "preserved_correct": null
+    },
+    {
+      "question_id": "f4f1d8a4_abs",
+      "top_level_keys": [
+        "type",
+        "output"
+      ],
+      "nested_output_keys": [
+        "verdict"
+      ],
+      "preserved_correct": null
+    }
+  ],
+  "unknown_grade_not_recovered_or_rejudged": true,
+  "paired_control_counts": {
+    "True -> True": 86,
+    "False -> False": 4,
+    "False -> True": 4,
+    "None -> True": 1,
+    "True -> None": 1,
+    "True -> False": 4
+  },
+  "paired_control_ids": {
+    "False -> False": [
+      "gpt4_7fce9456",
+      "a82c026e",
+      "370a8ff4",
+      "b86304ba"
+    ],
+    "False -> True": [
+      "89941a94",
+      "54026fce",
+      "1da05512",
+      "gpt4_2c50253f"
+    ],
+    "None -> True": [
+      "gpt4_fe651585_abs"
+    ],
+    "True -> None": [
+      "2698e78f_abs"
+    ],
+    "True -> False": [
+      "88432d0a",
+      "51c32626",
+      "gpt4_f420262c",
+      "gpt4_59149c78"
+    ]
+  },
+  "full_gate": {
+    "rejected": true,
+    "reason": "Execution blocked: Candidate misses 97 confirmed correct or conservative control comparison",
+    "confirmed_97_requirement_met": false,
+    "conservative_control_upper_bound_92_met": false,
+    "six_explicit_abstentions_without_false_met": true,
+    "full_output_exists": false
+  },
+  "original_input_files_unchanged_during_audit": true,
+  "limitations": [
+    "No new model judgments or generation. Original null verdict remains null and does not count correct; 91/100 is the confirmed lower bound, not a complete accuracy value.",
+    "Paired comparison uses the preserved earlier 91/8/1 control, not a new simultaneous control. Model service and judge variability can affect transitions.",
+    "All 500 benchmark cases have development exposure. This is a fixed development pilot, not blind/official or a full 500-case result.",
+    "Current shared budget is intentionally left untouched for the parent to reconcile; historical unknown reservations are retained in the original 55.888030 baseline."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "scope": "Final accounting after the only authorized R67 pilot missed its declared semantic gate",
+  "status": "PILOT_COMPLETE_GATE_NOT_MET",
+  "baseline_cumulative_peak_cny": "55.888030",
+  "ledgers": {
+    "challenge": {
+      "requests": 120,
+      "input_tokens": 107799,
+      "output_tokens": 26581,
+      "peak_cost_cny": "0.428246",
+      "path": "eval/reports/completion-budget-20261026/validation-v1/challenge/request-ledger.json",
+      "sha256": "90ba0190481119f0a932fa2822d83e47ba97cbe49462ada95dbf69a298685788"
+    },
+    "reader": {
+      "requests": 300,
+      "input_tokens": 1376499,
+      "output_tokens": 187848,
+      "peak_cost_cny": "4.255782",
+      "path": "eval/reports/completion-budget-20261026/validation-v1/candidate/reader-ledger.json",
+      "sha256": "873ece93c13d00ca25889881f6bad56159473c9bda08b82b2405471606386c5c"
+    },
+    "judge": {
+      "requests": 102,
+      "input_tokens": 16471,
+      "output_tokens": 747,
+      "peak_cost_cny": "0.038918",
+      "path": "eval/reports/completion-budget-20261026/validation-v1/candidate/judge-ledger.json",
+      "sha256": "135b51249686cfd8f8c62b40dc296288f798d460524cfcb637306d977e199434"
+    }
+  },
+  "attempted_calls": 522,
+  "completed_calls": 522,
+  "missing_usage_calls": 0,
+  "input_tokens": 1500769,
+  "output_tokens": 215176,
+  "additional_peak_cost_cny": "4.722946",
+  "candidate_peak_cost_cny": "4.294700",
+  "cumulative_peak_cny": "60.610976",
+  "actual_invoice_cny": null,
+  "historical_unknown_full_reservations_preserved_in_baseline": true,
+  "confirmed_correct": 91,
+  "wrong": 8,
+  "unknown_verdict": 1,
+  "accuracy": null,
+  "full_run_started": false,
+  "gate_97_met": false,
+  "gate_control_upper_92_met": false,
+  "full_authorized": false,
+  "new_candidate_retries_authorized": false,
+  "independent_audit_sha256": "1d01194b2ad697142b427941c6916cf256256aac927207f288faa97755ca123a",
+  "candidate_summary_sha256": "9136fdb48bc4f498dbbf1df540eec0604afd30d9492767a7bd5aee8f5e342ead",
+  "terminal_sha256": "e8ff1da7304568a3a5d13f91f1774e839f1801fb9524899119d755a268eaadbb"
+}

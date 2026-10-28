@@ -1,0 +1,10 @@
+{
+  "phase": "challenge",
+  "pid": 31116,
+  "proxy_pid": 17320,
+  "started_at": "2026-10-27T13:43:21.541303+00:00",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "finished_at": "2026-10-27T13:47:34.852908+00:00",
+  "elapsed_seconds": 253.31300000000192
+}

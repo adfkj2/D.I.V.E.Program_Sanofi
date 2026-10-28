@@ -1,0 +1,12 @@
+unformatted: File would be reformatted
+   --> src\dive_memory\reading\provenance.py:160:27
+    |
+159 |             declared = event.payload.get("source_type")
+    -             source_type = declared.strip().casefold() if isinstance(declared, str) else ""
+160 +             source_type = (
+161 +                 declared.strip().casefold() if isinstance(declared, str) else ""
+162 +             )
+163 |             role = (
+    |
+
+1 file would be reformatted, 92 files already formatted

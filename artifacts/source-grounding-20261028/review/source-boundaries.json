@@ -1,0 +1,172 @@
+{
+  "schema_version": "r68-independent-source-grounding-review-v2",
+  "reviewer": "Independent subagent /root/r67_close_docs",
+  "created_at": "2026-10-28T09:47:48.936593+00:00",
+  "scope": "Final independent free review including durable consent/sensitivity exclusions under extractor replacement. Earlier audit and all original failures remain separate.",
+  "provider_requests": 0,
+  "source_mutations_by_reviewer": 0,
+  "test_files_added_or_extended_by_reviewer": [
+    "tests/test_source_grounding_boundaries.py",
+    "tests/integration/postgres/test_postgres_dialogue_retention.py"
+  ],
+  "historical_outputs_gold_judge_changed": false,
+  "checks": [
+    {
+      "name": "independent-boundaries-final-v2",
+      "exit_code": 0,
+      "log": "eval/reports/source-grounding-20261028/independent-boundaries-final-v2.log"
+    },
+    {
+      "name": "independent-postgres-collection-v2",
+      "exit_code": 0,
+      "log": "eval/reports/source-grounding-20261028/independent-postgres-collection-v2.log"
+    },
+    {
+      "name": "independent-added-tests-lint-final-v2",
+      "exit_code": 0,
+      "log": "eval/reports/source-grounding-20261028/independent-added-tests-lint-final-v2.log"
+    },
+    {
+      "name": "independent-added-tests-format-final-v2",
+      "exit_code": 0,
+      "log": "eval/reports/source-grounding-20261028/independent-added-tests-format-final-v2.log"
+    }
+  ],
+  "unit_counts": {
+    "tests": 224,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 224
+  },
+  "source_hashes_before": {
+    "src/dive_memory/dialogue_retention.py": "72f9e5c232c2115ec1eb5d57881d13022449dce6de8cb98dc07e28a5d2d8ee85",
+    "src/dive_memory/llm.py": "d553a0014e3e717df8d856a85603e55e44b4ea4a5a007e7642ac0a8c7adcfec1",
+    "src/dive_memory/service.py": "0498e881d1b991b3c306c318c4c2739e612487d1ba6a6d26ff3df1cc349dab0d",
+    "src/dive_memory/store.py": "d6089178fbd9425495d1b91cdadc22cd846ec6153005cfcbc6c73df2b9424890",
+    "src/dive_memory/postgres_store.py": "b66004f46461f2ab636687eff7fd8dad17dd8958e06bb35dcf9218ea1e408a69",
+    "src/dive_memory/reading/provenance.py": "8f836c9f51ea6433cdf75830719ffa2a12231b141e98772cff96261518d5e00e",
+    "src/dive_memory/retrieval_session.py": "7be9549418a271739e8bbd093904fa168d0aff9d730027e9b6f31a4db1bbe71c",
+    "src/dive_memory/reading/evidence.py": "b66cffbff3437e8a71b55eea053c76bb7058e8bc3be6774e4804b75c8453cebf",
+    "tests/test_source_grounding_boundaries.py": "bc8e50f5ca7bc7142527e2ea8a1ad7b5c7732c395321ab134322b34df0abd54d",
+    "tests/integration/postgres/test_postgres_dialogue_retention.py": "ef8ddde148624201b01bcba7805420797b452e84a778ab01f2a74dc0d463ffa8"
+  },
+  "source_hashes_after": {
+    "src/dive_memory/dialogue_retention.py": "72f9e5c232c2115ec1eb5d57881d13022449dce6de8cb98dc07e28a5d2d8ee85",
+    "src/dive_memory/llm.py": "d553a0014e3e717df8d856a85603e55e44b4ea4a5a007e7642ac0a8c7adcfec1",
+    "src/dive_memory/service.py": "0498e881d1b991b3c306c318c4c2739e612487d1ba6a6d26ff3df1cc349dab0d",
+    "src/dive_memory/store.py": "d6089178fbd9425495d1b91cdadc22cd846ec6153005cfcbc6c73df2b9424890",
+    "src/dive_memory/postgres_store.py": "b66004f46461f2ab636687eff7fd8dad17dd8958e06bb35dcf9218ea1e408a69",
+    "src/dive_memory/reading/provenance.py": "8f836c9f51ea6433cdf75830719ffa2a12231b141e98772cff96261518d5e00e",
+    "src/dive_memory/retrieval_session.py": "7be9549418a271739e8bbd093904fa168d0aff9d730027e9b6f31a4db1bbe71c",
+    "src/dive_memory/reading/evidence.py": "b66cffbff3437e8a71b55eea053c76bb7058e8bc3be6774e4804b75c8453cebf",
+    "tests/test_source_grounding_boundaries.py": "bc8e50f5ca7bc7142527e2ea8a1ad7b5c7732c395321ab134322b34df0abd54d",
+    "tests/integration/postgres/test_postgres_dialogue_retention.py": "ef8ddde148624201b01bcba7805420797b452e84a778ab01f2a74dc0d463ffa8"
+  },
+  "tested_sources_unchanged": true,
+  "result": "PASS_WITH_NATIVE_POSTGRES_STILL_TO_VERIFY",
+  "findings": [
+    {
+      "id": "CONSENT_DISABLED_REPLAY",
+      "priority": "P1",
+      "initially_reproduced": "Two failures: immediate disabled ingest or queued event skipped while disabled reappeared after re-enable, restart and full SQLite rebuild.",
+      "original_evidence": "independent-boundaries-red.log; independent-boundaries-red.xml",
+      "resolution": "Parent added durable namespace/event event_projection tombstones at disabled ingest/queue processing and rejection in _process_event plus rebuild filtering. Original Event audit remains, projection permission does not revive.",
+      "final_status": "Verified by independent unit test, both immediate and deferred paths across restart/rebuild."
+    },
+    {
+      "id": "FORGOTTEN_FACT_INDEX_DRIFT",
+      "priority": "P1",
+      "initially_reproduced": "Two failures: after soft/hard forget, changed extraction moved the same forgotten FACT into another memory index and rebuild made it retrievable again. Observation-only dialogue guards were insufficient.",
+      "original_evidence": "independent-boundaries-red-v2.log; independent-boundaries-red-v2.xml",
+      "resolution": "Parent added namespace/event/content memory_projection guard and a stable alternate identity for independent unforgotten candidates colliding with an old index tombstone. Legacy tombstones without source guards remain conservative.",
+      "final_status": "Verified by independent tests for both soft/hard forgetting, changed extraction and reversed facts across restart/full rebuild, retaining the independent unforgotten fact.",
+      "limit": "Guard matches source-scoped stripped original candidate text. It is not semantic detection of arbitrary paraphrases or facts restated in another event."
+    },
+    {
+      "id": "ROLE_ALIAS_OPTOUT_BYPASS",
+      "priority": "P1",
+      "initially_reproduced": "Known user role aliases and normalized casing/spacing bypassed blocks_turn, permitting an explicit Do not remember turn to form an ordinary FACT.",
+      "original_evidence": "independent-boundaries-red-v2.log; independent-boundaries-red-v2.xml",
+      "resolution": "Parent normalized user/human/user_correction/memory_correction with strip/casefold before consent/sensitivity and observation handling.",
+      "final_status": "Five independent end-to-end alias cases pass. Full-turn sensitivity remains checked before clipping, base policy and fact extraction."
+    },
+    {
+      "id": "ROLE_METADATA_NORMALIZATION_DRIFT",
+      "priority": "P2",
+      "initially_reproduced": "Three additional failures after consent fix: spaced user, memory_correction and spaced assistant annotated unknown despite known source declarations.",
+      "original_evidence": "independent-boundaries-role-red.log; independent-boundaries-role-red.xml",
+      "resolution": "Parent reused the declared user-source set and strip/casefold in the provenance provider.",
+      "final_status": "All six role-to-view end-to-end cases pass without deriving a role from source text."
+    },
+    {
+      "id": "EXPLICIT_CONSENT_REPLAYS_AFTER_EXTRACTOR_REPLACEMENT",
+      "priority": "P1",
+      "discovery": "Parent identified the residual policy-skip replay gap during code review. Independent isolated in-memory probe confirmed 0 initial memories becoming 1 FACT after removing retention and rebuilding, with event_projection_blocked=false.",
+      "original_evidence": "independent-optout-replay-diagnosis.json; independent-permanent-consent-red.log; independent-permanent-consent-red.xml",
+      "initially_reproduced": "Two independent red cases: explicit optout or a synthetic sensitive label were initially excluded but reconstructed after restart with a replacement permissive extractor that lacks retention.",
+      "resolution": "Parent appended exclude_from_replay=False to ExtractionOutcome, set True only for whole-turn retention consent/sensitivity exclusions, and made service persist an event_projection block before recording the original POLICY_SKIP decision. Ordinary low-utility skips retain default False and remain replayable.",
+      "final_status": "Both new SQLite cases now pass across actual service close/reopen and full projection rebuild. Two matching PostgreSQL cases added; native execution still awaits CI.",
+      "limit": "Explicit policy exclusion blocks memory projection/replay, not the retained Event audit payload. Existing earlier events never marked by such a policy are not retroactively classified."
+    }
+  ],
+  "reviewed_invariants": [
+    "Annotation verifies current namespace, version, lifecycle, complete source-ref set, cutoff and exact visible clip containment; it cannot widen the body.",
+    "Initial/search/read paths in the new reader explicitly annotate through the same provider; legacy readers do not implicitly gain annotations.",
+    "Statement clocks use event.observed_at, distinct from occurred/valid time; missing/foreign/future/tombstoned sources retain unknown stamps and hide their role/clock/message metadata.",
+    "Metadata provider never accesses payload.text in business logic. get_event still loads the whole Event through the store; no metadata-only database projection is claimed.",
+    "Source-forget eviction and tombstones are inside the outer public-store transaction. SQLite rollback checks pass; PostgreSQL native rollback tests remain to execute remotely.",
+    "Full-turn observations remain OBSERVATION episodes, without promoted value; identical words at different events do not merge their event identity.",
+    "A forgotten previously-discovered source cannot be re-read/reannotated or recovered by search after rebuild.",
+    "retained_source_span describes stored retention only; displayed_chars measures the actual current clip. No original-body extension or invented truncation marker is added.",
+    "Legacy/adaptive reader, default service, edge cases, episodic and narrative policy regression tests are included in the final free verification.",
+    "Explicit optout/sensitive user-turn rejection is durable even if a later extractor does not install DialogueRetentionPolicy; ordinary utility filtering is not made permanent."
+  ],
+  "postgres": {
+    "new_native_cases_added_by_reviewer": 11,
+    "total_native_cases_in_file": 15,
+    "local_actual_passed": 0,
+    "local_skipped": 15,
+    "reason": "DIVE_TEST_POSTGRES_DSN is absent; collection and conditional skipping are not database validation.",
+    "evidence": "independent-postgres-collection-v2.log; independent-postgres-collection-v2.xml",
+    "new_cases": "Soft/hard FACT candidate reordering with independent unforgotten candidate returned, five user aliases honoring explicit optout, and immediate/deferred disabled event reprocessing after re-enable.",
+    "required_remaining_verification": "Execute all 15 in the native PostgreSQL CI service on the exact final published SHA, with zero skips.",
+    "additional_cases": "Explicit optout and synthetic sensitive-label exclusions remain blocked on original-event reprocessing under a replacement extractor."
+  },
+  "limitations": [
+    "This review is free engineering evidence; no new Oracle answers, original-judge verdicts or score increase were produced.",
+    "Raw Event audit is retained for disabled/opt-out turns unless a separate event hard-forget workflow removes it. This is projection exclusion, not erasure of original audit payload.",
+    "Current full benchmark remains R62 435 correct/57 wrong/8 unknown; R67 pilot remained 91/8/1 and did not authorize the full run.",
+    "Full engineering quality gate and fresh wheel/native PostgreSQL CI are owned by parent and still require their own exact-source evidence."
+  ],
+  "evidence_hashes": {
+    "eval/reports/source-grounding-20261028/independent-added-tests-format-final-v2.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "eval/reports/source-grounding-20261028/independent-added-tests-format-final.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "eval/reports/source-grounding-20261028/independent-added-tests-lint-final-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "eval/reports/source-grounding-20261028/independent-added-tests-lint-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "eval/reports/source-grounding-20261028/independent-boundaries-final-v2.log": "6835f68e72909fa6c787fbe7799b2e63ce0d7d9707f947d3f2b9300c2b5978ba",
+    "eval/reports/source-grounding-20261028/independent-boundaries-final-v2.xml": "6412d2cfa08d117116377b3a6d0ff3eba523e69f0cc7df49eff82cd2ca88372d",
+    "eval/reports/source-grounding-20261028/independent-boundaries-final.log": "d70fb7d0c4c77b20e20638ab2a20b9daac11743cc979cb65440030eced0d4d47",
+    "eval/reports/source-grounding-20261028/independent-boundaries-final.xml": "6f7a06f2899cbee8ad995911295f1e4c5e648a99d8d35e2294f1c88b6f6c27d2",
+    "eval/reports/source-grounding-20261028/independent-boundaries-red-v2.log": "31536366289daced88b2bf2ba7717b9881f9661fcb3186689b0f31b5309874ee",
+    "eval/reports/source-grounding-20261028/independent-boundaries-red-v2.xml": "d39b816b8b8ed5c4862b0dcc58c0af2ae8a96b383a91bfd1cb6951b4522b874a",
+    "eval/reports/source-grounding-20261028/independent-boundaries-red-v3.log": "b3810c752c06bb5147b0f979aa898515cd1db7e38c90ea8852e08eb736ca526e",
+    "eval/reports/source-grounding-20261028/independent-boundaries-red-v3.xml": "2ea14206c165a3d70e0d054cb25c6c0f28ff53b9a0af7bc7ffdfbd15abd7acaf",
+    "eval/reports/source-grounding-20261028/independent-boundaries-red.log": "5ba0e3a42b47d97ce53b3049277d96054ebc0525f1fd54a4ac573fb45700061e",
+    "eval/reports/source-grounding-20261028/independent-boundaries-red.xml": "78df0b4fe5f28abc9c52dfa440d62bcbe971c14999e40159b42a3437bddaf876",
+    "eval/reports/source-grounding-20261028/independent-boundaries-role-red.log": "acd4054aa880c4fe5c83d29d828c0a579c2803be013b6e26dd60a253d19e60e8",
+    "eval/reports/source-grounding-20261028/independent-boundaries-role-red.xml": "714a286d58e95c9f48913e45c4e713b6e3aff1002de9ae4e4070ca7335cc4d19",
+    "eval/reports/source-grounding-20261028/independent-grounding-fixture-review.json": "b45fd74b252fa47137485954ef898b2d56472cea6d1338fb08b08ef1d3dda791",
+    "eval/reports/source-grounding-20261028/independent-optout-replay-diagnosis.json": "0e932fb78d5a9532b2357fa2f8da38eb9e042682fa5e7de0a0b064105e9752fd",
+    "eval/reports/source-grounding-20261028/independent-permanent-consent-red.log": "8d12b99611ab3a20532f2c1cb48c07c1bf2c06818ae3dc552c7afdcaeda5cc54",
+    "eval/reports/source-grounding-20261028/independent-permanent-consent-red.xml": "4e9d71de16b3bf602850f3cebab1c43188106dae550c6af9e41fee47b2306a56",
+    "eval/reports/source-grounding-20261028/independent-postgres-collection-v2.log": "f9d22bc33f8174252857d75786bf7e3aa42d042f4895f610c4112533f8ca1ff2",
+    "eval/reports/source-grounding-20261028/independent-postgres-collection-v2.xml": "f739881caeb2dc8d950ddee5b82612b8bc2a4cca6b661aeb778d46e959789283",
+    "eval/reports/source-grounding-20261028/independent-postgres-collection.log": "20b50e5592b486f4900c7422632d4d032f1d6920d55feb5dc1a91d8fa2f56527",
+    "eval/reports/source-grounding-20261028/independent-postgres-collection.xml": "f3d88b1cc10951098f798264a70762ec5e6a76f4ccdd4ca469347460209756c3"
+  },
+  "prior_review": {
+    "path": "eval/reports/source-grounding-20261028/source-grounding-independent-review.json",
+    "sha256": "a430e20b06393a3b6628e01d97f4b6ce9be84e1ee121f0268fa6bb423cc2c6c0"
+  }
+}

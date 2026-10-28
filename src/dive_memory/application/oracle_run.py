@@ -291,12 +291,16 @@ def main(argv=None):
             "deliberative",
             "deliberative-refs",
             "deliberative-staged",
+            "deliberative-grounded",
         ),
         default="r40",
     )
     parser.add_argument(
         "--fact-policy", choices=("historical", "scoped"), default="historical"
     )
+    parser.add_argument("--dialogue-retention", action="store_true")
+    parser.add_argument("--dialogue-max-chars", type=int, default=2000)
+    parser.add_argument("--dialogue-max-turn-chars", type=int, default=16000)
     parser.add_argument(
         "--reasoning-effort", choices=("low", "high", "max"), default="low"
     )
@@ -306,7 +310,16 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.max_cases is not None and args.max_cases <= 0:
         parser.error("max-cases must be positive")
-    config = replace(r40_pipeline(), scoped_fact_anchors=args.fact_policy == "scoped")
+    try:
+        config = replace(
+            r40_pipeline(),
+            scoped_fact_anchors=args.fact_policy == "scoped",
+            dialogue_retention=args.dialogue_retention,
+            dialogue_max_chars=args.dialogue_max_chars,
+            dialogue_max_turn_chars=args.dialogue_max_turn_chars,
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
     plan = {
         "pipeline": config.to_dict(),
         "model": args.model,

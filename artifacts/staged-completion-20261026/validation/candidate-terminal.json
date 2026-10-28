@@ -1,0 +1,10 @@
+{
+  "phase": "candidate",
+  "pid": 17388,
+  "proxy_pid": 3880,
+  "started_at": "2026-10-27T13:59:15.998719+00:00",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "finished_at": "2026-10-27T14:26:41.099270+00:00",
+  "elapsed_seconds": 1645.0939999999973
+}

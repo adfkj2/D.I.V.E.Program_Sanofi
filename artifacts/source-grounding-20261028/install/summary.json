@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "import_file": "${REPOSITORY}\\eval\\reports\\source-grounding-20261028\\install-v2\\environment\\Lib\\site-packages\\dive_memory\\__init__.py",
+  "cwd": "${REPOSITORY}\\eval\\reports\\source-grounding-20261028\\install-v2",
+  "package_assets": 6,
+  "persistence_restart": true,
+  "cli_api": true,
+  "packaged_casebook": true,
+  "local_consult": true,
+  "handoff_markdown": true,
+  "wheel": "dive_memory-0.4.0-py3-none-any.whl",
+  "wheel_sha256": "ad9433733fb73adb69268c6b39ba7651c3bc7746570edb59a14cbd0b9bc3dd28",
+  "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+  "source_path_injected": false
+}

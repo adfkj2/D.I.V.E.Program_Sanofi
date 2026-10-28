@@ -1,0 +1,422 @@
+{
+  "python": "3.14.0",
+  "platform": "win32",
+  "checks": [
+    {
+      "name": "source-correctness",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "ruff",
+        "check",
+        "src"
+      ],
+      "returncode": 0,
+      "seconds": 0.294,
+      "log": "source-correctness.txt"
+    },
+    {
+      "name": "delivery-lint",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "ruff",
+        "check",
+        "src/dive_memory/dialogue_retention.py",
+        "src/dive_memory/retrieval_session.py",
+        "tests/test_adaptive_reader.py",
+        "tests/test_scoped_evidence.py",
+        "tests/test_tool_recovery.py",
+        "src/dive_memory/reading",
+        "src/dive_memory/agent",
+        "src/dive_memory/application",
+        "src/dive_memory/web.py",
+        "src/dive_memory/cli.py",
+        "src/dive_memory/observability.py",
+        "tools/windows/launcher.py",
+        "tools/build_project_casebook.py",
+        "tools/check_quality.py",
+        "tools/clean_workspace.py",
+        "src/dive_memory/evaluation_bundle.py",
+        "src/dive_memory/mechanism_validation.py",
+        "tests/test_evaluation_delivery.py",
+        "tests/test_mechanism_validation.py",
+        "tests/test_application_delivery.py",
+        "tests/test_delivery_cold_run.py",
+        "tests/test_project_briefing.py",
+        "tests/test_project_resumption_cli.py",
+        "tests/test_project_import.py",
+        "tests/test_deliberation_protocol.py",
+        "tests/test_deliberative_reader.py",
+        "tests/test_reference_protocol.py",
+        "tests/test_completion_transport.py",
+        "tests/test_staged_deliberation.py",
+        "tests/test_staged_evidence_flow.py",
+        "tests/test_reader_tool_challenge_dataset.py",
+        "tests/test_source_provenance.py",
+        "tests/test_evidence_snapshot_identity.py",
+        "tests/test_dialogue_retention.py",
+        "tests/test_argument_protocol.py",
+        "tests/test_dialogue_evidence_extent.py",
+        "tests/test_oracle_source_grounding_config.py",
+        "tests/test_source_grounding_boundaries.py",
+        "tests/test_reader_grounding_challenge_dataset.py",
+        "tests/integration/postgres/test_postgres_dialogue_retention.py",
+        "tests/test_evidence_workspace.py",
+        "tests/test_reader_failure_analysis.py",
+        "tests/test_reader_challenge_dataset.py",
+        "tests/test_reader_challenge_runner.py",
+        "tools/analyze_reader_failures.py",
+        "tools/run_reader_challenge.py",
+        "tests/test_windows_launcher.py",
+        "tests/test_metrics.py",
+        "tests/test_quality_gate.py",
+        "tests/test_workspace_cleanup.py",
+        "tests/test_application_boundaries.py",
+        "tests/test_architecture_boundaries.py",
+        "tests/test_product_loop.py",
+        "tests/test_project_agent.py",
+        "tests/test_agent_transport.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.305,
+      "log": "delivery-lint.txt"
+    },
+    {
+      "name": "delivery-format",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "src/dive_memory/dialogue_retention.py",
+        "src/dive_memory/retrieval_session.py",
+        "tests/test_adaptive_reader.py",
+        "tests/test_scoped_evidence.py",
+        "tests/test_tool_recovery.py",
+        "src/dive_memory/reading",
+        "src/dive_memory/agent",
+        "src/dive_memory/application",
+        "src/dive_memory/web.py",
+        "src/dive_memory/cli.py",
+        "src/dive_memory/observability.py",
+        "tools/windows/launcher.py",
+        "tools/build_project_casebook.py",
+        "tools/check_quality.py",
+        "tools/clean_workspace.py",
+        "src/dive_memory/evaluation_bundle.py",
+        "src/dive_memory/mechanism_validation.py",
+        "tests/test_evaluation_delivery.py",
+        "tests/test_mechanism_validation.py",
+        "tests/test_application_delivery.py",
+        "tests/test_delivery_cold_run.py",
+        "tests/test_project_briefing.py",
+        "tests/test_project_resumption_cli.py",
+        "tests/test_project_import.py",
+        "tests/test_deliberation_protocol.py",
+        "tests/test_deliberative_reader.py",
+        "tests/test_reference_protocol.py",
+        "tests/test_completion_transport.py",
+        "tests/test_staged_deliberation.py",
+        "tests/test_staged_evidence_flow.py",
+        "tests/test_reader_tool_challenge_dataset.py",
+        "tests/test_source_provenance.py",
+        "tests/test_evidence_snapshot_identity.py",
+        "tests/test_dialogue_retention.py",
+        "tests/test_argument_protocol.py",
+        "tests/test_dialogue_evidence_extent.py",
+        "tests/test_oracle_source_grounding_config.py",
+        "tests/test_source_grounding_boundaries.py",
+        "tests/test_reader_grounding_challenge_dataset.py",
+        "tests/integration/postgres/test_postgres_dialogue_retention.py",
+        "tests/test_evidence_workspace.py",
+        "tests/test_reader_failure_analysis.py",
+        "tests/test_reader_challenge_dataset.py",
+        "tests/test_reader_challenge_runner.py",
+        "tools/analyze_reader_failures.py",
+        "tools/run_reader_challenge.py",
+        "tests/test_windows_launcher.py",
+        "tests/test_metrics.py",
+        "tests/test_quality_gate.py",
+        "tests/test_workspace_cleanup.py",
+        "tests/test_application_boundaries.py",
+        "tests/test_architecture_boundaries.py",
+        "tests/test_product_loop.py",
+        "tests/test_project_agent.py",
+        "tests/test_agent_transport.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.289,
+      "log": "delivery-format.txt"
+    },
+    {
+      "name": "types",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "mypy"
+      ],
+      "returncode": 0,
+      "seconds": 0.869,
+      "log": "types.txt"
+    },
+    {
+      "name": "tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "coverage",
+        "run",
+        "-m",
+        "pytest",
+        "-q",
+        "-ra",
+        "--junitxml=${REPOSITORY}\\eval\\reports\\source-grounding-20261028\\quality-v2\\tests.xml"
+      ],
+      "returncode": 0,
+      "seconds": 153.187,
+      "log": "tests.txt"
+    },
+    {
+      "name": "coverage-json",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "coverage",
+        "json",
+        "-o",
+        "${REPOSITORY}\\eval\\reports\\source-grounding-20261028\\quality-v2\\coverage.json"
+      ],
+      "returncode": 0,
+      "seconds": 3.761,
+      "log": "coverage-json.txt"
+    },
+    {
+      "name": "casebook-sources",
+      "command": [
+        "${PYTHON}",
+        "tools/build_project_casebook.py",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.258,
+      "log": "casebook-sources.txt"
+    }
+  ],
+  "coverage": {
+    "delivery": {
+      "num_statements": 1692,
+      "covered_lines": 1604,
+      "num_branches": 520,
+      "covered_branches": 471,
+      "files": [
+        "src/dive_memory/agent/__init__.py",
+        "src/dive_memory/agent/engine.py",
+        "src/dive_memory/agent/protocols.py",
+        "src/dive_memory/agent/schema.py",
+        "src/dive_memory/agent/transport.py",
+        "src/dive_memory/application/__init__.py",
+        "src/dive_memory/application/agent_tools.py",
+        "src/dive_memory/application/assistant.py",
+        "src/dive_memory/application/briefing.py",
+        "src/dive_memory/application/casebook.py",
+        "src/dive_memory/application/demo.py",
+        "src/dive_memory/application/oracle_run.py",
+        "src/dive_memory/application/project_import.py",
+        "src/dive_memory/application/readers.py",
+        "src/dive_memory/application/records.py",
+        "src/dive_memory/application/runtime.py",
+        "src/dive_memory/application/settings.py",
+        "src/dive_memory/application/workspace.py",
+        "src/dive_memory/cli.py",
+        "src/dive_memory/observability.py",
+        "src/dive_memory/web.py"
+      ],
+      "line_percent": 94.79905437352245,
+      "branch_percent": 90.57692307692308,
+      "line_min": 90,
+      "branch_min": 80,
+      "passed": true
+    },
+    "memory-core": {
+      "num_statements": 1224,
+      "covered_lines": 1136,
+      "num_branches": 420,
+      "covered_branches": 346,
+      "files": [
+        "src/dive_memory/service.py",
+        "src/dive_memory/store.py",
+        "src/dive_memory/temporal.py"
+      ],
+      "line_percent": 92.81045751633987,
+      "branch_percent": 82.38095238095238,
+      "line_min": 90,
+      "branch_min": 80,
+      "passed": true
+    },
+    "reading": {
+      "num_statements": 2449,
+      "covered_lines": 2322,
+      "num_branches": 874,
+      "covered_branches": 770,
+      "files": [
+        "src/dive_memory/reading/__init__.py",
+        "src/dive_memory/reading/adaptive.py",
+        "src/dive_memory/reading/adjudicated_reader.py",
+        "src/dive_memory/reading/advice_refusal_reader.py",
+        "src/dive_memory/reading/arguments.py",
+        "src/dive_memory/reading/calculation.py",
+        "src/dive_memory/reading/contracts.py",
+        "src/dive_memory/reading/current_state_reader.py",
+        "src/dive_memory/reading/deliberation.py",
+        "src/dive_memory/reading/deliberative.py",
+        "src/dive_memory/reading/evidence.py",
+        "src/dive_memory/reading/execution.py",
+        "src/dive_memory/reading/grounded_advice_reader.py",
+        "src/dive_memory/reading/indexed_reader.py",
+        "src/dive_memory/reading/premise_review_reader.py",
+        "src/dive_memory/reading/provenance.py",
+        "src/dive_memory/reading/providers.py",
+        "src/dive_memory/reading/reader.py",
+        "src/dive_memory/reading/references.py",
+        "src/dive_memory/reading/snapshots.py",
+        "src/dive_memory/reading/temporal_refusal_reader.py",
+        "src/dive_memory/reading/tool_protocol.py",
+        "src/dive_memory/reading/workspace.py",
+        "src/dive_memory/retrieval_session.py"
+      ],
+      "line_percent": 94.81420988158432,
+      "branch_percent": 88.10068649885584,
+      "line_min": 90,
+      "branch_min": 80,
+      "passed": true
+    }
+  },
+  "all_source_coverage": {
+    "covered_lines": 10954,
+    "num_statements": 14094,
+    "percent_covered": 76.5072765072765,
+    "percent_covered_display": "76.51",
+    "missing_lines": 3140,
+    "excluded_lines": 129,
+    "percent_statements_covered": 77.72101603519228,
+    "percent_statements_covered_display": "77.72",
+    "num_branches": 4184,
+    "num_partial_branches": 500,
+    "covered_branches": 3030,
+    "missing_branches": 1154,
+    "percent_branches_covered": 72.4187380497132,
+    "percent_branches_covered_display": "72.42"
+  },
+  "tests": {
+    "tests": 2066,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 25
+  },
+  "skips": [
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_forgetting_blocks_same_source_dialogue_after_extractor_change[False]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_forgetting_blocks_same_source_dialogue_after_extractor_change[True]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_dialogue_eviction_and_source_tombstone_roll_back_together[False]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_dialogue_eviction_and_source_tombstone_roll_back_together[True]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_forgotten_fact_is_not_recreated_under_another_candidate_index[False]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_forgotten_fact_is_not_recreated_under_another_candidate_index[True]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_user_role_aliases_respect_explicit_optout[human]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_user_role_aliases_respect_explicit_optout[user_correction]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_user_role_aliases_respect_explicit_optout[memory_correction]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_user_role_aliases_respect_explicit_optout[USER]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_user_role_aliases_respect_explicit_optout[ user ]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_disabled_turn_cannot_be_reprojected_after_reenable[False]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_disabled_turn_cannot_be_reprojected_after_reenable[True]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_consent_exclusion_survives_extractor_change[explicit-optout]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_dialogue_retention.test_postgres_consent_exclusion_survives_extractor_change[synthetic-sensitive-label]",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_migrations.test_all_migrations_apply_and_are_idempotent",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_migrations.test_skip_locked_claims_do_not_double_claim",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_migrations.test_stale_claim_is_recovered_but_exhausted_event_is_not_retried",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_store.test_postgres_service_ingest_retrieve_temporal_transition_and_hard_purge",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_store.test_postgres_store_namespace_isolation_and_duplicate_provenance",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_store.test_postgres_store_uses_pgvector_exact_cosine_search",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_store.test_postgres_projection_transaction_rolls_back_and_marks_event_failed",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.integration.postgres.test_postgres_store.test_postgres_concurrent_idempotency_creates_one_event_and_projection",
+      "reason": "set DIVE_TEST_POSTGRES_DSN for the opt-in PostgreSQL suite"
+    },
+    {
+      "test": "tests.test_semantic_gate.test_real_model_gate_if_available",
+      "reason": "could not import 'sentence_transformers': No module named 'sentence_transformers'"
+    },
+    {
+      "test": "tests.test_workspace_cleanup.test_symlink_target_is_blocked",
+      "reason": "this account cannot create directory symlinks"
+    }
+  ],
+  "source_unchanged_during_checks": true,
+  "passed": true
+}

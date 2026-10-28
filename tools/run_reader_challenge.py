@@ -235,6 +235,7 @@ def main(argv=None):
             "deliberative",
             "deliberative-refs",
             "deliberative-staged",
+            "deliberative-grounded",
         ),
         default="deliberative",
     )

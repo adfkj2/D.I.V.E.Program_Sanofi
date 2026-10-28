@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 from ..answering import EvidenceCitation, GroundedAnswerDecision
 from ..models import RetrievalItem
@@ -202,6 +202,29 @@ class DeliberationProtocol:
     parse_plan: Callable[[str, Sequence[RetrievalItem]], EvidencePlan]
     parse_decision: Callable[[str, Sequence[RetrievalItem]], GroundedAnswerDecision]
     citation_indices: Callable[[str, str], list[int]]
+    parse_draft: (
+        Callable[[str, Sequence[RetrievalItem]], GroundedAnswerDecision] | None
+    ) = None
+    plan_context: Callable[[str], Mapping[str, Any]] | None = None
+    review_context: (
+        Callable[
+            [str, Sequence[RetrievalItem], Sequence[RetrievalItem]], Mapping[str, Any]
+        ]
+        | None
+    ) = None
+    validate_review: (
+        Callable[
+            [
+                str,
+                GroundedAnswerDecision,
+                GroundedAnswerDecision,
+                Sequence[RetrievalItem],
+                Sequence[RetrievalItem] | None,
+            ],
+            None,
+        ]
+        | None
+    ) = None
 
 
 def _literal_indices(text: str, phase: str) -> list[int]:

@@ -9,6 +9,7 @@ from time import perf_counter
 from typing import Any, Mapping
 
 from . import lexical, temporal
+from .dialogue_retention import is_dialogue_observation
 from .document_chunks import DocumentChunkHit, split_document
 from .embeddings import (
     DeterministicEmbeddingProvider,
@@ -1238,15 +1239,66 @@ class SQLiteStore:
 
     def tombstone_memory(self, memory_id: str, reason: str, deleted_at: str) -> None:
         with self.transaction():
-            row = self.db.execute("SELECT namespace FROM memories WHERE id=?", (memory_id,)).fetchone()
-            if row is None:
+            memory = self.get_memory(memory_id)
+            if memory is None:
                 raise KeyError(memory_id)
+            self._tombstone_memory_only(memory, reason, deleted_at)
+            for event_id in memory.source_event_ids:
+                self.block_memory_projection(memory.namespace, event_id, memory.content, reason, deleted_at)
+                self.block_dialogue_source(memory.namespace, event_id, reason, deleted_at)
+
+    def _tombstone_memory_only(self, memory: Memory, reason: str, deleted_at: str) -> None:
+        self.db.execute(
+            "INSERT OR REPLACE INTO tombstones(object_type,object_id,reason,deleted_at,namespace) "
+            "VALUES ('memory',?,?,?,?)", (memory.id, reason, deleted_at, memory.namespace),
+        )
+        self.db.execute("UPDATE memories SET status='DELETED', updated_at=? WHERE id=?", (deleted_at, memory.id))
+        self._delete_memory_projections(memory.id)
+
+    def memory_projection_blocked(self, namespace: str, event_id: str, content: str) -> bool:
+        """Keep an exact forgotten source projection excluded if its index shifts."""
+        return self.is_tombstoned("memory_projection", stable_id("mproj", namespace, event_id, content.strip()))
+
+    def block_memory_projection(self, namespace: str, event_id: str, content: str,
+                                reason: str, blocked_at: str) -> None:
+        self.db.execute(
+            "INSERT OR REPLACE INTO tombstones(object_type,object_id,reason,deleted_at,namespace) "
+            "VALUES ('memory_projection',?,?,?,?)",
+            (stable_id("mproj", namespace, event_id, content.strip()), reason, blocked_at, namespace),
+        )
+
+    def event_projection_blocked(self, namespace: str, event_id: str) -> bool:
+        """A skipped consent decision survives re-enable, restart and rebuild."""
+        return self.is_tombstoned("event_projection", stable_id("eproj", namespace, event_id))
+
+    def block_event_projection(self, namespace: str, event_id: str, reason: str,
+                               blocked_at: str) -> None:
+        self.db.execute(
+            "INSERT OR REPLACE INTO tombstones(object_type,object_id,reason,deleted_at,namespace) "
+            "VALUES ('event_projection',?,?,?,?)",
+            (stable_id("eproj", namespace, event_id), reason, blocked_at, namespace),
+        )
+
+    def dialogue_source_blocked(self, namespace: str, event_id: str) -> bool:
+        """A content-free guard survives projection rebuild and hard purge."""
+        return self.is_tombstoned("dialogue_source", stable_id("dsrc", namespace, event_id))
+
+    def block_dialogue_source(self, namespace: str, event_id: str, reason: str,
+                              deleted_at: str, *, hard: bool = False) -> None:
+        """Exclude only full-turn dialogue observations from a forgotten source."""
+        with self.transaction():
             self.db.execute(
                 "INSERT OR REPLACE INTO tombstones(object_type,object_id,reason,deleted_at,namespace) "
-                "VALUES ('memory',?,?,?,?)", (memory_id, reason, deleted_at, row["namespace"]),
+                "VALUES ('dialogue_source',?,?,?,?)",
+                (stable_id("dsrc", namespace, event_id), reason, deleted_at, namespace),
             )
-            self.db.execute("UPDATE memories SET status='DELETED', updated_at=? WHERE id=?", (deleted_at, memory_id))
-            self._delete_memory_projections(memory_id)
+            for sibling in self.memories_for_event(event_id):
+                if sibling.namespace != namespace or not is_dialogue_observation(sibling.structured_content):
+                    continue
+                if hard:
+                    self._purge_memory_only(sibling, reason, deleted_at)
+                elif sibling.status is not MemoryStatus.DELETED:
+                    self._tombstone_memory_only(sibling, reason, deleted_at)
 
     def _delete_memory_projections(self, memory_id: str) -> None:
         self.db.execute("DELETE FROM memory_fts WHERE memory_id=?", (memory_id,))
@@ -1266,21 +1318,25 @@ class SQLiteStore:
     def purge_memory(self, memory_id: str, reason: str, deleted_at: str) -> None:
         """Irreversibly remove content while retaining a content-free audit tombstone."""
         with self.transaction():
-            row = self.db.execute("SELECT namespace FROM memories WHERE id=?", (memory_id,)).fetchone()
-            if row is None:
+            memory = self.get_memory(memory_id)
+            if memory is None:
                 raise KeyError(memory_id)
-            self.db.execute(
-                "INSERT OR REPLACE INTO tombstones(object_type,object_id,reason,deleted_at,namespace) "
-                "VALUES ('memory',?,?,?,?)", (memory_id, reason, deleted_at, row["namespace"]),
-            )
-            self._delete_memory_projections(memory_id)
-            self.db.execute("DELETE FROM memory_access WHERE memory_id=?", (memory_id,))
-            self.db.execute("DELETE FROM memory_sources WHERE memory_id=?", (memory_id,))
-            self.db.execute("DELETE FROM memory_versions WHERE memory_id=?", (memory_id,))
-            self.db.execute("DELETE FROM memory_keys WHERE memory_id=?", (memory_id,))
-            self.db.execute("DELETE FROM memory_transitions WHERE from_memory_id=? OR to_memory_id=?",
-                            (memory_id, memory_id))
-            self.db.execute("DELETE FROM memories WHERE id=?", (memory_id,))
+            self._purge_memory_only(memory, reason, deleted_at)
+            for event_id in memory.source_event_ids:
+                self.block_memory_projection(memory.namespace, event_id, memory.content, reason, deleted_at)
+                self.block_dialogue_source(memory.namespace, event_id, reason, deleted_at, hard=True)
+
+    def _purge_memory_only(self, memory: Memory, reason: str, deleted_at: str) -> None:
+        self.db.execute(
+            "INSERT OR REPLACE INTO tombstones(object_type,object_id,reason,deleted_at,namespace) "
+            "VALUES ('memory',?,?,?,?)", (memory.id, reason, deleted_at, memory.namespace),
+        )
+        self._delete_memory_projections(memory.id)
+        for table in ("memory_access", "memory_sources", "memory_versions", "memory_keys"):
+            self.db.execute(f"DELETE FROM {table} WHERE memory_id=?", (memory.id,))
+        self.db.execute("DELETE FROM memory_transitions WHERE from_memory_id=? OR to_memory_id=?",
+                        (memory.id, memory.id))
+        self.db.execute("DELETE FROM memories WHERE id=?", (memory.id,))
 
     def record_access(self, memory_id: str, query: str, rank: int, score: float, accessed_at: str, used: bool = False) -> None:
         self.db.execute("INSERT INTO memory_access(memory_id,query,rank,score,used,accessed_at) VALUES (?,?,?,?,?,?)",
@@ -1325,9 +1381,9 @@ class SQLiteStore:
                     "SELECT COUNT(*) FROM memory_sources WHERE memory_id=?", (memory.id,)).fetchone()[0]
                 if source_count <= 1:
                     if hard:
-                        self.purge_memory(memory.id, reason, deleted_at)
+                        self._purge_memory_only(memory, reason, deleted_at)
                     else:
-                        self.tombstone_memory(memory.id, reason, deleted_at)
+                        self._tombstone_memory_only(memory, reason, deleted_at)
                     deleted_ids.append(memory.id)
                 else:
                     if hard:

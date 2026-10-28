@@ -68,6 +68,8 @@ class DeliberativeEvidenceReader:
         passage_chars: int = 800,
         protocol: DeliberationProtocol = LITERAL_PROTOCOL,
         execution: DeliberationExecution | None = None,
+        workspace_identity: str = "retrieval-v1",
+        annotate_sources: bool = False,
     ) -> None:
         if spec.prompt_version != protocol.version:
             raise ValueError("deliberative reader requires its own prompt version")
@@ -81,6 +83,14 @@ class DeliberativeEvidenceReader:
         self.protocol = protocol
         self.version = protocol.version
         self.execution = execution
+        if workspace_identity not in {"retrieval-v1", "admitted-v1"}:
+            raise ValueError("unknown evidence workspace identity policy")
+        if type(annotate_sources) is not bool:
+            raise ValueError("annotate_sources must be boolean")
+        self.workspace_identity, self.annotate_sources = (
+            workspace_identity,
+            annotate_sources,
+        )
         if execution is not None:
             profiles = [execution.primary(p) for p in ("plan", "synthesize", "review")]
             if any(
@@ -98,17 +108,25 @@ class DeliberativeEvidenceReader:
             passage_chars=self.passage_chars,
             protocol=self.protocol,
             execution=self.execution,
+            workspace_identity=self.workspace_identity,
+            annotate_sources=self.annotate_sources,
         )
 
     def execution_configuration(self) -> dict[str, Any] | None:
         """Public run identity; no injected transport or credential is serialized."""
         if self.execution is None:
             return None
-        return {
+        result = {
             "phases": self.execution.to_dict(),
             "max_calls": self.max_calls,
             "passage_chars": self.passage_chars,
         }
+        if self.workspace_identity != "retrieval-v1" or self.annotate_sources:
+            result["evidence_configuration"] = {
+                "workspace_identity": self.workspace_identity,
+                "annotate_sources": self.annotate_sources,
+            }
+        return result
 
     @staticmethod
     def _quotes(
@@ -130,13 +148,29 @@ class DeliberativeEvidenceReader:
         if self.source is None:
             raise ValueError("deliberative reader requires a bound evidence source")
         started = perf_counter()
-        workspace = BoundedEvidenceWorkspace(request, passage_chars=self.passage_chars)
-        workspace.add(request.items)
+        workspace = BoundedEvidenceWorkspace(
+            request,
+            passage_chars=self.passage_chars,
+            identity_policy=self.workspace_identity,
+        )
         turns: list[dict[str, Any]] = []
         actions: list[dict[str, Any]] = []
         inputs: list[int | None] = []
         outputs: list[int | None] = []
         packets: list[dict[str, Any]] = []
+
+        def annotate(items: Sequence[RetrievalItem]) -> tuple[RetrievalItem, ...]:
+            transform = (
+                getattr(self.source, "annotate", None)
+                if self.annotate_sources
+                else None
+            )
+            try:
+                return tuple(transform(items) if callable(transform) else items)
+            except Exception as exc:  # noqa: BLE001 - provenance/storage failure is not a semantic refusal
+                raise _PhaseFailure(
+                    ReaderStatus.ERROR, "EVIDENCE_SOURCE_FAILURE"
+                ) from exc
 
         def finish(
             status: ReaderStatus,
@@ -205,6 +239,8 @@ class DeliberativeEvidenceReader:
             items: tuple[RetrievalItem, ...],
             extras: dict[str, Any],
             remaining_phases: int,
+            prior_decision: GroundedAnswerDecision | None = None,
+            prior_items: Sequence[RetrievalItem] | None = None,
         ) -> EvidencePlan | GroundedAnswerDecision:
             validation_error: str | None = None
             failure_reason = f"INVALID_{name.upper()}_OUTPUT"
@@ -295,11 +331,19 @@ class DeliberativeEvidenceReader:
                         )
                         continue
                 try:
-                    parsed = (
-                        self.protocol.parse_plan(response.text, items)
-                        if name == "plan"
-                        else self.protocol.parse_decision(response.text, items)
-                    )
+                    if name == "plan":
+                        parsed = self.protocol.parse_plan(response.text, items)
+                    elif name == "synthesize" and self.protocol.parse_draft is not None:
+                        parsed = self.protocol.parse_draft(response.text, items)
+                    else:
+                        parsed = self.protocol.parse_decision(response.text, items)
+                    if name == "review" and self.protocol.validate_review is not None:
+                        assert prior_decision is not None and isinstance(
+                            parsed, GroundedAnswerDecision
+                        )
+                        self.protocol.validate_review(
+                            response.text, prior_decision, parsed, items, prior_items
+                        )
                     turn["citation_indices"] = self.protocol.citation_indices(
                         response.text, name
                     )
@@ -311,6 +355,7 @@ class DeliberativeEvidenceReader:
             raise _PhaseFailure(ReaderStatus.INVALID, failure_reason)
 
         try:
+            workspace.add(annotate(request.items))
             initial = packet()
             plan = phase(
                 "plan",
@@ -328,6 +373,11 @@ class DeliberativeEvidenceReader:
                 remaining_phases=2,
             )
             assert isinstance(plan, EvidencePlan)
+            question_context = (
+                dict(self.protocol.plan_context(turns[-1]["response"]))
+                if self.protocol.plan_context is not None
+                else {}
+            )
             notes = workspace.anchor(
                 plan.notes, initial, indices=turns[-1]["citation_indices"]
             )
@@ -335,7 +385,7 @@ class DeliberativeEvidenceReader:
                 action: dict[str, Any] = {"action": "search", "query": query}
                 actions.append(action)
                 try:
-                    found = tuple(self.source.search(query))
+                    found = annotate(self.source.search(query))
                     selected = [
                         replace(
                             item, memory=replace(item.memory, content=chunk.content)
@@ -356,7 +406,7 @@ class DeliberativeEvidenceReader:
                 action = {"action": "read", "memory_id": memory_id, "start": start}
                 actions.append(action)
                 try:
-                    item = self.source.read(memory_id)
+                    item = annotate((self.source.read(memory_id),))[0]
                 except Exception as exc:  # noqa: BLE001 - preserve source fault classification
                     action["error"] = type(exc).__name__
                     raise _PhaseFailure(
@@ -383,19 +433,36 @@ class DeliberativeEvidenceReader:
                 "synthesize",
                 self.protocol.answer_rules,
                 evidence,
-                {"selected_notes": self._quotes(notes, evidence, packets[-1])},
+                {
+                    "selected_notes": self._quotes(notes, evidence, packets[-1]),
+                    **question_context,
+                },
                 remaining_phases=1,
             )
             assert isinstance(draft, GroundedAnswerDecision)
+            draft_sources = tuple(
+                evidence[index] for index in turns[-1]["citation_indices"]
+            )
             draft_pins = workspace.anchor(
                 draft.citations, evidence, indices=turns[-1]["citation_indices"]
             )
             reviewed = packet((*notes, *draft_pins))
+            draft_context = (
+                dict(
+                    self.protocol.review_context(
+                        turns[-1]["response"], evidence, reviewed
+                    )
+                )
+                if self.protocol.review_context is not None
+                else {}
+            )
             decision = phase(
                 "review",
                 self.protocol.review_rules,
                 reviewed,
                 {
+                    **question_context,
+                    **draft_context,
                     "selected_notes": self._quotes(notes, reviewed, packets[-1]),
                     "untrusted_draft": {
                         "status": draft.status.value,
@@ -407,6 +474,8 @@ class DeliberativeEvidenceReader:
                     },
                 },
                 remaining_phases=0,
+                prior_decision=draft,
+                prior_items=draft_sources,
             )
             assert isinstance(decision, GroundedAnswerDecision)
             return finish(ReaderStatus.INVALID, "INVALID_REVIEW_OUTPUT", decision)

@@ -1,0 +1,76 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_consent_exclusion_survives_replaced_extractor_restart_and_rebuild[explicit-optout] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-289/test_consent_exclusion_survive0')
+text = 'Do not remember this: I live in Cedar.'
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Do not remember this: I live in Cedar.",
+            "I live in Cedar. password: synthetic-placeholder",
+        ],
+        ids=["explicit-optout", "synthetic-sensitive-label"],
+    )
+    def test_consent_exclusion_survives_replaced_extractor_restart_and_rebuild(
+        tmp_path, text
+    ):
+        path = str(tmp_path / "excluded.sqlite")
+        service = MemoryService(path, episodic_policy=DialogueRetentionPolicy())
+        try:
+            result = service.ingest("project", text, source_type="user")
+            assert result["memory_ids"] == []
+        finally:
+            service.store.close()
+
+        reopened = MemoryService(
+            path, extractor=HeuristicExtractionProvider(gate=SegmentGate())
+        )
+        try:
+            reopened.rebuild_projections("project")
+>           assert not reopened.list_memories("project")
+E           AssertionError: assert not [Memory(id='mem_43d04acd39ac76337d6cc4f67b5baa0c', namespace='project', kind='semantic_fact', evidence_state=<Evidence...d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')]
+E            +  where [Memory(id='mem_43d04acd39ac76337d6cc4f67b5baa0c', namespace='project', kind='semantic_fact', evidence_state=<Evidence...d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')] = list_memories('project')
+E            +    where list_memories = <dive_memory.service.MemoryService object at 0x000001507447DBD0>.list_memories
+
+tests\test_source_grounding_boundaries.py:280: AssertionError
+_ test_consent_exclusion_survives_replaced_extractor_restart_and_rebuild[synthetic-sensitive-label] _
+
+tmp_path = WindowsPath('${USER_HOME}/AppData/Local/Temp/pytest-of-Li peng/pytest-289/test_consent_exclusion_survive1')
+text = 'I live in Cedar. password: synthetic-placeholder'
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Do not remember this: I live in Cedar.",
+            "I live in Cedar. password: synthetic-placeholder",
+        ],
+        ids=["explicit-optout", "synthetic-sensitive-label"],
+    )
+    def test_consent_exclusion_survives_replaced_extractor_restart_and_rebuild(
+        tmp_path, text
+    ):
+        path = str(tmp_path / "excluded.sqlite")
+        service = MemoryService(path, episodic_policy=DialogueRetentionPolicy())
+        try:
+            result = service.ingest("project", text, source_type="user")
+            assert result["memory_ids"] == []
+        finally:
+            service.store.close()
+
+        reopened = MemoryService(
+            path, extractor=HeuristicExtractionProvider(gate=SegmentGate())
+        )
+        try:
+            reopened.rebuild_projections("project")
+>           assert not reopened.list_memories("project")
+E           AssertionError: assert not [Memory(id='mem_c6968ffb3abdf98fe74118a8d6e4f7bb', namespace='project', kind='semantic_fact', evidence_state=<Evidence...d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')]
+E            +  where [Memory(id='mem_c6968ffb3abdf98fe74118a8d6e4f7bb', namespace='project', kind='semantic_fact', evidence_state=<Evidence...d=None, contradicts_id=None, model_version='deterministic-sha256-v1', extractor_version='HeuristicExtractionProvider')] = list_memories('project')
+E            +    where list_memories = <dive_memory.service.MemoryService object at 0x00000150747036F0>.list_memories
+
+tests\test_source_grounding_boundaries.py:280: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_source_grounding_boundaries.py::test_consent_exclusion_survives_replaced_extractor_restart_and_rebuild[explicit-optout]
+FAILED tests/test_source_grounding_boundaries.py::test_consent_exclusion_survives_replaced_extractor_restart_and_rebuild[synthetic-sensitive-label]
+2 failed, 20 deselected in 1.56s

@@ -15,6 +15,7 @@ from ..reading.adjudicated_reader import (
     EvidenceReferee,
 )
 from ..reading.advice_refusal_reader import AdviceRefusalReader
+from ..reading.arguments import ARGUMENT_PROTOCOL
 from ..reading.current_state_reader import REVIEW_VERSION as STATE_VERSION
 from ..reading.current_state_reader import CurrentStateReader, CurrentStateReviewReader
 from ..reading.deliberation import LITERAL_PROTOCOL
@@ -51,12 +52,15 @@ def create_reader(
     strategy: str = "indexed",
     reasoning_effort: str | None = None,
 ) -> Reader:
-    if strategy == "deliberative-staged":
+    if strategy in {"deliberative-staged", "deliberative-grounded"}:
         if thinking is None:
-            raise ValueError(
-                "deliberative-staged requires an explicit reasoning transport"
-            )
-        protocol = replace(REFERENCE_PROTOCOL, version="staged-reference-reader-v1")
+            raise ValueError(f"{strategy} requires an explicit reasoning transport")
+        grounded_protocol = strategy == "deliberative-grounded"
+        protocol = (
+            ARGUMENT_PROTOCOL
+            if grounded_protocol
+            else replace(REFERENCE_PROTOCOL, version="staged-reference-reader-v1")
+        )
         spec = ReaderSpec(
             provider,
             model,
@@ -71,6 +75,8 @@ def create_reader(
             spec,
             protocol=protocol,
             execution=DeliberationExecution(ordinary, reasoning, reasoning, ordinary),
+            workspace_identity="admitted-v1" if grounded_protocol else "retrieval-v1",
+            annotate_sources=grounded_protocol,
         )
     if strategy in {"deliberative", "deliberative-refs"}:
         protocol = (
@@ -104,7 +110,7 @@ def create_reader(
     if strategy not in {"indexed", "r40"}:
         raise ValueError(
             "strategy must be indexed, r40, adaptive, verified, deliberative, "
-            "deliberative-refs or deliberative-staged"
+            "deliberative-refs, deliberative-staged or deliberative-grounded"
         )
     policy = ReaderPolicy(
         name="indexed_evidence",

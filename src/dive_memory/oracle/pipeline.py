@@ -29,6 +29,8 @@ from typing import Any, Mapping, Sequence
 
 from ..context import pack_context
 from ..contextual_fact_retention import ContextualFactRetention
+from ..dialogue_retention import VERSION as DIALOGUE_RETENTION_VERSION
+from ..dialogue_retention import DialogueRetentionPolicy
 from ..episodic_retention import EpisodicRetentionPolicy
 from ..eval_adapters.longmemeval import LongMemEvalCase, LongMemEvalTurn, parse_instant
 from ..evidence_search import recover_evidence
@@ -125,8 +127,17 @@ class PipelineConfig:
     spare_document_context: bool = False
     spare_document_token_budget: int = 2400
     spare_document_char_budget: int = 4800
+    dialogue_retention: bool = False
+    dialogue_max_chars: int = 2000
+    dialogue_max_turn_chars: int = 16000
 
     def __post_init__(self) -> None:
+        if type(self.dialogue_retention) is not bool:
+            raise ValueError('dialogue_retention must be boolean')
+        if (type(self.dialogue_max_chars) is not int
+                or type(self.dialogue_max_turn_chars) is not int
+                or not 0 < self.dialogue_max_chars <= self.dialogue_max_turn_chars):
+            raise ValueError('dialogue retention bounds must be positive integers')
         if type(self.contextual_fact_anchors) is not bool:
             raise ValueError('contextual_fact_anchors must be boolean')
         if type(self.scoped_fact_anchors) is not bool:
@@ -210,6 +221,12 @@ class PipelineConfig:
             "spare_document_context": self.spare_document_context,
             "spare_document_token_budget": self.spare_document_token_budget,
             "spare_document_char_budget": self.spare_document_char_budget,
+            **({
+                "dialogue_retention": True,
+                "dialogue_retention_version": DIALOGUE_RETENTION_VERSION,
+                "dialogue_max_chars": self.dialogue_max_chars,
+                "dialogue_max_turn_chars": self.dialogue_max_turn_chars,
+            } if self.dialogue_retention else {}),
         }
 
 
@@ -416,6 +433,11 @@ def run_case(
         retention = ExplicitUserDocumentRetention(retention)
     if config.contextual_fact_anchors:
         retention = ContextualFactRetention(retention, scoped_assertions=config.scoped_fact_anchors)
+    if config.dialogue_retention:
+        retention = DialogueRetentionPolicy(
+            retention, max_chars=config.dialogue_max_chars,
+            max_turn_chars=config.dialogue_max_turn_chars,
+        )
     service = MemoryService(gate=gate, embedder=embedder, deterministic_ids=True,
                             episodic_policy=retention)
     try:

@@ -182,7 +182,7 @@ DIVE 同时研究长期记忆的写入、更新、时间边界与有据作答。
 
 </details>
 
-R68免费重构已完成本地最终验证：来源角色/陈述时钟统一、稳定证据身份、有界用户发言保留及显式语义复核；独审修复关闭记忆和忘却后的重建复活问题。2041项通过/27环境跳过，独立wheel安装及140文件绑定通过，修复提交五项远程检查全过，原生PG25项零跳过；首次PG失败及修复过程完整保留。新8条语义开发挑战完成审阅，48→100→条件500方案已冻结；新候选尚未获付费授权，不能据此宣称准确率提升。[详细证据与边界](docs/oracle/63-source-grounded-decisions-20261028.md) · [精选证据](artifacts/source-grounding-20261028/README.md)。
+R68免费重构已完成本地最终验证：来源角色/陈述时钟统一、稳定证据身份、有界用户发言保留及显式语义复核；独审修复关闭记忆和忘却后的重建复活问题。2041项通过/27环境跳过，独立wheel安装及140文件绑定通过，修复提交五项远程检查全过，原生PG25项零跳过；首次PG失败及修复过程完整保留。新8条语义开发挑战完成审阅，48→100→条件500方案获准一次后，在48条挑战中断：4条完整输出、1次用量未知，100/500未启动。新增保守¥0.316882、累计¥60.927858；按止损结束，未自动重试，不能据此宣称准确率提升。[详细证据与边界](docs/oracle/63-source-grounded-decisions-20261028.md) · [精选证据](artifacts/source-grounding-20261028/README.md)。
 
 ## 文档导航
 
@@ -240,3 +240,5 @@ python tools/verify_wheel.py --wheel-dir dist --output artifacts/my-wheel-check
 第三方依赖与许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 R67源码提交`4c40eb19ca06b83639205236c6e787403eb58044`及记录提交`8d281a879b23e7f5ec2b2d5fe74158447e508821`分别通过自身五项远程任务：PostgreSQL8项零跳过、浏览器20+7项、两版Python及Docker通过。[源码证据](artifacts/staged-completion-20261026/remote-checks-source.json) · [记录提交证据](artifacts/staged-completion-20261026/remote-checks-record.json)。后续提交按自身SHA核验；工程通过不证明95%准确率。
+
+R69已完成三组190秒免费生命周期对照并清理唯一临时任务，未复现原中断，根因仍未确定。后续先验证长请求、故障与外部退出/费用观测；没有新的真实模型试跑授权。[诊断范围](docs/oracle/64-worker-lifecycle-diagnosis-20261028.md) · [精选证据](artifacts/worker-lifecycle-20261028/README.md)。

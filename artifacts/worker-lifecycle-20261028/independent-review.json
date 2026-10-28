@@ -1,0 +1,27 @@
+{
+  "schema_version": "r69-independent-windows-cause-addendum-v2",
+  "scope": "Correction of job-ownership inference using local executable identities and independent no-network probe terminal records",
+  "root_cause": "UNKNOWN",
+  "provider_requests_by_reviewer": 0,
+  "paid_run_restarted": false,
+  "frozen_r68_inputs_modified": false,
+  "corrected_interpretation": [
+    "IsProcessInJob=true plus flags 0x3000 does not establish that a worker remains inside a Codex-host-owned job. The standard Windows virtual-environment redirector can itself be the job-management layer.",
+    "The OS-managed Limited-user probe also completed under the same 0x3000 association. Association alone neither explains the original R68 death nor demonstrates a failure to detach from the launching tool.",
+    "The root-owned direct-base-executable comparison is an appropriate next mechanism test. A direct executable must also preserve the intended environment and dependencies before it could replace a paid runner.",
+    "The original Windows event evidence still supplies no definitive crash, external killer, resource-exhaustion event or exit status for worker 34288/proxy 40344. The historical cause remains unknown."
+  ],
+  "scheduler_v2_scope_readonly_review": {
+    "script": "scheduler-probe-launch-v2.ps1",
+    "requested_user": "Current WTS interactive user",
+    "run_level": "Limited",
+    "logon_type": "Interactive",
+    "trigger_count": 0,
+    "credential_in_arguments_or_task_definition": false,
+    "action": "Existing detachment-probe.py --worker --name scheduler-interactive-190s --seconds 190",
+    "definition_integrity_required_before_cleanup": true,
+    "only_exact_unique_created_task_can_be_deleted": true,
+    "cleanup_performed_by_this_reviewer": false,
+    "cleanup_owner": "root"
+  }
+}

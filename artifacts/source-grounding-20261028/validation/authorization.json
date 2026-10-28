@@ -1,0 +1,20 @@
+{
+  "approved": true,
+  "approved_at": "2026-10-28T15:27:42.604712+00:00",
+  "authorization": "批准在原¥100内按冻结方案验证一次（推荐）",
+  "question_item_id": "call_f3c00d93cf7c41719be1a4d7ae70f473",
+  "proposal_sha256": "730267884c7815a6e583067adb1d6590d5cc5a0844cce3757a0668a35cb7086b",
+  "shared_budget_sha256": "7979243b2708990d7881b40c4604e3e9017dea3404387535ca84e91104156b54",
+  "prior_cumulative_peak_cny": "60.610976",
+  "user_limit_cny": "100.00",
+  "planning_stop_cny": "99.00",
+  "settlement_reserve_cny": "1.00",
+  "additional_budget_cny": "0.00",
+  "total_stage_cap_cny": "38.25",
+  "worst_cumulative_peak_cny": "98.860976",
+  "single_frozen_candidate_only": true,
+  "retain_original_judge_and_unknowns": true,
+  "no_automatic_restart": true,
+  "stop_on_execution_failure_or_unknown_usage": true,
+  "historical_uncertain_reservations_remain": true
+}

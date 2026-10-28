@@ -4,11 +4,11 @@
   "candidate_real_accuracy": null,
   "official_benchmark": false,
   "all_500_development_exposed": true,
-  "new_provider_requests": 0,
-  "additional_cost_cny": "0",
-  "shared_cumulative_peak_cny": "60.610976",
+  "new_provider_requests": 15,
+  "additional_cost_cny": "0.316882",
+  "shared_cumulative_peak_cny": "60.927858",
   "paid_validation_authorized": false,
-  "remote_verification": "SOURCE_FIX_FIVE_OF_FIVE_SUCCESS_RECORD_COMMIT_PENDING",
+  "remote_verification": "RECORD_COMMIT_FIVE_OF_FIVE_SUCCESS_RESULT_RECORD_PENDING",
   "publication_script_sha256": "0071ddfd7f80fe3fef89479d793209d8ce6106892834cb44acca78f912e8cd4f",
   "manifest_scope": "All public files except manifest.json itself",
   "files": [
@@ -206,8 +206,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3747,
-      "sha256": "46f5c16dc7f0e717af1e3be518d284fe2f5c948953221813fb7ddfe5792a6352",
+      "bytes": 5432,
+      "sha256": "d9897697b099098b467a0221c0326f75c709ef2c6f5cd48788b052c8eb1a4cfd",
       "transformation": "New publication explanation; no historical raw counterpart"
     },
     {
@@ -289,15 +289,63 @@
       "raw_path": "eval/reports/source-grounding-20261028/remote-checks-source-fix.json",
       "raw_sha256": "fb6d84f37704e0f41f864525e284c4ba1cc4407c1456220ae74589faa7af30b9",
       "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "validation/authorization.json",
+      "bytes": 883,
+      "sha256": "76e4517c17842ca942712a532fd12241ee627c810b6724407bead5de9def0132",
+      "raw_path": "eval/reports/source-grounding-20261028/validation-authorization.json",
+      "raw_sha256": "76e4517c17842ca942712a532fd12241ee627c810b6724407bead5de9def0132",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic fixture review may describe generated answers; no raw Benchmark dialogue, per-case answers or traces"
+    },
+    {
+      "path": "validation/interrupted-challenge-cost.json",
+      "bytes": 5992,
+      "sha256": "0c644efd84bdeff8d86ccfbd8bbe8976255e4228c35ef29e06fdb301d7eea692",
+      "raw_path": "eval/reports/source-grounding-20261028/interrupted-challenge-cost-reconciliation.json",
+      "raw_sha256": "0c644efd84bdeff8d86ccfbd8bbe8976255e4228c35ef29e06fdb301d7eea692",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic fixture review may describe generated answers; no raw Benchmark dialogue, per-case answers or traces"
+    },
+    {
+      "path": "review/interrupted-challenge-audit.json",
+      "bytes": 24656,
+      "sha256": "c8a9dabe86cbf23b8d62706d740c6a302f9ee3092c566ed0d6bd3faff5de44b8",
+      "raw_path": "eval/reports/source-grounding-20261028/challenge-stopped-independent-audit.json",
+      "raw_sha256": "1260184b2d3db8fc65490b912ccf0f01b6ffa835caa47b89be4de0037160e087",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic fixture review may describe generated answers; no raw Benchmark dialogue, per-case answers or traces"
+    },
+    {
+      "path": "review/interrupted-process-observation.json",
+      "bytes": 261,
+      "sha256": "bca9171f66f14f4e9311bdc2cab8de79ae068ede9891ee30a467ca254897097c",
+      "raw_path": "eval/reports/source-grounding-20261028/challenge-independent-process-observation.json",
+      "raw_sha256": "de717db8dc9ea779588491de6a91366f31b22c88592b6692c07b5e5a958f85e4",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic fixture review may describe generated answers; no raw Benchmark dialogue, per-case answers or traces"
+    },
+    {
+      "path": "remote-checks-record.json",
+      "bytes": 12502,
+      "sha256": "16451ff8545d4b9046634965dc6f658e1cf6ec1cdf88f628a0e93c1e4b2a6a31",
+      "raw_path": "eval/reports/source-grounding-20261028/remote-checks-record.json",
+      "raw_sha256": "16451ff8545d4b9046634965dc6f658e1cf6ec1cdf88f628a0e93c1e4b2a6a31",
+      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; synthetic fixture review may describe generated answers; no raw Benchmark dialogue, per-case answers or traces"
     }
   ],
   "previous_source_files_bound": 308,
   "final_quality": "quality-v3",
   "final_installation": "install-v3",
-  "validation_status": "FROZEN_NOT_AUTHORIZED",
+  "validation_status": "STOPPED_PROCESS_MISSING_USAGE_UNKNOWN",
   "validation_proposal_sha256": "730267884c7815a6e583067adb1d6590d5cc5a0844cce3757a0668a35cb7086b",
   "historical_artifacts_bound": 1385,
   "source_remote_sha": "b8e8208416440f7326db4833d53a66d37c7a46bd",
   "original_remote_failure_preserved": true,
-  "manifest_repair": "Path passed to byte digest in first close; all public files verified before manifest recovery"
+  "manifest_repair": "Path passed to byte digest in first close; all public files verified before manifest recovery",
+  "original_paid_validation_authorized": true,
+  "remaining_paid_execution_authorized": false,
+  "completed_provider_requests": 14,
+  "unknown_usage_requests": 1,
+  "challenge_completed": 4,
+  "challenge_selected": 48,
+  "candidate_started": false,
+  "full_started": false
 }

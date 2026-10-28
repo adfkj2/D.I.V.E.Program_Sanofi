@@ -1,0 +1,78 @@
+{
+  "schema_version": "r68-independent-postgres-outbox-adapter-review-v2",
+  "reviewer": "Independent subagent /root/r67_close_docs",
+  "created_at": "2026-10-28T10:02:16.033094+00:00",
+  "result": "ADAPTER_FIX_REVIEWED_NATIVE_EXECUTION_PENDING",
+  "provider_requests": 0,
+  "application_source_mutations_by_reviewer": 0,
+  "new_test_file": "tests/integration/postgres/test_postgres_outbox_adapter.py",
+  "original_remote_failure": {
+    "source_sha": "7edbe30534cbc4ec41c0fae5ffcf6380be2583bc",
+    "run_id": 40668165245,
+    "native_passed": 22,
+    "native_failed": 1,
+    "failing_case": "test_postgres_disabled_turn_cannot_be_reprojected_after_reenable[True]",
+    "failure": "PostgresStore lacks claim_pending_events called by MemoryService.process_pending",
+    "raw_log": "eval/reports/source-grounding-20261028/remote-pg-source-first-failure.txt"
+  },
+  "root_cause_review": "The PostgreSQL SQL migration already provided an atomic outbox claim primitive, but PostgresStore did not expose the two adapter methods invoked by MemoryService.pending_events/process_pending. Prior direct-SQL primitive tests did not cover the adapter/service path.",
+  "fix_review": {
+    "pending_events": "Read-only PENDING/FAILED rows below three attempts, ordered by creation/event ID, materialized as existing Event records; listing does not claim work.",
+    "claim_pending_events": "Delegates to existing claim_memory_outbox(limit,max_attempts) inside the adapter transaction; no duplicate locking/recovery algorithm added.",
+    "sql_primitive_unchanged_from_failing_source": true,
+    "stale_policy": "Existing SQL reclaims PROCESSING rows older than five minutes, consumes one attempt for stale recovery, and selects eligible rows with FOR UPDATE SKIP LOCKED.",
+    "transaction_scope": "The normal method commits the claim before service projection. When called inside a caller-owned outer transaction, its nested adapter context retains those locks until the outer transaction exits; the new concurrent adapter test deliberately exercises that case.",
+    "existing_disabled_test_unchanged": true,
+    "remaining_material_concern": "No additional defect found by read-only review of these two adapter methods. Native database behavior remains unverified locally."
+  },
+  "new_native_tests": [
+    {
+      "name": "test_postgres_service_pending_events_and_failed_processing_stop_at_retry_limit",
+      "coverage": "Actual MemoryService.pending_events lists the deferred event and preserves payload/namespace without changing outbox state; actual process_pending records extraction failures exactly three times; exhausted work remains FAILED/attempts3 and cannot be listed, processed or claimed again."
+    },
+    {
+      "name": "test_postgres_adapter_claims_skip_locked_work_held_by_another_adapter",
+      "coverage": "First independent adapter claims two rows while an outer transaction retains locks. A threaded second adapter/connection must claim the other two within five seconds before the first commits. Exact four-event union and disjoint claim sets, PROCESSING state/claim timestamps and zero initial attempts are asserted."
+    }
+  ],
+  "local_verification": {
+    "ruff_check": "passed",
+    "ruff_format": "passed after formatting only the new test file",
+    "git_diff_check": "passed",
+    "native_collected": 2,
+    "native_passed": 0,
+    "native_skipped": 2,
+    "reason": "No DIVE_TEST_POSTGRES_DSN in the local environment; collection/skipping does not validate PostgreSQL execution."
+  },
+  "required_followup": "Parent must run complete quality-v3 and fresh wheel/install-v3, then verify the exact final published SHA in CI. Native PostgreSQL should execute all prior 23 plus these 2 tests (25 total) with zero failure/skip. Preserve the original 22-pass/1-failure evidence.",
+  "limits": [
+    "This is engineering adapter evidence, not a model-answer trial or a benchmark accuracy increase.",
+    "The concurrent test uses two separate adapter instances/connections; sharing a single PostgresStore instance across threads is not asserted.",
+    "The service default retry cap is three. The native SQL primitive also supports a caller-specified max_attempts; no new claim is made about scheduler fairness or throughput.",
+    "Native PostgreSQL source-forget/consent cases cover retained-Event _process_event reprocessing, not actual process restart or MemoryService.rebuild_projections. Those full-entry tests were executed on SQLite only. No expansion to unpromised PostgreSQL service interfaces is requested."
+  ],
+  "sha256": {
+    "src/dive_memory/postgres_store.py": "1cf0e9a0fbdad702d23e8825e012b3303359066c255df5f2476d6c95fb7f16be",
+    "migrations/002_outbox_claims.sql": "bd50c8c6797a7b7a95a80d0cb7451a8e140ad2445a623a52a7967f4737d1948e",
+    "tests/integration/postgres/test_postgres_outbox_adapter.py": "c4b28da60b41d5dcdf934b2528bb18b6d3ee3db82aa2f71c5f428dc3d5382989",
+    "eval/reports/source-grounding-20261028/independent-postgres-outbox-adapter-local.log": "4acf5af42b681fdde41053fb4d61378b73ab4b28a0f5b1678d3b678057608058",
+    "eval/reports/source-grounding-20261028/independent-postgres-outbox-adapter-local.xml": "b142b83a4d2126736b53399c80eca0cfca2cbc12b7efdd5c6a9d813c9e133454",
+    "eval/reports/source-grounding-20261028/remote-pg-source-first-failure.txt": "3318dc552c179e7ed1b67de26a174c9e7f86630cd50998800cf6e9c65680cbcf"
+  },
+  "prior_review": {
+    "path": "eval/reports/source-grounding-20261028/independent-postgres-outbox-adapter-review.json",
+    "sha256": "472c8c9e8d7a1795dbaf50d9bfdce8145cd7335ff223e68ce5ef7614faccd7ba"
+  },
+  "review_scope": "PostgreSQL online ingest/retrieve/delete adapter and newly exposed pending_events/process_pending service path. No whole-service PostgreSQL parity claim.",
+  "backend_scope_clarification": {
+    "sqlite": "Independent SQLite cases really close/reopen the service and execute MemoryService.rebuild_projections; those restart/full-rebuild claims apply to SQLite.",
+    "postgres_consent_and_forgetting": "Existing native PostgreSQL cases reprocess the original retained Event through _process_event after changing the extractor. They do not execute a process restart or the full MemoryService.rebuild_projections entry point.",
+    "postgres_outbox_addition": "New native cases cover MemoryService.pending_events/process_pending, failure cap, and overlapping claims from two adapter instances/connections. They add no general rebuild/restart contract.",
+    "unsupported_claims_explicitly_excluded": [
+      "PostgreSQL full projection rebuild entry-point validation",
+      "PostgreSQL process restart persistence validation",
+      "Complete SQLite/PostgreSQL MemoryService API parity"
+    ],
+    "prior_review_scope": "Any restart/full-rebuild statements in independent-source-grounding reports describe their executed SQLite tests; PostgreSQL was separately reported as locally skipped and native original-event reprocessing only."
+  }
+}

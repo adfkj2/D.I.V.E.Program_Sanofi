@@ -98,7 +98,7 @@
     "dive_memory/postgres_migrations.py": "4ca7df4526699f14f3417e94f9c2d7e2cae557ab75aa4468a8e174488508aec2",
     "dive_memory/postgres_parallelism_benchmark.py": "72ed679afd169d33f0a20329806f31bf9fa2bc911cd07b99e594866fd1ce84ff",
     "dive_memory/postgres_scale_benchmark.py": "2e592883399280d1f127565832fa45f984dbb246a5896c7f6bf9130485f05ce9",
-    "dive_memory/postgres_store.py": "b66004f46461f2ab636687eff7fd8dad17dd8958e06bb35dcf9218ea1e408a69",
+    "dive_memory/postgres_store.py": "1cf0e9a0fbdad702d23e8825e012b3303359066c255df5f2476d6c95fb7f16be",
     "dive_memory/reading/__init__.py": "3c90ef6a33f857ccac4d61fbc8c26a6fbbd30a2a095855fbc64574ede945d5cf",
     "dive_memory/reading/adaptive.py": "9a27c9a267e7183bc660f9b6fa505bc4fd08c6b81f21a13f4c75f405d575ebb6",
     "dive_memory/reading/adjudicated_reader.py": "2ed6ab1c592f269dd21afed6836d1ad2495dca58f584e3a13f745f3402495fdb",
@@ -145,7 +145,7 @@
     "dive_memory/web.py": "d9e08aa928639146f1d2e7d083f0b42e8939f327be0d19dca901cf8fe9ebccba",
     "dive_memory/worker.py": "18e49ead8a6ec419e7d77f43e754efdc998113cf9c92acb5b3545ae441db7e61"
   },
-  "wheel_sha256": "ad9433733fb73adb69268c6b39ba7651c3bc7746570edb59a14cbd0b9bc3dd28",
-  "source_manifest_sha256": "4fa79efcc0563cefe8637a5d312c6d50d579213f64881bf716570a5b309f2e82",
+  "wheel_sha256": "959ff22a22dd9f68c3c88984422e1f34c8b0d36bacdafcc6ddde2f6c2d45b3d6",
+  "source_manifest_sha256": "60d9441ebf7c5ef0ce5fae49561a33d5c89ab0f916df797e29a400774d73d21d",
   "provider_requests": 0
 }

@@ -1,0 +1,50 @@
+{
+  "schema_version": "r68-free-entry-checks-v1",
+  "passed": true,
+  "source_files_sha256": {
+    "eval/reports/source-grounding-20261028/new_validation.py": "24b407b468af79ac9df706a128bd6b9a6fb87b1c6532be7bb39f204ecb370429",
+    "eval/reports/source-grounding-20261028/new_background.py": "41b19a4fb7e3ca777a2b49e3d332658019393bdb1940a037451bc74145540fcb",
+    "eval/reports/source-grounding-20261028/audit-new-validation-tests.py": "671df10df805d96800061e9c8abb9945baf6d0c2c1da4fd5465bcbe6235fbe50",
+    "eval/reports/source-grounding-20261028/audit-new-background-tests.py": "6accbb6b14dcef27935f0812ee8ab6e9c5795f374080615add854875b17bf29b",
+    "eval/reports/source-grounding-20261028/audit-new-preflight.py": "4e9cb149619ca307b04caeb0b77c1f3f623c042a61e9cc8966d4e2d9a9114d18",
+    "eval/reports/source-grounding-20261028/freeze-new-validation.py": "24baca93635d05d180b6db6901f00668122c78f2b7f2c47068040e3e0e84e570",
+    "eval/reports/source-grounding-20261028/run-new-validation-checks.py": "ee813326680368ef9b6ffdce4f4a6990e97164d63b955e56eee9936e36bf7691",
+    "eval/reports/source-grounding-20261028/audit-new-freeze-tests.py": "cd0dc37f68dcab6c843c8ca9653856a54bf1bad96bb8ba5aca33d8a98d0efab0"
+  },
+  "source_unchanged_during_checks": true,
+  "checks": {
+    "tests": {
+      "arguments": [
+        "-m",
+        "pytest",
+        "eval/reports/source-grounding-20261028/audit-new-validation-tests.py",
+        "eval/reports/source-grounding-20261028/audit-new-background-tests.py",
+        "eval/reports/source-grounding-20261028/audit-new-freeze-tests.py",
+        "-q"
+      ],
+      "returncode": 0,
+      "log_file": "eval/reports/source-grounding-20261028/entry-checks-v2/tests.txt",
+      "log_sha256": "931d73d4c9129b86b3afe6ca7b2ff0b47c237364911c71b103e4dd652b133f29"
+    },
+    "lint": {
+      "arguments": [
+        "-m",
+        "ruff",
+        "check",
+        "eval/reports/source-grounding-20261028/new_validation.py",
+        "eval/reports/source-grounding-20261028/new_background.py",
+        "eval/reports/source-grounding-20261028/audit-new-validation-tests.py",
+        "eval/reports/source-grounding-20261028/audit-new-background-tests.py",
+        "eval/reports/source-grounding-20261028/audit-new-preflight.py",
+        "eval/reports/source-grounding-20261028/freeze-new-validation.py",
+        "eval/reports/source-grounding-20261028/run-new-validation-checks.py",
+        "eval/reports/source-grounding-20261028/audit-new-freeze-tests.py"
+      ],
+      "returncode": 0,
+      "log_file": "eval/reports/source-grounding-20261028/entry-checks-v2/lint.txt",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  },
+  "pytest_passed": 121,
+  "provider_requests": 0
+}

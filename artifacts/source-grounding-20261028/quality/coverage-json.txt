@@ -1,1 +1,1 @@
-Wrote JSON report to ${REPOSITORY}\eval\reports\source-grounding-20261028\quality-v2\coverage.json
+Wrote JSON report to ${REPOSITORY}\eval\reports\source-grounding-20261028\quality-v3\coverage.json

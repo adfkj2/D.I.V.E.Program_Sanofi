@@ -1,0 +1,29 @@
+{
+  "challenge": {
+    "selected": 48,
+    "execution_blockers": [
+      "Continuation conditions have not been explicitly approved"
+    ],
+    "execute_rejected": true,
+    "output_created": false
+  },
+  "candidate": {
+    "selected": 100,
+    "execution_blockers": [
+      "Continuation conditions have not been explicitly approved",
+      "FileNotFoundError"
+    ],
+    "execute_rejected": true,
+    "output_created": false
+  },
+  "full": {
+    "selected": 500,
+    "execution_blockers": [
+      "Continuation conditions have not been explicitly approved",
+      "FileNotFoundError",
+      "FileNotFoundError"
+    ],
+    "execute_rejected": true,
+    "output_created": false
+  }
+}

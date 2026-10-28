@@ -1,6 +1,6 @@
 {
   "round": "R68",
-  "source_files_bound": 308,
+  "source_files_bound": 309,
   "candidate_real_accuracy": null,
   "official_benchmark": false,
   "all_500_development_exposed": true,
@@ -8,81 +8,81 @@
   "additional_cost_cny": "0",
   "shared_cumulative_peak_cny": "60.610976",
   "paid_validation_authorized": false,
-  "remote_verification": "PENDING_EXACT_COMMIT",
+  "remote_verification": "SOURCE_FIX_FIVE_OF_FIVE_SUCCESS_RECORD_COMMIT_PENDING",
   "publication_script_sha256": "0071ddfd7f80fe3fef89479d793209d8ce6106892834cb44acca78f912e8cd4f",
   "manifest_scope": "All public files except manifest.json itself",
   "files": [
     {
       "path": "quality/summary.json",
-      "bytes": 16542,
-      "sha256": "ec761be4b6a5b74a0c8192d409127b529b4abc796bedf2c0e1c620ae7904bd5c",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/summary.json",
-      "raw_sha256": "ec761be4b6a5b74a0c8192d409127b529b4abc796bedf2c0e1c620ae7904bd5c",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "bytes": 17157,
+      "sha256": "bfce41cde3133cb0816eb0208350bce80b095836673bd443f762632b8f3b822c",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/summary.json",
+      "raw_sha256": "bfce41cde3133cb0816eb0208350bce80b095836673bd443f762632b8f3b822c",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/source-manifest.json",
-      "bytes": 34006,
-      "sha256": "4fa79efcc0563cefe8637a5d312c6d50d579213f64881bf716570a5b309f2e82",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/source-manifest.json",
-      "raw_sha256": "4fa79efcc0563cefe8637a5d312c6d50d579213f64881bf716570a5b309f2e82",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "bytes": 34140,
+      "sha256": "60d9441ebf7c5ef0ce5fae49561a33d5c89ab0f916df797e29a400774d73d21d",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/source-manifest.json",
+      "raw_sha256": "60d9441ebf7c5ef0ce5fae49561a33d5c89ab0f916df797e29a400774d73d21d",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/source-correctness.txt",
       "bytes": 19,
       "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/source-correctness.txt",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/source-correctness.txt",
       "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/delivery-lint.txt",
       "bytes": 19,
       "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/delivery-lint.txt",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/delivery-lint.txt",
       "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/delivery-format.txt",
       "bytes": 27,
-      "sha256": "741e1f3b3d659eb327c8a578bdc75af2289f26d1e8cb5fb1d346708b547936fe",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/delivery-format.txt",
-      "raw_sha256": "741e1f3b3d659eb327c8a578bdc75af2289f26d1e8cb5fb1d346708b547936fe",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "sha256": "b475fc29aee3dc5c262c478029ac7795c29dadad3668bc877eb3a0357103a4e3",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/delivery-format.txt",
+      "raw_sha256": "b475fc29aee3dc5c262c478029ac7795c29dadad3668bc877eb3a0357103a4e3",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/types.txt",
       "bytes": 44,
       "sha256": "a97cee1ee1bdb5e2d1ca7098f7b33a6c6a21263225643192fdeb78654687ed89",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/types.txt",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/types.txt",
       "raw_sha256": "a97cee1ee1bdb5e2d1ca7098f7b33a6c6a21263225643192fdeb78654687ed89",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/tests.txt",
-      "bytes": 5301,
-      "sha256": "a222eba8a9d0aaf76b7e1eb1716a0219a721f1fb2b2b273a304f9c8ffb8dd2d9",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/tests.txt",
-      "raw_sha256": "a222eba8a9d0aaf76b7e1eb1716a0219a721f1fb2b2b273a304f9c8ffb8dd2d9",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "bytes": 5569,
+      "sha256": "e6450a1df9375d8c2e172f2a757b429b06997e5604bcf84997bbf88f11ec5489",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/tests.txt",
+      "raw_sha256": "e6450a1df9375d8c2e172f2a757b429b06997e5604bcf84997bbf88f11ec5489",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/coverage-json.txt",
       "bytes": 99,
-      "sha256": "f37d57dbf6276ff1f899493576fc6d890cc829d0b926be7b4590efe751c2836c",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/coverage-json.txt",
-      "raw_sha256": "f37d57dbf6276ff1f899493576fc6d890cc829d0b926be7b4590efe751c2836c",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "sha256": "d441038e1851a88bdaefc48600123b81a486f49f357626e7529c41c8febee7e7",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/coverage-json.txt",
+      "raw_sha256": "d441038e1851a88bdaefc48600123b81a486f49f357626e7529c41c8febee7e7",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "quality/casebook-sources.txt",
       "bytes": 108,
       "sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
-      "raw_path": "eval/reports/source-grounding-20261028/quality-v2/casebook-sources.txt",
+      "raw_path": "eval/reports/source-grounding-20261028/quality-v3/casebook-sources.txt",
       "raw_sha256": "67cad6adbdad03bc3df7969b0bd50919693d771abc42ec1717d22b77e6309aa9",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "development/quality-first-summary.json",
@@ -127,34 +127,34 @@
     {
       "path": "install/summary.json",
       "bytes": 667,
-      "sha256": "0473f72c1174c1d5a7e1f71cf994eda5f66f3ad56194712e6209a0293f23ef8a",
-      "raw_path": "eval/reports/source-grounding-20261028/install-v2/summary.json",
-      "raw_sha256": "c2a57c9c18568a8c24c50c7cb7862ba6237249235cbc1fd5ca5c5853ad66be37",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "sha256": "653f2e2dcc85b71a66673506d7bd12817f5d0f49b39ff62adc73b0941f523866",
+      "raw_path": "eval/reports/source-grounding-20261028/install-v3/summary.json",
+      "raw_sha256": "be6f5bded47ebff271d72204ef4206462dd4de56ab2e2d95357cddc763fab157",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "install/grounded-smoke.json",
       "bytes": 2485,
       "sha256": "49276d9107058a2c08912b7ecc7ee305dc27a7d2677c8705f1ebe15feb082be3",
-      "raw_path": "eval/reports/source-grounding-20261028/install-v2/grounded-smoke.json",
+      "raw_path": "eval/reports/source-grounding-20261028/install-v3/grounded-smoke.json",
       "raw_sha256": "175a2e275e5a4d0e60170832875c68e157c238207ee8a3029f9595974f6d2794",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "install/wheel-source-binding.json",
       "bytes": 15397,
-      "sha256": "8d8c5010e7345f70e7dbc633bf09d127c3a1f2c70a603c94f3ec0751cc9d676d",
-      "raw_path": "eval/reports/source-grounding-20261028/wheel-source-binding.json",
-      "raw_sha256": "ea698c58461f849030549f15da7742236fcc00358a105e7552a0813bc315a0d0",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "sha256": "11b5360c78f202808b0d465560a3036aba69179487f3ae89aa79d8be03a0405c",
+      "raw_path": "eval/reports/source-grounding-20261028/wheel-source-binding-v3.json",
+      "raw_sha256": "2805c508108159aa066110177ce20d168c1e42f130f17cf6537f2e90701e7eb7",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "review/code-closure.json",
-      "bytes": 1791,
-      "sha256": "644475816b14058061c94af29996a79d7614030f84d93ea8de7affec775c5cc5",
-      "raw_path": "eval/reports/source-grounding-20261028/independent-code-review.json",
-      "raw_sha256": "6569fbb40423481617820ce156af202c770ee49fd42cfaf371c3d50f55489bcb",
-      "transformation": "Selected evidence; UTF-8/LF, trim trailing whitespace, normalize machine paths; JSON reserialized; no model answers"
+      "bytes": 2122,
+      "sha256": "c959631e289579ff889dbe7161605fdbea1f5c58695d22fe338016c8ebbe48ca",
+      "raw_path": "eval/reports/source-grounding-20261028/independent-code-review-v3.json",
+      "raw_sha256": "9b1dc363462a26cc6ea90fc04b245204b769b7205e1cb8473a89210e19cb596b",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     },
     {
       "path": "review/source-boundaries.json",
@@ -206,9 +206,98 @@
     },
     {
       "path": "README.md",
-      "bytes": 2643,
-      "sha256": "d41eb4127d8194180c2be419ff83d699d8d1d57aaf34cee211bbeecb78e86823",
+      "bytes": 3747,
+      "sha256": "46f5c16dc7f0e717af1e3be518d284fe2f5c948953221813fb7ddfe5792a6352",
       "transformation": "New publication explanation; no historical raw counterpart"
+    },
+    {
+      "path": "review/postgres-adapter.json",
+      "bytes": 6945,
+      "sha256": "fd466d6233b59aed9dacf35c470413679d9f533e2cf471fcb510ce58868f3962",
+      "raw_path": "eval/reports/source-grounding-20261028/independent-postgres-outbox-adapter-review-v2.json",
+      "raw_sha256": "d7110162291ac702db70ba7eb4dbec50282b547afa50f14bf0011436e0e8bf79",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "review/validation-entry.json",
+      "bytes": 1557,
+      "sha256": "86d42198f1a9a9e9a43da313b3386d83e08b31d44333f5da2fc9c8a5f91c096e",
+      "raw_path": "eval/reports/source-grounding-20261028/independent-validation-entry-review.json",
+      "raw_sha256": "10c450036cf76ea87bb645aa876285c940e57e94bc6425f0419a5345c199ac31",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "development/entry-checks-summary.json",
+      "bytes": 2741,
+      "sha256": "ae3df39c6e4b795c8278adaa7f35b6ba63fa71a7b6c4c02d7d7713e873d5d529",
+      "raw_path": "eval/reports/source-grounding-20261028/entry-checks-v2/summary.json",
+      "raw_sha256": "a0ad1529147126a2d0930525319281d0d975e77ec15e46985a451841b89a26e0",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "development/entry-checks-tests.txt",
+      "bytes": 181,
+      "sha256": "931d73d4c9129b86b3afe6ca7b2ff0b47c237364911c71b103e4dd652b133f29",
+      "raw_path": "eval/reports/source-grounding-20261028/entry-checks-v2/tests.txt",
+      "raw_sha256": "931d73d4c9129b86b3afe6ca7b2ff0b47c237364911c71b103e4dd652b133f29",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "development/entry-checks-lint.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "raw_path": "eval/reports/source-grounding-20261028/entry-checks-v2/lint.txt",
+      "raw_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "development/independent-entry-probes.txt",
+      "bytes": 180,
+      "sha256": "a9c8ea6be4c485164b4f60e2ce8c81b5b1d5c1431f0e1480b0dbe8efcb4855f3",
+      "raw_path": "eval/reports/source-grounding-20261028/independent-validation-entry-final-v4.txt",
+      "raw_sha256": "d20fa2b943b498fab4272f653ae4d176a66074923f6c860c2b33ff905317cb12",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "validation/proposal.json",
+      "bytes": 263168,
+      "sha256": "730267884c7815a6e583067adb1d6590d5cc5a0844cce3757a0668a35cb7086b",
+      "raw_path": "eval/reports/source-grounding-20261028/validation-proposal.json",
+      "raw_sha256": "730267884c7815a6e583067adb1d6590d5cc5a0844cce3757a0668a35cb7086b",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "validation/preflight-summary.json",
+      "bytes": 684,
+      "sha256": "7748768375b7242ef4e0e9692db1885573b69d9b39e8e24a46a5ac1a22df0ba7",
+      "raw_path": "eval/reports/source-grounding-20261028/validation-preflight-summary.json",
+      "raw_sha256": "7748768375b7242ef4e0e9692db1885573b69d9b39e8e24a46a5ac1a22df0ba7",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "remote-checks-source-first.json",
+      "bytes": 11766,
+      "sha256": "e06db3cf86bc847f29eeb5711afd34a5544d77ba0dd125af36cffff09829dab4",
+      "raw_path": "eval/reports/source-grounding-20261028/remote-checks-source-first.json",
+      "raw_sha256": "e06db3cf86bc847f29eeb5711afd34a5544d77ba0dd125af36cffff09829dab4",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
+    },
+    {
+      "path": "remote-checks-source-fix.json",
+      "bytes": 12687,
+      "sha256": "fb6d84f37704e0f41f864525e284c4ba1cc4407c1456220ae74589faa7af30b9",
+      "raw_path": "eval/reports/source-grounding-20261028/remote-checks-source-fix.json",
+      "raw_sha256": "fb6d84f37704e0f41f864525e284c4ba1cc4407c1456220ae74589faa7af30b9",
+      "transformation": "Selected final evidence; UTF-8/LF, machine paths/trailing whitespace normalized, JSON reserialized; original raw and previous public copies preserved."
     }
-  ]
+  ],
+  "previous_source_files_bound": 308,
+  "final_quality": "quality-v3",
+  "final_installation": "install-v3",
+  "validation_status": "FROZEN_NOT_AUTHORIZED",
+  "validation_proposal_sha256": "730267884c7815a6e583067adb1d6590d5cc5a0844cce3757a0668a35cb7086b",
+  "historical_artifacts_bound": 1385,
+  "source_remote_sha": "b8e8208416440f7326db4833d53a66d37c7a46bd",
+  "original_remote_failure_preserved": true,
+  "manifest_repair": "Path passed to byte digest in first close; all public files verified before manifest recovery"
 }

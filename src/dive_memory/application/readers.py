@@ -15,7 +15,7 @@ from ..reading.adjudicated_reader import (
     EvidenceReferee,
 )
 from ..reading.advice_refusal_reader import AdviceRefusalReader
-from ..reading.arguments import ARGUMENT_PROTOCOL
+from ..reading.arguments import ARGUMENT_PROTOCOL, ARGUMENT_RECEIPT_PROTOCOL
 from ..reading.current_state_reader import REVIEW_VERSION as STATE_VERSION
 from ..reading.current_state_reader import CurrentStateReader, CurrentStateReviewReader
 from ..reading.deliberation import LITERAL_PROTOCOL
@@ -52,14 +52,25 @@ def create_reader(
     strategy: str = "indexed",
     reasoning_effort: str | None = None,
 ) -> Reader:
-    if strategy in {"deliberative-staged", "deliberative-grounded"}:
+    if strategy in {
+        "deliberative-staged",
+        "deliberative-grounded",
+        "deliberative-grounded-receipt",
+    }:
         if thinking is None:
             raise ValueError(f"{strategy} requires an explicit reasoning transport")
-        grounded_protocol = strategy == "deliberative-grounded"
+        grounded_protocol = strategy in {
+            "deliberative-grounded",
+            "deliberative-grounded-receipt",
+        }
         protocol = (
-            ARGUMENT_PROTOCOL
-            if grounded_protocol
-            else replace(REFERENCE_PROTOCOL, version="staged-reference-reader-v1")
+            ARGUMENT_RECEIPT_PROTOCOL
+            if strategy == "deliberative-grounded-receipt"
+            else (
+                ARGUMENT_PROTOCOL
+                if grounded_protocol
+                else replace(REFERENCE_PROTOCOL, version="staged-reference-reader-v1")
+            )
         )
         spec = ReaderSpec(
             provider,
@@ -110,7 +121,8 @@ def create_reader(
     if strategy not in {"indexed", "r40"}:
         raise ValueError(
             "strategy must be indexed, r40, adaptive, verified, deliberative, "
-            "deliberative-refs, deliberative-staged or deliberative-grounded"
+            "deliberative-refs, deliberative-staged, deliberative-grounded "
+            "or deliberative-grounded-receipt"
         )
     policy = ReaderPolicy(
         name="indexed_evidence",

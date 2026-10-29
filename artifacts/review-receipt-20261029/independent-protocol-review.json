@@ -1,0 +1,82 @@
+{
+  "schema_version": "r71-independent-receipt-review-v1",
+  "result": "NO_OPEN_BLOCKING_FINDINGS_IN_REVIEWED_SCOPE",
+  "reviewer": "/root/semantic_diagnosis",
+  "scope": "Optional receipt protocol, host preservation, full prior/current source-binding checks, live admission refresh, strict revise and separation from historical v1. Includes three actual SQLite/MemoryService/MemoryEvidenceSource flows; no provider model, Task or fee experiment.",
+  "protocol_version": "argument-grounded-review-receipt-v1",
+  "source_sha256": {
+    "src\\dive_memory\\reading\\arguments.py": "bd2abd8db9bd9ff9e9816dde1ea5442b51b860791fbf2efec51599ee144f3097",
+    "src\\dive_memory\\reading\\deliberation.py": "b8956412111cb0c4e71d1801ded060a4b07bec734c2cef7f4e5c3f17bbca57af",
+    "src\\dive_memory\\reading\\deliberative.py": "73f1a1a0dcc585f02f91d906ed85d538b7efc5b28ca34f13bb45fe3b1261f14d"
+  },
+  "checks": {
+    "returncode": 0,
+    "arguments": [
+      "-m",
+      "pytest",
+      "eval\\reports\\review-protocol-diagnosis-20261029\\independent-receipt-boundaries.py",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "eval\\reports\\review-protocol-diagnosis-20261029\\independent-receipt-temp-v5"
+    ],
+    "summary": "38 passed in 0.94s",
+    "source_sha256_before": {
+      "src\\dive_memory\\reading\\arguments.py": "bd2abd8db9bd9ff9e9816dde1ea5442b51b860791fbf2efec51599ee144f3097",
+      "src\\dive_memory\\reading\\deliberation.py": "b8956412111cb0c4e71d1801ded060a4b07bec734c2cef7f4e5c3f17bbca57af",
+      "src\\dive_memory\\reading\\deliberative.py": "73f1a1a0dcc585f02f91d906ed85d538b7efc5b28ca34f13bb45fe3b1261f14d"
+    },
+    "source_sha256_after": {
+      "src\\dive_memory\\reading\\arguments.py": "bd2abd8db9bd9ff9e9816dde1ea5442b51b860791fbf2efec51599ee144f3097",
+      "src\\dive_memory\\reading\\deliberation.py": "b8956412111cb0c4e71d1801ded060a4b07bec734c2cef7f4e5c3f17bbca57af",
+      "src\\dive_memory\\reading\\deliberative.py": "73f1a1a0dcc585f02f91d906ed85d538b7efc5b28ca34f13bb45fe3b1261f14d"
+    },
+    "log_sha256": "294c82970e85e338cf45bac1cf07e4d6f276f88548db3d0315e6be8f56d9fe98",
+    "test_sha256": "cb487058b587dffa9f996386fea23b74fbd5c2d9c2936033e8072804c1fc3be9",
+    "provider_requests": 0,
+    "tasks_registered": 0
+  },
+  "confirmed_invariants": [
+    "An accept wire object has exactly review/action/empty defects and cannot contain a replacement answer/status/source_indices/missing or analysis.",
+    "Host acceptance returns the identical original GroundedAnswerDecision object, preserving answer, qualifiers, reason code, policy metadata and every original citation, including navigation.",
+    "Each citation must align with a complete original prior binding and have an admitted current snapshot with matching namespace, version, source provenance, role, observation/statement clocks and visible literal quote. Reordering and a same-snapshot passage expansion are permitted.",
+    "Missing/forged prior bindings and changed current source refs, lifecycle, namespace, version, role, clock or quote are rejected.",
+    "Admission is rechecked before the review prompt and after a completed review response. Real or synthetic revocation fails closed without extra format retry; in-place source mutation cannot rewrite both sides of the preserved comparison.",
+    "An explicit source-grounded citation-only revise still uses the original full decision/defect contract; an unlabelled support defect cannot change an ANSWER.",
+    "Old ARGUMENT_PROTOCOL remains version argument-grounded-reader-v1 with no receipt resolver or new refresh policy. Original R70 plan/synthesis/review system prompts remain byte-identical."
+  ],
+  "real_provider_flows": [
+    {
+      "case": "SQLite positive with actual plan search/read plus access during synthesis",
+      "result": "ANSWER preserved after four total source accesses (two searches and two reads); memory_access gains at least two rows while memory version/content/created_at/updated_at remain unchanged."
+    },
+    {
+      "case": "SQLite hard-forget after synthesis",
+      "result": "Actual memory tombstone and hard deletion are observed by review preflight annotation; ERROR/EVIDENCE_SOURCE_FAILURE before review, no final answer or citation."
+    },
+    {
+      "case": "SQLite hard-forget during review",
+      "result": "Actual tombstone/deletion are observed after the completed review response; ERROR/EVIDENCE_SOURCE_FAILURE, no final citation or format retry."
+    }
+  ],
+  "finding_history": [
+    {
+      "finding": "Review packets previously came only from cached workspace items, so a store revocation between stages could remain invisible to a receipt-only snapshot comparison.",
+      "disposition": "Resolved in new optional orchestration by live annotate before and after review; actual SQLite hard-forget cases and synthetic version/revocation cases pass. Old v1 behavior remains unchanged."
+    }
+  ],
+  "legacy_v1_system_prompt_parity_to_real_R70_requests": {
+    "plan": true,
+    "synthesize": true,
+    "review": true
+  },
+  "original_R70_invalid_case_and_raw_requests_sha256_unchanged": true,
+  "provider_requests": 0,
+  "new_cost_cny": "0",
+  "limitations": [
+    "A model receipt confirms its decision to keep a draft; it is not proof that the source text entails the draft. No new semantic accuracy or 95% result is established.",
+    "The real provider tests cover SQLite only, not PostgreSQL or a multi-process storage race. Source adapters without a live annotate capability remain responsible for admission when supplying caller-trusted evidence.",
+    "Factory integration, full engineering gates, installed package and real new-generation evaluation need separate root evidence; this independent review does not replace them."
+  ]
+}

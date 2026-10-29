@@ -225,6 +225,19 @@ class DeliberationProtocol:
         ]
         | None
     ) = None
+    resolve_review: (
+        Callable[
+            [
+                str,
+                GroundedAnswerDecision,
+                Sequence[RetrievalItem],
+                Sequence[RetrievalItem] | None,
+            ],
+            GroundedAnswerDecision,
+        ]
+        | None
+    ) = None
+    refresh_review_sources: bool = False
 
 
 def _literal_indices(text: str, phase: str) -> list[int]:

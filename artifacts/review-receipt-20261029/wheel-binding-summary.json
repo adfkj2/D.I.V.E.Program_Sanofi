@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "current_source_matches_installed_wheel": true,
+  "source_path_injected": false,
+  "packaged_files": 140,
+  "repository_quality_inputs": 319,
+  "wheel_sha256": "234cd6ad7d1cbfccab459dd34b65fbbae30b7c70b99ce82b7e33ed5bddacbd73",
+  "source_manifest_sha256": "f51b164f8091f758675f1ffc204ad8ce940529d004bb8e1342e5a09916e72115",
+  "installation_summary_sha256": "1393173a82ac3bdbd5cd329f571ea1c43a6617045bf4c62e24edcaddb4d64559",
+  "provider_requests": 0,
+  "tasks_registered": 0,
+  "new_cost_cny": "0",
+  "product_map_sha256": "7c98a170775a98e5a893d5bcd5c31af898df44a001d0f574cf1de89e52d8ebef",
+  "wheel_and_installed_file_maps_identical": true
+}

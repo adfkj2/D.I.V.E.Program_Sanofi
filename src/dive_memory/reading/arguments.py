@@ -364,3 +364,80 @@ ARGUMENT_PROTOCOL = DeliberationProtocol(
     review_context=review_context,
     validate_review=validate_review,
 )
+
+
+RECEIPT_VERSION = "argument-grounded-review-receipt-v1"
+ARGUMENT_RECEIPT_REVIEW_RULES = (
+    _BASE_RULES
+    + """
+Review the UNTRUSTED draft and analysis against the actual question and CURRENT
+sources. Check requested unit, exclusions, full names/qualifiers, date anchors,
+distinct events and supported bounds versus exact dates. Do not expand a concise
+sufficient answer into an unrequested list. A changed answer needs a concrete
+evidenced defect; an unavailable premise cannot be supplied by the draft.
+Choose exactly one of these two response forms:
+
+ACCEPT: return exactly {"review":{"action":"accept","defects":[]}}.
+Do not add status, answer, missing, source_indices or any other fields. Acceptance
+confirms the draft without rewriting it. The host preserves the entire validated
+draft, including all its original quotations and qualifiers, and rechecks that
+each original source snapshot is still visible. Your confirmation is not itself
+evidence or a certification of semantic support.
+
+REVISE: return the complete decision fields below plus review:
+{"action":"revise","defects":[{"kind":"time","reason":"specific supported defect",
+"source_indices":[0]}]}. The decision and all defect labels use CURRENT sources.
+kind is entity, time, scope, qualifier, arithmetic, support or completeness;
+reason is 1..240 characters. At most 6 defects with at most 6 distinct labels
+each. Only a support defect about a missing necessary premise leading to ABSTAIN
+may use no labels. ANSWER revisions and all other defects need real sources.
+Make an actual corresponding change; do not invent a defect to change wording.
+Well-formed labels alone establish neither factual support nor a real defect.
+For REVISE only, the complete decision contract is:
+"""
+    + _DECISION_RULES
+)
+
+
+def resolve_argument_review_receipt(
+    text: str,
+    draft: GroundedAnswerDecision,
+    items: Sequence[RetrievalItem],
+    prior_items: Sequence[RetrievalItem] | None,
+) -> GroundedAnswerDecision:
+    """Resolve a receipt against this invocation's immutable draft bindings."""
+    obj = load_object(text)
+    if "review" not in obj:
+        raise ValueError("review receipt requires an explicit action")
+    review = _review(obj["review"], items)
+    if review["action"] == "accept":
+        if set(obj) != {"review"}:
+            raise ValueError("accept receipt cannot carry decision fields or rewrites")
+        if prior_items is None or len(prior_items) != len(draft.citations):
+            raise ValueError("accept receipt requires every original source binding")
+        for citation, old in zip(draft.citations, prior_items, strict=True):
+            if (
+                citation.memory_id != old.memory.id
+                or not citation.source_refs
+                or not set(citation.source_refs) <= set(old.source_refs)
+                or not citation.quote.strip()
+                or citation.quote not in old.memory.content
+                or not any(_can_rebase(old, current) for current in items)
+            ):
+                raise ValueError(
+                    "accept receipt cannot inherit an unavailable snapshot"
+                )
+        return draft
+    decision = parse_review(text, items)
+    validate_review(text, draft, decision, items, prior_items)
+    return decision
+
+
+ARGUMENT_RECEIPT_PROTOCOL = replace(
+    ARGUMENT_PROTOCOL,
+    version=RECEIPT_VERSION,
+    review_rules=ARGUMENT_RECEIPT_REVIEW_RULES,
+    validate_review=None,
+    resolve_review=resolve_argument_review_receipt,
+    refresh_review_sources=True,
+)

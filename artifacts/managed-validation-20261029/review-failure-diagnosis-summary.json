@@ -1,0 +1,48 @@
+{
+  "schema_version": "r70-public-review-failure-diagnosis-summary-v1",
+  "original_final_status": "INVALID",
+  "original_final_reason": "INVALID_REVIEW_OUTPUT",
+  "source_labels_and_quoted_premises_correctly_remapped": true,
+  "same_status_answer_missing": true,
+  "every_draft_citation_covered": false,
+  "omitted_citation_role": "navigation index",
+  "approval_evidence_retained": true,
+  "assignment_evidence_retained": true,
+  "wrong_source_rebinding_observed": false,
+  "ordinary_review_and_recovery_repeat_same_omission": true,
+  "failed_invariant": "accept requires the unchanged conclusion and every original cited premise and admitted snapshot",
+  "exact_saved_prompt_replay": {
+    "prompt_payloads_and_hashes_matched": 4,
+    "terminal_status": "INVALID",
+    "provider_requests": 0
+  },
+  "independent_offline_validator_checks": {
+    "checks": 9,
+    "expected_accepted": 2,
+    "expected_rejected": 7
+  },
+  "primary_counterfactuals": {
+    "full_citation_carry_accepted": true,
+    "explicit_citation_only_revision_accepted": true,
+    "namespace_boundary_remains_rejected": true
+  },
+  "preserved_diagnostic_failure": "An initial fresh-reader four-prompt identity assertion failed; its script and log remain preserved.",
+  "limitations": [
+    "Fresh fixture creation/update clocks can change snapshot hashes and review ordering.",
+    "Exact saved-prompt replay is separate from fresh natural ordering.",
+    "Offline structural checks neither change the original invalid result nor establish an accuracy improvement."
+  ],
+  "diagnosis_provider_requests": 0,
+  "new_cost_cny": "0",
+  "original_outputs_and_gold_modified": false,
+  "sources": [
+    {
+      "raw_path": "eval/reports/review-protocol-diagnosis-20261029/primary-diagnosis.json",
+      "raw_sha256": "db163e1dd821af19ad761c6142e90e0c0a06ea17217668792b9162333f9f0dd5"
+    },
+    {
+      "raw_path": "eval/reports/review-protocol-diagnosis-20261029/independent-r70-review-replay-v1.json",
+      "raw_sha256": "96604369de16607d5bf75ee56ef26079c645011ff8889336743abb4429a45470"
+    }
+  ]
+}

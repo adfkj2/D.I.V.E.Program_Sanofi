@@ -1,4 +1,20 @@
-# R70 · 系统任务运行的冻结复测方案
+# R70 · 系统任务真实挑战止损与冻结历史
+
+**已获持续授权，真实挑战已止损。** 本次48条开发挑战保存33个最终结果：32个有效最终输出经独立语义审核通过，1个为INVALID_REVIEW_OUTPUT，15条未尝试。100题与500题均未运行；最新完整全新500题仍435正确/57错误/8未知，确认正确下界87%，95%目标尚未达到。
+
+101次模型调用全部completed、用量完整：138673输入/80403输出，新增峰值费用¥0.920570，累计保守¥61.848428；新增未知用量0，历史未知预留全部保留，实际账单未知。系统任务真实停止为Ready/exit2，worker终态FAILED2；仅在核对精确身份后清理已停止任务，失败锁与原始请求保留。
+
+语义审核覆盖全部33份已保存结果，不能将32个有效结果通过写成完整48题或Benchmark成绩。7条必要拒答中实际测试4条且通过；8条正式工具题仅首题进入并以最终INVALID失败，余7条及8条新语义题未尝试。内部恢复调用共2次，均按真实轨迹保留。
+
+失败诊断显示：复核上下文及草稿引用已正确重映射，两次复核均保留所问值的审批证据与人员证据，只删除了草稿附带的导航索引引用。现有accept合同要求保留全部草稿引用，因此same=True、covered=False，最终仍INVALID。独立9项离线校验及4份原prompt缓存重放支持该解释；首次fresh-reader四份prompt完全同一的断言失败也保留，重建时间会改变快照排序。离线反事实不改原结果，也不代表提分。
+
+用户随后明确授权“在完成目标之前均批准”：目标内修复、独立新候选准备与验证在原¥100累计上限、¥99规划线内不再逐轮询问，未增加金额上限。每次新attempt仍须独立绑定方案、预算与grant，失败和未知状态保留。R70本次attempt已关闭，旧grant、失败锁和旧输出不能恢复或复用；持续授权只覆盖后续独立新attempt。
+
+冻结发布提交9e16ddee8fd441fef089f2218ef08c1a6f9844f8的五个远程job均completed/success，PostgreSQL25通过且零skip；[精确提交证据](../../artifacts/managed-validation-20261029/remote-checks-release.json)只覆盖该发布提交。本次文档更新尚未产生新的提交CI。
+
+[停止与费用](../../artifacts/managed-validation-20261029/stopped-result-and-cost.json) · [语义范围](../../artifacts/managed-validation-20261029/semantic-review-summary.json) · [复核失败诊断](../../artifacts/managed-validation-20261029/review-failure-diagnosis-summary.json) · [持续授权范围](../../artifacts/managed-validation-20261029/standing-authorization-scope.json)
+
+## 冻结时方案与历史证据（执行前快照）
 
 **方案已冻结，尚未获得新的真实执行授权。** 本轮新增模型请求0、系统任务0、真实费用¥0。最新完整全新500题仍435正确/57错误/8未知，确认正确下界87%；95%尚未达到。R68一次获准挑战已故障止损，不能从余额恢复该次运行。
 

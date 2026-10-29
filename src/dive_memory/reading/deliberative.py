@@ -33,6 +33,7 @@ from .reader import (
     map_decision,
     reader_policy,
 )
+from .snapshots import AdmittedSnapshot
 from .workspace import BoundedEvidenceWorkspace, EvidencePin
 
 
@@ -171,6 +172,26 @@ class DeliberativeEvidenceReader:
                 raise _PhaseFailure(
                     ReaderStatus.ERROR, "EVIDENCE_SOURCE_FAILURE"
                 ) from exc
+
+        def refresh_review(
+            items: Sequence[RetrievalItem], *, unchanged: bool = False
+        ) -> tuple[RetrievalItem, ...]:
+            clips = tuple((item.memory.id, item.memory.content) for item in items)
+            snapshots = tuple(AdmittedSnapshot.from_item(item) for item in items)
+            refreshed = annotate(items)
+            if len(refreshed) != len(items) or any(
+                memory_id != current.memory.id or content != current.memory.content
+                for (memory_id, content), current in zip(clips, refreshed, strict=True)
+            ):
+                raise _PhaseFailure(ReaderStatus.ERROR, "EVIDENCE_SOURCE_FAILURE")
+            if unchanged and any(
+                old != AdmittedSnapshot.from_item(current)
+                for old, current in zip(snapshots, refreshed, strict=True)
+            ):
+                raise _PhaseFailure(
+                    ReaderStatus.ERROR, "EVIDENCE_CHANGED_DURING_REVIEW"
+                )
+            return refreshed
 
         def finish(
             status: ReaderStatus,
@@ -331,22 +352,51 @@ class DeliberativeEvidenceReader:
                         )
                         continue
                 try:
-                    if name == "plan":
+                    stateful_review = (
+                        name == "review" and self.protocol.resolve_review is not None
+                    )
+                    if stateful_review:
+                        assert prior_decision is not None
+                        assert self.protocol.resolve_review is not None
+                        current_items = (
+                            refresh_review(items, unchanged=True)
+                            if self.protocol.refresh_review_sources
+                            else items
+                        )
+                        parsed = self.protocol.resolve_review(
+                            response.text, prior_decision, current_items, prior_items
+                        )
+                    elif name == "plan":
                         parsed = self.protocol.parse_plan(response.text, items)
                     elif name == "synthesize" and self.protocol.parse_draft is not None:
                         parsed = self.protocol.parse_draft(response.text, items)
                     else:
                         parsed = self.protocol.parse_decision(response.text, items)
-                    if name == "review" and self.protocol.validate_review is not None:
+                    if (
+                        name == "review"
+                        and not stateful_review
+                        and self.protocol.validate_review is not None
+                    ):
                         assert prior_decision is not None and isinstance(
                             parsed, GroundedAnswerDecision
                         )
                         self.protocol.validate_review(
                             response.text, prior_decision, parsed, items, prior_items
                         )
-                    turn["citation_indices"] = self.protocol.citation_indices(
-                        response.text, name
-                    )
+                    if stateful_review and parsed is prior_decision:
+                        assert isinstance(parsed, GroundedAnswerDecision)
+                        turn["wire_citation_indices"] = []
+                        turn["review_resolution"] = "HOST_INHERITED_DRAFT"
+                        turn["host_inherited_citations"] = [
+                            citation.to_dict() for citation in parsed.citations
+                        ]
+                    else:
+                        turn["citation_indices"] = self.protocol.citation_indices(
+                            response.text, name
+                        )
+                        if stateful_review:
+                            turn["wire_citation_indices"] = turn["citation_indices"]
+                            turn["review_resolution"] = "MODEL_REVISED_DECISION"
                     return parsed
                 except (ValueError, TypeError) as exc:
                     validation_error = str(exc)
@@ -447,6 +497,8 @@ class DeliberativeEvidenceReader:
                 draft.citations, evidence, indices=turns[-1]["citation_indices"]
             )
             reviewed = packet((*notes, *draft_pins))
+            if self.protocol.refresh_review_sources:
+                reviewed = refresh_review(reviewed)
             draft_context = (
                 dict(
                     self.protocol.review_context(

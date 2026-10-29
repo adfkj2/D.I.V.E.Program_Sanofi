@@ -26,9 +26,34 @@
     },
     {
       "path": "README.md",
-      "bytes": 1246,
-      "sha256": "1044d40e4054e87ce4ee1af8e3c281954c86e60f6e520e893708f9ee5892c0ce",
-      "transformation": "New publication explanation; no historical raw counterpart"
+      "bytes": 2448,
+      "sha256": "9be9d118224438db5c802fe389346e1dc470d85f832296b9a87cde7b2b84a7bd",
+      "transformation": "Updated publication explanation; prior bytes verified in local archive"
+    },
+    {
+      "path": "runtime-contracts.json",
+      "bytes": 5455,
+      "sha256": "1ad8ac91bea95639da032b8899d6bf82d742e3f4c8a638eec1a45e5eb7f3e445",
+      "raw_path": "eval/reports/durable-worker-20261028/runtime-contracts-aggregate-v2.json",
+      "raw_sha256": "6dfa61044338e85abc1919e30f89b65b57f823e67e7622b620649fa2550e7142",
+      "transformation": "New aggregate only; no raw identities, XML, event payloads or model answers; public CRLF normalized to LF, raw bytes preserved"
+    },
+    {
+      "path": "runtime-delivery.json",
+      "bytes": 7505,
+      "sha256": "281cb033bdfcdc1881a44b2c1599d78eb07c8de4db82c1e22d1e0ed5214e0240",
+      "raw_path": "eval/reports/durable-worker-20261028/runtime-tool-delivery-v1.json",
+      "raw_sha256": "602f3472dddcff51b7b7d7e6000627a1e7d30334276459ce990856c50fe46c24",
+      "transformation": "Compact final engineering aggregate; no raw task identity, XML, credentials or model outputs; public CRLF normalized to LF, raw bytes preserved"
     }
-  ]
+  ],
+  "prior_package_archive_sha256": "5c30501f92482bf45999f5b5005807bc4fca1569a21eab479c1a6c9e6c5b0059",
+  "prior_files_sha256": {
+    "independent-review.json": "a902e392447b7a0f956a80611ebc84ad21bbc64cae4904f3651942c215b06fa4",
+    "manifest.json": "301eecfff46cd83e617f22ffed6c6299be133328f21bcac208f2ece0a82df5f3",
+    "README.md": "1044d40e4054e87ce4ee1af8e3c281954c86e60f6e520e893708f9ee5892c0ce",
+    "summary.json": "b197a62bd137ba1ab296ae45369e684fa110df46a2524e49f269a10452c31b7c"
+  },
+  "before_tool_delivery_archive_sha256": "c8d67a8aaf131a0e8c155a33b6a64ce099f7ef80a1e0f118664ef82712d111c9",
+  "before_git_lf_archive_sha256": "21786ef07fff436d70bfd59d6b9d1a69091f3b99861e0af6ee096ea5c4d5a785"
 }

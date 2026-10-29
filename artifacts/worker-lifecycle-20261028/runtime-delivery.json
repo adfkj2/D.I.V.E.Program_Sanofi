@@ -1,0 +1,166 @@
+{
+  "schema_version": "r69-runtime-tool-delivery-v1",
+  "provider_requests": 0,
+  "additional_real_cost_cny": "0",
+  "shared_conservative_cumulative_cny": "60.927858",
+  "paid_validation_authorized": false,
+  "benchmark_improvement_verified": false,
+  "latest_complete_new_500_confirmed_correct": 435,
+  "denominator": 500,
+  "local_quality": {
+    "passed": true,
+    "passed_tests": 2137,
+    "environment_skips": 27,
+    "skip_breakdown": {
+      "postgres_service_absent": 25,
+      "real_model_dependency_absent": 1,
+      "symlink_permission": 1
+    },
+    "all_checks_exit_zero": true,
+    "source_count": 317,
+    "source_before_after_current_equal": true,
+    "coverage": {
+      "delivery": {
+        "line_percent": 94.79905437352245,
+        "branch_percent": 90.57692307692308,
+        "passed": true
+      },
+      "memory-core": {
+        "line_percent": 92.81045751633987,
+        "branch_percent": 82.38095238095238,
+        "passed": true
+      },
+      "reading": {
+        "line_percent": 94.81420988158432,
+        "branch_percent": 88.10068649885584,
+        "passed": true
+      }
+    }
+  },
+  "targeted_tests": {
+    "passed": 96,
+    "skipped": 0,
+    "native_pipe_tests_included": 11
+  },
+  "bytecode_cache_regression": {
+    "failed_before_fix": true,
+    "fixed": true,
+    "behavior": "Compile the same driver source bytes whose SHA256 was checked, rather than loading timestamp-matched bytecode."
+  },
+  "native_offline_fixture_cases": [
+    {
+      "phase_is_free_fixture_only": "challenge",
+      "exit_code": 0,
+      "worker_terminal_exists": true,
+      "ledger": {
+        "ledger_sha256": "5b0f28f78387d30a0c959f4aa7a30b98923232416164676efb02da987a84485c",
+        "attempted_calls": 1,
+        "completed_calls": 1,
+        "unknown_or_failed_calls": 0,
+        "known_input_tokens": 7,
+        "known_output_tokens": 3,
+        "total_input_tokens": 7,
+        "total_output_tokens": 3,
+        "known_peak_cost_cny": "0.000038",
+        "unknown_full_reservation_cny": "0",
+        "conservative_peak_cost_cny": "0.000038",
+        "actual_invoice_cny": null,
+        "must_stop": false,
+        "resume_authorized": false
+      },
+      "exact_owned_task_cleaned": true,
+      "semantic_score_established": false,
+      "runtime_source_sha256": {
+        "runner.py": "c470790971b2c89e433590cfe144f4a790c3aee3ae47e6085e557555042d682d",
+        "task_control.ps1": "337248a5dc69648397b23c87db25bf28ed249eba7e0ad2aafd0e8ae051c41a49",
+        "memory_pipe.py": "291e872ac55137d50bf31f59bbdffd23cce90952550fdc68d82eff828d17be73"
+      }
+    },
+    {
+      "phase_is_free_fixture_only": "candidate",
+      "exit_code": 2,
+      "worker_terminal_exists": true,
+      "ledger": null,
+      "exact_owned_task_cleaned": true,
+      "semantic_score_established": false,
+      "runtime_source_sha256": {
+        "runner.py": "c470790971b2c89e433590cfe144f4a790c3aee3ae47e6085e557555042d682d",
+        "task_control.ps1": "337248a5dc69648397b23c87db25bf28ed249eba7e0ad2aafd0e8ae051c41a49",
+        "memory_pipe.py": "291e872ac55137d50bf31f59bbdffd23cce90952550fdc68d82eff828d17be73"
+      }
+    },
+    {
+      "phase_is_free_fixture_only": "full",
+      "exit_code": 23,
+      "worker_terminal_exists": false,
+      "ledger": {
+        "ledger_sha256": "86b6e62c0d90c6f9abbce8439e2dd909a5a70e8606e1dc6f18771a17dc285f5c",
+        "attempted_calls": 1,
+        "completed_calls": 0,
+        "unknown_or_failed_calls": 1,
+        "known_input_tokens": 0,
+        "known_output_tokens": 0,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "known_peak_cost_cny": "0",
+        "unknown_full_reservation_cny": "0.002656",
+        "conservative_peak_cost_cny": "0.002656",
+        "actual_invoice_cny": null,
+        "must_stop": true,
+        "resume_authorized": false
+      },
+      "exact_owned_task_cleaned": true,
+      "semantic_score_established": false,
+      "runtime_source_sha256": {
+        "runner.py": "c470790971b2c89e433590cfe144f4a790c3aee3ae47e6085e557555042d682d",
+        "task_control.ps1": "337248a5dc69648397b23c87db25bf28ed249eba7e0ad2aafd0e8ae051c41a49",
+        "memory_pipe.py": "291e872ac55137d50bf31f59bbdffd23cce90952550fdc68d82eff828d17be73"
+      }
+    }
+  ],
+  "final_synthetic_marker_matches": 0,
+  "final_native_files_scanned": 42,
+  "temporary_tasks_remaining": 0,
+  "independent_review": {
+    "verdict": "PASS_WITH_SCOPE_LIMITS",
+    "source_files_bound": 9,
+    "findings": [],
+    "scope": "Independent 96-test run and PowerShell syntax parsing; read-only consistency review of saved native v2 evidence."
+  },
+  "existing_product_installation": {
+    "src_files_still_equal_to_r68_installed_wheel": 140,
+    "wheel_sha256": "959ff22a22dd9f68c3c88984422e1f34c8b0d36bacdafcc6ddde2f6c2d45b3d6",
+    "new_wheel_install_claimed": false,
+    "reason": "New tool is repository engineering code; packaged application source/resources are unchanged."
+  },
+  "old_budget_grant_pending_lock_files_unchanged": 8,
+  "source_files_sha256": {
+    "tools/windows/validation_runtime/__init__.py": "ebfd7531b743e76453f9a90ee29e2a3df3f7f3d75a1f3ea3a73b3362628aeb65",
+    "tools/windows/validation_runtime/runner.py": "c470790971b2c89e433590cfe144f4a790c3aee3ae47e6085e557555042d682d",
+    "tools/windows/validation_runtime/memory_pipe.py": "291e872ac55137d50bf31f59bbdffd23cce90952550fdc68d82eff828d17be73",
+    "tools/windows/validation_runtime/evidence.py": "bf77f901dd7e5c6e6274dbd53807990a8ea19ce3d2abc99369c55d282b21c47a",
+    "tools/windows/validation_runtime/task_control.ps1": "337248a5dc69648397b23c87db25bf28ed249eba7e0ad2aafd0e8ae051c41a49",
+    "tools/windows/validation_runtime/README.md": "6cea99253f247c3bce08bca3cbfe58c5d88cbb4ed94f8aa7b4b3a78fa9678871",
+    "tests/test_validation_runtime.py": "37333070e7a338e352e34cc5476da794e0f60b4e2c3800083257a210ea94e6dc",
+    "tests/test_validation_runtime_evidence.py": "4f6e39dad80d7b3bc85e92a052c4f7075c92e9a2b8bf6a09cfdd70503027df20",
+    "tests/test_validation_memory_pipe.py": "0fbc98a7f0fa4d8d7e2706ce3ee87e826e6584ed887621a77ad1962ec9a9b744"
+  },
+  "raw_evidence_sha256": {
+    "quality-v1/summary.json": "c90b2f27db26915274f567340e858ab8604985cbc3886eda6a9ecee6c6d2f873",
+    "quality-v1/source-manifest.json": "ea7e9fb88800d162ef1fae1629e5f6e4f166aee2b04e7bc171875d9efa30d708",
+    "promoted-runtime-v3.xml": "ab4d82004f211d143d55e9e55dbbaa8d9aa18a884feb2c85d6aab2f3f6935e0e",
+    "stale-driver-cache-red.xml": "815cb0c244d2907a63919d374d53350a2d8ca0a184cad73684e7ee58438a6b6a",
+    "runner-before-cache-fix.py": "81a6d6be44f340497388c406ec867c29150790e85133aeed9bc0314c84f8e138",
+    "promoted-runtime-native-v2/verified-close-summary.json": "2e35f61c657a81b9a570aade6d753f5b0fe121352ea65630c4a0f58f90f72009",
+    "promoted-final-task-inventory.json": "d8c0424ddbabc4eeb49e2f4f10e42ffbb0005ec66ca5df2ae0775a935f02b97c",
+    "promoted-release-independent-review-v1.json": "309277fb1d59f9cbadcfefce4555fe08256c17de692e0a9733ad46acaeda966c"
+  },
+  "remote_current_commit_checks": "PENDING_PUSH_AND_EXACT_SHA_VERIFICATION",
+  "limits": [
+    "Offline fake driver only; no actual provider or benchmark score.",
+    "Runtime fixture phase names do not mean actual challenge/100/500 execution.",
+    "External exit0 remains separate from semantic accuracy and all frozen gates.",
+    "No new complete benchmark was run; 95 percent is not yet achieved.",
+    "Historical R68 exit cause remains unknown; no claim of multi-hour network or host-restart reliability."
+  ]
+}

@@ -26,8 +26,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2448,
-      "sha256": "9be9d118224438db5c802fe389346e1dc470d85f832296b9a87cde7b2b84a7bd",
+      "bytes": 2818,
+      "sha256": "dab9503d2211e8595711696889c71f74678ae16be3f12deb73b92a5eaebc03ab",
       "transformation": "Updated publication explanation; prior bytes verified in local archive"
     },
     {
@@ -45,6 +45,14 @@
       "raw_path": "eval/reports/durable-worker-20261028/runtime-tool-delivery-v1.json",
       "raw_sha256": "602f3472dddcff51b7b7d7e6000627a1e7d30334276459ce990856c50fe46c24",
       "transformation": "Compact final engineering aggregate; no raw task identity, XML, credentials or model outputs; public CRLF normalized to LF, raw bytes preserved"
+    },
+    {
+      "path": "remote-checks.json",
+      "bytes": 10149,
+      "sha256": "00406bd3053aa3ece0fed7ea8b347c49da8db9010ffb7343f5fd864f13c6a3ca",
+      "raw_path": "eval/reports/durable-worker-20261028/remote-checks-runtime-source-v1.json",
+      "raw_sha256": "7a1f7599b40fa577361dbd27552ca1af0b685e4a06a2c47f626e4903fda0e61a",
+      "transformation": "Exact source CI run and steps, UTF-8/LF; no raw workflow logs or credentials; trim extra EOF blank line in public copy; raw preserved"
     }
   ],
   "prior_package_archive_sha256": "5c30501f92482bf45999f5b5005807bc4fca1569a21eab479c1a6c9e6c5b0059",
@@ -55,5 +63,9 @@
     "summary.json": "b197a62bd137ba1ab296ae45369e684fa110df46a2524e49f269a10452c31b7c"
   },
   "before_tool_delivery_archive_sha256": "c8d67a8aaf131a0e8c155a33b6a64ce099f7ef80a1e0f118664ef82712d111c9",
-  "before_git_lf_archive_sha256": "21786ef07fff436d70bfd59d6b9d1a69091f3b99861e0af6ee096ea5c4d5a785"
+  "before_git_lf_archive_sha256": "21786ef07fff436d70bfd59d6b9d1a69091f3b99861e0af6ee096ea5c4d5a785",
+  "exact_source_remote_sha": "0f8e042c297b4fac7874db9085a29d65b93a6d1f",
+  "exact_source_remote_all_five_success": true,
+  "before_remote_publication_archive_sha256": "b9c8db4e71eeb951b8942e46bf8ec83e34028be3b4a59040fd314858f4b3ec70",
+  "before_remote_eof_normalization_archive_sha256": "ef285622df331ac772e3d56f6c9b4391826b0d2bae670597f338a29d2238b2d5"
 }

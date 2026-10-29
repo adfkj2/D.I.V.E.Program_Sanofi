@@ -1,0 +1,51 @@
+{
+  "round": "R70",
+  "raw_proposal_sha256": "9a947ae29fa04f92bd6ff044d59a581e4c2dabdabe8cfc236e15fcd65446cf6d",
+  "approved": false,
+  "authorization_status": "NOT_AUTHORIZED",
+  "new_model_requests": 0,
+  "new_real_cost_cny": "0",
+  "grant_exists": false,
+  "paid_output_exists": false,
+  "source_commit_with_passed_QA": "0f8e042c297b4fac7874db9085a29d65b93a6d1f",
+  "files": [
+    {
+      "path": "proposal-summary.json",
+      "bytes": 6610,
+      "sha256": "36d65ad8bcc8523cd055f85557ad03fdd94f91581a4490c112f3a8d7c59f2b8c",
+      "raw_path": "eval/reports/managed-validation-20261029/validation-proposal.json",
+      "raw_sha256": "9a947ae29fa04f92bd6ff044d59a581e4c2dabdabe8cfc236e15fcd65446cf6d",
+      "transformation": "Selected frozen proposal fields; omit repeated 1442-entry raw history map and 317-entry source map; normalize machine paths"
+    },
+    {
+      "path": "free-checks.json",
+      "bytes": 2180,
+      "sha256": "94ae6150d2a05ce9b82b0de822bf976389ee0987ecdf35e86e56810b2018af54",
+      "raw_path": "eval/reports/managed-validation-20261029/free-checks.json",
+      "raw_sha256": "94ae6150d2a05ce9b82b0de822bf976389ee0987ecdf35e86e56810b2018af54",
+      "transformation": "Complete free check exit/command/log/source binding; LF serialization"
+    },
+    {
+      "path": "independent-review.json",
+      "bytes": 3437,
+      "sha256": "a0f663e46f3d849aaf919fac1da0cee9bf77ef4791ace4b8984bfba5e42cad72",
+      "raw_path": "eval/reports/managed-validation-20261029/independent-review.json",
+      "raw_sha256": "a0f663e46f3d849aaf919fac1da0cee9bf77ef4791ace4b8984bfba5e42cad72",
+      "transformation": "Same-source closure of two independent scopes, no raw Task XML or identities"
+    },
+    {
+      "path": "entry-preflight.json",
+      "bytes": 2544,
+      "sha256": "7d007c3b9bd51963f9857e3df615e3f7b69bb019cdf588f15541ba2e300f9045",
+      "raw_path": "eval/reports/managed-validation-20261029/frozen-runtime-entry-audit-v1.json",
+      "raw_sha256": "7d007c3b9bd51963f9857e3df615e3f7b69bb019cdf588f15541ba2e300f9045",
+      "transformation": "Actual frozen-GPU CLI plans and no-grant refusals; no key read or Task created"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2267,
+      "sha256": "278664e3cf4d77566a0f65f108a7d5c986965a005d24e07709f3632889deda63",
+      "transformation": "New publication explanation"
+    }
+  ]
+}

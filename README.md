@@ -242,3 +242,5 @@ python tools/verify_wheel.py --wheel-dir dist --output artifacts/my-wheel-check
 R67源码提交`4c40eb19ca06b83639205236c6e787403eb58044`及记录提交`8d281a879b23e7f5ec2b2d5fe74158447e508821`分别通过自身五项远程任务：PostgreSQL8项零跳过、浏览器20+7项、两版Python及Docker通过。[源码证据](artifacts/staged-completion-20261026/remote-checks-source.json) · [记录提交证据](artifacts/staged-completion-20261026/remote-checks-record.json)。后续提交按自身SHA核验；工程通过不证明95%准确率。
 
 R69已完成240秒离线请求、异常退出与仅内存交接，并提供[可复用运行工具](tools/windows/validation_runtime/README.md)。缓存旧字节码问题已先复现后修复；2137项本地检查通过/27环境跳过，96项定向检查零跳过，当前源码的真实合成任务退出0/2/23且全部精确清理。工程通过数不计Benchmark，R68历史死因与多小时真实网络可靠性仍未证实；累计保守¥60.927858不变，没有新真实试跑授权。[完整范围](docs/oracle/64-worker-lifecycle-diagnosis-20261028.md) · [精选证据](artifacts/worker-lifecycle-20261028/README.md)。
+
+R70已冻结[系统任务复测方案](docs/oracle/65-managed-validation-20261029.md)，尚未授权真实执行。作者67项、费用独审44项、阶段锁独审30项免费检查通过；冻结GPU入口的48/100/500计划及无授权拒绝均实际验证。沿用R68策略与原judge，全部重新生成；最多新增¥38.05、累计最坏¥98.977858，历史未知预留不变。最新完整500题仍435条确认正确，95%未达到。[精选冻结证据](artifacts/managed-validation-20261029/README.md)。

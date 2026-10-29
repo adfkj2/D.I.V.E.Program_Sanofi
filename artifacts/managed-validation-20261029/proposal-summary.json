@@ -1,0 +1,170 @@
+{
+  "schema_version": "r70-managed-grounded-validation-v1",
+  "round": "R70",
+  "created_at": "2026-10-29T09:01:50.831760+00:00",
+  "approved": false,
+  "freeze_status": "FROZEN",
+  "authorization_status": "NOT_AUTHORIZED",
+  "model": "deepseek-flash",
+  "reasoning_effort": "high",
+  "judge": {
+    "provider": "deepseek",
+    "model": "deepseek-flash",
+    "revision": null,
+    "prompt_version": "longmemeval-unofficial-anscheck-v1",
+    "temperature": 0.0,
+    "max_tokens": 128,
+    "timeout_seconds": 60.0,
+    "official": false,
+    "caveat": "Same-family self-judging, non-official pilot only."
+  },
+  "judge_max_format_attempts": 2,
+  "gates": {
+    "challenge_semantic_correct_at_least": 47,
+    "challenge_required_abstentions_all_correct": true,
+    "challenge_tool_cases_all_correct": 8,
+    "challenge_tool_cases_actual_tool_use_required": true,
+    "challenge_grounding_cases_all_correct": 8,
+    "challenge_boundary_violations": 0,
+    "candidate_confirmed_correct_at_least": 97,
+    "control_upper_bound": 92,
+    "pilot_unanswerable_explicit_abstentions": 6,
+    "pilot_unanswerable_explicit_wrong": 0,
+    "reader_failures": 0,
+    "execution_failure_or_unknown_usage": "STOP_NO_RETRY",
+    "full_confirmed_correct_at_least": 475,
+    "full_denominator": 500
+  },
+  "reader_execution": {
+    "phases": {
+      "version": "staged-completion-v1",
+      "plan": {
+        "profile": "normal",
+        "spec": {
+          "provider": "deepseek",
+          "model": "deepseek-flash",
+          "revision": null,
+          "prompt_version": "argument-grounded-reader-v1",
+          "temperature": 0.0,
+          "max_tokens": 8192,
+          "timeout_seconds": 120
+        },
+        "reasoning_effort": null
+      },
+      "synthesize": {
+        "profile": "reasoning",
+        "spec": {
+          "provider": "deepseek",
+          "model": "deepseek-flash",
+          "revision": null,
+          "prompt_version": "argument-grounded-reader-v1",
+          "temperature": 0.0,
+          "max_tokens": 16384,
+          "timeout_seconds": 120
+        },
+        "reasoning_effort": "high"
+      },
+      "review": {
+        "profile": "reasoning",
+        "spec": {
+          "provider": "deepseek",
+          "model": "deepseek-flash",
+          "revision": null,
+          "prompt_version": "argument-grounded-reader-v1",
+          "temperature": 0.0,
+          "max_tokens": 16384,
+          "timeout_seconds": 120
+        },
+        "reasoning_effort": "high"
+      },
+      "recovery": {
+        "profile": "normal",
+        "spec": {
+          "provider": "deepseek",
+          "model": "deepseek-flash",
+          "revision": null,
+          "prompt_version": "argument-grounded-reader-v1",
+          "temperature": 0.0,
+          "max_tokens": 8192,
+          "timeout_seconds": 120
+        },
+        "reasoning_effort": null
+      }
+    },
+    "max_calls": 4,
+    "passage_chars": 800,
+    "evidence_configuration": {
+      "workspace_identity": "admitted-v1",
+      "annotate_sources": true
+    }
+  },
+  "no_automatic_restart": true,
+  "no_additional_candidate_retries": true,
+  "unknown_counts_as_correct": false,
+  "official": false,
+  "all_500_cases_development_exposed": true,
+  "shared_cumulative_peak_cny": "60.927858",
+  "total_stage_cap_cny": "38.05",
+  "worst_cumulative_peak_cny": "98.977858",
+  "user_limit_cny": "100.00",
+  "planning_stop_cny": "99.00",
+  "settlement_reserve_cny": "1.00",
+  "runtime_configuration": {
+    "schema_version": "dive-windows-validation-runtime-v1",
+    "driver": "eval/reports/managed-validation-20261029/managed_validation.py",
+    "outputs": {
+      "challenge": "eval/reports/managed-validation-20261029/runtime-challenge",
+      "candidate": "eval/reports/managed-validation-20261029/runtime-candidate",
+      "full": "eval/reports/managed-validation-20261029/runtime-full"
+    },
+    "automatic_restart": false,
+    "credential_channel": "one-shot current-user local named pipe",
+    "interpreters": {
+      "python": {
+        "path": "${REPOSITORY}\\.venv-gpu\\Scripts\\python.exe",
+        "sha256": "5fc3c5244b5eef01a82fbefd1932d1382b79c72fe6e64ffe8df1e3ce3643f02f"
+      },
+      "pythonw": {
+        "path": "${REPOSITORY}\\.venv-gpu\\Scripts\\pythonw.exe",
+        "sha256": "2a2f9c4f68d7be952936388825d843225a7d4a923e9360d945f2550a6b2e148b"
+      },
+      "base_pythonw": {
+        "path": "${USER_HOME}\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\pythonw.exe",
+        "sha256": "5ecb41b3b1cd7cf54fa0e5d8f47ed9a6def303cb9f36ef15be10cfd8f6c24257"
+      }
+    },
+    "gpu_environment_cfg_sha256": "81d2ba2166793391990192fcb700ac07d77f8d0e588693d577b6566c60e0a24f"
+  },
+  "dataset_sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
+  "selection_sha256": "247dfe1d1f17456d9929c09202db70182b2c8db5f898fcabfb404aea5a38c679",
+  "driver_sha256": "dc82e1aa2ee617846e7cb12f5f1244c8c415f859b25b636befa3e9c8af961a41",
+  "entry_sha256": {
+    "eval/reports/managed-validation-20261029/managed_validation.py": "dc82e1aa2ee617846e7cb12f5f1244c8c415f859b25b636befa3e9c8af961a41",
+    "eval/reports/managed-validation-20261029/freeze_managed_validation.py": "2f828f1da4067de496a75105274df1ea8dac884b1c9010bed480ef8a30283a30",
+    "eval/reports/managed-validation-20261029/test_managed_validation.py": "3af8d1cc6a7d1789dd69a3c6cf17fbda42d8bf3005fd749d87b25c19c2180bc9"
+  },
+  "preserved_r68_proposal_sha256": "730267884c7815a6e583067adb1d6590d5cc5a0844cce3757a0668a35cb7086b",
+  "installation_disclosure": "Inherited R68 v3 installed-wheel checks cover unchanged 140 product files; R69 QA covers 317 repository inputs including runtime. No new wheel installation is claimed.",
+  "raw_proposal_sha256": "9a947ae29fa04f92bd6ff044d59a581e4c2dabdabe8cfc236e15fcd65446cf6d",
+  "challenge_count": 48,
+  "candidate_count": 100,
+  "full_count": 500,
+  "challenge_cap_cny": "2.00",
+  "candidate_reader_cap_cny": "7.00",
+  "candidate_judge_cap_cny": "0.25",
+  "full_reader_cap_cny": "27.80",
+  "full_judge_cap_cny": "1.00",
+  "history_files_bound": 1442,
+  "unchanged_quality_source_count": 317,
+  "historical_manifest_mapping_sha256": "d622daae474e0457f587f29ed2b0ef4255d14e49b8c5623b83b8c9748a825f88",
+  "full_source_manifest_file": "eval/reports/durable-worker-20261028/quality-v1/source-manifest.json",
+  "full_source_manifest_sha256": "ea7e9fb88800d162ef1fae1629e5f6e4f166aee2b04e7bc171875d9efa30d708",
+  "full_500_prior_result": {
+    "correct": 435,
+    "wrong": 57,
+    "unknown": 8,
+    "confirmed_lower_bound": 0.87
+  },
+  "new_real_model_requests": 0,
+  "benchmark_improvement_verified": false
+}

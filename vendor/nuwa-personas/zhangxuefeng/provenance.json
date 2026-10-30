@@ -1,0 +1,29 @@
+{
+  "slug": "zhangxuefeng",
+  "repo": "alchaincyf/nuwa-skill",
+  "commit": "7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24",
+  "path": "examples/zhangxuefeng-perspective/SKILL.md",
+  "blob_sha": "dfe2746d79d13dd8b2d0d30ce110fe1fb76cf11c",
+  "source_url": "https://github.com/alchaincyf/nuwa-skill/blob/7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24/examples/zhangxuefeng-perspective/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Huashu (花叔)",
+  "license_blob_sha": "b95c3fcf6bcd81713196a8523188be50fa712edf",
+  "sha256": "7dbd490302d78245e1995f62cdd43fa63b434c44c8868091a8e8bb5fc3694b61",
+  "license_sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "cbe73278bb674c0ab1b002276997c53b7f96f4d47c6ffc418c73bbaef67ff794",
+  "primary_sources": [
+    {
+      "title": "风波之后的张雪峰：倔强的寒蝉",
+      "url": "https://www.jiemian.com/article/10635199.html",
+      "verification": "READABLE_2026_10_30",
+      "source_kind": "INTERVIEW_REPUBLICATION",
+      "attribution": "正文署名：新浪蜂鸟 张子悦、李固；界面转载载体。直接发言与记者叙述应分开。"
+    }
+  ],
+  "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
+  "retrieved_at": "2026-10-30"
+}

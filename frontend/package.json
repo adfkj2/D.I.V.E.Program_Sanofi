@@ -1,0 +1,25 @@
+{
+  "name": "we-once-talked-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --configLoader runner",
+    "build": "tsc --noEmit && vite build --configLoader runner",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "node tests/upgrade-e2e.mjs",
+    "preview": "vite preview --host 127.0.0.1 --configLoader runner"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "playwright": "1.62.1",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  }
+}

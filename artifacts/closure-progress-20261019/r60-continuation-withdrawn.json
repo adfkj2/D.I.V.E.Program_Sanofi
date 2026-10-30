@@ -1,9 +1,0 @@
-{
-  "date": "2026-10-20",
-  "proposal": "r60-continuation-proposal.json",
-  "status": "WITHDRAWN_NOT_AUTHORIZED_NOT_EXECUTED",
-  "reason": "Three confirmed errors in 29 generated cases; even perfect remaining 11 reaches at most 37/40, below frozen 38/40 threshold",
-  "shared_user_limit_cny": "40.00",
-  "planning_stop_cny": "39.00",
-  "cumulative_peak_cny": "38.070542"
-}

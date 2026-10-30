@@ -1,0 +1,471 @@
+{
+  "schema_version": "0.1",
+  "classification": "PUBLIC_SYNTHETIC",
+  "notice": "All users, sessions, evidence and answers are invented test fixtures. No real participant data.",
+  "records": [
+    {
+      "id": "synthetic_user_1_bio",
+      "kind": "memory",
+      "owner_id": "synthetic_user_1",
+      "subject_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_train_bio",
+      "split": "train",
+      "occurred_at": "2026-01-01T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "My early career preference values familiarity.",
+      "domain": "career",
+      "choice": "STAY",
+      "reasons": [
+        "familiarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_1_career",
+      "kind": "memory",
+      "owner_id": "synthetic_user_1",
+      "subject_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_train_career",
+      "split": "train",
+      "occurred_at": "2026-01-10T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "After considering career risk and growth I changed my career preference.",
+      "domain": "career",
+      "choice": "EXPLORE",
+      "reasons": [
+        "risk",
+        "growth"
+      ]
+    },
+    {
+      "id": "synthetic_user_1_social",
+      "kind": "memory",
+      "owner_id": "synthetic_user_1",
+      "subject_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_train_social",
+      "split": "train",
+      "occurred_at": "2026-01-12T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "In a close conversation I value care and clarity.",
+      "domain": "relationships",
+      "choice": "LISTEN",
+      "reasons": [
+        "care",
+        "clarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_1_dev",
+      "kind": "case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_dev",
+      "split": "dev",
+      "occurred_at": "2026-02-01T12:00:00Z",
+      "question": "How would you arrange a quiet weekend with an old friend?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_1_career_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_career",
+      "split": "holdout",
+      "occurred_at": "2026-03-01T12:00:00Z",
+      "question": "Choose a career path after checking the available risk and growth information.",
+      "domain": "career",
+      "options": [
+        "STAY",
+        "EXPLORE"
+      ],
+      "reference": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "risk",
+          "growth"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_1_social_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_social",
+      "split": "holdout",
+      "occurred_at": "2026-03-03T12:00:00Z",
+      "question": "A close colleague is upset: which conversational response fits your approach?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_2_bio",
+      "kind": "memory",
+      "owner_id": "synthetic_user_2",
+      "subject_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_train_bio",
+      "split": "train",
+      "occurred_at": "2026-01-01T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "My early career preference values familiarity.",
+      "domain": "career",
+      "choice": "EXPLORE",
+      "reasons": [
+        "familiarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_2_career",
+      "kind": "memory",
+      "owner_id": "synthetic_user_2",
+      "subject_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_train_career",
+      "split": "train",
+      "occurred_at": "2026-01-10T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "After considering career risk and growth I changed my career preference.",
+      "domain": "career",
+      "choice": "STAY",
+      "reasons": [
+        "risk",
+        "growth"
+      ]
+    },
+    {
+      "id": "synthetic_user_2_social",
+      "kind": "memory",
+      "owner_id": "synthetic_user_2",
+      "subject_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_train_social",
+      "split": "train",
+      "occurred_at": "2026-01-12T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "In a close conversation I value care and clarity.",
+      "domain": "relationships",
+      "choice": "ASK",
+      "reasons": [
+        "care",
+        "clarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_2_dev",
+      "kind": "case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_dev",
+      "split": "dev",
+      "occurred_at": "2026-02-01T12:00:00Z",
+      "question": "How would you arrange a quiet weekend with an old friend?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_2_career_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_career",
+      "split": "holdout",
+      "occurred_at": "2026-03-01T12:00:00Z",
+      "question": "Choose a career path after checking the available risk and growth information.",
+      "domain": "career",
+      "options": [
+        "STAY",
+        "EXPLORE"
+      ],
+      "reference": {
+        "choice": "STAY",
+        "reasons": [
+          "risk",
+          "growth"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_2_social_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_social",
+      "split": "holdout",
+      "occurred_at": "2026-03-03T12:00:00Z",
+      "question": "A close colleague is upset: which conversational response fits your approach?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_3_bio",
+      "kind": "memory",
+      "owner_id": "synthetic_user_3",
+      "subject_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_train_bio",
+      "split": "train",
+      "occurred_at": "2026-01-01T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "My early career preference values familiarity.",
+      "domain": "career",
+      "choice": "STAY",
+      "reasons": [
+        "familiarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_3_career",
+      "kind": "memory",
+      "owner_id": "synthetic_user_3",
+      "subject_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_train_career",
+      "split": "train",
+      "occurred_at": "2026-01-10T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "After considering career risk and growth I changed my career preference.",
+      "domain": "career",
+      "choice": "EXPLORE",
+      "reasons": [
+        "risk",
+        "growth"
+      ]
+    },
+    {
+      "id": "synthetic_user_3_social",
+      "kind": "memory",
+      "owner_id": "synthetic_user_3",
+      "subject_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_train_social",
+      "split": "train",
+      "occurred_at": "2026-01-12T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "In a close conversation I value care and clarity.",
+      "domain": "relationships",
+      "choice": "ASK",
+      "reasons": [
+        "care",
+        "clarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_3_dev",
+      "kind": "case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_dev",
+      "split": "dev",
+      "occurred_at": "2026-02-01T12:00:00Z",
+      "question": "How would you arrange a quiet weekend with an old friend?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_3_career_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_career",
+      "split": "holdout",
+      "occurred_at": "2026-03-01T12:00:00Z",
+      "question": "Choose a career path after checking the available risk and growth information.",
+      "domain": "career",
+      "options": [
+        "STAY",
+        "EXPLORE"
+      ],
+      "reference": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "risk",
+          "growth"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_3_social_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_social",
+      "split": "holdout",
+      "occurred_at": "2026-03-03T12:00:00Z",
+      "question": "A close colleague is upset: which conversational response fits your approach?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_4_bio",
+      "kind": "memory",
+      "owner_id": "synthetic_user_4",
+      "subject_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_train_bio",
+      "split": "train",
+      "occurred_at": "2026-01-01T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "My early career preference values familiarity.",
+      "domain": "career",
+      "choice": "EXPLORE",
+      "reasons": [
+        "familiarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_4_career",
+      "kind": "memory",
+      "owner_id": "synthetic_user_4",
+      "subject_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_train_career",
+      "split": "train",
+      "occurred_at": "2026-01-10T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "After considering career risk and growth I changed my career preference.",
+      "domain": "career",
+      "choice": "STAY",
+      "reasons": [
+        "risk",
+        "growth"
+      ]
+    },
+    {
+      "id": "synthetic_user_4_social",
+      "kind": "memory",
+      "owner_id": "synthetic_user_4",
+      "subject_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_train_social",
+      "split": "train",
+      "occurred_at": "2026-01-12T12:00:00Z",
+      "source_origin": "REAL_USER_MESSAGE",
+      "consent_purpose": "PFE_TRAINING",
+      "content": "In a close conversation I value care and clarity.",
+      "domain": "relationships",
+      "choice": "LISTEN",
+      "reasons": [
+        "care",
+        "clarity"
+      ]
+    },
+    {
+      "id": "synthetic_user_4_dev",
+      "kind": "case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_dev",
+      "split": "dev",
+      "occurred_at": "2026-02-01T12:00:00Z",
+      "question": "How would you arrange a quiet weekend with an old friend?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_4_career_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_career",
+      "split": "holdout",
+      "occurred_at": "2026-03-01T12:00:00Z",
+      "question": "Choose a career path after checking the available risk and growth information.",
+      "domain": "career",
+      "options": [
+        "STAY",
+        "EXPLORE"
+      ],
+      "reference": {
+        "choice": "STAY",
+        "reasons": [
+          "risk",
+          "growth"
+        ]
+      }
+    },
+    {
+      "id": "synthetic_user_4_social_case",
+      "kind": "case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_social",
+      "split": "holdout",
+      "occurred_at": "2026-03-03T12:00:00Z",
+      "question": "A close colleague is upset: which conversational response fits your approach?",
+      "domain": "relationships",
+      "options": [
+        "LISTEN",
+        "ASK"
+      ],
+      "reference": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ]
+      }
+    }
+  ]
+}

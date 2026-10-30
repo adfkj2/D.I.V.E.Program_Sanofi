@@ -1,0 +1,28 @@
+{
+  "slug": "clear",
+  "repo": "nuwa-skills/clear-skill",
+  "commit": "4100c5edf59cd64bcaf3055ee2a77c014167dc81",
+  "path": "SKILL.md",
+  "blob_sha": "1061daa7bc2d5b9b62729b973516a8612a581536",
+  "source_url": "https://github.com/nuwa-skills/clear-skill/blob/4100c5edf59cd64bcaf3055ee2a77c014167dc81/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Panmax",
+  "license_blob_sha": "d643191ea4fe97b226b7011efa4b8c94c4108702",
+  "sha256": "b66ea9dd5d64fbfe5eeaf04498f6c806d272c13e8b2d6ade5b7a11095aeef8c7",
+  "license_sha256": "53af10dcfbdccc453792f0037a84746ebbb180b4b8f887e1620fc5c05b8a05ae",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "d5b256f656e5b28acb4f375a8b510f55b81be0c393ffa71f5773836ed91b013e",
+  "primary_sources": [
+    {
+      "title": "Atomic Habits 作者官方介绍",
+      "url": "https://jamesclear.com/atomic-habits",
+      "verification": "READABLE_2026_10_30",
+      "source_kind": "PRIMARY_AUTHOR_SITE"
+    }
+  ],
+  "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
+  "retrieved_at": "2026-10-30"
+}

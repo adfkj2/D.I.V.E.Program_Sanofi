@@ -1,6 +1,0 @@
-src\dive_memory\reading\calculation.py:282: error: Need type annotation for "seen" (hint: "seen: list[<type>] = ...")  [var-annotated]
-src\dive_memory\reading\calculation.py:353: error: Argument 1 to "append" of "list" has incompatible type "Decimal"; expected "DateRange"  [arg-type]
-src\dive_memory\reading\calculation.py:397: error: Unsupported left operand type for - ("DateRange")  [operator]
-src\dive_memory\reading\calculation.py:399: error: Unsupported left operand type for * ("DateRange")  [operator]
-src\dive_memory\reading\adaptive.py:260: error: Incompatible types in assignment (expression has type "dict[str, Any] | None", target has type "int | list[dict[str, Any]] | str | None")  [assignment]
-Found 5 errors in 2 files (checked 35 source files)

@@ -1,0 +1,28 @@
+{
+  "slug": "karpathy",
+  "repo": "alchaincyf/nuwa-skill",
+  "commit": "7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24",
+  "path": "examples/andrej-karpathy-perspective/SKILL.md",
+  "blob_sha": "f3b19721a382b4ae8a3a5447564de0ee793aa005",
+  "source_url": "https://github.com/alchaincyf/nuwa-skill/blob/7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24/examples/andrej-karpathy-perspective/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Huashu (花叔)",
+  "license_blob_sha": "b95c3fcf6bcd81713196a8523188be50fa712edf",
+  "sha256": "0166d6f052cccfa034ab98bbe472276859feb7812bb6dcfd9c60c2bc5b63221b",
+  "license_sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "6b6e4bf09061a6c8e25f125bfd7aa3733f010ffcdddb2309764c3650dd235cfd",
+  "primary_sources": [
+    {
+      "title": "Andrej Karpathy 本人主页",
+      "url": "https://karpathy.ai/",
+      "verification": "READABLE_2026_10_30",
+      "source_kind": "PRIMARY_AUTHOR_SITE"
+    }
+  ],
+  "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
+  "retrieved_at": "2026-10-30"
+}

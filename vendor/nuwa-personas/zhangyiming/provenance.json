@@ -1,0 +1,21 @@
+{
+  "slug": "zhangyiming",
+  "repo": "alchaincyf/nuwa-skill",
+  "commit": "7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24",
+  "path": "examples/zhang-yiming-perspective/SKILL.md",
+  "blob_sha": "abd941327a86ce224ca7bd3a4e6ce01ef216a951",
+  "source_url": "https://github.com/alchaincyf/nuwa-skill/blob/7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24/examples/zhang-yiming-perspective/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Huashu (花叔)",
+  "license_blob_sha": "b95c3fcf6bcd81713196a8523188be50fa712edf",
+  "sha256": "1678459e320850b4e2a6f2a29ebc3bc991ece0daf06c6d87d3a2eb03f58eded2",
+  "license_sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "c7e5ad43c878f6b4bc652475195d76b1d678e9986778dcb9f2b20e749c1fab45",
+  "primary_sources": [],
+  "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
+  "retrieved_at": "2026-10-30"
+}

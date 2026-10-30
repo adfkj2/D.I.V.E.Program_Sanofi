@@ -1,0 +1,21 @@
+{
+  "slug": "zhuangzi",
+  "repo": "nuwa-skills/zhuangzi-skill",
+  "commit": "dcb45aaa574216265403713300affc1b758ac5c0",
+  "path": "SKILL.md",
+  "blob_sha": "6d326367652358afded5c5e2ee4f1f3d3e3942dc",
+  "source_url": "https://github.com/nuwa-skills/zhuangzi-skill/blob/dcb45aaa574216265403713300affc1b758ac5c0/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Panmax",
+  "license_blob_sha": "d643191ea4fe97b226b7011efa4b8c94c4108702",
+  "sha256": "35f23a4c747cf7456ce37c20439c46773a3733d7d62d285be5b8c7fbf75de655",
+  "license_sha256": "53af10dcfbdccc453792f0037a84746ebbb180b4b8f887e1620fc5c05b8a05ae",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "edd6cea0da2bf36128d170a3ca965073b2afe9b5b6a4ee13feb95b982076c0ee",
+  "primary_sources": [],
+  "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
+  "retrieved_at": "2026-10-30"
+}

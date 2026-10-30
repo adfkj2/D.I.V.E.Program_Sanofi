@@ -1,0 +1,28 @@
+{
+  "slug": "naval",
+  "repo": "alchaincyf/nuwa-skill",
+  "commit": "7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24",
+  "path": "examples/naval-perspective/SKILL.md",
+  "blob_sha": "ca8903cfcfb0d751181874b2f88da2b2c92015d9",
+  "source_url": "https://github.com/alchaincyf/nuwa-skill/blob/7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24/examples/naval-perspective/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Huashu (花叔)",
+  "license_blob_sha": "b95c3fcf6bcd81713196a8523188be50fa712edf",
+  "sha256": "0c9e06b7426b662ad1c53e23594869b194c7bcf5d008bd9ba798def8481a7c88",
+  "license_sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "4a0f51e2776e3cd049202c9477699eaa58cc19b2639ec74dd6ef9e5e3a4d6127",
+  "primary_sources": [
+    {
+      "title": "Naval — Wealth",
+      "url": "https://nav.al/wealth",
+      "verification": "READABLE_2026_10_30",
+      "source_kind": "PRIMARY_AUTHOR_ARCHIVE"
+    }
+  ],
+  "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
+  "retrieved_at": "2026-10-30"
+}

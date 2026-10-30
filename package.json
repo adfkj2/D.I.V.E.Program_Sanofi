@@ -1,9 +1,0 @@
-{
-  "name": "dive-workbench-checks",
-  "private": true,
-  "scripts": {
-    "format": "prettier --write src/dive_memory/static/*.{html,css,js,json} tools/verify_workbench.cjs tools/verify_project_import.cjs",
-    "format:check": "prettier --check src/dive_memory/static/*.{html,css,js,json} tools/verify_workbench.cjs tools/verify_project_import.cjs"
-  },
-  "devDependencies": {"playwright": "1.62.1", "prettier": "3.6.2"}
-}

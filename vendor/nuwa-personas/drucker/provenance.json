@@ -1,0 +1,21 @@
+{
+  "slug": "drucker",
+  "repo": "nuwa-skills/drucker-skill",
+  "commit": "91a847edd0b203a154afdd3e7f5499f2cc89d660",
+  "path": "SKILL.md",
+  "blob_sha": "fff4e3cde72f8de75fbadd1f100924306b3d8df9",
+  "source_url": "https://github.com/nuwa-skills/drucker-skill/blob/91a847edd0b203a154afdd3e7f5499f2cc89d660/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Panmax",
+  "license_blob_sha": "d643191ea4fe97b226b7011efa4b8c94c4108702",
+  "sha256": "9cc6853a6571bf1fc99bd72654f6703eba54b0bc96d4cf1e1c73842bb269dfd5",
+  "license_sha256": "53af10dcfbdccc453792f0037a84746ebbb180b4b8f887e1620fc5c05b8a05ae",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "09589357c670159df82022cf4d6c3042cdaea9c222013c0b96a9693f51ca5b4e",
+  "primary_sources": [],
+  "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
+  "retrieved_at": "2026-10-30"
+}

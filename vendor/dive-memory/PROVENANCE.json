@@ -1,0 +1,186 @@
+{
+  "upstream": "https://github.com/adfkj2/D.I.V.E.Program_Sanofi",
+  "revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68",
+  "upstream_version": "0.4.0",
+  "copied_files": [
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "839920411d5fe22d5dfeba57c067c308fca6604df8dbd0ad1bbafc7cc63a3c39",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/__init__.py",
+      "sha256": "a3d452db6af98258ed48432217e4a3ec9fe96a8083a179bd4b540eef1574fac0",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/answering.py",
+      "sha256": "c0b85ae1808b77b3d65bd74d1440dee756cb4f31dc53342f139ffaf61b4ea408",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/auth.py",
+      "sha256": "46d88e0f490c626416101de0d0b7fba41ff6145a3b39eccdadb0ebf3940bf3da",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/candidate.py",
+      "sha256": "da5f3d6aa9a2b6099a16a7ba07be435e408b3903896477b1954d13d910e27825",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/context.py",
+      "sha256": "7e4a3d90bde72acb3be97c379c7a0681fd69f32248fce6e108cf247c22aa5d1b",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/decay.py",
+      "sha256": "08532a53781c263a9dc9ded0d13e18f3bbed60393c66399ff7efff8c5a39de0d",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/dialogue_retention.py",
+      "sha256": "72f9e5c232c2115ec1eb5d57881d13022449dce6de8cb98dc07e28a5d2d8ee85",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/document_chunks.py",
+      "sha256": "8d37918a9b8598b1f0fc11da9522dd99b1061d8b6f5837092fed202a5db988d0",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/embeddings.py",
+      "sha256": "d9560425e33b52ecafa91a5918b1d8eac08a9a0763baf1092f3031ae916b8024",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/entities.py",
+      "sha256": "52d6fc10c1d31147b2987cff7f40214ee3387a062cc27d43cef0455aceb12a06",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/extraction.py",
+      "sha256": "00524b7081cbf2fdaf157d7130c9b57853e98b714de14cf63da0ff650c71e0fb",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/gate.py",
+      "sha256": "884788e33cb0f7a99456ccfadf823b167aeb66d70239cc2580dbf05f94ff5fed",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/hot_memory.py",
+      "sha256": "4b754245c5ea16624980a671d2d87eee572fd1c10476c20fb270e188e7f1ac1b",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/ids.py",
+      "sha256": "f0c5c9988f7504fb1b9ce6c2c272ee073f1d4125b4d88a81e876dd1e46f0cf59",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/lexical.py",
+      "sha256": "42b42306ffd67f2a04067781ee7fccfbe4f115a97c515a8a091d72038e9835a4",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/lifecycle.py",
+      "sha256": "5c5af9e85de63bb3072f392ec83447c040863e0b97a54a0dc47a40446caf4b48",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/llm.py",
+      "sha256": "d553a0014e3e717df8d856a85603e55e44b4ea4a5a007e7642ac0a8c7adcfec1",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/models.py",
+      "sha256": "2ba0b575759dbed8a602d7d635616f521b90dbd7e1e25f2d0c2045265eec1891",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/normalization.py",
+      "sha256": "2db64a71241a31a420f913fc13b89f8ab17ec86522df8c0fc1c257f35abebda4",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/planner.py",
+      "sha256": "ac6e9ac295bde145c8a5a0bebacdf5f939f753a3772dcc11e35f5a1a69bde25e",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/reading/__init__.py",
+      "sha256": "cce268aae2e1fb1e47fbb1da277b190d5fcffd47c37c5466816ac85806a93523",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/reading/provenance.py",
+      "sha256": "8f836c9f51ea6433cdf75830719ffa2a12231b141e98772cff96261518d5e00e",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/relations.py",
+      "sha256": "4b1aeab015329b92ea83534df29b209d6344d8139c3a56f5977f13391cc5fe8b",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/resolution.py",
+      "sha256": "1fced4f4d3ea582fe91c2588d4a16cde0345ce69a3806832c37b1782f3ae0ebb",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/retrieval.py",
+      "sha256": "18d6b2e8b9b33d5bb09b9a10d1ccd77ad7af243de42ec5c47618b7526a1f0563",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/retrieval_session.py",
+      "sha256": "7be9549418a271739e8bbd093904fa168d0aff9d730027e9b6f31a4db1bbe71c",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/service.py",
+      "sha256": "0498e881d1b991b3c306c318c4c2739e612487d1ba6a6d26ff3df1cc349dab0d",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/store.py",
+      "sha256": "d6089178fbd9425495d1b91cdadc22cd846ec6153005cfcbc6c73df2b9424890",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/store_contract.py",
+      "sha256": "a8d8c8c6109254f2fb4055e8ff232feba95a7e37e127c49b621c8d26dab1a75b",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/temporal.py",
+      "sha256": "8def1ff9beb1183a440f8cbc8d2f6ad34f0704ad9c3d49a133635bde77416c9b",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/token_budget.py",
+      "sha256": "99a7ef5b32cd09a5a54f4b1e507c7542bf740badf838d0f8234a41d544680fbb",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    },
+    {
+      "path": "src/dive_memory/worker.py",
+      "sha256": "18e49ead8a6ec419e7d77f43e754efdc998113cf9c92acb5b3545ae441db7e61",
+      "source_revision": "eb9898b0a4e4965d8e9d276dc2a76b500461fb68"
+    }
+  ],
+  "excluded": [
+    "application/",
+    "agent/",
+    "web.py",
+    "api.py",
+    "cli.py",
+    "static/",
+    "oracle/",
+    "eval*",
+    "benchmarks",
+    "data/"
+  ],
+  "local_modifications": [],
+  "license_status": "Upstream has no repository-wide LICENSE; see THIRD_PARTY_NOTICES.md and LICENSE_STATUS.md."
+}

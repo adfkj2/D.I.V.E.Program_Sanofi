@@ -1,125 +1,120 @@
-name: Engineering checks
-on: [push, pull_request, workflow_dispatch]
+name: WeOnceTalked quality
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
 permissions:
   contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  local-runtime:
+  backend:
+    name: Backend Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
+      fail-fast: false
       matrix:
         python: ['3.12', '3.14']
-    runs-on: ubuntu-latest
+    env:
+      WOT_PROVIDER: mock
+      PYTHONUTF8: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: python -m pip install -r requirements/dev.lock
-      - run: python -m pip install --no-deps -e .
-      - run: python tools/check_quality.py --output artifacts/quality
-      - run: python eval/run_project_validation.py --output artifacts/structured
-      - run: python -m dive_memory.mechanism_validation --fixtures eval/mechanisms/stories-v1.jsonl --output artifacts/mechanisms
-      - run: python -m build --wheel
-      - run: python tools/verify_wheel.py --wheel-dir dist --output artifacts/wheel
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - name: Install pinned dependencies and local memory core
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.lock.txt build
+          python -m pip install --no-deps -e vendor/dive-memory
+          python -m pip install --no-deps -e .
+      - name: Lint owned Python sources
+        run: python -m ruff check backend tests scripts frontend/tests/e2e_server.py
+      - name: Backend, provider contracts and privacy regressions
+        run: python -m pytest -q
+      - name: Build distributable wheel
+        run: |
+          python -m build --wheel
+          python -m pip install --force-reinstall --no-deps dist/*.whl
+      - name: Verify installed package outside the checkout
+        working-directory: /tmp
+        run: |
+          python -c "from wot.catalog import builtin_people; from wot.connections import ConnectionManager; from wot.assessments import AssessmentManager; assert len(builtin_people()) == 15"
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: engineering-${{ matrix.python }}
-          path: |
-            artifacts/quality/*.json
-            artifacts/quality/*.xml
-            artifacts/quality/*.txt
-            artifacts/structured/
-            artifacts/mechanisms/*.json
-            artifacts/mechanisms/*.jsonl
-            artifacts/wheel/summary.json
-            artifacts/wheel/install-log.json
-            artifacts/wheel/smoke-output.txt
-  postgres-contract:
+          name: wheel-python-${{ matrix.python }}
+          path: dist/*.whl
+          if-no-files-found: error
+
+  browser:
+    name: Responsive browser flows
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: pgvector/pgvector:pg16
-        env:
-          POSTGRES_USER: dive
-          POSTGRES_PASSWORD: local_ci_fixture
-          POSTGRES_DB: dive_test
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd "pg_isready -U dive -d dive_test"
-          --health-interval 5s --health-timeout 5s --health-retries 10
+    timeout-minutes: 15
     env:
-      DIVE_TEST_POSTGRES_DSN: postgresql://dive:local_ci_fixture@localhost:5432/dive_test
+      WOT_PROVIDER: mock
+      PYTHONUTF8: '1'
+      PYTHONPATH: backend:vendor/dive-memory/src
+      WOT_E2E_ALLOW_WRITE: '1'
+      WOT_E2E_URL: http://127.0.0.1:8765
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r requirements/postgres.lock
-      - run: python -m pytest tests/integration/postgres -q --junitxml=postgres-tests.xml
-      - name: Require PostgreSQL contracts to run without skips
-        run: |
-          python - <<'PY'
-          import xml.etree.ElementTree as ET
-          suites = list(ET.parse('postgres-tests.xml').getroot().iter('testsuite'))
-          assert sum(int(s.get('tests', 0)) for s in suites) > 0, 'No PostgreSQL tests ran'
-          for field in ('skipped', 'failures', 'errors'):
-              assert sum(int(s.get(field, 0)) for s in suites) == 0, f'PostgreSQL {field} must be zero'
-          PY
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: postgres-contract
-          path: postgres-tests.xml
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker build -f ops/docker/Dockerfile -t dive-memory:ci .
-      - name: Run the image and probe the real readiness endpoint
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker run -d --name dive-ci -p 127.0.0.1:8765:8765 dive-memory:ci
-          trap 'docker rm -f dive-ci >/dev/null 2>&1 || true' EXIT
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8765/api/readiness; then break; fi
-            sleep 1
-          done
-          curl --fail --silent http://127.0.0.1:8765/api/readiness
-          curl --fail --silent http://127.0.0.1:8765/metrics | grep -E 'dive_http_requests_total|dive_readiness'
-          docker inspect --format '{{.State.Health.Status}}' dive-ci
-  workbench:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-      - run: python -m pip install -r requirements/runtime.lock && python -m pip install --no-deps .
-      - run: npm ci && npx playwright install --with-deps chromium
-      - run: npm run format:check
-      - name: Exercise the real workbench
-        shell: bash
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install local backend and frontend
+        run: |
+          python -m pip install -r requirements.lock.txt
+          python -m pip install --no-deps -e vendor/dive-memory
+          python -m pip install --no-deps -e .
+          npm ci --prefix frontend
+      - name: Build frontend and install isolated browser
+        working-directory: frontend
+        run: |
+          npm run build
+          npx playwright install --with-deps chromium
+      - name: Exercise upgrade flows with an isolated mock service
         run: |
           mkdir -p artifacts
-          python -m dive_memory.cli --db artifacts/ui.db serve --port 8765 > artifacts/server.log 2>&1 &
+          export WOT_DATA_DIR="$PWD/artifacts/ci-e2e"
+          python frontend/tests/e2e_server.py > artifacts/ci-e2e-server.log 2>&1 &
           server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8765/healthz; then break; fi
-            sleep 1
-          done
-          node tools/verify_workbench.cjs artifacts/workbench
-          node tools/verify_project_import.cjs artifacts/project-import
-      - uses: actions/upload-artifact@v4
+          trap 'kill "$server_pid" 2>/dev/null || true; wait "$server_pid" 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import time
+          import urllib.request
+          for attempt in range(100):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8765/api/v1/healthz', timeout=1) as response:
+                      assert response.status == 200
+                  break
+              except (OSError, AssertionError):
+                  time.sleep(.2)
+          else:
+              raise SystemExit('Isolated browser-test server did not start')
+          PY
+          node frontend/tests/upgrade-e2e.mjs
+      - name: Upload screenshots and browser report
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: workbench
+          name: responsive-browser-report
           path: |
-            artifacts/workbench/
-            artifacts/project-import/
-            artifacts/server.log
+            frontend/artifacts/upgrade-e2e/
+            artifacts/ci-e2e-server.log
+          if-no-files-found: warn

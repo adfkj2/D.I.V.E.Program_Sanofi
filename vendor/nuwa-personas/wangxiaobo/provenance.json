@@ -1,0 +1,21 @@
+{
+  "slug": "wangxiaobo",
+  "repo": "nuwa-skills/wangxiaobo-skill",
+  "commit": "cf13278d800c181b0e2917054549df9a94d4d5a6",
+  "path": "SKILL.md",
+  "blob_sha": "207e5e835ded29be51e5fb3d33f4f4cafbe5ff48",
+  "source_url": "https://github.com/nuwa-skills/wangxiaobo-skill/blob/cf13278d800c181b0e2917054549df9a94d4d5a6/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Panmax",
+  "license_blob_sha": "d643191ea4fe97b226b7011efa4b8c94c4108702",
+  "sha256": "9b89322a967423ef86c0f5d42c609867d3b1c6c3dbbc1ff28ac011e1b8cf3530",
+  "license_sha256": "53af10dcfbdccc453792f0037a84746ebbb180b4b8f887e1620fc5c05b8a05ae",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "890f258130e655342a11d348b22f6d2b6657cc51e07d76ed7c892112d57de16c",
+  "primary_sources": [],
+  "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
+  "retrieved_at": "2026-10-30"
+}

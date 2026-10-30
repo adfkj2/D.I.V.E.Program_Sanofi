@@ -1,1 +1,0 @@
-Wrote JSON report to ${REPOSITORY}\eval\reports\scoped-evidence-20261020\quality-v1\coverage.json

@@ -1,0 +1,1191 @@
+{
+  "classification": "SYNTHETIC_FRAMEWORK_VALIDATION",
+  "persona_fidelity_validated": false,
+  "domain_tested": false,
+  "dataset_hash": "87a3ce72ee6312b4adcabdd71da86172de905c0f5ab49aa1eb1147697462eb25",
+  "protocol_hash": "f3c3319f558c1de98ebe5e2d1d823326a0d9bdcda95d00c3c7d4e81cb005dcbc",
+  "generation_hash": "73b8c3a3c73a6a06a0b34588d23cc6d8dc09f7379717d617733563d11757a9ca",
+  "seed": 1729,
+  "model": {
+    "provider": "synthetic_mock",
+    "model": "choice-from-authorized-context-v1",
+    "temperature": 0.0,
+    "max_output_tokens": 128,
+    "max_context_chars": 4000,
+    "prompt_version": "pfe-synthetic-v0.1"
+  },
+  "arms": {
+    "B0": {
+      "expected": 8,
+      "completed": 8,
+      "missing": 0,
+      "failed": 0,
+      "observed_primary_mean": 0.0
+    },
+    "B1": {
+      "expected": 8,
+      "completed": 8,
+      "missing": 0,
+      "failed": 0,
+      "observed_primary_mean": 0.0
+    },
+    "B2": {
+      "expected": 8,
+      "completed": 8,
+      "missing": 0,
+      "failed": 0,
+      "observed_primary_mean": 1.0
+    },
+    "D": {
+      "expected": 8,
+      "completed": 8,
+      "missing": 0,
+      "failed": 0,
+      "observed_primary_mean": 1.0
+    }
+  },
+  "paired": {
+    "expected_cases": 8,
+    "complete_four_arm_cases": 8,
+    "excluded_case_ids": [],
+    "matched_arm_means": {
+      "B0": 0.0,
+      "B1": 0.0,
+      "B2": 1.0,
+      "D": 1.0
+    },
+    "strongest_baseline": "B2",
+    "baseline_selection": "highest aggregate primary score on the complete four-arm cohort; ties B0, B1, B2",
+    "differences": [
+      {
+        "case_id": "synthetic_user_1_career_case",
+        "owner_id": "synthetic_user_1",
+        "session_id": "synthetic_user_1_holdout_career",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_1_social_case",
+        "owner_id": "synthetic_user_1",
+        "session_id": "synthetic_user_1_holdout_social",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_2_career_case",
+        "owner_id": "synthetic_user_2",
+        "session_id": "synthetic_user_2_holdout_career",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_2_social_case",
+        "owner_id": "synthetic_user_2",
+        "session_id": "synthetic_user_2_holdout_social",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_3_career_case",
+        "owner_id": "synthetic_user_3",
+        "session_id": "synthetic_user_3_holdout_career",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_3_social_case",
+        "owner_id": "synthetic_user_3",
+        "session_id": "synthetic_user_3_holdout_social",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_4_career_case",
+        "owner_id": "synthetic_user_4",
+        "session_id": "synthetic_user_4_holdout_career",
+        "difference": 0.0
+      },
+      {
+        "case_id": "synthetic_user_4_social_case",
+        "owner_id": "synthetic_user_4",
+        "session_id": "synthetic_user_4_holdout_social",
+        "difference": 0.0
+      }
+    ],
+    "bootstrap": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "users": 4,
+      "sessions": 8,
+      "iterations": 1000,
+      "seed": 1729,
+      "unit": "hierarchical user then session; all items in a session retained",
+      "interpretation": "synthetic pipeline check only; no population or persona-fidelity inference"
+    }
+  },
+  "cost": {
+    "provider_calls": 32,
+    "network_calls": 0,
+    "actual_cny": 0.0
+  },
+  "ledger": [
+    {
+      "call_index": 0,
+      "case_id": "synthetic_user_4_career_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_career",
+      "arm": "B1",
+      "request_hash": "ff9126345bf8a2938f27f5de41353f3fbd43f6b4334f5c2d64cf5d791b9afd64",
+      "context_refs": [
+        "synthetic_user_4_bio"
+      ],
+      "context_characters": 252,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "familiarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_4_bio"
+        ]
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 1,
+      "case_id": "synthetic_user_4_social_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_social",
+      "arm": "B0",
+      "request_hash": "e3cdc43581e782ecb76229118342d6092b32efe490a58fd325cb2b0d2d225989",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 2,
+      "case_id": "synthetic_user_4_social_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_social",
+      "arm": "D",
+      "request_hash": "1ec8e01cd4f4274851f0f0ee600174ffa0b3c0b06cc0005db056fbcb6d6c6813",
+      "context_refs": [
+        "synthetic_user_4_social"
+      ],
+      "context_characters": 268,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_4_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 3,
+      "case_id": "synthetic_user_2_career_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_career",
+      "arm": "B0",
+      "request_hash": "c3b723c0626b9b4ec10a0a907b322032180ab178d8e101be2ca047c64f263b46",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 4,
+      "case_id": "synthetic_user_3_career_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_career",
+      "arm": "B2",
+      "request_hash": "aebce00492d86059194964e9be2696e70df3a2d63a9bf22ca0c7953597d40c63",
+      "context_refs": [
+        "synthetic_user_3_social",
+        "synthetic_user_3_career"
+      ],
+      "context_characters": 536,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_3_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 5,
+      "case_id": "synthetic_user_3_social_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_social",
+      "arm": "B2",
+      "request_hash": "cdaa4034459580f8a06f9a7681a04df0acde4165a76c400fbf7c27f83855ad1c",
+      "context_refs": [
+        "synthetic_user_3_social",
+        "synthetic_user_3_bio"
+      ],
+      "context_characters": 501,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_3_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 6,
+      "case_id": "synthetic_user_4_social_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_social",
+      "arm": "B2",
+      "request_hash": "00604d03e07a1c139a405e51e1c61bed353416f7747d2e0a1183e6c170367adc",
+      "context_refs": [
+        "synthetic_user_4_social",
+        "synthetic_user_4_bio"
+      ],
+      "context_characters": 507,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_4_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 7,
+      "case_id": "synthetic_user_1_career_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_career",
+      "arm": "D",
+      "request_hash": "71005402f30ac480b94ac7f0f577717b945a249459b9b43fd538f96fe7bb9f78",
+      "context_refs": [
+        "synthetic_user_1_career",
+        "synthetic_user_1_bio"
+      ],
+      "context_characters": 520,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_1_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 8,
+      "case_id": "synthetic_user_2_career_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_career",
+      "arm": "B2",
+      "request_hash": "f5509b0bbce71b61c65387f320a6fade3ed60545ab5be466cd9778caff2119e1",
+      "context_refs": [
+        "synthetic_user_2_social",
+        "synthetic_user_2_career"
+      ],
+      "context_characters": 533,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "STAY",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_2_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 9,
+      "case_id": "synthetic_user_4_career_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_career",
+      "arm": "B2",
+      "request_hash": "a6e69fc87ac35d910fdf12bb26fab697d5ba79a0749b86bcd64dcefbe7f36717",
+      "context_refs": [
+        "synthetic_user_4_social",
+        "synthetic_user_4_career"
+      ],
+      "context_characters": 536,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "STAY",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_4_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 10,
+      "case_id": "synthetic_user_2_social_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_social",
+      "arm": "B0",
+      "request_hash": "24cde58faf64066895834887da4157d0f3d651f337d83bccadb2286847344ca9",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 11,
+      "case_id": "synthetic_user_3_career_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_career",
+      "arm": "D",
+      "request_hash": "c790bd3c6d33e6be2957ae8e89219d109b20c781f30296bb7212518551d3f6a7",
+      "context_refs": [
+        "synthetic_user_3_career",
+        "synthetic_user_3_bio"
+      ],
+      "context_characters": 520,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_3_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 12,
+      "case_id": "synthetic_user_4_career_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_career",
+      "arm": "B0",
+      "request_hash": "5304780b7933c3f16dcb22f292d20b4881bde9b1b213ee1fb9bad0a5e299073f",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 13,
+      "case_id": "synthetic_user_1_social_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_social",
+      "arm": "D",
+      "request_hash": "14d3120be195c43c7639dd21277e1629e745569ac12e788c8c29615fe913f2bd",
+      "context_refs": [
+        "synthetic_user_1_social"
+      ],
+      "context_characters": 268,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_1_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 14,
+      "case_id": "synthetic_user_3_social_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_social",
+      "arm": "B0",
+      "request_hash": "4dccbc4ffe3b49df3d6dd5dd30000e12ac2d14200acdb40f19feddac4c97578a",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 15,
+      "case_id": "synthetic_user_1_career_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_career",
+      "arm": "B0",
+      "request_hash": "8dc0d90d18a095ab55ff84613c2440b66d187c5b617a57b9e227e658fcc0390c",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 16,
+      "case_id": "synthetic_user_2_social_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_social",
+      "arm": "D",
+      "request_hash": "0bc86bd07d8028a05b79b297ec357b6a9f80b9eb343cbdb3ebe84c266b65be95",
+      "context_refs": [
+        "synthetic_user_2_social"
+      ],
+      "context_characters": 265,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_2_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 17,
+      "case_id": "synthetic_user_3_career_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_career",
+      "arm": "B1",
+      "request_hash": "52be141dc39302ce80e1aa6b08f539fa8a9721a2f31cfc570295adef8caf00ee",
+      "context_refs": [
+        "synthetic_user_3_bio"
+      ],
+      "context_characters": 249,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "STAY",
+        "reasons": [
+          "familiarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_3_bio"
+        ]
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 18,
+      "case_id": "synthetic_user_1_social_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_social",
+      "arm": "B0",
+      "request_hash": "b3370b03125efd99d38aa4e2d0157641b19b4b1934f58166434f09e6f0fa897a",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 19,
+      "case_id": "synthetic_user_1_social_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_social",
+      "arm": "B2",
+      "request_hash": "a7accc1b05d5a3273b637c0201f3823a8d5501f77c751fbe06d6540fea908696",
+      "context_refs": [
+        "synthetic_user_1_social",
+        "synthetic_user_1_bio"
+      ],
+      "context_characters": 504,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "LISTEN",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_1_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 20,
+      "case_id": "synthetic_user_3_social_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_social",
+      "arm": "D",
+      "request_hash": "a457e9ee8f7f603277768f49c3dd3702c79018686d021638b5e6ceec70584f28",
+      "context_refs": [
+        "synthetic_user_3_social"
+      ],
+      "context_characters": 265,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_3_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 21,
+      "case_id": "synthetic_user_2_career_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_career",
+      "arm": "D",
+      "request_hash": "2161e0ee2f6d1edee88c72c9f64bcc155372c430486ff9f5817e39a0d37db789",
+      "context_refs": [
+        "synthetic_user_2_career",
+        "synthetic_user_2_bio"
+      ],
+      "context_characters": 520,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "STAY",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_2_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 22,
+      "case_id": "synthetic_user_4_social_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_social",
+      "arm": "B1",
+      "request_hash": "3336e2f3f427a2a351985c958e4c506292321bdd629bb98b0825e4b1dfb0666e",
+      "context_refs": [
+        "synthetic_user_4_bio"
+      ],
+      "context_characters": 252,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 23,
+      "case_id": "synthetic_user_2_career_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_career",
+      "arm": "B1",
+      "request_hash": "731c2d438d61b810634025d01541ca11edf0a6c2e7e36da392d3b4e8ea9bb3a0",
+      "context_refs": [
+        "synthetic_user_2_bio"
+      ],
+      "context_characters": 252,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "familiarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_2_bio"
+        ]
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 24,
+      "case_id": "synthetic_user_4_career_case",
+      "owner_id": "synthetic_user_4",
+      "session_id": "synthetic_user_4_holdout_career",
+      "arm": "D",
+      "request_hash": "d47f96578586e16d0ef34c8792377b1936bc5debfb0b74eb4865ec0b1c2723a6",
+      "context_refs": [
+        "synthetic_user_4_career",
+        "synthetic_user_4_bio"
+      ],
+      "context_characters": 520,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "STAY",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_4_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 25,
+      "case_id": "synthetic_user_1_career_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_career",
+      "arm": "B1",
+      "request_hash": "28667d21bf49ce8d9ec0a718fd5314eca12a3d29cb4b509b6168e1415acc10be",
+      "context_refs": [
+        "synthetic_user_1_bio"
+      ],
+      "context_characters": 249,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "STAY",
+        "reasons": [
+          "familiarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_1_bio"
+        ]
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 26,
+      "case_id": "synthetic_user_3_social_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_social",
+      "arm": "B1",
+      "request_hash": "8329916df0c2ed14e45e468e2b77edae32e3e4232d435d794565ba6f0cf84f53",
+      "context_refs": [
+        "synthetic_user_3_bio"
+      ],
+      "context_characters": 249,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 27,
+      "case_id": "synthetic_user_1_social_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_social",
+      "arm": "B1",
+      "request_hash": "93fb2110c34cb4cd71b16eac8dc634130be6b3012e5ac19fef99220a5e7caf6d",
+      "context_refs": [
+        "synthetic_user_1_bio"
+      ],
+      "context_characters": 249,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 28,
+      "case_id": "synthetic_user_2_social_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_social",
+      "arm": "B2",
+      "request_hash": "2e91038bb7aec6033d65783faa8db2d30469549517ff272235c5bbc46ce540ed",
+      "context_refs": [
+        "synthetic_user_2_social",
+        "synthetic_user_2_bio"
+      ],
+      "context_characters": 504,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ASK",
+        "reasons": [
+          "care",
+          "clarity"
+        ],
+        "evidence_refs": [
+          "synthetic_user_2_social"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    },
+    {
+      "call_index": 29,
+      "case_id": "synthetic_user_3_career_case",
+      "owner_id": "synthetic_user_3",
+      "session_id": "synthetic_user_3_holdout_career",
+      "arm": "B0",
+      "request_hash": "7c8bd77804be6b2148285dc86c2f2ebb700b919b677b45df6234b203cf6edf0e",
+      "context_refs": [],
+      "context_characters": 15,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 30,
+      "case_id": "synthetic_user_2_social_case",
+      "owner_id": "synthetic_user_2",
+      "session_id": "synthetic_user_2_holdout_social",
+      "arm": "B1",
+      "request_hash": "d18b9b002e0530c7af814418ce9b4d9e224685ebe29fc5422504c1b713daa852",
+      "context_refs": [
+        "synthetic_user_2_bio"
+      ],
+      "context_characters": 252,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "ABSTAIN",
+        "reasons": [],
+        "evidence_refs": []
+      },
+      "scores": {
+        "choice_match": 0.0,
+        "core_reason_coverage": 0.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 0.0
+      }
+    },
+    {
+      "call_index": 31,
+      "case_id": "synthetic_user_1_career_case",
+      "owner_id": "synthetic_user_1",
+      "session_id": "synthetic_user_1_holdout_career",
+      "arm": "B2",
+      "request_hash": "85b2f31c4879833a98701e11b1bf3561c28f8fb90affb99d72881895038b969f",
+      "context_refs": [
+        "synthetic_user_1_social",
+        "synthetic_user_1_career"
+      ],
+      "context_characters": 539,
+      "provider": "synthetic_mock",
+      "model": "choice-from-authorized-context-v1",
+      "cost_cny": 0.0,
+      "usage_source": "mock fixture; tokens not measured and no network request",
+      "status": "COMPLETED",
+      "prediction": {
+        "choice": "EXPLORE",
+        "reasons": [
+          "risk",
+          "growth"
+        ],
+        "evidence_refs": [
+          "synthetic_user_1_career"
+        ]
+      },
+      "scores": {
+        "choice_match": 1.0,
+        "core_reason_coverage": 1.0,
+        "appropriate_abstention": null,
+        "style_human_rating": null,
+        "interpersonal_human_rating": null,
+        "primary_score": 1.0
+      }
+    }
+  ],
+  "limitations": [
+    "Public synthetic fixtures and a deterministic mock cannot establish persona fidelity or growth.",
+    "D is a structured-context fixture, not a measured production DIVE retrieval experiment.",
+    "Reason matching is a transparent phrase rubric, not an independent human judgment.",
+    "Style/interpersonal ratings are unmeasured; no combined personality-accuracy percentage is produced.",
+    "Missing/failed outputs are excluded from paired estimates and remain visible in denominators.",
+    "No private reference files are mounted or loaded by this runner or the application.",
+    "Persona-swap, multiround continuation and blinded human ratings remain future protocol extensions."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "slug": "munger",
+  "repo": "alchaincyf/nuwa-skill",
+  "commit": "7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24",
+  "path": "examples/munger-perspective/SKILL.md",
+  "blob_sha": "ea42a6e420b4de0bfaa5a01dcc092eab5f59c097",
+  "source_url": "https://github.com/alchaincyf/nuwa-skill/blob/7c7edfeb9d90a28b1f79e7847e1ba27a698cdc24/examples/munger-perspective/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Huashu (花叔)",
+  "license_blob_sha": "b95c3fcf6bcd81713196a8523188be50fa712edf",
+  "sha256": "25a371168ebb01464514eb886eef9af2ce66369275f8f5c5d6c3802cfddf5e23",
+  "license_sha256": "d0952e801d7484cc5344f41cc0378567d20a3c996b784eb97460287adde9ab37",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "1cb40d55f7e0db57d7e1740fa078abdf39711e9ccfa29c564f602f645c17b25b",
+  "primary_sources": [
+    {
+      "title": "Poor Charlie’s Almanack 官方出版社",
+      "url": "https://www.poorcharliesalmanack.com/",
+      "verification": "READABLE_2026_10_30",
+      "source_kind": "OFFICIAL_PUBLISHER"
+    }
+  ],
+  "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
+  "retrieved_at": "2026-10-30"
+}

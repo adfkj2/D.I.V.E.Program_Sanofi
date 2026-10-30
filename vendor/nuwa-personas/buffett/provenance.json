@@ -1,0 +1,28 @@
+{
+  "slug": "buffett",
+  "repo": "nuwa-skills/buffett-skill",
+  "commit": "0e901eddc5b350401208b4d90205772870ed190b",
+  "path": "SKILL.md",
+  "blob_sha": "fe1492de7b3ca78c0d80e1925180952f17031d50",
+  "source_url": "https://github.com/nuwa-skills/buffett-skill/blob/0e901eddc5b350401208b4d90205772870ed190b/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Panmax",
+  "license_blob_sha": "d643191ea4fe97b226b7011efa4b8c94c4108702",
+  "sha256": "81fccaa860dfd7326785dca6157d64fecfa32fff87580406ed7dd2419b137f68",
+  "license_sha256": "53af10dcfbdccc453792f0037a84746ebbb180b4b8f887e1620fc5c05b8a05ae",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "98e8c541d9683048e49e721cb1df14c5e2989c2960013a6fe5cd0e02c7de2ef0",
+  "primary_sources": [
+    {
+      "title": "伯克希尔官方股东信索引",
+      "url": "https://www.berkshirehathaway.com/letters/letters.html",
+      "verification": "READABLE_2026_10_30",
+      "source_kind": "PRIMARY_AUTHOR_ARCHIVE"
+    }
+  ],
+  "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
+  "retrieved_at": "2026-10-30"
+}

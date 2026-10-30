@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "${REPOSITORY}\eval\reports\accuracy-redesign-20261023\install-v1\deliberative-smoke.py", line 17, in <module>
-    assert result.status.value=="ANSWER" and result.answer=="73" and result.calls==3
-                                             ^^^^^^^^^^^^^
-AttributeError: 'ReaderOutcome' object has no attribute 'answer'

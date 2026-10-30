@@ -1,9 +1,0 @@
-{
-  "bundle": "r40-reader-replay.zip",
-  "sha256": "15debab6468621c083315c579efa84482f6fd410112f066bbe7e49a31ba11f15",
-  "bytes": 4052235,
-  "files": 1249,
-  "cases": 500,
-  "cache_hits": 1110,
-  "new_api_calls": 0
-}

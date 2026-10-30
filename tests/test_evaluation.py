@@ -1,149 +1,169 @@
+"""Behavioral tests for the independent offline PFE framework."""
+
+import copy
 import json
+from dataclasses import asdict, replace
+from pathlib import Path
 
 import pytest
-
-from dive_memory.evaluation import EvalCase, run_cases
-from dive_memory.service import MemoryService
-from dive_memory.benchmark import run_load_benchmark
-from dive_memory.eval_manifest import build_run_manifest, sha256_file
-from dive_memory.eval_metrics import (
-    classification_metrics,
-    ndcg_at_k,
-    precision_at_k,
-    recall_at_k,
-    reciprocal_rank,
+from wot.evaluation import (
+    ARMS,
+    Prediction,
+    SyntheticMockProvider,
+    build_request,
+    cluster_bootstrap,
+    main,
+    run_benchmark,
+    validate_dataset,
 )
 
-
-def test_eval_harness_reports_recall_and_abstention():
-    service = MemoryService()
-    written = service.ingest("u1", "请记住我喜欢绿茶", explicit=True)
-    report = run_cases(service, [
-        EvalCase("known", "u1", "绿茶", "绿茶", written["memory_ids"]),
-        EvalCase("unknown", "u1", "火星", None, [], should_abstain=True),
-    ])
-    assert report["cases"] == 2
-    assert report["recall"] == 1.0
-    assert report["abstention_accuracy"] == 1.0
-    assert report["false_memory_rate"] == 0.0
-    assert report["provenance_coverage"] == 1.0
-    assert report["latency_ms"]["p95"] >= 0
+ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_eval_counts_an_answer_to_an_unknown_question_as_false_memory():
-    service = MemoryService()
-    service.ingest("u1", "请记住我喜欢绿茶", explicit=True)
-    report = run_cases(service, [
-        EvalCase("must-abstain", "u1", "我喜欢什么", None, [], should_abstain=True),
-    ])
-    assert report["false_memory_rate"] == 1.0
+@pytest.fixture
+def dataset():
+    return json.loads((ROOT / "eval/public_synthetic/sample.json").read_text(encoding="utf-8"))
 
 
-def test_local_load_benchmark_reports_quality_and_latency():
-    report = run_load_benchmark(memory_count=20, query_iterations=3)
-    assert report["storage"] == "sqlite-development"
-    assert report["memory_count"] == 20
-    assert report["retrieve_ms"]["p95"] >= 0
-    assert report["quality"]["false_memory_rate"] == 0.0
+@pytest.fixture
+def protocol():
+    return json.loads((ROOT / "eval/protocols/eval_protocol_v0.1.json").read_text(encoding="utf-8"))
 
 
-def test_local_load_benchmark_clamps_zero_and_negative_sizes():
-    report = run_load_benchmark(memory_count=0, query_iterations=-2)
-    assert report["memory_count"] == 1
-    assert report["query_iterations"] == 1
-    assert report["quality"]["recall"] == 1.0
+def test_four_real_context_arms_and_reproducible_pipeline(dataset, protocol):
+    report = run_benchmark(dataset, protocol)
+    assert report == run_benchmark(dataset, protocol)
+    assert set(report["arms"]) == set(ARMS)
+    assert report["paired"]["complete_four_arm_cases"] == 8
+    assert report["cost"] == {"provider_calls": 32, "network_calls": 0, "actual_cny": 0.0}
+    assert report["persona_fidelity_validated"] is False
+    assert report["domain_tested"] is False
+    case = next(row for row in dataset["records"] if row["kind"] == "case" and row["split"] == "holdout")
+    contexts = {arm: build_request(arm, case, dataset, protocol).context_json for arm in ARMS}
+    assert len(set(contexts.values())) == 4
 
 
-def test_ranking_metrics_match_hand_computed_values():
-    retrieved = ["a", "x", "b"]
-    relevant = ["a", "b"]
+def test_reference_answers_and_other_users_never_reach_provider(dataset, protocol):
+    marker = "PRIVATE_REFERENCE_CANARY_862317"
+    for record in dataset["records"]:
+        if record["kind"] == "case":
+            record["reference"]["reasons"].append(marker)
 
-    assert precision_at_k(retrieved, relevant, 1) == 1.0
-    assert precision_at_k(retrieved, relevant, 3) == pytest.approx(2 / 3)
-    assert recall_at_k(retrieved, relevant, 1) == 0.5
-    assert recall_at_k(retrieved, relevant, 3) == 1.0
-    assert reciprocal_rank(retrieved, relevant) == 1.0
+    class InspectingProvider(SyntheticMockProvider):
+        def generate(self, request):
+            payload = json.dumps(asdict(request))
+            assert marker not in payload
+            assert "reference" not in asdict(request)
+            for entry in json.loads(request.context_json)["entries"]:
+                source = next(row for row in dataset["records"] if row["id"] == entry["id"])
+                assert source["owner_id"] == request.owner_id
+                assert source["split"] == "train"
+            return super().generate(request)
 
-    # DCG = 7/log2(2) + 1/log2(4) = 7.5; ideal = 7 + 1/log2(3).
-    expected = 7.5 / (7.0 + 1.0 / 1.584962500721156)
-    assert ndcg_at_k(retrieved, {"a": 3.0, "b": 1.0}, 3) == pytest.approx(expected)
+    report = run_benchmark(dataset, protocol, InspectingProvider())
+    assert all(item["status"] == "COMPLETED" for item in report["ledger"])
 
 
-def test_ranking_metrics_handle_duplicates_empty_gold_and_invalid_k():
-    assert precision_at_k(["a", "a"], ["a"], 2) == 0.5
-    assert recall_at_k(["a", "a"], ["a"], 2) == 1.0
-    assert reciprocal_rank(["x", "a"], ["a"]) == 0.5
-    assert ndcg_at_k([], {"a": 1.0}, 10) == 0.0
-    assert recall_at_k(["a"], [], 1) == 0.0
+@pytest.mark.parametrize("origin", ["SIMULATED_DIALOGUE", "EXTERNAL_SKILL_DATA", "EVALUATION_PRIVATE", "MODEL_INFERENCE"])
+def test_contaminated_training_sources_rejected(dataset, origin):
+    dataset["records"][0]["source_origin"] = origin
+    with pytest.raises(ValueError, match="real-source"):
+        validate_dataset(dataset)
+
+
+def test_session_and_temporal_split_leakage_rejected(dataset):
+    memory = next(row for row in dataset["records"] if row["kind"] == "memory")
+    case = next(row for row in dataset["records"] if row["kind"] == "case" and row["owner_id"] == memory["owner_id"])
+    case["session_id"] = memory["session_id"]
+    with pytest.raises(ValueError, match="session crosses"):
+        validate_dataset(dataset)
+    case["session_id"] = "separate-session"
+    case["occurred_at"] = "2025-01-01T00:00:00Z"
+    with pytest.raises(ValueError, match="time windows"):
+        validate_dataset(dataset)
+
+
+def test_near_duplicate_dev_holdout_questions_rejected(dataset):
+    dev = next(row for row in dataset["records"] if row["kind"] == "case" and row["split"] == "dev")
+    holdout = next(row for row in dataset["records"] if row["kind"] == "case" and row["split"] == "holdout" and row["owner_id"] == dev["owner_id"])
+    holdout["question"] = dev["question"] + "?"
+    with pytest.raises(ValueError, match="Near-duplicate"):
+        validate_dataset(dataset)
+
+
+@pytest.mark.parametrize("field,value", [("subject_id", "another-user"), ("consent_purpose", "SIMULATION")])
+def test_owner_and_purpose_grants_required(dataset, field, value):
+    dataset["records"][0][field] = value
     with pytest.raises(ValueError):
-        precision_at_k(["a"], ["a"], 0)
+        validate_dataset(dataset)
 
 
-def test_classification_metrics_report_per_label_and_macro_scores():
-    report = classification_metrics(
-        gold=["write", "write", "skip", "review"],
-        predicted=["write", "skip", "skip", "write"],
-        labels=["write", "skip", "review"],
-    )
+def test_one_provider_receives_identical_frozen_generation_settings(dataset, protocol):
+    received = []
 
-    assert report["accuracy"] == 0.5
-    assert report["per_label"]["write"] == {
-        "support": 2,
-        "predicted": 2,
-        "true_positive": 1,
-        "precision": 0.5,
-        "recall": 0.5,
-        "f1": 0.5,
-    }
-    assert report["per_label"]["review"]["recall"] == 0.0
-    assert report["macro_f1"] == pytest.approx((0.5 + 2 / 3 + 0.0) / 3)
+    class RecordingProvider(SyntheticMockProvider):
+        def generate(self, request):
+            received.append(request)
+            return super().generate(request)
+
+    run_benchmark(dataset, protocol, RecordingProvider())
+    assert {request.arm for request in received} == set(ARMS)
+    assert len({(r.provider, r.model, r.temperature, r.max_output_tokens, r.max_context_chars, r.prompt_version) for r in received}) == 1
+    assert all(len(r.context_json) <= r.max_context_chars for r in received)
+    request = received[0]
+    assert RecordingProvider().generate(request) == RecordingProvider().generate(replace(request, arm="D" if request.arm != "D" else "B0"))
 
 
-def test_eval_harness_reports_real_ranking_and_abstention_metrics():
-    service = MemoryService()
-    first = service.ingest("u1", "请记住我喜欢绿茶", explicit=True)
-    second = service.ingest("u1", "请记住我喜欢咖啡", explicit=True)
-    report = run_cases(service, [
-        EvalCase(
-            "preference", "u1", "我喜欢什么", None,
-            [first["memory_ids"][0], second["memory_ids"][0]],
-            query_type="preference",
-        ),
-        EvalCase("unknown", "u1", "火星有什么", None, [], should_abstain=True,
-                 query_type="negative"),
-    ], ks=(1, 5, 10))
+def test_missing_failures_and_fabricated_references_remain_in_denominator(dataset, protocol):
+    class FaultyProvider(SyntheticMockProvider):
+        def generate(self, request):
+            if request.arm == "B0":
+                return None
+            if request.arm == "B1":
+                raise TimeoutError("private text must not appear in ledger")
+            if request.arm == "D":
+                return Prediction("ABSTAIN", (), ("holdout-secret-reference",))
+            return super().generate(request)
 
-    assert set(report["retrieval"]) >= {"precision_at_k", "recall_at_k", "mrr", "ndcg_at_k"}
-    assert report["retrieval"]["recall_at_k"]["5"] == 1.0
-    assert report["retrieval"]["mrr"] == 1.0
-    assert report["abstention"]["precision"] == 1.0
-    assert report["abstention"]["recall"] == 1.0
-    assert report["slices"]["preference"]["cases"] == 1
-    assert report["slices"]["negative"]["cases"] == 1
+    report = run_benchmark(dataset, protocol, FaultyProvider())
+    assert report["arms"]["B0"]["missing"] == 8
+    assert report["arms"]["B1"]["failed"] == 8
+    assert report["arms"]["D"]["failed"] == 8
+    assert report["paired"]["expected_cases"] == 8
+    assert report["paired"]["complete_four_arm_cases"] == 0
+    assert report["paired"]["bootstrap"]["ci95"] is None
+    assert "private text" not in json.dumps(report)
 
 
-def test_run_manifest_is_stable_and_records_dataset_hash(tmp_path):
-    dataset = tmp_path / "dataset.json"
-    dataset.write_text(json.dumps({"cases": [1, 2]}, sort_keys=True), encoding="utf-8")
+def test_user_session_bootstrap_does_not_treat_repeated_items_as_people():
+    rows = [
+        {"owner_id": "a", "session_id": "a1", "difference": 1.0},
+        {"owner_id": "b", "session_id": "b1", "difference": -1.0},
+    ]
+    result = cluster_bootstrap(rows, seed=17, iterations=200)
+    repeated = [*rows, *[copy.copy(rows[0]) for _ in range(100)]]
+    duplicated_result = cluster_bootstrap(repeated, seed=17, iterations=200)
+    assert result["estimate"] == duplicated_result["estimate"] == 0.0
+    assert result["ci95"] == duplicated_result["ci95"]
+    assert duplicated_result["users"] == 2
+    assert duplicated_result["sessions"] == 2
 
-    first = build_run_manifest(
-        run_id="run-1",
-        dataset_name="internal-v1",
-        dataset_version="1",
-        dataset_path=dataset,
-        configuration={"channels": ["bm25"], "top_k": 5},
-        repository_root=tmp_path,
-    )
-    second = build_run_manifest(
-        run_id="run-2",
-        dataset_name="internal-v1",
-        dataset_version="1",
-        dataset_path=dataset,
-        configuration={"top_k": 5, "channels": ["bm25"]},
-        repository_root=tmp_path,
-    )
 
-    assert first.dataset_sha256 == sha256_file(dataset)
-    assert first.configuration_sha256 == second.configuration_sha256
-    assert first.environment["python"]
-    assert first.schema_version == "dive-eval-manifest-v1"
+def test_real_dataset_external_provider_and_private_cli_paths_rejected(dataset, protocol):
+    dataset["classification"] = "REAL_PRIVATE"
+    with pytest.raises(ValueError, match="public synthetic"):
+        run_benchmark(dataset, protocol)
+    dataset["classification"] = "PUBLIC_SYNTHETIC"
+    protocol["generation"]["provider"] = "external-provider"
+    with pytest.raises(ValueError, match="external"):
+        run_benchmark(dataset, protocol)
+    with pytest.raises(SystemExit):
+        main(["--output", "unused.json", "--dataset", "eval/private/answers.json"])
+
+
+def test_cli_writes_report_and_marks_unvalidated(tmp_path):
+    output = tmp_path / "report.json"
+    assert main(["--output", str(output)]) == 0
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["classification"] == "SYNTHETIC_FRAMEWORK_VALIDATION"
+    assert not report["persona_fidelity_validated"]

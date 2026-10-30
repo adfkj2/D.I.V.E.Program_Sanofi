@@ -1,1 +1,0 @@
-{"passed": true, "installed_factory": "deliberative", "calls": 3, "model_requests": 0, "transport": "ScriptedChatClient", "source_path_injected": false}

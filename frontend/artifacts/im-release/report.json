@@ -1,0 +1,10 @@
+{
+  "status": "PASSED",
+  "builtins": 15,
+  "conversations": 0,
+  "evidence": 0,
+  "externalModelCalls": 0,
+  "releaseData": ".local",
+  "mobileComposerVisible": true,
+  "portraitsLoaded": 15
+}

@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "created_at": "2026-10-30",
+  "tool": "Built-in image_gen",
+  "mode": "generate, one call per portrait",
+  "count": 15,
+  "notes": "统一浅蓝背景的手绘风格插画，非真实照片；庄子为历史想象形象。交付头像仅等比例缩为256×256 PNG，未改变构图或内容；生成原图保存在artifacts/portrait-originals。15图从32706746字节降至1951469字节。",
+  "entries": [
+    {
+      "slug": "munger",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar social messaging app. Subject: Charlie Munger, elderly American investor, iconic large rectangular eyeglasses, thinning white hair, warm perceptive face, dark navy suit and muted blue tie. Distinct and recognizable but clearly an illustration. Consistent art direction for a set of 15 famous thinkers: modern hand-painted editorial portrait, clean softly shaded gouache with subtle grain, calm approachable expression, refined simplified shapes and natural proportions, NOT 3D, NOT emoji, NOT flat geometric icon, NOT photorealistic. Tight head-and-shoulders front three-quarter framing, head centered and large, fully inside square with a little margin. Solid powder blue background #E3EDFD, restrained navy/soft-blue palette with natural warm skin tones. No frame, no circle crop, no text, no labels, no letters, no logos, no watermark. The face must remain readable at 44px messaging-contact size. Deliver only this one portrait, not a sheet or grid.",
+      "source_output_file": "exec-4825e36a-2b7b-4630-a14a-cf0f3f45a2bc.png",
+      "saved_path": "frontend/public/portraits/munger.png"
+    },
+    {
+      "slug": "buffett",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Warren Buffett, elderly American investor, iconic silver-white side-parted hair, thin rimmed spectacles, broad friendly smile, dark navy suit, pale blue shirt and muted blue tie. Recognizable as Warren Buffett, clearly hand-painted illustration. Art direction: refined modern editorial gouache portrait with visible subtle brush texture, clean softly shaded shapes, natural proportions and warm skin tones, calm approachable wise expression. Tight head-and-shoulders three-quarter framing, large centered head, fully inside the square. Solid powder blue background #E3EDFD, navy/soft-blue palette. Like a collectible set of illustrated thinker avatars. Not photography, not 3D, not emoji or geometric icon. No frame, no circle crop, no text, no labels, no lettering, no logos, no watermark. Readable at 44px. Deliver only this one portrait, not a sheet.",
+      "source_output_file": "exec-999f261c-a00c-4972-b1f2-ddde0073417f.png",
+      "saved_path": "frontend/public/portraits/buffett.png"
+    },
+    {
+      "slug": "zhangxuefeng",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Zhang Xuefeng (张雪峰), recognizable Chinese male education and career commentator around age forty, short neat black hair with slightly high forehead, distinctive rectangular black-rim glasses, lively friendly smile, rounded face, simple dark navy polo shirt. Clearly an illustration. Art direction for coherent famous-thinker avatar set: refined modern editorial gouache painting, clean softly shaded shapes, subtle visible brush texture, natural proportions and warm skin tones, approachable expression. Tight head-and-shoulders three-quarter view, large centered head fully inside square. Solid powder blue background #E3EDFD with navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, letters, logos, watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-af68300c-16af-4bb2-b560-0e9d3193be90.png",
+      "saved_path": "frontend/public/portraits/zhangxuefeng.png"
+    },
+    {
+      "slug": "taleb",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Nassim Nicholas Taleb, Lebanese-American thinker in his sixties, bald head, close dark-grey beard and moustache, strong eyebrows, dark navy jacket and open-collar pale-blue shirt, thoughtful slightly skeptical expression. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-4b204900-1b05-49bf-9e5a-bf9babbd6458.png",
+      "saved_path": "frontend/public/portraits/taleb.png"
+    },
+    {
+      "slug": "drucker",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Peter Drucker, elderly Austrian-American management thinker, high bald forehead with fine grey hair at the sides, oval wire-rim spectacles, thoughtful kindly face, dark navy suit and muted blue tie. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-c0cc9f5f-4356-4054-bf92-a282619b7aa8.png",
+      "saved_path": "frontend/public/portraits/drucker.png"
+    },
+    {
+      "slug": "clear",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: James Clear, American author and habits thinker in his late thirties, bald head, neatly trimmed short brown beard, friendly steady smile, simple dark navy crew-neck sweater. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-28ad5583-f79b-4d31-a896-5786e4bd5442.png",
+      "saved_path": "frontend/public/portraits/clear.png"
+    },
+    {
+      "slug": "jobs",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Steve Jobs around age fifty, iconic round wire-rim glasses, receding short dark hair, neat salt-and-pepper stubble, thoughtful direct gaze and a subtle smile, signature black mock turtleneck. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-ff01f216-2666-4f4c-9dd7-a0b223f18a9a.png",
+      "saved_path": "frontend/public/portraits/jobs.png"
+    },
+    {
+      "slug": "zhangyiming",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Zhang Yiming (张一鸣), Chinese technology entrepreneur in his early forties, short neatly side-parted black hair, thin oval glasses, slim clean-shaven face, understated friendly smile, simple dark navy blazer and pale-blue shirt. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-12e5f7c4-4648-4634-9f32-a11aa562dd23.png",
+      "saved_path": "frontend/public/portraits/zhangyiming.png"
+    },
+    {
+      "slug": "paulgraham",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Paul Graham, British-American essayist and startup investor in his early sixties, receding short dark-grey hair, broad forehead, clean-shaven oval face, no glasses, relaxed thoughtful smile, dark navy crew-neck shirt. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-d196c9a9-c2c8-4ca1-812b-09d9666f8b5c.png",
+      "saved_path": "frontend/public/portraits/paulgraham.png"
+    },
+    {
+      "slug": "feynman",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Richard Feynman, American physicist around age fifty, distinctive swept-back wavy dark hair, long expressive clean-shaven face, playful curious smile and bright eyes, no glasses, open-collar pale-blue shirt and dark navy jacket. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-e92e2a0c-b927-495b-9e9a-771e9761a987.png",
+      "saved_path": "frontend/public/portraits/feynman.png"
+    },
+    {
+      "slug": "karpathy",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Andrej Karpathy, AI educator and researcher in his late thirties, short brown hair, neat short brown beard, no glasses, thoughtful warm smile, simple dark navy crew-neck T-shirt. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-2a646f99-57f5-472a-998d-56239be6079e.png",
+      "saved_path": "frontend/public/portraits/karpathy.png"
+    },
+    {
+      "slug": "curie",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Marie Curie, Polish-French scientist around age forty-five, recognizable long thoughtful face, dark hair swept back and pinned into a simple bun, no glasses, composed kind expression, modest high-neck dark navy late-Victorian blouse, historically inspired. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-6224a975-73ea-4601-a398-13e176f25a55.png",
+      "saved_path": "frontend/public/portraits/curie.png"
+    },
+    {
+      "slug": "naval",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Naval Ravikant, Indian-American entrepreneur and thinker in his late forties, dark slightly wavy hair with a little grey at the temples, short salt-and-pepper beard, no glasses, calm reflective gentle smile, simple dark navy crew-neck T-shirt. Recognizable as the named person and clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-dddcad3e-a58c-42ae-b95b-d7efd63be62d.png",
+      "saved_path": "frontend/public/portraits/naval.png"
+    },
+    {
+      "slug": "wangxiaobo",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Wang Xiaobo (王小波), Chinese male novelist in his forties, recognizable long broad face, short slightly tousled black hair, high broad forehead, clean-shaven, no glasses, amused gentle smile and observant eyes, simple dark navy jacket and pale-blue shirt. Clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-86ce17c7-dde8-49e9-84b4-0bbd19bcfd03.png",
+      "saved_path": "frontend/public/portraits/wangxiaobo.png"
+    },
+    {
+      "slug": "zhuangzi",
+      "prompt": "Create ONE square illustrated avatar portrait for a familiar blue-and-white social messaging app. Subject: Zhuangzi (庄子), an imagined classical Chinese philosopher as a warm wise elderly East Asian man with long dark-grey beard and moustache, hair in a modest traditional topknot, expressive kind eyes, relaxed perceptive smile, plain dark indigo-blue scholar robe. This is a historically inspired imaginative illustration, not a claim of an authentic likeness. Clearly illustrated. Art direction for a coherent set of famous thinkers: refined modern hand-painted editorial gouache portrait, clean softly shaded shapes, subtle visible brush texture, natural proportions, warm skin tones, approachable and perceptive. Tight head-and-shoulders three-quarter view, large centered head fully inside square with slight margin. Solid powder blue background #E3EDFD, navy and muted blue clothing. Not photography, not 3D, not emoji, not geometric icon. No frame or circular crop. No text, labels, lettering, logos or watermark. Readable at 44px. Only one portrait, not a sheet.",
+      "source_output_file": "exec-51e07d42-e4ae-4661-96f7-7d98f512eb2d.png",
+      "saved_path": "frontend/public/portraits/zhuangzi.png"
+    }
+  ]
+}

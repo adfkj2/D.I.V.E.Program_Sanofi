@@ -1,278 +1,165 @@
-import asyncio
+import json
+import threading
+from uuid import uuid4
 
 import pytest
-
-fastapi = pytest.importorskip("fastapi")
-httpx = pytest.importorskip("httpx")
-
-from dive_memory.api import create_app
-from dive_memory.answering import AnswerStatus, EvidenceCitation, GroundedAnswerDecision
-from dive_memory.auth import StaticTokenAuthorizer
+from fastapi.testclient import TestClient
+from wot.main import create_app
+from wot.model import Provider
 
 
-def request(app, method: str, path: str, **kwargs):
-    async def run():
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
-            return await client.request(method, path, **kwargs)
-
-    return asyncio.run(run())
+@pytest.fixture
+def client(tmp_path):
+    with TestClient(create_app(tmp_path), base_url="http://127.0.0.1:8765") as connection:
+        connection.headers["X-WOT-Token"] = connection.get("/api/v1/session").json()["token"]
+        yield connection
 
 
-def test_http_event_retrieve_and_idempotency():
-    app = create_app(":memory:")
-    assert request(app, "GET", "/healthz").json() == {"status": "ok", "storage": "sqlite"}
-
-    body = {"namespace": "u1", "text": "请记住我喜欢咖啡", "explicit": True, "idempotency_key": "req-1"}
-    first = request(app, "POST", "/v1/events", json=body)
-    assert first.status_code == 200
-    assert first.json()["memory_ids"]
-    duplicate = request(app, "POST", "/v1/events", json=body)
-    assert duplicate.status_code == 200
-    assert duplicate.json()["duplicate"] is True
-    assert duplicate.json()["event_id"] == first.json()["event_id"]
-
-    result = request(app, "POST", "/v1/retrieve", json={"namespace": "u1", "query": "咖啡"})
-    assert result.status_code == 200
-    assert result.json()["items"][0]["memory"]["content"] == "preference: 咖啡"
+def post(client, path, body=None, key=None):
+    return client.post("/api/v1" + path, json=body or {},
+                       headers={"Idempotency-Key": key or str(uuid4())})
 
 
-def test_hot_profile_review_routes_require_explicit_review_and_scope():
-    app = create_app(":memory:", authorizer=StaticTokenAuthorizer({"token-u1": {"u1"}}))
-    service = app.state.memory_service
-    service.ingest("u1", "我住在上海", explicit=True, source_type="user")
-    headers = {"Authorization": "Bearer token-u1"}
-    base = "/v1/users/u1/hot-profile"
-    proposal = request(app, "POST", base + "/proposals", headers=headers)
-    assert proposal.status_code == 200
-    assert request(app, "GET", base, headers=headers).json()["fields"] == {}
-    pid = proposal.json()["proposal_id"]
-    reviewed = request(app, "POST", base + f"/proposals/{pid}/review", headers=headers,
-                       json={"approve": True, "reason": "verified source"})
-    assert reviewed.status_code == 200
-    assert reviewed.json()["status"] == "APPROVED"
-    assert request(app, "GET", base, headers=headers).json()["fields"] == {"residence": "上海"}
-    assert request(app, "POST", f"/v1/users/u2/hot-profile/proposals/{pid}/review", headers=headers,
-                   json={"approve": True, "reason": "cross scope"}).status_code == 403
-    rolled = request(app, "POST", base + "/rollback", headers=headers,
-                     json={"revision": 1, "reason": "reviewed rollback"})
-    assert rolled.json()["revision"] == 2
+def test_complete_local_product_and_deletion(client):
+    assert client.get("/api/v1/state").json()["evidence"] == []
+    conversation = post(client, "/real-conversations", {"title": "关于选择"}).json()
+    path = f"/real-conversations/{conversation['id']}/messages"
+    body = {"text": "我在做重大选择前总会核查关键风险", "remember": True}
+    response = post(client, path, body, "message-1")
+    assert response.status_code == 200, response.text
+    first = response.json()
+    assert post(client, path, body, "message-1").json() == first
+    assert post(client, path, {**body, "text": "篡改"}, "message-1").status_code == 409
+    state = client.get("/api/v1/state").json()
+    assert len(state["evidence"]) == 1
+    assert state["mirror"]["OBSERVED"][0]["status"] == "HYPOTHESIS"
+    version = post(client, "/personas/observed/compile").json()
+    assert "text" not in json.dumps(version)
+    response = post(client, "/simulations", {"topic": "重大选择", "persona_version_id": version["id"],
+                                               "skill_id": "skill_socratic", "max_turns": 2,
+                                               "allow_private_context": True})
+    assert response.status_code == 403
+    assert client.get("/api/v1/state").json()["simulations"] == []
+    deleted = client.delete(f"/api/v1/data/evidence/{first['evidence_id']}")
+    assert deleted.status_code == 200, deleted.text
+    export = post(client, "/data/export").json()
+    assert export["evidence"] == []
+    assert export["versions"][0]["state"] == "INVALIDATED"
+    assert body["text"] not in json.dumps(export, ensure_ascii=False)
 
 
-def test_http_deferred_job_context_and_delete_contracts():
-    app = create_app(":memory:")
-    created = request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "请记住我喜欢绿茶", "explicit": True, "defer": True,
-        "idempotency_key": "deferred-1",
-    })
-    assert created.status_code == 200
-    assert created.json()["memory_ids"] == []
-    assert request(app, "POST", "/v1/retrieve", json={"namespace": "u1", "query": "绿茶"}).json()["items"] == []
-
-    processed = request(app, "POST", "/v1/jobs/process-outbox", json={})
-    assert processed.status_code == 200
-    assert processed.json()["processed"] == 1
-    event_id = created.json()["event_id"]
-    memory_id = processed.json()["results"][0]["memory_ids"][0]
-
-    context = request(app, "POST", "/v1/context", json={"namespace": "u1", "query": "绿茶", "token_budget": 20})
-    assert context.status_code == 200
-    assert context.json()["estimated_tokens"] <= 20
-    deleted = request(app, "POST", f"/v1/events/{event_id}/forget")
-    assert deleted.status_code == 200
-    assert memory_id in deleted.json()["deleted_memory_ids"]
-    assert request(app, "GET", f"/v1/memories/{memory_id}").json()["status"] == "DELETED"
+def test_sources_cannot_be_forged_through_http(client):
+    cid = post(client, "/real-conversations").json()["id"]
+    path = f"/real-conversations/{cid}/messages"
+    for field, value in [("source_origin", "REAL_USER_MESSAGE"), ("speaker", "USER"), ("owner_id", "other")]:
+        assert post(client, path, {"text": "假来源", field: value}).status_code == 422
+    message = post(client, path, {"text": "我希望更果断", "remember": True}).json()
+    assert post(client, f"/real-messages/{message['agent']['id']}/admit").status_code == 403
+    mirror = client.get("/api/v1/personas/mirror").json()
+    assert mirror == {"PERCEIVED": [], "OBSERVED": [], "CHOSEN": []}
+    assert client.get("/api/v1/evidence").json()[0]["claim_kind"] == "ASPIRATION"
+    assert post(client, "/simulations", {"topic": "x", "persona_version_id": "x", "skill_id": "x",
+                                        "mode": "DOMAIN_TESTED"}).status_code == 422
 
 
-def test_http_validation_and_missing_resource_errors():
-    app = create_app(":memory:")
-    assert request(app, "POST", "/v1/events", json={"namespace": "u1"}).status_code == 400
-    assert request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "请记住我喜欢咖啡", "explicit": "false",
-    }).status_code == 400
-    assert request(app, "POST", "/v1/context", json={"namespace": "u1"}).status_code == 400
-    assert request(app, "POST", "/v1/memory-mode", json={}).status_code == 400
-    assert request(app, "POST", "/v1/memory-mode", json={"namespace": "u1", "enabled": "false"}).status_code == 400
-    assert request(app, "POST", "/v1/retrieve", json={"namespace": "u1", "query": "咖啡", "limit": "many"}).status_code == 400
-    assert request(app, "POST", "/v1/events/missing/forget").status_code == 404
+def test_chosen_and_voluntary_growth(client):
+    proposal = post(client, "/personas/chosen/proposals", {
+        "objective": "减少没有新增信息的纠结", "limits": "保留核查风险的习惯"}).json()
+    assert proposal["state"] == "PROPOSED"
+    action_body = {"directive_id": proposal["id"], "title": "做一次小决定", "trigger": "信息足够时",
+                   "action": "给自己一个做决定的时间", "user_approved": True}
+    assert post(client, "/growth/goals", action_body).status_code == 403
+    approved = post(client, f"/personas/chosen/proposals/{proposal['id']}/approve", {"revision": 1}).json()
+    version = post(client, "/personas/chosen/compile").json()
+    action = post(client, "/growth/goals", action_body).json()
+    checked = post(client, f"/growth/actions/{action['id']}/checkins", {"outcome": "我试了一次"}).json()
+    assert checked["origin"] == "USER_SELF_REPORT"
+    revoked = post(client, f"/personas/chosen/proposals/{proposal['id']}/revoke", {"revision": approved["revision"]})
+    assert revoked.status_code == 200
+    state = client.get("/api/v1/state").json()
+    assert state["growth"][0]["state"] == "REVOKED"
+    assert next(v for v in state["versions"] if v["id"] == version["id"])["state"] == "INVALIDATED"
+    assert state["mirror"]["CHOSEN"] == []
+    assert not state["evidence"]
 
 
-def test_http_rejects_unparsable_timestamps_and_returns_full_memory_payload():
-    app = create_app(":memory:")
-    request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "请记住我喜欢咖啡", "explicit": True,
-        "idempotency_key": "payload-1",
-    })
-
-    # A malformed as_of/now used to be ignored, which answers a different
-    # question than the caller asked.
-    assert request(app, "POST", "/v1/retrieve", json={
-        "namespace": "u1", "query": "咖啡", "as_of": "someday"}).status_code == 400
-    assert request(app, "POST", "/v1/jobs/decay", json={
-        "namespace": "u1", "now": "someday"}).status_code == 400
-    assert request(app, "GET", "/v1/users/u1/timeline?as_of=someday").status_code == 400
-
-    # Memory has slots=True, so the payload must not depend on __dict__.
-    item = request(app, "POST", "/v1/retrieve", json={"namespace": "u1", "query": "咖啡"}).json()["items"][0]
-    assert item["memory"]["status"] == "ACTIVE"
-    assert item["memory"]["observed_at"]
-    assert item["memory"]["durability"] == "permanent"
-    assert "vector" not in item["memory"]
-
-    exhausted = request(app, "POST", "/v1/retrieve", json={
-        "namespace": "u1", "query": "咖啡", "token_budget": 0,
-    }).json()
-    assert exhausted["items"] == []
-    assert exhausted["budget_used"] == 0
-    assert exhausted["warnings"]
-    assert exhausted["abstain_reason"] == "token budget exhausted"
+@pytest.mark.parametrize("headers", [
+    {"Host": "evil.example"}, {"Origin": "https://evil.example"},
+    {"Sec-Fetch-Site": "cross-site"},
+])
+def test_local_origin_and_dns_rebinding_guard(client, headers):
+    assert client.get("/api/v1/session", headers=headers).status_code == 403
 
 
-def test_http_uses_strict_schemas_and_async_default():
-    app = create_app(":memory:")
-
-    assert request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "我住在上海", "idempotency_key": "bad-time",
-        "observed_at": "not-a-time",
-    }).status_code == 400
-    assert request(app, "POST", "/v1/retrieve", json={
-        "namespace": "u1", "query": "上海", "limit": 1.9,
-    }).status_code == 400
-    assert request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "我住在上海",
-    }).status_code == 400
-
-    # Ordinary events are appended quickly and projected by the worker. An
-    # explicit remember request remains available as the immediate path.
-    deferred = request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "我住在上海", "idempotency_key": "async-default",
-    })
-    assert deferred.status_code == 200
-    assert deferred.json()["deferred"] is True
-    assert deferred.json()["memory_ids"] == []
-    assert request(app, "POST", "/v1/jobs/process-outbox", json={}).json()["processed"] == 1
+def test_session_token_and_missing_request_key(client):
+    assert client.post("/api/v1/real-conversations", json={}, headers={"X-WOT-Token": "forged"}).status_code == 403
+    cid = post(client, "/real-conversations").json()["id"]
+    assert client.post(f"/api/v1/real-conversations/{cid}/messages", json={"text": "hello"}).status_code == 400
 
 
-def test_http_planned_candidate_search_reindex_and_scoped_forget_routes():
-    app = create_app(":memory:")
-    candidate = request(app, "POST", "/v1/memories/candidates", json={
-        "namespace": "u1", "text": "我喜欢绿茶", "idempotency_key": "candidate-1",
-    })
-    assert candidate.status_code == 200
-    assert candidate.json()["deferred"] is True
-    processed = request(app, "POST", "/v1/jobs/process-outbox", json={}).json()
-    memory_id = processed["results"][0]["memory_ids"][0]
-
-    search = request(app, "POST", "/v1/search", json={"namespace": "u1", "query": "绿茶"})
-    assert search.status_code == 200
-    assert search.json()["items"][0]["memory"]["id"] == memory_id
-    assert "query_plan" in search.json()
-    assert "budget_used" in search.json()
-
-    correction = request(app, "PATCH", f"/v1/memories/{memory_id}", json={
-        "content": "我喜欢咖啡", "idempotency_key": "correction-1",
-    })
-    assert correction.status_code == 200
-    corrected_id = correction.json()["memory_ids"][0]
-    versioned = request(app, "GET", f"/v1/memories/{corrected_id}?include_versions=true")
-    assert versioned.status_code == 200
-    assert versioned.json()["version"] == 2
-    assert [(item["version"], item["reason"]) for item in versioned.json()["versions"]] == [
-        (1, "created"), (2, "supersession"),
-    ]
-
-    rebuilt = request(app, "POST", "/v1/jobs/reindex", json={
-        "namespace": "u1", "indexes": ["projections"],
-    })
-    assert rebuilt.status_code == 200
-    assert rebuilt.json()["counts"]["events"] == 2
-
-    forgotten = request(app, "POST", "/v1/users/u1/forget", json={"topic": "咖啡", "hard": True})
-    assert forgotten.status_code == 200
-    assert forgotten.json()["deleted_event_ids"]
-    assert request(app, "GET", f"/v1/memories/{corrected_id}").status_code == 404
+def test_static_skill_import_never_executes_or_enters_evidence(client, tmp_path):
+    target = tmp_path / "should-not-exist.txt"
+    text = f"---\nname: 解释性人物\nallowed-tools: shell\nrun: write {target}\n---\n<script>alert(1)</script>\ncurl https://evil.example"
+    response = post(client, "/skills/import", {"text": text, "category": "CONSENTED",
+                                              "source": "用户提供文本", "permission": "本人授权"})
+    assert response.status_code == 200, response.text
+    assert response.json()["display_name"] == "解释性人物"
+    assert not target.exists()
+    assert client.get("/api/v1/state").json()["evidence"] == []
+    assert post(client, "/real-messages/skill_socratic/admit").status_code == 403
 
 
-def test_http_optional_authorizer_enforces_namespace_boundary():
-    app = create_app(":memory:", authorizer=StaticTokenAuthorizer({
-        "token-u1": {"u1"},
-        "admin": {"*"},
-    }))
-    body = {
-        "namespace": "u1", "text": "请记住我喜欢绿茶", "explicit": True,
-        "idempotency_key": "auth-1",
-    }
-    assert request(app, "POST", "/v1/events", json=body).status_code == 401
-    assert request(app, "POST", "/v1/events", json=body,
-                   headers={"Authorization": "Bearer wrong"}).status_code == 403
-    created = request(app, "POST", "/v1/events", json=body,
-                      headers={"Authorization": "Bearer token-u1"})
-    assert created.status_code == 200
-    assert request(app, "POST", "/v1/retrieve", json={"namespace": "u2", "query": "绿茶"},
-                   headers={"Authorization": "Bearer token-u1"}).status_code == 403
-    assert request(app, "POST", "/v1/jobs/process-outbox", json={},
-                   headers={"Authorization": "Bearer token-u1"}).status_code == 403
-    assert request(app, "POST", "/v1/jobs/process-outbox", json={},
-                   headers={"Authorization": "Bearer admin"}).status_code == 200
+def test_correction_retires_dependencies_and_preserves_origin(client):
+    cid = post(client, "/real-conversations").json()["id"]
+    response = post(client, f"/real-conversations/{cid}/messages", {"text": "我喜欢咖啡", "remember": True}).json()
+    old_version = post(client, "/personas/perceived/compile").json()
+    corrected = post(client, f"/evidence/{response['evidence_id']}/corrections", {"text": "我现在喜欢茶"})
+    assert corrected.status_code == 200, corrected.text
+    assert corrected.json()["origin"] == "USER_CORRECTION"
+    state = client.get("/api/v1/state").json()
+    assert len(state["evidence"]) == 1
+    assert next(v for v in state["versions"] if v["id"] == old_version["id"])["state"] == "INVALIDATED"
 
 
-def test_http_authorizer_can_restrict_actions_inside_a_namespace():
-    app = create_app(":memory:", authorizer=StaticTokenAuthorizer({
-        "writer": {"u1": {"events:write"}},
-    }))
-    headers = {"Authorization": "Bearer writer"}
-    created = request(app, "POST", "/v1/events", headers=headers, json={
-        "namespace": "u1", "text": "请记住我喜欢绿茶", "explicit": True,
-        "idempotency_key": "action-auth-1",
-    })
-    assert created.status_code == 200
-    denied = request(app, "POST", "/v1/retrieve", headers=headers,
-                     json={"namespace": "u1", "query": "绿茶"})
-    assert denied.status_code == 403
+def test_generation_failure_is_not_a_successful_turn(tmp_path):
+    provider = Provider()
+    with TestClient(create_app(tmp_path, provider), base_url="http://127.0.0.1:8765") as client:
+        client.headers["X-WOT-Token"] = client.get("/api/v1/session").json()["token"]
+        cid = post(client, "/real-conversations").json()["id"]
+        from wot.domain import DomainError
+
+        def fail(**kwargs):
+            raise DomainError("模型请求失败", 502)
+
+        provider.generate = fail
+        assert post(client, f"/real-conversations/{cid}/messages", {"text":"失败测试"}).status_code == 502
+        view = client.get(f"/api/v1/real-conversations/{cid}/messages").json()
+        assert len(view) == 1 and view[0]["reply_state"] == "FAILED"
 
 
-def test_http_rejects_invalid_query_bounds_and_mixed_projection_reindex():
-    app = create_app(":memory:")
-    assert request(app, "GET", "/v1/users/u1/memories?limit=0").status_code == 400
-    assert request(app, "GET", "/v1/users/u1/memories?offset=-1").status_code == 400
-    assert request(app, "GET", "/v1/jobs?limit=1001").status_code == 400
-    response = request(app, "POST", "/v1/jobs/reindex", json={
-        "indexes": ["projections", "vector"],
-    })
-    assert response.status_code == 400
-    assert "by itself" in response.json()["detail"]
-    assert request(app, "POST", "/v1/jobs/reindex", json={"indexes": []}).status_code == 400
+def test_state_is_responsive_during_model_call(tmp_path):
+    provider = Provider()
+    entered, release = threading.Event(), threading.Event()
+    original = provider.generate
 
+    def slow(**kwargs):
+        entered.set()
+        assert release.wait(5)
+        return original(**kwargs)
 
-def test_http_answer_requires_reader_and_returns_grounded_decision():
-    missing = create_app(":memory:")
-    assert request(missing, "POST", "/v1/answer", json={
-        "namespace": "u1", "query": "我喜欢什么？",
-    }).status_code == 503
-
-    class Reader:
-        policy_version = "api-reader-v1"
-
-        def answer(self, question, items, *, as_of=None):
-            item = items[0]
-            return GroundedAnswerDecision(
-                AnswerStatus.ANSWER,
-                "绿茶",
-                "SUPPORTED",
-                (EvidenceCitation(item.memory.id, item.memory.content, tuple(item.source_refs)),),
-                policy_version=self.policy_version,
-            )
-
-    app = create_app(":memory:", reader=Reader())
-    request(app, "POST", "/v1/events", json={
-        "namespace": "u1", "text": "请记住我喜欢绿茶", "explicit": True,
-        "idempotency_key": "answer-1",
-    })
-    response = request(app, "POST", "/v1/answer", json={
-        "namespace": "u1", "query": "我喜欢什么？",
-    })
-
-    assert response.status_code == 200
-    assert response.json()["decision"]["status"] == "ANSWER"
-    assert response.json()["decision"]["answer"] == "绿茶"
-    assert response.json()["decision"]["citations"][0]["source_refs"]
+    provider.generate = slow
+    with TestClient(create_app(tmp_path, provider), base_url="http://127.0.0.1:8765") as client:
+        client.headers["X-WOT-Token"] = client.get("/api/v1/session").json()["token"]
+        cid = post(client, "/real-conversations").json()["id"]
+        replies = []
+        thread = threading.Thread(target=lambda: replies.append(post(client, f"/real-conversations/{cid}/messages", {"text":"慢速测试"})))
+        thread.start()
+        assert entered.wait(5)
+        try:
+            state = client.get("/api/v1/state")
+            assert state.status_code == 200
+        finally:
+            release.set()
+            thread.join(5)
+        assert not thread.is_alive()
+        assert replies[0].status_code == 200

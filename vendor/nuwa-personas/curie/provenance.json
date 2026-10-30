@@ -1,0 +1,21 @@
+{
+  "slug": "curie",
+  "repo": "nuwa-skills/curie-skill",
+  "commit": "c2c9d5d2d5fa296fb19e1685f780e31b7fc32ce6",
+  "path": "SKILL.md",
+  "blob_sha": "1d1f6995e4aee6194b30f1a50666473d9772aae8",
+  "source_url": "https://github.com/nuwa-skills/curie-skill/blob/c2c9d5d2d5fa296fb19e1685f780e31b7fc32ce6/SKILL.md",
+  "license": "MIT",
+  "copyright": "2026 Panmax",
+  "license_blob_sha": "d643191ea4fe97b226b7011efa4b8c94c4108702",
+  "sha256": "7b0e6d83eadf6892d38384f959fba9439af66305971b951f5b0750b4c456205d",
+  "license_sha256": "53af10dcfbdccc453792f0037a84746ebbb180b4b8f887e1620fc5c05b8a05ae",
+  "source_origin": "EXTERNAL_SKILL_DATA",
+  "runtime_file": "backend/wot/data/people.json",
+  "upstream_is_executable": false,
+  "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
+  "runtime_text_sha256": "bae26b30e77c162d5295258cbdfdbf5d135b0a228d2db743132297446cf03abc",
+  "primary_sources": [],
+  "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
+  "retrieved_at": "2026-10-30"
+}

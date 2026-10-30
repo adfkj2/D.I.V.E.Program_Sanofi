@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "classification": "SYNTHETIC_FRAMEWORK_VALIDATION",
+  "frozen_before_generation": true,
+  "seed": 1729,
+  "baselines": ["B0", "B1", "B2", "D"],
+  "split_policy": "within-person, disjoint sessions, strictly increasing train/dev/holdout windows",
+  "reference_access": "scorer only; no case object or reference field reaches provider",
+  "generation": {
+    "provider": "synthetic_mock",
+    "model": "choice-from-authorized-context-v1",
+    "temperature": 0.0,
+    "max_output_tokens": 128,
+    "max_context_chars": 4000,
+    "prompt_version": "pfe-synthetic-v0.1"
+  },
+  "retrieval": {"rag_top_k": 2},
+  "primary_metric": "mean(choice_match, core_reason_phrase_coverage); choice_match alone when reason rubric is empty",
+  "weighting": "equal users, equal sessions within each user, equal items within each session",
+  "strongest_baseline": "maximum aggregate primary mean among B0/B1/B2 on the common completed four-arm cohort; tie order B0,B1,B2",
+  "missing_policy": "report each failure/missing call; exclude incomplete four-arm cases from paired estimate; preserve full denominator",
+  "bootstrap": {"iterations": 1000, "unit": "hierarchical paired user then conversation session", "confidence": 0.95},
+  "uncalibrated_thresholds": true,
+  "may_award_domain_tested": false,
+  "human_style_interpersonal_ratings": "not measured",
+  "future_required_extensions": ["persona-swap negative control", "multiround continuation", "independent blinded human raters", "real participant consent and preregistered pilot thresholds"]
+}

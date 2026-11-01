@@ -105,3 +105,12 @@ body, .im-workspace, .im-chat { background: var(--paper); color: var(--ink); }
   .im-composer textarea { font-size: 16px; }
   .remember-this { font-size: 12px; }
 }
+
+/* The indicator belongs to the selected conversation, not to a user bubble. */
+.chat-typing{display:inline-flex;align-items:center;gap:8px;color:#5d7fae;font-size:11px;line-height:1.6;white-space:nowrap;min-height:18px}
+.typing-dots{display:inline-flex;align-items:center;gap:3px;min-width:19px}
+.typing-dots i{display:block;width:3px;height:3px;border-radius:50%;background:currentColor;animation:chat-input-pulse 1.35s ease-in-out infinite;opacity:.35}
+.typing-dots i:nth-child(2){animation-delay:.16s}.typing-dots i:nth-child(3){animation-delay:.32s}
+@keyframes chat-input-pulse{0%,65%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.typing-dots i{animation:none;opacity:.65}}
+@media(max-width:760px){.chat-typing{font-size:10px;gap:5px}.im-composer-bottom>span{font-size:10px;line-height:1.5}.message-error{max-width:260px}}

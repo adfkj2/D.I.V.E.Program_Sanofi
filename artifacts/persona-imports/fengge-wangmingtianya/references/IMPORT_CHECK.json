@@ -1,0 +1,9 @@
+{
+  "data_version": "voice-v1.0.0",
+  "character": "峰哥亡命天涯",
+  "utf8_bytes": 10272,
+  "local_regression": "tests/test_voice_profiles.py: JSON/Markdown, malformed input, admission gate and 16x8-turn binding checks",
+  "quality_assessment": "NOT_RUN",
+  "fidelity": "UNVALIDATED",
+  "external_model_calls": 0
+}

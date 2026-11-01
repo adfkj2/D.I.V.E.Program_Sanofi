@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "cbe73278bb674c0ab1b002276997c53b7f96f4d47c6ffc418c73bbaef67ff794",
+  "runtime_text_sha256": "9c55aee0b46a5a540148b625dfc14a27f63fb97af9fdaa650e1caee2e5fed23f",
   "primary_sources": [
     {
       "title": "风波之后的张雪峰：倔强的寒蝉",
@@ -25,5 +25,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "805a511f9f44aec948447b4488950a4190ed5d31d7c5aa5ede7daf9ed4eb134d"
 }

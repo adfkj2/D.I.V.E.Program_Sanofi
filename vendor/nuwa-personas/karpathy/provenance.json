@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "6b6e4bf09061a6c8e25f125bfd7aa3733f010ffcdddb2309764c3650dd235cfd",
+  "runtime_text_sha256": "12127f1d694b2454903344424ec3b58f6a0ef4fd2204fb7b1ff374845226d673",
   "primary_sources": [
     {
       "title": "Andrej Karpathy 本人主页",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "862bb93e976b4791d65f8f35e8b81704298376e834724e04fa2516bed7f6c452"
 }

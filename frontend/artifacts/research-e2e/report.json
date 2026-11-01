@@ -1,0 +1,46 @@
+{
+  "status": "PASSED",
+  "date": "2026-11-01T14:43:35.398Z",
+  "checks": [
+    "搜索配置覆盖鉴权失败、保存失败、表单修改使迟到结果失效、成功后安全状态；Key等待与失败保留、重新打开不回读，成功由用户关闭。",
+    "聊天按真实阶段展示查资料/核对/输入；来源默认收起，显式打开才读取；恶意链接不可点击；关联消息删除后来源窗口与缓存同步清除；会话联网开关及缺少配置引导可用，输入框保持可见。",
+    "虚拟空间复用检索阶段与来源展示；检索额度耗尽单独暂停，默认只追加检索请求，追加不自动恢复，会话联网开关生效。"
+  ],
+  "screenshots": [
+    "web-config-saved-1440.png",
+    "web-config-saved-768.png",
+    "web-config-saved-390.png",
+    "web-config-saved-360.png",
+    "chat-searching-1440.png",
+    "chat-searching-768.png",
+    "chat-searching-390.png",
+    "chat-searching-360.png",
+    "chat-verifying-360.png",
+    "chat-sources-1440.png",
+    "chat-sources-768.png",
+    "chat-sources-390.png",
+    "chat-sources-360.png",
+    "chat-web-notice-1440.png",
+    "chat-web-notice-768.png",
+    "chat-web-notice-390.png",
+    "chat-web-notice-360.png",
+    "virtual-sources-1440.png",
+    "virtual-sources-768.png",
+    "virtual-sources-390.png",
+    "virtual-sources-360.png",
+    "virtual-web-limit-1440.png",
+    "virtual-web-limit-768.png",
+    "virtual-web-limit-390.png",
+    "virtual-web-limit-360.png"
+  ],
+  "browserErrors": [],
+  "externalRequests": [],
+  "realSearchCalls": 0,
+  "realModelCalls": 0,
+  "fixtureValidationCalls": 4,
+  "fixtureSourceReads": 2,
+  "limitations": [
+    "本报告使用浏览器网络夹具验证界面和交互，不证明真实资料正确性或人物拟真。",
+    "后端联网、权限、账本与删除传播由独立单元/契约测试覆盖；未使用用户保存的 Key。"
+  ]
+}

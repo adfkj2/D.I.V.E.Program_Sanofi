@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "d5b256f656e5b28acb4f375a8b510f55b81be0c393ffa71f5773836ed91b013e",
+  "runtime_text_sha256": "aca057da628861106f957e5a74222fb622b2e15fab895237a3bd88084d7dba0d",
   "primary_sources": [
     {
       "title": "Atomic Habits 作者官方介绍",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "7f6ebeb90d5f8e02ab238eedcda902a08e64578060912d4afe9c5e7b6103d414"
 }

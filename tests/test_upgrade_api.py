@@ -4,6 +4,7 @@ import io
 import json
 import sqlite3
 
+import httpx
 from fastapi.testclient import TestClient
 from PIL import Image
 from wot.main import create_app
@@ -25,7 +26,7 @@ def avatar_data():
     return "data:image/jpeg;base64," + base64.b64encode(out.getvalue()).decode()
 
 
-def test_first_run_browsing_and_all_simulation_routes_are_closed(tmp_path):
+def test_first_run_virtual_space_open_but_generation_requires_real_connection(tmp_path):
     app = create_app(tmp_path)
     with open_client(app) as client:
         state = client.get("/api/v1/state").json()
@@ -33,14 +34,18 @@ def test_first_run_browsing_and_all_simulation_routes_are_closed(tmp_path):
         upgrade = state["upgrade"]
         assert upgrade["connections"] == []
         assert upgrade["unlock"]["unlocked"] is False
+        assert upgrade["virtual_access"]["enabled"] is True
         assert upgrade["preferences"]["setup_dismissed"] is False
         assert len(client.get("/api/v1/model-providers").json()) == 9
         assert client.post("/api/v1/preferences",json={"setup_dismissed":True}).status_code == 200
         assert client.post("/api/v1/assessments",json={"kind":"PERSONAL"}).status_code == 409
-        assert client.post("/api/v1/virtual-sessions",json={"topic":"bypass"}).status_code == 403
-        assert client.post("/api/v1/simulations",json={"topic":"bypass","persona_version_id":"old","skill_id":"skill_socratic"}).status_code == 403
-        assert client.post("/api/v1/simulations/old/next",json={},headers={"Idempotency-Key":"old-next"}).status_code == 403
-        assert client.post("/api/v1/simulations/old/resume",json={}).status_code == 403
+        participants = client.get("/api/v1/virtual-participants").json()
+        assert participants and all(person["kind"] == "CHARACTER" for person in participants)
+        assert client.post("/api/v1/virtual-sessions", json={"topic": "模型尚未配置", "left_id": "skill_munger",
+                           "right_id": "skill_buffett", "sharing_approved": True}).status_code == 503
+        assert client.post("/api/v1/simulations",json={"topic":"bypass","persona_version_id":"old","skill_id":"skill_socratic"}).status_code == 409
+        assert client.post("/api/v1/simulations/old/next",json={},headers={"Idempotency-Key":"old-next"}).status_code == 409
+        assert client.post("/api/v1/simulations/old/resume",json={}).status_code == 409
         assert client.post("/api/v1/assessments",json={"kind":"PERSONAL","score":100,"passed":True}).status_code == 400
 
 
@@ -63,6 +68,37 @@ def test_secrets_never_enter_state_export_requests_or_database(tmp_path):
     with open_client(second) as client:
         connection = client.get("/api/v1/model-connections").json()[0]
         assert connection["key_status"] == "MISSING"
+
+
+def test_model_validation_route_reports_actual_saved_state_without_secret(tmp_path):
+    secret = "validation-test-only-secret"
+    app = create_app(tmp_path)
+    with open_client(app) as client:
+        connections = app.state.upgrade.connections
+        connections.client.close()
+        connections.client = httpx.Client(transport=httpx.MockTransport(
+            lambda _: httpx.Response(200, json={
+                "choices": [{"message": {"content": "OK"}, "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 4, "completion_tokens": 1, "total_tokens": 5},
+            })
+        ))
+        body = {"provider": "kimi", "model": "local-contract-test", "api_key": secret,
+                "remember": False}
+        response = client.post("/api/v1/model-connection-validations", json=body)
+        assert response.status_code == 200, response.text
+        result = response.json()
+        assert result["status"] == "ADDED" and result["tested"] and result["saved"]
+        assert result["connection"]["storage"] == "SESSION_ONLY"
+        body = {"connection_id": result["connection"]["id"], "model": "updated-contract-test"}
+        updated = client.post("/api/v1/model-connection-validations", json=body).json()
+        assert updated["status"] == "UPDATED" and updated["saved"]
+        assert len(client.get("/api/v1/model-connections").json()) == 1
+        assert secret not in response.text + json.dumps(updated)
+        assert secret not in client.get("/api/v1/state").text
+        assert secret not in client.post("/api/v1/data/export", json={}).text
+        ledger = app.state.service.store.all("model_call")
+        assert len(ledger) == 2 and all(row["purpose"] == "connection_test" for row in ledger)
+    assert secret.encode() not in (tmp_path / "wot.db").read_bytes()
 
 
 def test_import_is_draft_even_through_legacy_route_and_never_executes(tmp_path):
@@ -133,7 +169,7 @@ def test_v2_whole_data_backup_and_custom_role_migration(tmp_path):
     old=WotService(directory)
     role=old.import_skill("---\nname: 旧人物\n---\n角色正文。","CURATED","旧授权","旧来源")
     with old.store.transaction():
-        old.store.db.execute("DELETE FROM schema_version WHERE version=3")
+        old.store.db.execute("DELETE FROM schema_version WHERE version>=3")
     old.close()
     app=create_app(directory)
     with open_client(app) as client:

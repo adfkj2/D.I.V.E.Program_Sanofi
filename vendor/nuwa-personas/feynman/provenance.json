@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "0898151b246ea962bc901464701ea132a386ec5a5f7911d777755e45d2e08681",
+  "runtime_text_sha256": "2b68be3a2b2c991b55d962f1686f4ac798b95ca1c339089c283a2256f56ee129",
   "primary_sources": [
     {
       "title": "The Feynman Lectures on Physics, Caltech",
@@ -25,5 +25,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "67f5ff4a7552796149b4f9065416945f569850849a21e0e348175250ea73ac1d"
 }

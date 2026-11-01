@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "1cb40d55f7e0db57d7e1740fa078abdf39711e9ccfa29c564f602f645c17b25b",
+  "runtime_text_sha256": "3b05190eec5ca93f5b942738ef37f60f70b811145188b3ed83b821fe9b4fc21b",
   "primary_sources": [
     {
       "title": "Poor Charlie’s Almanack 官方出版社",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "53d2ddee615e21284eef1c20fd64c3bf4b6389698cd7e2a61a36e814fd3c4561"
 }

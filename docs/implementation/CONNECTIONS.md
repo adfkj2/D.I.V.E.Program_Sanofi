@@ -20,6 +20,10 @@
 
 `save(data, connection_id=None)` 接受 `provider`、`model`、`api_key`、`remember`、`base_url`、`region`、`workspace_id`、`label`、`protocol`。编辑时省略 `api_key` 表示保留；浏览器收到的安全摘要只有固定掩码及配置状态。协议枚举为 `responses`、`chat`、`messages`、`generateContent`。外部接口要求 HTTPS；本机 `localhost`、`127.0.0.1`、`::1` 可以 HTTP。地址拒绝内嵌用户名、密码、查询参数和片段。
 
+界面使用 `POST /api/v1/model-connection-validations`：接收上述草稿及可选 `connection_id`，先用临时配置测试，再保存。返回 `TEST_FAILED`、`SAVE_FAILED`、`ADDED` 或 `UPDATED`，以及 `tested`、`saved`、供应商、模型、耗时和安全摘要。鉴权／超时失败不创建连接、不改变默认或凭据；保存异常恢复旧 Key。迟到响应不能复活已移除连接或覆盖并发修改。测试账本与实际生成分开，响应不返回模型测试正文或原始 Key。
+
+`POST /model-discovery` 可携带 `connection_id`，只在服务端借用该连接已有 Key，供应商、模型协议、地址、地区和工作空间采用当前草稿。读取模型列表不会保存草稿或修改默认连接。
+
 勾选记住后，秘密写入受支持的系统凭据库，SQLite 仅保留随机 `credential_ref`。默认只接受 keyring 的 Windows、macOS、Secret Service、KWallet 系统后端；不接受第三方纯文本后端。系统后端缺失或失败时明确报错，让用户选择仅本次运行，不会自动落盘。未记住的 Key 仅在进程字典中保存，重启失效。切换为临时保存或移除连接时删除原系统凭据；无法删除时保留当前配置并提示重试。应用关闭时清空临时字典。
 
 人格许可使用的 `config_hash()` 包含供应商、模型、协议、根地址、地区和工作空间，排除 Key、连接名称及其他外观信息。Key 轮换不改变这个指纹。

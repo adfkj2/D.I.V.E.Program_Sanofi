@@ -1,0 +1,30 @@
+{
+  "status": "FAILED",
+  "checks": [
+    "首次配置支持9种连接；通义地区/工作空间、豆包接入点字段；稍后设置可浏览15位人物，虚拟入口隐藏。",
+    "模型验证夹具覆盖鉴权失败、测试通过但保存失败、已添加/已更新；Key在等待与失败期间保留，成功后展示安全状态，重新打开不回读；修改使旧结果失效、重复提交只发一次。",
+    "未配置的真实评估引导配置；本人资料、授权陈述和头像可保存；旧记录只读，直接虚拟链接不能生成。",
+    "缺失会话Key引导设置；中文输入法、左右消息、独立草稿正常；删除人物保留历史并可从内置目录恢复。",
+    "新生成Markdown回复在保存前转为自然文本，代码注释、运算符、变量、公式和网址保留；用户原文不改。",
+    "聊天批次：标题输入动效、等待时继续输入、多气泡自然提问、中途插话清尾、刷新恢复均正确；四种宽度无横向溢出。"
+  ],
+  "screenshots": [
+    "first-run-model-1440.png",
+    "first-run-model-390.png",
+    "model-save-failure-1440.png",
+    "model-added-1440.png",
+    "model-added-390.png",
+    "model-updated-390.png",
+    "chat-prepared-reply-1440.png",
+    "chat-prepared-reply-390.png",
+    "chat-typing-1440.png",
+    "chat-typing-768.png",
+    "chat-typing-390.png",
+    "chat-typing-360.png",
+    "chat-burst-1440.png",
+    "chat-burst-390.png",
+    "failure.png"
+  ],
+  "browserErrors": [],
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n"
+}

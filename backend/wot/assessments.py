@@ -29,7 +29,7 @@ LABELS = {"decisions": "决策与偏好", "values": "核心理由与价值",
 QUALITY_LABELS = {"completeness": "资料完整性", "sources": "来源说明",
                   "thinking_expression": "思维与表达规则", "consistency": "一致性",
                   "permissions_honesty": "权限与诚实边界"}
-SUCCESS = "恭喜！你解锁了虚拟空间，快用你的数字分身去和别人交流吧！"
+SUCCESS = "本轮严格个人校验通过。"
 
 # No scenario has an objectively correct option. References come only from the
 # owner after the profile/context cutoff, not from a model or a synthetic fixture.
@@ -211,27 +211,86 @@ class AssessmentManager:
         task["required_review_count"] = len(private.get("required_reviews", []))
         task["budget"] = copy.deepcopy(private.get("budget", {}))
 
+    def _self_dependencies_valid(self, snapshot):
+        if snapshot.get("status", "ACTIVE") != "ACTIVE":
+            return False
+        ids = snapshot.get("evidence_ids", [])
+        if ids and not self._evidence_valid(ids):
+            return False
+        manifest = {item.get("id"): item for item in snapshot.get("source_manifest", [])}
+        for eid in ids:
+            row = self.store.fetchone("SELECT content_hash FROM evidence WHERE id=? AND owner_id='local'", (eid,))
+            if not row or (eid in manifest and manifest[eid].get("hash") != row["content_hash"]):
+                return False
+        for did in snapshot.get("directive_ids", []):
+            directive = self.store.get(did, "directive")
+            if not directive or directive.get("state") != "APPROVED":
+                return False
+        return True
+
+    def _self_document(self, version_id):
+        snapshot = copy.deepcopy(self.profile_supplier(version_id))
+        if not snapshot or snapshot.get("id") != version_id or not self._self_dependencies_valid(snapshot):
+            raise DomainError("这版本人 Skill 或其依据已失效，请重新整理资料", 409)
+        if not snapshot.get("bio", "").strip() and not snapshot.get("evidence_ids"):
+            raise DomainError("请先补充本人介绍，或明确授权真实聊天和本人资料作为依据", 409)
+        sources = []
+        if snapshot.get("bio", "").strip():
+            sources.append({"type": "OWNER_BIO", "version_id": snapshot["id"],
+                            "content_hash": digest(snapshot["bio"])})
+        sources.extend({"type": "AUTHORIZED_EVIDENCE", **item}
+                       for item in snapshot.get("source_manifest", []))
+        # Old snapshots may predate the manifest field; use the actual evidence
+        # rows rather than claiming an external publication or invented license.
+        known = {item.get("id") for item in sources}
+        for eid in snapshot.get("evidence_ids", []):
+            if eid not in known:
+                row = self.store.fetchone("SELECT id,content_hash,origin FROM evidence WHERE id=? AND owner_id='local'", (eid,))
+                sources.append({"type": "AUTHORIZED_EVIDENCE", "id": eid,
+                                "hash": row["content_hash"], "origin": row["origin"]})
+        for did in snapshot.get("directive_ids", []):
+            sources.append({"type": "OWNER_APPROVED_ASPIRATION_NOT_FACT", "id": did})
+        snapshot.update(
+            subject_type="USER_SKILL", version=snapshot["id"],
+            source="本人填写资料及本人明确授权的真实证据；理想方向仅为目标，不是已发生事实。\n" + canonical(sources),
+            permission="本人已确认资料描述自己，并授权在本人开启的本地虚拟会话中用于分身；"
+                       "其他参与者只能读取已发布发言。不是公开授权或MIT许可，不授予脚本、工具、联网或秘密访问权限。",
+            assessment_source_manifest=sources,
+        )
+        return snapshot
+
+    def start_self(self, version_id, *, confirmed=False):
+        if confirmed is not True:
+            raise DomainError("请确认这份资料描述你本人，并授权用于本人的分身", 400)
+        return self._start("QUALITY", version_id, subject_type="USER_SKILL", owner_confirmed=True)
+
     def start(self, kind, subject_id=None):
+        return self._start(kind, subject_id)
+
+    def _start(self, kind, subject_id=None, *, subject_type="SKILL_IMPORT", owner_confirmed=False):
         kind = str(kind).upper()
         if kind not in {"PERSONAL", "QUALITY"}:
             raise DomainError("请选择个人严格校验或人物资料质量评估")
         active = self.connections.active()
         if not active or not self.connections.is_live(active["id"]):
             raise DomainError("请先配置真实模型连接，再开始评估", 409)
-        snapshot = copy.deepcopy(self.profile_supplier() if kind == "PERSONAL"
-                                 else self.draft_supplier(subject_id))
-        if not snapshot or not snapshot.get("text", "").strip():
-            raise DomainError("请先补充本人资料或待评人物资料", 409)
-        if kind == "PERSONAL" and not snapshot.get("evidence_ids"):
-            raise DomainError("请先明确授权真实聊天或本人资料作为画像依据", 409)
-        frozen_hash = snapshot.get("content_hash") or digest(snapshot["text"])
         model = {"connection_id": active["id"], "config_hash": self.connections.config_hash(active["id"]),
                  "provider": active.get("provider"), "model": active.get("model")}
-        private = {"snapshot": snapshot, "questions": [], "answers": {}, "predictions": {a: {} for a in ARMS},
-                   "grades": {}, "reviews": {}, "required_reviews": [], "all_live": True,
-                   "budget": {"tokens": 0, "max_tokens": 250_000, "calls": 0}, "generation": 0}
         with self.lock, self.store.transaction():
+            snapshot = (self._self_document(subject_id) if subject_type == "USER_SKILL" else
+                        copy.deepcopy(self.profile_supplier() if kind == "PERSONAL"
+                                      else self.draft_supplier(subject_id)))
+            if not snapshot or not snapshot.get("text", "").strip():
+                raise DomainError("请先补充本人资料或待评人物资料", 409)
+            if kind == "PERSONAL" and not snapshot.get("evidence_ids"):
+                raise DomainError("请先明确授权真实聊天或本人资料作为画像依据", 409)
+            frozen_hash = snapshot.get("content_hash") or digest(snapshot["text"])
+            private = {"snapshot": snapshot, "questions": [], "answers": {}, "predictions": {a: {} for a in ARMS},
+                       "grades": {}, "reviews": {}, "required_reviews": [], "all_live": True,
+                       "budget": {"tokens": 0, "max_tokens": 250_000, "calls": 0}, "generation": 0}
             task = self.store.add("assessment", {"kind": kind, "subject_id": snapshot["id"],
+                "subject_type": "USER_SKILL" if kind == "PERSONAL" else subject_type,
+                "owner_confirmed": owner_confirmed,
                 "content_hash": frozen_hash, "protocol": PROTOCOL if kind == "PERSONAL" else QUALITY_PROTOCOL,
                 "model": model, "cutoff": snapshot.get("cutoff", now()),
                 "status": "RUNNING",
@@ -241,6 +300,10 @@ class AssessmentManager:
             self.store.update(task)
             for eid in snapshot.get("evidence_ids", []):
                 self.store.link(eid, task["id"])
+            for did in snapshot.get("directive_ids", []):
+                self.store.link(did, task["id"])
+            if subject_type == "USER_SKILL":
+                self.store.link(snapshot["id"], task["id"])
             self._save_private(task["id"], private)
         self._launch(task["id"])
         return self.get(task["id"])
@@ -341,6 +404,7 @@ class AssessmentManager:
         private["budget"]["tokens"] += tokens
         private["budget"]["calls"] += 1
         private["all_live"] = private["all_live"] and result.get("classification") == "LIVE"
+        interrupted = False
         with self.store.transaction():
             if not self._running(rid):
                 # A completed but discarded request still consumed tokens.
@@ -353,8 +417,13 @@ class AssessmentManager:
                 latest = self._task(rid)
                 latest["budget"] = copy.deepcopy(current["budget"])
                 self._update(latest)
-                raise InterruptedError()
-            self._save_private(rid, private)
+                interrupted = True
+            else:
+                self._save_private(rid, private)
+        # Accounting must commit before signalling cancellation. Raising inside
+        # the publication transaction would roll back the real consumed usage.
+        if interrupted:
+            raise InterruptedError()
         value = _object(result["text"])
         return value
 
@@ -420,7 +489,7 @@ class AssessmentManager:
                                 "sources": "列出资料出处、版本、许可及哪些内容属于解释性整理。",
                                 "thinking_expression": "写清判断步骤、常用语言习惯、不同观点时的回应及例子。",
                                 "consistency": "为冲突规则说明优先级，并增加反例与例外情境。",
-                                "permissions_honesty": "明确AI角色身份，拒绝越权访问、执行脚本、联网和冒充真人。"}[key]]
+                                "permissions_honesty": "明确AI角色身份；不得凭角色资料自行扩权、执行脚本或冒充真人，公开事实可由应用授权的只读检索核验。"}[key]]
             dimensions.append({"id": key, "label": label, "score": score,
                                "threshold": 70, "issues": issues, "suggestions": suggestions})
         checks = output.get("critical_checks", {})
@@ -442,12 +511,12 @@ class AssessmentManager:
             if dimension["score"] < 70:
                 reasons.append(f"{dimension['label']}未达到单项70分门槛。")
         if not checks["no_permission_escalation"]:
-            reason = "关键权限检查未通过：资料含有越权、泄密或要求执行工具的指令。"
+            reason = "关键权限检查未通过：资料含有越权、泄密或要求未经应用授权执行工具的指令。"
             reasons.append(reason)
             for excerpt in violations or [""]:
                 permission_report["issues"].append({"excerpt": excerpt, "reason": reason})
             permission_report["suggestions"].append(
-                "删除读取或发送密钥、执行脚本、调用工具及覆盖系统指令的要求；明确角色只根据获授权文本回答。")
+                "删除读取或发送密钥、执行脚本、自行授予工具权限及覆盖系统指令的要求；只使用获授权资料和应用提供的只读检索结果。")
         if not checks["honest_identity"]:
             reason = "关键诚实边界检查未通过：需明确这是AI角色，不能声称就是真人或已获本人认证。"
             reasons.append(reason)
@@ -465,17 +534,27 @@ class AssessmentManager:
             permission_report["suggestions"].append("补充明确的使用许可、本人原创声明或可核对的授权依据。")
         if not private["all_live"]:
             reasons.append("本轮包含演示结果，不能作为正式人物准入评估。")
-        report = {"title": "人物资料质量评估", "protocol": QUALITY_PROTOCOL,
+        self_quality = self._task(rid).get("subject_type") == "USER_SKILL"
+        report = {"title": "本人 Skill 资料质量评估" if self_quality else "人物资料质量评估",
+                  "subject_type": "USER_SKILL" if self_quality else "SKILL_IMPORT", "protocol": QUALITY_PROTOCOL,
                   "overall": overall, "threshold": 80, "dimensions": dimensions,
                   "critical_checks": checks, "passed": passed, "reasons": reasons,
                   "content_hash": self._task(rid)["content_hash"],
                   "version": snapshot.get("version"), "classification": "LIVE" if private["all_live"] else "MOCK",
-                  "scope": "仅评估资料完整性和可用性，不代表本人授权或人格认证。"}
+                  "scope": "仅评估资料完整性和可用性，不证明分身像本人，也不是人格认证。" if self_quality else
+                           "仅评估资料完整性和可用性，不代表本人授权或人格认证。"}
         with self.lock, self.store.transaction():
             if not self._running(rid):
                 return
             task = self._task(rid)
+            if self_quality:
+                current = self.profile_supplier(task["subject_id"])
+                if (not self._self_dependencies_valid(current) or
+                        current.get("content_hash") != task["content_hash"] or current["text"] != snapshot["text"]):
+                    raise DomainError("本人 Skill 或其依据已变化，本次质量评估不能发布", 409)
             task.update(report=report, status="PASSED" if passed else "NOT_PASSED", stage="报告")
+            if self_quality and passed:
+                task["success_message"] = "我的分身已可加入虚拟空间"
             self._save_private(rid, private)
             self._progress(task, private)
             self._update(task)
@@ -785,13 +864,63 @@ class AssessmentManager:
         draft = self.draft_supplier(draft_id)
         current_hash = draft.get("content_hash") or digest(draft["text"])
         for task in reversed(self.store.all("assessment")):
-            if (task["kind"] == "QUALITY" and task["subject_id"] == draft_id and
+            if (task["kind"] == "QUALITY" and task.get("subject_type", "SKILL_IMPORT") == "SKILL_IMPORT"
+                    and task["subject_id"] == draft_id and
                     task["content_hash"] == current_hash and task["status"] == "PASSED" and
                     task.get("report", {}).get("passed") is True and
                     task["report"].get("version") == draft.get("version") and
                     task["report"].get("classification") == "LIVE"):
                 return task
         raise DomainError("这版人物资料尚未通过质量评估，暂时不能添加", 409)
+
+    def self_admission(self, version_id=None):
+        """Document quality admission; never a model-bound personality permit."""
+        reason = "这版本人 Skill 尚未通过资料质量评估。"
+        # This is a read guard, also used during virtual publication. Nested
+        # sqlite transaction contexts would commit the caller's writes early.
+        with self.store.lock:
+            for task in reversed(self.store.all("assessment")):
+                if (task.get("kind") != "QUALITY" or task.get("subject_type") != "USER_SKILL"
+                        or task.get("owner_confirmed") is not True
+                        or (version_id is not None and task.get("subject_id") != version_id)):
+                    continue
+                report = task.get("report") or {}
+                if (task.get("status") != "PASSED" or task.get("protocol") != QUALITY_PROTOCOL
+                        or report.get("protocol") != QUALITY_PROTOCOL or report.get("passed") is not True
+                        or report.get("classification") != "LIVE"
+                        or report.get("version") != task["subject_id"]
+                        or report.get("content_hash") != task.get("content_hash")):
+                    continue
+                try:
+                    if (_score(report["overall"]) < 80 or
+                            len(report["dimensions"]) != len(QUALITY_LABELS) or
+                            {d["id"] for d in report["dimensions"]} != set(QUALITY_LABELS) or
+                            any(_score(d["score"]) < 70 for d in report["dimensions"]) or
+                            any(report["critical_checks"].get(key) is not True for key in (
+                                "no_permission_escalation", "honest_identity", "source_declared", "permission_declared"))):
+                        continue
+                    current = self.profile_supplier(task["subject_id"])
+                    private = self._private(task["id"])
+                    frozen = private["snapshot"]
+                    unchanged = all(current.get(key) == frozen.get(key) for key in (
+                        "text", "bio", "evidence_ids", "directive_ids", "source_manifest"))
+                    if (not private.get("all_live") or not unchanged or
+                            current.get("content_hash") != task["content_hash"] or
+                            not self._self_dependencies_valid(current)):
+                        reason = "本人 Skill 的资料版本或依赖来源已失效，请重新评估。"
+                        continue
+                except (DomainError, ValueError, KeyError, TypeError, AttributeError):
+                    continue
+                return {"eligible": True, "version_id": task["subject_id"], "assessment_id": task["id"],
+                        "protocol": QUALITY_PROTOCOL, "reason": None}
+            return {"eligible": False, "version_id": version_id, "assessment_id": None,
+                    "protocol": QUALITY_PROTOCOL, "reason": reason}
+
+    def assert_self_admitted(self, version_id):
+        state = self.self_admission(version_id)
+        if not state["eligible"]:
+            raise DomainError(state["reason"], 403)
+        return state
 
     def invalidate(self, parent_id, reason="依赖的证据或授权已失效"):
         """Called synchronously by deletion/revocation before its response.
@@ -809,7 +938,8 @@ class AssessmentManager:
             for task in self.store.all("assessment"):
                 private = self._private(task["id"])
                 snapshot = private.get("snapshot", {})
-                if parent_id not in {task["subject_id"], *snapshot.get("evidence_ids", [])}:
+                if parent_id not in {task["subject_id"], *snapshot.get("evidence_ids", []),
+                                     *snapshot.get("directive_ids", [])}:
                     continue
                 task.update(status="INVALIDATED", stage="已失效", report=None,
                             failure={"code": "DEPENDENCY_INVALIDATED", "message": reason})

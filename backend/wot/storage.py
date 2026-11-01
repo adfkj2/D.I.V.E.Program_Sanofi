@@ -37,10 +37,10 @@ def backup_before_upgrade(directory: Path) -> Path | None:
     with sqlite3.connect(str(app_path)) as source:
         exists = source.execute("SELECT 1 FROM sqlite_master WHERE name='schema_version'").fetchone()
         version = source.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] if exists else 0
-    if version and version >= 3:
+    if version and version >= 6:
         return None
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    target = directory / "backups" / ("before-v3-" + stamp)
+    target = directory / "backups" / ("before-v6-" + stamp)
     target.mkdir(parents=True)
     manifest = {"format": "wot-local-backup-v2", "files": {}}
     for name in ("wot.db", "memory.db", "assessment-private.db"):
@@ -110,9 +110,9 @@ class AppStore:
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='schema_version'"
         ).fetchone()
         version = self.db.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] if schema else 0
-        if existed and (version or 0) < 3:
+        if existed and (version or 0) < 6:
             stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-            self.migration_backup_path = path.with_name(f"{path.stem}.pre-v3.{stamp}.db")
+            self.migration_backup_path = path.with_name(f"{path.stem}.pre-v6.{stamp}.db")
             backup = sqlite3.connect(str(self.migration_backup_path))
             try:
                 self.db.backup(backup)
@@ -124,14 +124,37 @@ class AppStore:
         self._migrate_v2()
         with self.transaction():
             self.db.execute("INSERT OR IGNORE INTO schema_version(version) VALUES(3)")
+        self._migrate_v4()
+        with self.transaction():
+            self.db.execute("INSERT OR IGNORE INTO schema_version(version) VALUES(5)")
+        self._migrate_v6()
         with self.transaction():
             # An interrupted real reply is visible and manually retryable. It
             # must never trigger a surprise provider request on application start.
             self.db.execute(
                 "UPDATE messages SET reply_state=CASE WHEN EXISTS(SELECT 1 FROM messages AS agent "
                 "WHERE agent.owner_id=messages.owner_id AND agent.conversation_id=messages.conversation_id "
-                "AND agent.speaker='AGENT' AND agent.request_key=messages.request_key) "
+                "AND agent.speaker='AGENT' AND (agent.request_key=messages.request_key "
+                "OR (messages.reply_batch_id IS NOT NULL AND agent.reply_batch_id=messages.reply_batch_id))) "
                 "THEN 'REPLIED' ELSE 'FAILED' END WHERE speaker='USER' AND reply_state='WAITING'")
+
+    def _migrate_v6(self):
+        columns = {row["name"] for row in self.db.execute("PRAGMA table_info(messages)")}
+        with self.transaction():
+            for name, declaration in {"research_id": "TEXT", "source_refs": "TEXT NOT NULL DEFAULT '[]'"}.items():
+                if name not in columns:
+                    self.db.execute(f"ALTER TABLE messages ADD COLUMN {name} {declaration}")
+            self.db.execute("INSERT OR IGNORE INTO schema_version(version) VALUES(6)")
+
+    def _migrate_v4(self):
+        columns = {row["name"] for row in self.db.execute("PRAGMA table_info(messages)")}
+        with self.transaction():
+            for name, declaration in {"reply_batch_id": "TEXT", "part_index": "INTEGER"}.items():
+                if name not in columns:
+                    self.db.execute(f"ALTER TABLE messages ADD COLUMN {name} {declaration}")
+            self.db.execute("CREATE UNIQUE INDEX IF NOT EXISTS messages_reply_part "
+                            "ON messages(owner_id,reply_batch_id,part_index) WHERE speaker='AGENT' AND reply_batch_id IS NOT NULL")
+            self.db.execute("INSERT OR IGNORE INTO schema_version(version) VALUES(4)")
 
     def _migrate_v2(self) -> None:
         version = self.db.execute("SELECT MAX(version) FROM schema_version").fetchone()[0]
@@ -178,7 +201,9 @@ class AppStore:
     def add_message(self, conversation_id: str, speaker: str, text: str, *,
                     request_key: str, request_domain: str | None = None,
                     remember_requested: bool | None = None, reply_state: str = "REPLIED",
-                    message_id: str | None = None) -> str:
+                    message_id: str | None = None, reply_batch_id: str | None = None,
+                    part_index: int | None = None, client_request_id: str | None = None,
+                    research_id: str | None = None, source_refs: list[str] | None = None) -> str:
         """Caller holds transaction(); sequence is stable even when clocks tie."""
         message_id = message_id or uid("msg")
         sequence = self.db.execute(
@@ -187,18 +212,38 @@ class AppStore:
         ).fetchone()[0]
         self.db.execute(
             "INSERT INTO messages(id,conversation_id,owner_id,speaker,text,created_at,evidence_id,"
-            "request_key,sequence,client_request_id,deleted,reply_state,request_domain,remember_requested) "
-            "VALUES(?,?,'local',?,?,?,NULL,?,?,?,0,?,?,?)",
+            "request_key,sequence,client_request_id,deleted,reply_state,request_domain,remember_requested,reply_batch_id,part_index,research_id,source_refs) "
+            "VALUES(?,?,'local',?,?,?,NULL,?,?,?,0,?,?,?,?,?,?,?)",
             (message_id, conversation_id, speaker, text, now(), request_key, sequence,
-             request_key, reply_state, request_domain,
-             None if remember_requested is None else int(remember_requested)),
+             client_request_id or request_key, reply_state, request_domain,
+             None if remember_requested is None else int(remember_requested), reply_batch_id, part_index,
+             research_id, canonical(source_refs or [])),
         )
         return message_id
 
     @contextmanager
     def transaction(self):
-        with self.lock, self.db:
-            yield
+        # Enter a real transaction even before the first write. Helpers use
+        # in_transaction to join publication atomically; SQLite's lazy BEGIN
+        # otherwise lets a nested helper commit its caller's first write.
+        with self.lock:
+            nested = self.db.in_transaction
+            savepoint = "wot_" + uuid4().hex if nested else None
+            self.db.execute(f"SAVEPOINT {savepoint}" if nested else "BEGIN")
+            try:
+                yield
+            except BaseException:
+                if nested:
+                    self.db.execute(f"ROLLBACK TO SAVEPOINT {savepoint}")
+                    self.db.execute(f"RELEASE SAVEPOINT {savepoint}")
+                else:
+                    self.db.rollback()
+                raise
+            else:
+                if nested:
+                    self.db.execute(f"RELEASE SAVEPOINT {savepoint}")
+                else:
+                    self.db.commit()
 
     def fetchone(self, sql: str, parameters=()):
         """Serialize cursor execution and consumption on the shared connection."""

@@ -14,8 +14,10 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "edd6cea0da2bf36128d170a3ca965073b2afe9b5b6a4ee13feb95b982076c0ee",
+  "runtime_text_sha256": "daedea33a68c283c3bd4735b2e0932403d1f57b2b0d989497f1da3009e7761f8",
   "primary_sources": [],
   "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "ae1aeddde283781c9b83b57dedea1e0852b4ac8f7e31316d73cbd2ca4d05b7e4"
 }

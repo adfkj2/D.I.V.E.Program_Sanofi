@@ -1,14 +1,16 @@
 """Upgrade composition and local-owner routes. No secret-bearing generic state."""
 
 import re
+import secrets
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Request
 from fastapi.responses import FileResponse
 
 from .assessments import AssessmentManager
 from .connections import ConnectionManager
 from .domain import DomainError
 from .people import PeopleManager
+from .research import ResearchManager
 from .virtual import VirtualSpace
 
 
@@ -16,6 +18,9 @@ class Upgrade:
     def __init__(self, service, directory, provider=None):
         self.service = service
         self.connections = ConnectionManager(service.store, directory)
+        self.research = ResearchManager(service, directory, connection_manager=self.connections)
+        service.research = self.research
+        service.invalidate_hooks.append(self.research.invalidate)
         if provider is not None:
             self.connections._fallback = provider
             self.connections.calls = provider.calls
@@ -38,21 +43,58 @@ class Upgrade:
         return {
             "connections": self.connections.list_connections(),
             "providers": self.connections.providers(),
+            "web": self.research.config(),
             "me": self.people.me(),
             "unlock": self.assessments.unlock_state(),
+            "virtual_access": {"enabled": True},
             "preferences": self.people.preferences(),
             "skill_imports": self.service.store.all("skill_import"),
             "virtual_sessions": self.virtual.list(),
         }
 
     def close(self):
+        self.service.chat.close()
         self.virtual.close()
         self.assessments.close()
         self.connections.close()
+        self.research.close()
 
     def router(self):
         r = APIRouter(prefix="/api/v1")
         c, p, a, v = self.connections, self.people, self.assessments, self.virtual
+
+        @r.get("/web/config")
+        def web_config():
+            return self.research.config()
+
+        @r.get("/web/providers")
+        def web_providers():
+            return self.research.providers()
+
+        @r.post("/web/config/validate")
+        def validate_web(data: dict = Body(...)):
+            # A key-bearing form must never enter the generic idempotency cache.
+            return self.research.validate(data)
+
+        @r.delete("/web/config")
+        def remove_web():
+            return self.research.remove()
+
+        @r.get("/research-runs/{rid}/sources")
+        def research_sources(rid: str):
+            return self.research.sources(rid)
+
+        @r.put("/real-conversations/{rid}/web")
+        def chat_web(rid: str, data: dict = Body(...)):
+            if set(data) != {"enabled"}:
+                raise DomainError("请仅提交联网开关")
+            return self.service.chat.web(rid, data["enabled"])
+
+        @r.put("/virtual-sessions/{rid}/web")
+        def virtual_web(rid: str, data: dict = Body(...)):
+            if set(data) != {"enabled"}:
+                raise DomainError("请仅提交联网开关")
+            return v.web(rid, data["enabled"])
 
         @r.get("/model-providers")
         def providers():
@@ -61,6 +103,10 @@ class Upgrade:
         @r.post("/model-discovery")
         def discover_models(data: dict = Body(...)):
             return c.discover(data)
+
+        @r.post("/model-connection-validations")
+        def validate_connection(data: dict = Body(...)):
+            return c.validate(data)
 
         @r.get("/model-connections")
         def connections():
@@ -103,6 +149,14 @@ class Upgrade:
         def versions():
             return p.me()["versions"]
 
+        @r.post("/me/versions/{version_id}/assess")
+        def assess_self(version_id: str, request: Request, data: dict = Body(...)):
+            if set(data) != {"confirmed"} or data["confirmed"] is not True:
+                raise DomainError("请确认这份资料描述你本人，并授权用于本人的分身")
+            key = request.headers.get("idempotency-key") or secrets.token_urlsafe(24)
+            return self.service.once(key, {"path": request.url.path, **data},
+                                     lambda: a.start_self(version_id, confirmed=True))
+
         @r.post("/me/avatar")
         def my_avatar(data: dict = Body(...)):
             return p.avatar("my_profile", data.get("data_url"))
@@ -143,6 +197,7 @@ class Upgrade:
         @r.delete("/skills/{rid}")
         def remove_skill(rid: str):
             result = p.delete(rid)
+            self.service.chat.invalidate(rid, "参与人物已移出可用列表")
             v.invalidate(rid, "参与人物已移出可用列表")
             return result
 
@@ -209,7 +264,10 @@ class Upgrade:
             return v.list()
 
         @r.post("/virtual-sessions")
-        def create_virtual(data: dict = Body(...)):
+        def create_virtual(request: Request, data: dict = Body(...)):
+            key = request.headers.get("idempotency-key")
+            if key:
+                return self.service.once(key, {"path": request.url.path, **data}, lambda: v.create(data))
             return v.create(data)
 
         @r.post("/virtual-sessions/pause-all")
@@ -232,6 +290,13 @@ class Upgrade:
         @r.post("/virtual-sessions/{rid}/interventions")
         def intervention(rid: str, data: dict = Body(...)):
             return v.intervene(rid, data)
+
+        @r.post("/virtual-sessions/{rid}/budget")
+        def budget(rid: str, request: Request, data: dict = Body(...)):
+            key = request.headers.get("idempotency-key")
+            if not key:
+                raise DomainError("追加额度需要 Idempotency-Key")
+            return self.service.once(key, {"path": request.url.path, **data}, lambda: v.top_up(rid, data))
 
         @r.post("/virtual-sessions/{rid}/{action}")
         def control(rid: str, action: str):

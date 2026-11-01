@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "18b77b4677ef78841f69c2ded80238abcee0a119f8b365954164daece357d8f9",
+  "runtime_text_sha256": "afb085fed689b0cd88714f282ea59d91e953a7c8bff2b499ef157bc441a0014c",
   "primary_sources": [
     {
       "title": "Paul Graham Essays",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "4e5c5e8b87eb5026af4d6c2614afecd874bd58ba5272293fe55df4a45666b5da"
 }

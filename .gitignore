@@ -25,4 +25,5 @@ frontend/artifacts/e2e/
 frontend/artifacts/im-e2e/
 frontend/artifacts/**/failure.png
 frontend/artifacts/im-review-initial.png
+artifacts/pytest-tmp*/
 frontend/artifacts/chat-desktop.png

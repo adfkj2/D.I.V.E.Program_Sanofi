@@ -38,7 +38,8 @@ def test_complete_local_product_and_deletion(client):
     response = post(client, "/simulations", {"topic": "重大选择", "persona_version_id": version["id"],
                                                "skill_id": "skill_socratic", "max_turns": 2,
                                                "allow_private_context": True})
-    assert response.status_code == 403
+    assert response.status_code == 409
+    assert "仅供回看" in response.json()["detail"]
     assert client.get("/api/v1/state").json()["simulations"] == []
     deleted = client.delete(f"/api/v1/data/evidence/{first['evidence_id']}")
     assert deleted.status_code == 200, deleted.text

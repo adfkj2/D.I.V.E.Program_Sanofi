@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "98e8c541d9683048e49e721cb1df14c5e2989c2960013a6fe5cd0e02c7de2ef0",
+  "runtime_text_sha256": "e516b475324d023909d3123cffbe94d4686aebed83b349b98f34ba0472e1cada",
   "primary_sources": [
     {
       "title": "伯克希尔官方股东信索引",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "ce89f8b99cf8bc99448cf04c11df5670ba2548530f1f6495aeb53e1cbaac90c7"
 }

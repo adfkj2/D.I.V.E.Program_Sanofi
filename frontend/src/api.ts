@@ -6,6 +6,7 @@ export interface Conversation {
   updated_at?: string;
   last_message_preview?: string;
   last_message_at?: string;
+  web_enabled?: boolean;
 }
 export interface Message {
   id: string;
@@ -18,7 +19,25 @@ export interface Message {
   deleted?: boolean;
   reply_state?: "WAITING" | "REPLIED" | "FAILED";
   retry_payload?: { text: string; domain: string; remember: boolean } | null;
+  reply_batch_id?: string | null;
+  part_index?: number;
+  research_id?: string | null;
+  source_refs?: string[];
 }
+export interface ReplyBatch {
+  id: string;
+  status: "QUEUED" | "GENERATING" | "DELIVERING" | "WAITING_FOLLOWUP" | "COMPLETED" | "FAILED" | "CANCELLED" | "INTERRUPTED";
+  typing: boolean;
+  failure?: string | null;
+  revision?: number;
+  published_count?: number;
+  source_message_ids?: string[];
+  research_id?: string | null;
+  research_phase?: string | null;
+  research_status?: string | null;
+  research_notice?: string | null;
+}
+export interface ChatUpdates { messages: Message[]; batch: ReplyBatch | null; revision: number; reset?: boolean }
 export interface Evidence {
   id: string;
   text: string;
@@ -112,16 +131,21 @@ export interface AppState {
 export interface ModelProvider { id: string; name?: string; label?: string; protocol?: string; base_url?: string; models?: string[]; regions?: string[]; fields?: string[]; }
 export interface ModelConnection { id: string; label?: string; provider: string; model: string; protocol?: string; base_url?: string; region?: string; workspace_id?: string; is_default?: boolean; default?: boolean; configured?: boolean; key_status?:string;api_key_mask?:string;storage?:string; credential_status?: string; key_mask?: string; remember?: boolean; last_test?: {status?: string; success?: boolean; message?: string}; }
 export interface UserSkillVersion { id: string; text?: string; content_hash?: string; created_at?: string; evidence_ids?: string[]; state?: string;status?:string; }
-export interface MeProfile { nickname: string; bio: string; avatar_url?: string; self_statements?: (Evidence|string)[]; mirror?: AppState["mirror"]; goals?: Directive[]; versions?: UserSkillVersion[]; draft?: UserSkillVersion|null; certified?: UserSkillVersion|null; assessments?: AssessmentTask[]; }
+export interface SelfAdmission { eligible:boolean;version_id?:string|null;assessment_id?:string|null;protocol?:string;reason?:string; }
+export interface MeProfile { nickname: string; bio: string; avatar_url?: string; self_statements?: (Evidence|string)[]; mirror?: AppState["mirror"]; goals?: Directive[]; versions?: UserSkillVersion[]; draft?: UserSkillVersion|null; certified?: UserSkillVersion|null; admitted?:UserSkillVersion|null;self_admission?:SelfAdmission; assessments?: AssessmentTask[]; }
 export interface AssessmentDimension { id: string; label: string; score: number; threshold: number; issues?: (string|{excerpt?:string;issue?:string;reason?:string;question_id?:string})[]; suggestions?: string[]; }
 export interface AssessmentQuestion { id: string; domain?: string; prompt: string; options?: Record<string,string>; }
 export interface AssessmentReview { question_id: string; required?: boolean; disputed?: boolean; reference?: {choice?:string;reason?:string}; candidates?: {candidate_id: string;choice?:string;reason?:string;scores?:Record<string,number>}[]; review?: {accepted:boolean;comment?:string}; }
-export interface AssessmentTask { id: string; kind: string; status: string; subject_id?:string; stage?:string; created_at?:string; progress?: {completed:number;total:number;percent:number}; questions?:AssessmentQuestion[]; answer_status?:string[]; reviews?:AssessmentReview[]; report?: {name?:string;title?:string;overall?:number;passed?:boolean;dimensions?:AssessmentDimension[]; reasons?:string[]; safety_checks?:Record<string,boolean>; critical_checks?:Record<string,boolean>;model?:string|{provider?:string;model?:string}; protocol?:string; sample_count?:number; baselines?:{id:string;label:string;overall:number;dimensions?:Record<string,number>}[];[key:string]:unknown}; failure?:string|{code?:string;message?:string}; error?:string; }
+export interface AssessmentTask { id: string; kind: string; subject_type?:"USER_SKILL"|"SKILL_IMPORT";status: string; subject_id?:string; stage?:string; created_at?:string; progress?: {completed:number;total:number;percent:number}; questions?:AssessmentQuestion[]; answer_status?:string[]; reviews?:AssessmentReview[]; report?: {name?:string;title?:string;overall?:number;passed?:boolean;dimensions?:AssessmentDimension[]; reasons?:string[]; safety_checks?:Record<string,boolean>; critical_checks?:Record<string,boolean>;model?:string|{provider?:string;model?:string}; protocol?:string; sample_count?:number; baselines?:{id:string;label:string;overall:number;dimensions?:Record<string,number>}[];[key:string]:unknown}; failure?:string|{code?:string;message?:string}; error?:string; }
 export interface SkillImport { id:string;text:string;display_name?:string;description?:string;source:string;permission:string;category?:string;version?:number;status:string;assessment_id?:string;quality_report?:AssessmentTask["report"]; }
 export interface VirtualParticipant { id:string;version_id:string;kind:"CHARACTER"|"SELF";display_name:string;avatar_url?:string; }
-export interface VirtualTurn { id:string;speaker_id:string;display_name:string;avatar_url?:string;text:string;turn_index:number;is_generated:true;version_id?:string; }
-export interface VirtualSession {id:string;topic:string;state:string;participants:VirtualParticipant[];turns:VirtualTurn[];draft?:{id:string;speaker_id:string;text:string;publish_at?:string}|null;used_tokens:number;max_turns:number;max_tokens:number;next_at?:string;failure?:string;typing?:boolean;revision?:number;interventions?:{id:string;scope:string;source_id?:string;participant_version?:string;human_confirmed:boolean;text:string;created_at?:string}[];}
-export interface UpgradeState {connections:ModelConnection[];providers:ModelProvider[];me:MeProfile;unlock:{unlocked:boolean;grant?:{profile_version_id?:string};reason?:string};preferences:{setup_dismissed?:boolean};skill_imports:SkillImport[];virtual_sessions:VirtualSession[];}
+export interface WebProvider {id:string;name:string;description?:string;key_hint?:string;docs_url?:string;reuse_provider?:string;requires_model?:boolean;default_model?:string;model_hint?:string;engines?:(string|{id:string;name:string})[];default_engine?:string;recommended?:boolean;}
+export interface WebConfig {provider?:string;provider_label?:string;enabled:boolean;configured?:boolean;credential_mode?:"CONNECTION"|"SEPARATE";connection_id?:string|null;model?:string;engine?:string;key_status?:string;key_state?:string;api_key_mask?:string;storage?:string;remember?:boolean;revision?:number;credential_store_available?:boolean;}
+export interface ResearchSource {id:string;title:string;url:string;publisher?:string;institution?:string;published_at?:string|null;retrieved_at?:string;applicable_year?:string|number|null;applicable_years?:(string|number)[];excerpt?:string;evidence_kind?:string;}
+export interface ResearchSources {research_id:string;sources:ResearchSource[];status?:string;notice?:string;}
+export interface VirtualTurn { id:string;speaker_id:string;display_name:string;avatar_url?:string;text:string;turn_index:number;is_generated:true;version_id?:string;research_id?:string|null;source_refs?:string[]; }
+export interface VirtualSession {id:string;topic:string;state:string;participants:VirtualParticipant[];turns:VirtualTurn[];draft?:{id:string;speaker_id:string;text:string;publish_at?:string}|null;used_tokens:number;max_turns:number;max_tokens:number;next_at?:string;failure?:string;pause_reason?:string;limit_reason?:string;typing?:boolean;typing_speaker_id?:string;typing_display_name?:string;revision?:number;web_enabled?:boolean;max_web_requests?:number;used_web_requests?:number;research_id?:string|null;research_phase?:string|null;research_status?:string|null;research_notice?:string|null;interventions?:{id:string;scope:string;source_id?:string;participant_version?:string;human_confirmed:boolean;text:string;created_at?:string}[];}
+export interface UpgradeState {connections:ModelConnection[];providers:ModelProvider[];me:MeProfile;web?:WebConfig;virtual_access?:{enabled:boolean};unlock:{unlocked:boolean;grant?:{profile_version_id?:string};reason?:string};preferences:{setup_dismissed?:boolean};skill_imports:SkillImport[];virtual_sessions:VirtualSession[];}
 
 let token = "";
 export async function connect() {

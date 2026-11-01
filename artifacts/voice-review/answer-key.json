@@ -1,0 +1,88 @@
+{
+  "schema": "wot-voice-review-answer-key-v1",
+  "provenance": "AUTHORED_NOT_MODEL_OUTPUT",
+  "validation_state": "UNVALIDATED",
+  "note": "固定匿名标签的对应表；没有评分或验证结论。",
+  "assignments": [
+    {
+      "label": "A",
+      "slug": "curie",
+      "display_name": "居里夫人"
+    },
+    {
+      "label": "B",
+      "slug": "zhangyiming",
+      "display_name": "张一鸣"
+    },
+    {
+      "label": "C",
+      "slug": "taleb",
+      "display_name": "纳西姆·塔勒布"
+    },
+    {
+      "label": "D",
+      "slug": "wangxiaobo",
+      "display_name": "王小波"
+    },
+    {
+      "label": "E",
+      "slug": "jobs",
+      "display_name": "史蒂夫·乔布斯"
+    },
+    {
+      "label": "F",
+      "slug": "zhuangzi",
+      "display_name": "庄子"
+    },
+    {
+      "label": "G",
+      "slug": "drucker",
+      "display_name": "彼得·德鲁克"
+    },
+    {
+      "label": "H",
+      "slug": "naval",
+      "display_name": "纳瓦尔·拉维坎特"
+    },
+    {
+      "label": "I",
+      "slug": "feynman",
+      "display_name": "理查德·费曼"
+    },
+    {
+      "label": "J",
+      "slug": "buffett",
+      "display_name": "沃伦·巴菲特"
+    },
+    {
+      "label": "K",
+      "slug": "zhangxuefeng",
+      "display_name": "张雪峰"
+    },
+    {
+      "label": "L",
+      "slug": "paulgraham",
+      "display_name": "保罗·格雷厄姆"
+    },
+    {
+      "label": "M",
+      "slug": "clear",
+      "display_name": "詹姆斯·克利尔"
+    },
+    {
+      "label": "N",
+      "slug": "fengge-wangmingtianya",
+      "display_name": "峰哥亡命天涯"
+    },
+    {
+      "label": "O",
+      "slug": "karpathy",
+      "display_name": "安德烈·卡帕西"
+    },
+    {
+      "label": "P",
+      "slug": "munger",
+      "display_name": "查理·芒格"
+    }
+  ]
+}

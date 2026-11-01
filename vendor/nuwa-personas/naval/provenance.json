@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "4a0f51e2776e3cd049202c9477699eaa58cc19b2639ec74dd6ef9e5e3a4d6127",
+  "runtime_text_sha256": "ee6a3e970bcf31b85b5bed852e036d58e0d8cb2347819c5ddb67969b8a4f10a3",
   "primary_sources": [
     {
       "title": "Naval — Wealth",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "7302a8d23f647bfcc77907c1653e626b5792d318e0ff4d4bf974757e93350ceb"
 }

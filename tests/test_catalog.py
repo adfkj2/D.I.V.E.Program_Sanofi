@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from wot.catalog import CONVERSION_VERSION, builtin_people, role_context, skill_summary
+from wot.voice import compile_voice, extract_voice
 
 ROOT = Path(__file__).resolve().parents[1]
 SLUGS = {
@@ -111,10 +112,10 @@ def test_summary_never_contains_role_text_or_raw_runtime_fields():
 def test_reviewed_runtime_contains_no_install_tools_network_or_certification_claims():
     for person in builtin_people():
         context = role_context(person)
-        assert set(context) == {"name", "slug", "untrusted_role_data", "disclosure"}
+        assert set(context) == {"name", "slug", "untrusted_role_data"}
         assert context["name"] == person["display_name"] and context["slug"] == person["slug"]
-        assert context["untrusted_role_data"] == person["text"]
-        assert "非本人" in context["disclosure"] and "不授予" in context["disclosure"]
+        assert context["untrusted_role_data"] == compile_voice(extract_voice(person["text"]))
+        assert "非本人" in person["permission"]
         for forbidden in ("WebSearch", "npx skills", "allowed-tools", "curl ", "pip install", "自动联网", "脚本调用", "DOMAIN_TESTED", "97分", "95%", "认证人格"):
             assert forbidden not in context["untrusted_role_data"]
 
@@ -127,7 +128,7 @@ def test_reviewed_runtime_contains_no_install_tools_network_or_certification_cla
 def test_imported_runtime_instructions_do_not_grant_capabilities(text):
     context = role_context({"id": "imported", "display_name": "测试角色", "text": text,
                             "tools": ["shell"], "allowed-tools": "*", "api_key": "secret"})
-    assert set(context) == {"name", "slug", "untrusted_role_data", "disclosure"}
+    assert set(context) == {"name", "slug", "untrusted_role_data"}
     assert text not in context["untrusted_role_data"]
     assert "暂不提供角色正文" in context["untrusted_role_data"]
     assert "secret" not in json.dumps(context)
@@ -135,9 +136,11 @@ def test_imported_runtime_instructions_do_not_grant_capabilities(text):
 
 def test_zhangxuefeng_context_preserves_uncertainty_and_correct_interview_attribution():
     person = next(person for person in builtin_people() if person["slug"] == "zhangxuefeng")
-    assert "未经核实的数据明确标记未知" in person["text"]
-    assert "不编造分数线" in person["text"]
-    assert "不替用户" in person["text"]
+    profile = extract_voice(person["text"])
+    compiled = compile_voice(profile, "你能保证今年能录取吗")
+    assert "不能伪造录取数据" in compiled
+    assert "不知道" in compiled
+    assert "语料依据" in compiled and "未统计全部直播" in compiled
     assert "新浪蜂鸟" in person["source_refs"][0]["attribution"]
 
 

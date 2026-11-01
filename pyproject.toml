@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Local-first evidence, three selves, and explicitly simulated conversations"
 license-files = ["vendor/nuwa-personas/*/LICENSE"]
 requires-python = ">=3.11"
-dependencies = ["dive-memory==0.4.0+wot.core", "fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.28,<1", "keyring>=25,<26", "Pillow>=11,<13"]
+dependencies = ["dive-memory==0.4.0+wot.core", "fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.28,<1", "keyring>=25,<26", "Pillow>=11,<13", "markdown-it-py==4.0.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "httpx>=0.28", "ruff>=0.8"]
@@ -20,7 +20,7 @@ wot = "wot.main:main"
 where = ["backend"]
 
 [tool.setuptools.package-data]
-wot = ["data/*.json"]
+wot = ["data/*.json", "data/voices/*.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["backend", "vendor/dive-memory/src"]

@@ -14,7 +14,7 @@
   "runtime_file": "backend/wot/data/people.json",
   "upstream_is_executable": false,
   "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-  "runtime_text_sha256": "bfe4d225ccb429b6bf35b371f589e54aeb5827571a49a2733c8b907409a73526",
+  "runtime_text_sha256": "2d83fd1b97f9fab561012e1216bec5bd221927e842f8d384cb6c632ef69f462e",
   "primary_sources": [
     {
       "title": "2005 Stanford commencement address",
@@ -24,5 +24,7 @@
     }
   ],
   "source_review": "已核查所列公开页面可读；不代表所有上游断言均已验证。",
-  "retrieved_at": "2026-10-30"
+  "retrieved_at": "2026-10-30",
+  "conversion_version": "wot-curated-v1.2.0",
+  "voice_profile_sha256": "a6c29251adc5d9b624de32a8806209e4eb47e91d91b196e897b1ba107f257bdc"
 }

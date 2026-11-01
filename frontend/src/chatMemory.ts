@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import type { Message } from "./api";
+import type { Message, ReplyBatch } from "./api";
 
 export type Selection = { skillId: string; conversationId: string | null };
 export type Pending = {
@@ -13,6 +13,7 @@ export type Pending = {
   error?: string;
 };
 export type Thread = {
+  webEnabled?: boolean;
   draft: string;
   domain: string;
   remember: boolean;
@@ -21,6 +22,9 @@ export type Thread = {
   loading: boolean;
   error: string;
   pending: Pending[];
+  batch: ReplyBatch | null;
+  batchRetrying?: boolean;
+  revision: number;
   scrollTop: number;
   hasScroll: boolean;
   nearBottom: boolean;
@@ -34,7 +38,8 @@ export const chatMemory: {
   domain: string;
   mobileChat: boolean;
   knownEvidenceIds: Set<string>;
-} = { selection: null, threads: new Map(), tab: "people", query: "", domain: "全部", mobileChat: false, knownEvidenceIds: new Set() };
+  privacyEpoch: number;
+} = { selection: null, threads: new Map(), tab: "people", query: "", domain: "全部", mobileChat: false, knownEvidenceIds: new Set(), privacyEpoch: 0 };
 
 let revision = 0;
 const listeners = new Set<() => void>();
@@ -45,7 +50,7 @@ export function useChatMemory() {
 }
 export function threadKey(selection: Selection) { return selection.conversationId ? `conversation:${selection.conversationId}` : `preview:${selection.skillId}`; }
 export function thread(key: string): Thread {
-  if (!chatMemory.threads.has(key)) chatMemory.threads.set(key, { draft: "", domain: "general", remember: false, messages: [], loaded: false, loading: false, error: "", pending: [], scrollTop: 0, hasScroll: false, nearBottom: true, forceBottom: false });
+  if (!chatMemory.threads.has(key)) chatMemory.threads.set(key, { draft: "", domain: "general", remember: false, messages: [], loaded: false, loading: false, error: "", pending: [], batch: null, revision: 0, scrollTop: 0, hasScroll: false, nearBottom: true, forceBottom: false });
   return chatMemory.threads.get(key)!;
 }
 export function updateThread(key: string, patch: Partial<Thread>) {

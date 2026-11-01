@@ -7,12 +7,17 @@ used as system prompts. Only the reviewed WOT role data in people.json is used.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import re
 from importlib.resources import files
 from typing import Any
 
-CONVERSION_VERSION = "wot-curated-v1.0.0"
+from .domain import DomainError
+from .storage import digest
+from .voice import RIGHTS_NOTICE, compile_voice, extract_voice
+
+CONVERSION_VERSION = "wot-curated-v1.2.0"
 SUMMARY_FIELDS = frozenset({
     "id", "slug", "display_name", "description", "domain", "tags", "avatar_url",
     "starter_prompts", "source", "source_version", "source_refs", "source_review",
@@ -43,7 +48,36 @@ def skill_summary(skill: dict[str, Any]) -> dict[str, Any]:
     return {key: copy.deepcopy(value) for key, value in skill.items() if key in SUMMARY_FIELDS}
 
 
-def role_context(skill: dict[str, Any]) -> dict[str, str]:
+def builtin_upgrade(existing: dict[str, Any], packaged: dict[str, Any]) -> dict[str, Any] | None:
+    """Upgrade only an exact, previously shipped body; leave user state untouched.
+
+    Known source/version plus the prior text hash make this safe for databases
+    with local edits or custom roles using a built-in-looking identifier. A
+    deletion remains a deletion; avatar changes and historical IDs survive.
+    """
+    predecessors = packaged.get("managed_predecessors", [packaged.get("supersedes", {})])
+    if not (
+        existing.get("builtin") is True
+        and existing.get("id") == packaged["id"]
+        and existing.get("slug") == packaged["slug"]
+        and existing.get("source_version") == packaged["source_version"]
+        and isinstance(existing.get("text"), str)
+        and any(existing.get("version") == prior.get("version") and
+                hashlib.sha256(existing["text"].encode()).hexdigest() == prior.get("text_sha256")
+                for prior in predecessors)
+    ):
+        return None
+    result = {**existing, "text": packaged["text"], "version": packaged["version"]}
+    if "source_review" in packaged:
+        result["source_review"] = packaged["source_review"]
+    if RIGHTS_NOTICE not in result.get("permission", ""):
+        result["permission"] = result.get("permission", "") + RIGHTS_NOTICE
+    if "content_hash" in result:
+        result["content_hash"] = digest(packaged["text"])
+    return result
+
+
+def role_context(skill: dict[str, Any], topic: str = "") -> dict[str, str]:
     """Minimal role data for an isolated model request, with no tool manifest.
 
     Obvious executable/import instructions fail closed. Imported content remains
@@ -53,11 +87,15 @@ def role_context(skill: dict[str, Any]) -> dict[str, str]:
     text = skill.get("text", "")
     if not isinstance(text, str):
         text = ""
+    profile = extract_voice(text)
+    if profile is not None:
+        text = compile_voice(profile, topic)
+    elif len(text) > 12_000:
+        raise DomainError("人物资料超过上下文预算，请精简或导入结构化表达档案", 409)
     if _RUNTIME_MARKERS.search(text) or "```" in text or "\x00" in text:
         text = "该角色资料包含未获授权的运行指令，暂不提供角色正文。只能讨论用户已公开的话题，并明确说明资料不足。"
     return {
         "name": str(skill.get("display_name", "解释性角色"))[:120],
         "slug": str(skill.get("slug", skill.get("id", "imported")))[:120],
-        "untrusted_role_data": text[:12_000],
-        "disclosure": DISCLOSURE,
+        "untrusted_role_data": text,
     }

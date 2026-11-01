@@ -8,6 +8,13 @@ class DomainError(Exception):
         self.status = status
 
 
+class ResearchChanged(DomainError):
+    """A changed lookup setting pauses paid output without revoking the role."""
+
+    def __init__(self):
+        super().__init__("联网设置或资料已改变，未发内容已停止；可检查配置后继续", 409)
+
+
 class SourceOrigin(str, Enum):
     REAL_USER_MESSAGE = "REAL_USER_MESSAGE"
     USER_SELF_REPORT = "USER_SELF_REPORT"

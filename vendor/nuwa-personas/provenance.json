@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "retrieved_at": "2026-10-30",
-  "conversion_version": "wot-curated-v1.0.0",
+  "conversion_version": "wot-curated-v1.2.0",
   "notes": [
     "Upstream files are byte-for-byte copies; WOT runtime data is maintained separately.",
     "MIT notices cover upstream role documentation, not licenses to redistribute linked books or articles.",
@@ -24,7 +24,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "98e8c541d9683048e49e721cb1df14c5e2989c2960013a6fe5cd0e02c7de2ef0",
+      "runtime_text_sha256": "caf197215695de3cd92d0df91734476921d567b57a29f82d1254d089b7d57ce7",
       "primary_sources": [
         {
           "title": "伯克希尔官方股东信索引",
@@ -52,7 +52,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "d5b256f656e5b28acb4f375a8b510f55b81be0c393ffa71f5773836ed91b013e",
+      "runtime_text_sha256": "ee4077828ae4ae70a4697f3f0b4c96fff91fcdf03f8c21478c106dd1c5208b79",
       "primary_sources": [
         {
           "title": "Atomic Habits 作者官方介绍",
@@ -80,7 +80,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "bae26b30e77c162d5295258cbdfdbf5d135b0a228d2db743132297446cf03abc",
+      "runtime_text_sha256": "9740b7bca9d8fab7a397647fdd90a5f8535fa5b59cd517300b2a80a201fe3168",
       "primary_sources": [],
       "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
       "retrieved_at": "2026-10-30"
@@ -101,7 +101,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "09589357c670159df82022cf4d6c3042cdaea9c222013c0b96a9693f51ca5b4e",
+      "runtime_text_sha256": "7b49ecc0808b54744459c122e508a72ff46f53ffd248ec7d7638b86695d260ec",
       "primary_sources": [],
       "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
       "retrieved_at": "2026-10-30"
@@ -122,7 +122,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "0898151b246ea962bc901464701ea132a386ec5a5f7911d777755e45d2e08681",
+      "runtime_text_sha256": "9a0d1d9827272fffb6947240d22141872f27ed9c9c0ddc305ccf729e5cb57704",
       "primary_sources": [
         {
           "title": "The Feynman Lectures on Physics, Caltech",
@@ -151,7 +151,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "bfe4d225ccb429b6bf35b371f589e54aeb5827571a49a2733c8b907409a73526",
+      "runtime_text_sha256": "6e498ffc6b52de11a76cacb2ee98a656adf02e5de869341b5893809f02676712",
       "primary_sources": [
         {
           "title": "2005 Stanford commencement address",
@@ -179,7 +179,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "6b6e4bf09061a6c8e25f125bfd7aa3733f010ffcdddb2309764c3650dd235cfd",
+      "runtime_text_sha256": "7cc0c7153a1621b91766678fcf92455919c91503f2d94ebe896ed53a7cdcd3ac",
       "primary_sources": [
         {
           "title": "Andrej Karpathy 本人主页",
@@ -207,7 +207,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "1cb40d55f7e0db57d7e1740fa078abdf39711e9ccfa29c564f602f645c17b25b",
+      "runtime_text_sha256": "da20bd30c84c07182a12b41c0883ce2a59d4a92feebf662d63629451e1397792",
       "primary_sources": [
         {
           "title": "Poor Charlie’s Almanack 官方出版社",
@@ -235,7 +235,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "4a0f51e2776e3cd049202c9477699eaa58cc19b2639ec74dd6ef9e5e3a4d6127",
+      "runtime_text_sha256": "bd501d613711ec76bb487037aca3ae6b81c34676cc3a3f265642452eebd832d1",
       "primary_sources": [
         {
           "title": "Naval — Wealth",
@@ -263,7 +263,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "18b77b4677ef78841f69c2ded80238abcee0a119f8b365954164daece357d8f9",
+      "runtime_text_sha256": "8df02da7dff33d3d6b6c2da6205d5b4f1aaffe00f52c2722c72414a3f116410f",
       "primary_sources": [
         {
           "title": "Paul Graham Essays",
@@ -291,7 +291,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "13d1da36526ba594ae17ffa6291e68d76ab1ccf67f4f610b303bc0d7c8ad0fef",
+      "runtime_text_sha256": "de713776caf453bac8ff7900802434a47f36b194828b1c04877889fb417ed1f6",
       "primary_sources": [
         {
           "title": "Nassim Nicholas Taleb 本人网站",
@@ -319,7 +319,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "890f258130e655342a11d348b22f6d2b6657cc51e07d76ed7c892112d57de16c",
+      "runtime_text_sha256": "5b6549fab6de09ff1dfc1e96898e93e7d6beba83a1b35d2862c9ef50028e3066",
       "primary_sources": [],
       "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
       "retrieved_at": "2026-10-30"
@@ -340,7 +340,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "cbe73278bb674c0ab1b002276997c53b7f96f4d47c6ffc418c73bbaef67ff794",
+      "runtime_text_sha256": "e12ffcb4f1cd70249538b028fdca722bb61c9322a91a538571029f6d1bce284a",
       "primary_sources": [
         {
           "title": "风波之后的张雪峰：倔强的寒蝉",
@@ -369,7 +369,7 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "c7e5ad43c878f6b4bc652475195d76b1d678e9986778dcb9f2b20e749c1fab45",
+      "runtime_text_sha256": "83f5bd434de267364f37392093e97ec12fb335f31d7b59c8c0fabe231eaed2f4",
       "primary_sources": [],
       "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
       "retrieved_at": "2026-10-30"
@@ -390,11 +390,11 @@
       "runtime_file": "backend/wot/data/people.json",
       "upstream_is_executable": false,
       "primary_source_review": "See people.json source_refs; linked primary texts are not vendored.",
-      "runtime_text_sha256": "edd6cea0da2bf36128d170a3ca965073b2afe9b5b6a4ee13feb95b982076c0ee",
+      "runtime_text_sha256": "d70e19d4eda8c0a4aa11fd55b2df647f7c6387d28b18da8470e402e34f502ef2",
       "primary_sources": [],
       "source_review": "已核实固定版本角色文档与 MIT 许可；关键一手出处尚待逐项核验。",
       "retrieved_at": "2026-10-30"
     }
   ],
-  "runtime_catalog_sha256": "f378f3c4578dfcc153de0db60652ea17a5550fe706a52156d07bc64967e02bce"
+  "runtime_catalog_sha256": "9d27e5238ebaed4bc0d93da5f7eac844b846ca4c9ce886a5c554d43922c24ab4"
 }

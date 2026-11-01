@@ -1,0 +1,35 @@
+{
+  "status": "PASSED",
+  "date": "2026-11-01T15:06:19.974Z",
+  "checks": [
+    "首次配置推荐 DeepSeek 并可复用已有连接；打开不调用服务，手动测试仅发送连接引用，失败保留选择，成功由用户关闭，重新打开不回读 Key。",
+    "Kimi、智谱与博查按注册能力展示；失效连接不能复用，连接只匹配同供应商，切换清空 Key/结果，明显错误服务 Key 在本地阻止发送。",
+    "已有 Tavily 配置保留、原始 Key 不回读；来源区分网页正文、搜索摘要与供应商总结；四种宽度无横向溢出，Key 不写入浏览器存储。"
+  ],
+  "screenshots": [
+    "deepseek-reuse-1440.png",
+    "deepseek-reuse-768.png",
+    "deepseek-reuse-390.png",
+    "deepseek-reuse-360.png",
+    "deepseek-reuse-saved-1440.png",
+    "deepseek-reuse-saved-768.png",
+    "deepseek-reuse-saved-390.png",
+    "deepseek-reuse-saved-360.png",
+    "wrong-provider-key-1440.png",
+    "wrong-provider-key-768.png",
+    "wrong-provider-key-390.png",
+    "wrong-provider-key-360.png",
+    "source-kinds-1440.png",
+    "source-kinds-768.png",
+    "source-kinds-390.png",
+    "source-kinds-360.png"
+  ],
+  "browserErrors": [],
+  "externalRequests": [],
+  "fixtureValidationCalls": 4,
+  "realModelCalls": 0,
+  "realSearchCalls": 0,
+  "limitations": [
+    "本报告使用本地界面夹具验证配置与来源展示，不证明供应商可用性或人物拟真；真实协议由后端契约测试覆盖。"
+  ]
+}

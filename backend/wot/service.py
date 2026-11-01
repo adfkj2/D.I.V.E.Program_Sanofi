@@ -4,7 +4,9 @@ import re
 import threading
 from pathlib import Path
 
-from .catalog import builtin_people, role_context, skill_summary
+from .agents import AgentRuntime
+from .catalog import builtin_people, builtin_upgrade, role_context, skill_summary
+from .chat import ChatEngine
 from .dive_adapter import DiveMemoryAdapter
 from .domain import DomainError, SourceOrigin, allow_evidence, classify
 from .model import Provider
@@ -21,7 +23,10 @@ class WotService:
         self.lock = threading.RLock()
         self.request_locks = {}
         self.invalidate_hooks = []
-        self.privacy_revision = 0
+        # The privacy epoch survives process restarts so interrupted chat
+        # batches can validate the same evidence snapshot before a manual retry.
+        self.privacy_revision = self.store.fetchone(
+            "SELECT COUNT(*) FROM audit WHERE operation='EVIDENCE_DELETED'")[0]
         with self.store.transaction():
             if self.store.get("skill_socratic", "skill") is None:
                 self.store.add("skill", {
@@ -31,12 +36,16 @@ class WotService:
                     "category": "CURATED", "permission": "项目原创解释性角色",
                     "source": "WOT 原创", "version": 1, "status": "ACTIVE",
                 }, rid="skill_socratic")
-            # Add missing catalogue entries individually. Existing user edits,
-            # custom skills and conversations retain their own stable identities.
+            # Upgrade only exact WOT-managed bodies, preserving local overrides,
+            # deletion markers, custom avatars and stable historical identities.
             for person in builtin_people():
-                if self.store.get(person["id"], "skill") is None:
+                existing = self.store.get(person["id"], "skill")
+                if existing is None:
                     self.store.add("skill", {"status": "ACTIVE", "category": "CURATED",
                                               "version": 1, **person}, rid=person["id"])
+                elif updated := builtin_upgrade(existing, person):
+                    self.store.update(updated)
+                    self.store.audit("BUILTIN_ROLE_UPGRADED", person["id"])
             # Earlier versions generated titles from the first human message.
             # Repair old already-deleted sources too, not only future deletions.
             deleted_rooms = self.store.fetchall("SELECT DISTINCT conversation_id FROM messages WHERE owner_id='local' AND deleted=1")
@@ -57,6 +66,8 @@ class WotService:
                     session["failure"] = "上次生成中断；不会自动重试"
                     self.store.update(session)
         self.recover()
+        self.agents = AgentRuntime(self)
+        self.chat = ChatEngine(self)
 
     def require(self, rid: str, kind: str) -> dict:
         result = self.store.get(rid, kind)
@@ -101,12 +112,13 @@ class WotService:
             finally:
                 operation_context.reset(context_token)
 
-    def conversation(self, title: str, skill_id: str | None) -> dict:
+    def conversation(self, title: str, skill_id: str | None, web_enabled: bool = True) -> dict:
         skill = self.require(skill_id or "skill_socratic", "skill")
         if skill["status"] != "ACTIVE":
             raise DomainError("该人物资料当前不可用", 409)
         with self.store.transaction():
-            result = self.store.add("conversation", {"title": title, "skill_id": skill["id"]})
+            result = self.store.add("conversation", {"title": title, "skill_id": skill["id"],
+                                                     "web_enabled": web_enabled})
         return self.conversation_summary(result)
 
     def conversation_summary(self, conversation: dict) -> dict:
@@ -116,7 +128,7 @@ class WotService:
         preview = last["text"].replace("\n", " ")[:100] if last else ""
         if last is not None and last["deleted"]:
             preview = "[已删除]" if last["speaker"] == "USER" else "[关联来源已删除]"
-        return {**conversation, "updated_at": timestamp,
+        return {"web_enabled": True, **conversation, "updated_at": timestamp,
                 "last_message_preview": preview,
                 "last_message_at": last["created_at"] if last else None}
 
@@ -132,14 +144,16 @@ class WotService:
         self.require(conversation_id, "conversation")
         result = []
         for row in self.store.fetchall("SELECT id,conversation_id,speaker,text,created_at,evidence_id,sequence,client_request_id,"
-            "deleted,reply_state,request_domain,remember_requested FROM messages "
+            "deleted,reply_state,request_domain,remember_requested,reply_batch_id,part_index,research_id,source_refs FROM messages "
             "WHERE conversation_id=? AND owner_id='local' ORDER BY sequence", (conversation_id,)):
             message = dict(row)
             domain = message.pop("request_domain")
             remember = message.pop("remember_requested")
             message["deleted"] = bool(message["deleted"])
+            message["source_refs"] = json.loads(message["source_refs"] or "[]")
             if message["deleted"]:
                 message["text"] = "[已删除]" if message["speaker"] == "USER" else "[关联来源已删除]"
+                message.update(research_id=None, source_refs=[])
             message["retry_payload"] = (
                 {"text": message["text"], "domain": domain, "remember": bool(remember)}
                 if message["speaker"] == "USER" and not message["deleted"]
@@ -150,63 +164,7 @@ class WotService:
         return result
 
     def send(self, conversation_id: str, text: str, remember: bool, domain: str, key: str) -> dict:
-        conversation = self.require(conversation_id, "conversation")
-        # Message IDs survive provider failures: retry reuses the same human turn.
-        with self.lock, self.store.transaction():
-            old = self.store.fetchone("SELECT * FROM messages WHERE owner_id='local' AND conversation_id=? "
-                "AND speaker='USER' AND request_key=?", (conversation_id, key))
-            if old:
-                if old["deleted"]:
-                    raise DomainError("已删除的消息不能重新发送", 409)
-                if old["text"] != text or (
-                    old["request_domain"] is not None and old["request_domain"] != domain
-                ) or (
-                    old["remember_requested"] is not None and bool(old["remember_requested"]) != remember
-                ):
-                    raise DomainError("该消息标识已用于不同内容", 409)
-                if old["request_domain"] is None or old["remember_requested"] is None:
-                    raise DomainError("旧消息未保留完整请求参数，请另起一条消息", 409)
-                user_id = old["id"]
-                self.store.db.execute("UPDATE messages SET reply_state='WAITING' WHERE id=?", (user_id,))
-            else:
-                user_id = self.store.add_message(
-                    conversation_id, "USER", text, request_key=key,
-                    request_domain=domain, remember_requested=remember, reply_state="WAITING")
-                self.store.audit("REAL_MESSAGE_ACCEPTED", user_id, digest(text))
-        try:
-            evidence = self.admit(user_id, domain) if remember else None
-            prior = self.store.fetchone("SELECT * FROM messages WHERE owner_id='local' AND conversation_id=? "
-                "AND speaker='AGENT' AND request_key=?", (conversation_id, key))
-            if prior is None:
-                generation_privacy_revision = self.privacy_revision
-                skill = self.require(conversation["skill_id"], "skill")
-                if skill["status"] != "ACTIVE":
-                    raise DomainError("该人物已停用，历史聊天仍可查看", 409)
-                public = [{"speaker": m["speaker"], "text": m["text"]}
-                          for m in self.messages(conversation_id)[-12:]]
-                reply = self.provider.generate(role="EXTERNAL", topic=text, transcript=public,
-                                               private=[], skill=self.skill_context(skill), goals=[])
-                with self.store.transaction():
-                    current = self.store.fetchone("SELECT deleted FROM messages WHERE id=?", (user_id,))
-                    if (generation_privacy_revision != self.privacy_revision or current["deleted"]
-                            or self.require(conversation["skill_id"], "skill")["status"] != "ACTIVE"):
-                        self.provider.calls.clear()
-                        raise DomainError("生成期间消息或人物已撤回，本次回复未发布", 409)
-                    agent_id = self.store.add_message(
-                        conversation_id, "AGENT", reply["text"], request_key=key)
-            else:
-                agent_id = prior["id"]
-            with self.store.transaction():
-                self.store.db.execute("UPDATE messages SET reply_state='REPLIED' WHERE id=?", (user_id,))
-            messages = self.messages(conversation_id)
-            user = next(m for m in messages if m["id"] == user_id)
-            return {"user": user, "agent": next(m for m in messages if m["id"] == agent_id),
-                    "evidence_id": evidence["id"] if evidence else user["evidence_id"]}
-        except Exception:
-            with self.store.transaction():
-                self.store.db.execute("UPDATE messages SET reply_state='FAILED' "
-                                      "WHERE id=? AND deleted=0", (user_id,))
-            raise
+        return self.chat.send_sync(conversation_id, text, remember, domain, key)
 
     def admit(self, message_id: str, domain: str = "general",
               origin: SourceOrigin = SourceOrigin.REAL_USER_MESSAGE) -> dict:
@@ -466,8 +424,8 @@ class WotService:
             return result
 
     @staticmethod
-    def skill_context(skill: dict) -> dict:
-        return role_context(skill)
+    def skill_context(skill: dict, topic: str = "") -> dict:
+        return role_context(skill, topic)
 
     def simulation(self, topic: str, version_id: str, skill_id: str, max_turns: int,
                    allow_private_context: bool = False, max_tokens: int = 6000) -> dict:
@@ -601,7 +559,6 @@ class WotService:
 
     def control(self, rid: str, action: str) -> dict:
         if action == "resume" and hasattr(self, "assessments"):
-            self.assessments.assert_unlocked()
             raise DomainError("旧预览记录仅供回看，不能继续生成", 409)
         with self.store.transaction():
             session = self.require(rid, "simulation")
@@ -670,5 +627,6 @@ class WotService:
                 **data}
 
     def close(self):
+        self.chat.close()
         self.core.close()
         self.store.db.close()

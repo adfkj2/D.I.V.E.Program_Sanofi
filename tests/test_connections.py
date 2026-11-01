@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import httpx
 import pytest
 from wot.connections import ConnectionManager
+from wot.dialogue import parse_dialogue_batch
 from wot.domain import DomainError
 from wot.storage import AppStore
 
@@ -80,6 +81,90 @@ def response_for(protocol):
         "choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}],
         "usage": {"prompt_tokens": 11, "completion_tokens": 3, "total_tokens": 14},
     }
+
+
+@pytest.mark.parametrize("provider,protocol", [
+    ("openai", "responses"), ("claude", "messages"), ("gemini", "generateContent"),
+    ("deepseek", "chat"), ("qwen", "chat"), ("glm", "chat"),
+    ("kimi", "chat"), ("doubao", "responses"), ("custom", "chat"),
+])
+def test_character_batch_protocol_works_through_every_native_transport(tmp_path, provider, protocol):
+    captured = []
+    text = json.dumps({"messages": ["等等。", "你刚才说的后来怎么样了？"], "idle_followup": None}, ensure_ascii=False)
+    payload = response_for(protocol)
+    if protocol == "responses":
+        payload["output"][0]["content"][0]["text"] = text
+    elif protocol == "messages":
+        payload["content"][0]["text"] = text
+    elif protocol == "generateContent":
+        payload["candidates"][0]["content"]["parts"][-1]["text"] = text
+    else:
+        payload["choices"][0]["message"]["content"] = text
+
+    def handler(request):
+        captured.append(json.loads(request.content))
+        return httpx.Response(200, json=payload)
+
+    manager = make_manager(tmp_path, handler)
+    data = {"provider": provider, "model": "test-model", "api_key": SECRET}
+    if provider == "custom":
+        data.update(base_url="https://example.test/v1", protocol="chat")
+    manager.save(data)
+    try:
+        result = manager.generate(role="EXTERNAL", topic="你好", transcript=[], private=[],
+                                  skill={"slug": "munger"}, goals=[], dialogue_batch=True)
+        assert parse_dialogue_batch(result["text"])["messages"] == ["等等。", "你刚才说的后来怎么样了？"]
+        assert len(captured) == manager.external_calls == 1
+        sent = json.dumps(captured[0], ensure_ascii=False)
+        assert "idle_followup" in sent and "分条协议" in sent
+        assert len(manager.store.all("model_call")) == 1
+        assert SECRET not in json.dumps(manager.store.all("model_call"))
+    finally:
+        manager.close()
+        manager.store.db.close()
+
+
+@pytest.mark.parametrize("provider,protocol", [
+    ("openai", "responses"), ("claude", "messages"), ("gemini", "generateContent"),
+    ("deepseek", "chat"), ("qwen", "chat"), ("glm", "chat"), ("kimi", "chat"),
+    ("doubao", "responses"), ("custom", "chat"),
+])
+def test_reasoning_only_truncation_preserves_metering_and_finish_reason(tmp_path, provider, protocol):
+    payload = response_for(protocol)
+    if protocol == "responses":
+        payload.update(output=[], status="incomplete", incomplete_details={"reason": "max_output_tokens"})
+    elif protocol == "messages":
+        payload.update(content=[], stop_reason="max_tokens")
+    elif protocol == "generateContent":
+        payload["candidates"][0].update(content={"parts": [{"text": "hidden", "thought": True}]}, finishReason="MAX_TOKENS")
+    else:
+        payload["choices"][0].update(message={"content": None}, finish_reason="length")
+    manager = make_manager(tmp_path, lambda _: httpx.Response(200, json=payload))
+    data = {"provider": provider, "model": "test", "api_key": SECRET}
+    if provider == "custom":
+        data.update(base_url="https://example.test/v1", protocol="chat")
+    manager.save(data)
+    try:
+        result = manager.complete(MESSAGES, max_tokens=2048)
+        assert result["text"] == ""
+        assert result["finish_reason"] in {"length", "max_tokens", "MAX_TOKENS", "max_output_tokens"}
+        assert result["tokens"] > 0
+        assert manager.store.all("model_call")[0]["tokens"] == result["tokens"]
+    finally:
+        manager.close()
+        manager.store.db.close()
+
+
+@pytest.mark.parametrize("protocol", ["responses", "chat"])
+def test_native_refusal_is_distinguished_from_normal_empty_completion(protocol):
+    payload = response_for(protocol)
+    if protocol == "responses":
+        payload["output"][0]["content"] = [{"type": "refusal", "refusal": "unavailable"}]
+    else:
+        payload["choices"][0]["message"] = {"content": None, "refusal": "unavailable"}
+    result = ConnectionManager._normalize(protocol, payload)
+    assert result["finish_reason"] == "refusal"
+    assert result["tokens"] > 0 and result["text"] == ""
 
 
 @pytest.mark.parametrize(
@@ -209,6 +294,171 @@ def test_connection_management_and_test_generation_are_separate(tmp_path):
     assert manager.active()["id"] == a["id"]
     with pytest.raises(DomainError, match="已移除"):
         manager.complete(MESSAGES, connection_id=b["id"])
+
+
+@pytest.mark.parametrize(
+    "provider,protocol",
+    [("openai", "responses"), ("claude", "messages"), ("gemini", "generateContent"),
+     ("deepseek", "chat"), ("qwen", "chat"), ("glm", "chat"), ("kimi", "chat"),
+     ("doubao", "responses"), ("custom", "chat")],
+)
+def test_validation_tests_transient_then_adds_safe_summary(tmp_path, provider, protocol):
+    hits = []
+    manager = None
+
+    def handler(request):
+        hits.append(request)
+        # Credentials/configuration only become durable after the live probe.
+        assert manager.list_connections() == []
+        assert manager.vault.values == {} and manager._session_keys == {}
+        return httpx.Response(200, json=response_for(protocol))
+
+    manager = make_manager(tmp_path, handler)
+    draft = {"provider": provider, "model": "test", "api_key": SECRET,
+             "remember": False, "region": "", "protocol": ""}
+    if provider == "custom":
+        draft["base_url"] = "http://127.0.0.1:9000/v1"
+    result = manager.validate(draft)
+    assert len(hits) == 1
+    assert result["status"] == "ADDED" and result["saved"] and result["tested"]
+    assert result["elapsed_ms"] >= 0 and result["tokens"] > 0
+    assert result["provider"] == provider and result["model"] == "test"
+    connection = result["connection"]
+    assert connection["key_status"] == "CONFIGURED"
+    assert connection["storage"] == "SESSION_ONLY" and connection["is_default"]
+    assert connection["last_test"]["status"] == "SUCCESS"
+    assert connection["last_generation"] is None
+    assert "credential_ref" not in connection and "text" not in result
+    assert SECRET not in repr(result) + repr(manager.store.all("model_call"))
+    assert SECRET.encode() not in (tmp_path / "test.db").read_bytes()
+    assert manager.store.all("model_call")[0]["purpose"] == "connection_test"
+
+
+@pytest.mark.parametrize("failure", [401, 500, "timeout", "invalid"])
+def test_validation_failure_never_saves_or_replaces_default_or_key(tmp_path, failure):
+    def handler(request):
+        if failure == "timeout":
+            raise httpx.ReadTimeout(SECRET, request=request)
+        if failure == "invalid":
+            return httpx.Response(200, json={"echo": SECRET})
+        return httpx.Response(failure, text=SECRET)
+
+    manager = make_manager(tmp_path, handler)
+    saved = manager.save({"provider": "kimi", "model": "old", "api_key": "old-key"})
+    before = manager.list_connections()
+    for connection_id in (None, saved["id"]):
+        draft = {"provider": "kimi", "model": "new", "api_key": SECRET, "remember": True}
+        if connection_id:
+            draft["connection_id"] = connection_id
+        result = manager.validate(draft)
+        assert result["status"] == "TEST_FAILED"
+        assert not result["tested"] and not result["saved"]
+        assert SECRET not in repr(result)
+        assert manager.list_connections() == before
+        assert manager._key(manager._get(saved["id"])) == "old-key"
+        assert manager.vault.values == {}
+    assert len(manager.store.all("model_call")) == 2  # no automatic retry
+
+
+def test_validation_updates_existing_without_reentering_key(tmp_path):
+    manager = make_manager(tmp_path, lambda _: httpx.Response(200, json=response_for("chat")))
+    saved = manager.save({"provider": "kimi", "model": "old", "api_key": SECRET})
+    result = manager.validate({"connection_id": saved["id"], "model": "new"})
+    assert result["status"] == "UPDATED" and result["saved"]
+    assert result["connection"]["id"] == saved["id"]
+    assert len(manager.list_connections()) == 1
+    assert manager.model == "new" and manager.is_live()
+    assert SECRET not in repr(result)
+
+
+def test_validation_reports_test_success_but_vault_save_failure(tmp_path):
+    manager = make_manager(
+        tmp_path, lambda _: httpx.Response(200, json=response_for("chat")), FailedVault()
+    )
+    result = manager.validate({"provider": "kimi", "model": "test", "api_key": SECRET,
+                               "remember": True})
+    assert result["status"] == "SAVE_FAILED" and result["tested"] and not result["saved"]
+    assert result["tokens"] == 14 and "仅在本次运行" in result["message"]
+    assert manager.list_connections() == [] and manager._session_keys == {}
+    assert manager.store.all("model_call")[0]["status"] == "SUCCESS"
+    assert SECRET not in repr(result)
+
+
+@pytest.mark.parametrize("remember", [False, True])
+def test_validation_database_failure_rolls_back_credentials_and_config(tmp_path, monkeypatch, remember):
+    manager = make_manager(tmp_path, lambda _: httpx.Response(200, json=response_for("chat")))
+    saved = manager.save({"provider": "kimi", "model": "old", "api_key": "old-key",
+                          "remember": remember})
+    before = manager.list_connections()
+    original = manager.store.audit
+
+    def fail_save(operation, *args, **kwargs):
+        if operation == "MODEL_CONNECTION_SAVED":
+            raise RuntimeError(SECRET)
+        return original(operation, *args, **kwargs)
+
+    monkeypatch.setattr(manager.store, "audit", fail_save)
+    result = manager.validate({"connection_id": saved["id"], "model": "new", "api_key": SECRET,
+                               "remember": not remember})
+    assert result["status"] == "SAVE_FAILED" and result["tested"] and not result["saved"]
+    assert manager.list_connections() == before
+    assert manager._key(manager._get(saved["id"])) == "old-key"
+    assert SECRET not in repr(result) + repr(manager.vault.values) + repr(manager._session_keys)
+
+
+def test_validation_late_response_does_not_resurrect_removed_connection(tmp_path):
+    manager = None
+    saved = None
+
+    def handler(_):
+        manager.remove(saved["id"])
+        return httpx.Response(200, json=response_for("chat"))
+
+    manager = make_manager(tmp_path, handler)
+    saved = manager.save({"provider": "kimi", "model": "old", "api_key": SECRET})
+    result = manager.validate({"connection_id": saved["id"], "model": "new"})
+    assert result["status"] == "SAVE_FAILED" and result["tested"]
+    assert manager.list_connections() == [] and not manager.is_live()
+
+
+def test_validation_keeps_current_generation_ledger_and_single_default(tmp_path):
+    manager = None
+    saved = None
+
+    def handler(_):
+        if saved:
+            manager._ledger(manager._get(saved["id"]), "chat", "SUCCESS", {"tokens": 21})
+        else:
+            manager.save({"provider": "kimi", "model": "other", "api_key": "other-key"})
+        return httpx.Response(200, json=response_for("chat"))
+
+    manager = make_manager(tmp_path, handler)
+    added = manager.validate({"provider": "kimi", "model": "new", "api_key": SECRET,
+                              "remember": True})
+    saved = added["connection"]
+    assert saved["storage"] == "OS_CREDENTIAL_STORE" and not saved["is_default"]
+    assert len([c for c in manager.list_connections() if c["is_default"]]) == 1
+    updated = manager.validate({"connection_id": saved["id"], "label": "updated"})
+    assert updated["status"] == "UPDATED"
+    assert updated["connection"]["last_generation"]["tokens"] == 21
+
+
+@pytest.mark.parametrize("data", [
+    {"provider": "unknown", "model": "test", "api_key": SECRET},
+    {"provider": "kimi", "api_key": SECRET},
+    {"provider": "kimi", "model": "test", "api_key": "bad\nkey"},
+    {"provider": "kimi", "model": "test", "api_key": SECRET, "passed": True},
+    {"connection_id": 123},
+])
+def test_validation_rejects_invalid_form_before_any_provider_or_storage(tmp_path, data):
+    def handler(_):
+        pytest.fail("invalid configuration cannot make a model call")
+
+    manager = make_manager(tmp_path, handler)
+    with pytest.raises(DomainError):
+        manager.validate(data)
+    assert manager.list_connections() == [] and manager.store.all("model_call") == []
+    assert manager._session_keys == {} and manager.vault.values == {}
 
 
 @pytest.mark.parametrize(
@@ -481,6 +731,43 @@ def test_discover_does_not_replace_existing_default_or_credentials(tmp_path):
     assert manager.active()["id"] == saved["id"]
     assert manager.list_connections() == before and manager._session_keys == session_keys
     assert "transient-not-a-real-key" not in repr(manager.store.all("model_connection"))
+
+
+def test_discovery_borrows_saved_key_but_uses_current_unsaved_endpoint(tmp_path):
+    hits = []
+
+    def handler(request):
+        hits.append(request)
+        return httpx.Response(200, json={"data": [{"id": "current-draft-model"}]})
+
+    manager = make_manager(tmp_path, handler)
+    saved = manager.save({"provider": "deepseek", "model": "old-model", "api_key": SECRET,
+                          "remember": True})
+    before = manager.list_connections()
+    vault_before = dict(manager.vault.values)
+    result = manager.discover({"connection_id": saved["id"], "provider": "qwen",
+                               "region": "international", "base_url": "", "protocol": ""})
+    assert result == [{"id": "current-draft-model", "name": "current-draft-model"}]
+    assert hits[-1].url.host == "dashscope-intl.aliyuncs.com"
+    assert hits[-1].headers["authorization"] == "Bearer " + SECRET
+    assert manager.list_connections() == before and manager.vault.values == vault_before
+    assert manager._session_keys == {} and manager.store.all("model_call") == []
+    assert manager.external_calls == 0 and SECRET not in repr(result)
+
+
+def test_discovery_explicit_empty_region_resets_to_supplier_default(tmp_path):
+    hits = []
+
+    def handler(request):
+        hits.append(request)
+        return httpx.Response(200, json={"data": []})
+
+    manager = make_manager(tmp_path, handler)
+    saved = manager.save({"provider": "qwen", "model": "old-model", "api_key": SECRET,
+                          "region": "international"})
+    manager.discover({"connection_id": saved["id"], "region": "", "base_url": ""})
+    assert hits[0].url.host == "dashscope.aliyuncs.com"
+    assert manager.list_connections()[0]["region"] == "international"
 
 
 @pytest.mark.parametrize("status", [401, 429, 500, 302])

@@ -1,0 +1,21 @@
+{
+  "status": "PASSED",
+  "checks": [
+    "正式页面设置显示未配置的Tavily入口",
+    "正式聊天与虚拟空间可读取，未发送/启动/评估/测试连接",
+    "桌面与手机设置、虚拟空间无横向溢出"
+  ],
+  "browserErrors": [],
+  "blockedMutationRequests": [
+    "PUT /api/v1/chat-presence",
+    "PUT /api/v1/chat-presence",
+    "PUT /api/v1/chat-presence"
+  ],
+  "externalRequests": [],
+  "realModelCalls": 0,
+  "realSearchCalls": 0,
+  "screenshots": [
+    "live-settings-web-card-1440.png",
+    "live-settings-web-card-390.png"
+  ]
+}

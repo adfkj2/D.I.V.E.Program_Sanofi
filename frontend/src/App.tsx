@@ -377,7 +377,7 @@ export default function App() {
         </a>
         <p className="sidebar-caption">留一处地方，慢慢认识自己。</p>
         <nav>
-          {pages.filter(item => ["chat", "me", "settings"].includes(item.id) || (item.id === "virtual" && data?.upgrade?.unlock.unlocked)).map((item) => (
+          {pages.filter(item => ["chat", "me", "settings", "virtual"].includes(item.id)).map((item) => (
             <button
               key={item.id}
               onClick={() => navigate(item.id)}

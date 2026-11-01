@@ -51,7 +51,7 @@ def test_v1_migration_creates_readable_prechange_backup_and_stable_row_order(tmp
     store = AppStore(path)
     backup_path = store.migration_backup_path
     assert backup_path is not None and backup_path.is_file()
-    assert store.db.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 3
+    assert store.db.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 6
     rows = store.db.execute("SELECT id,sequence,reply_state,client_request_id FROM messages "
                             "ORDER BY sequence").fetchall()
     assert [r["id"] for r in rows] == ["z_first", "a_second", "m_third"]
@@ -69,7 +69,7 @@ def test_v1_migration_creates_readable_prechange_backup_and_stable_row_order(tmp
     reopened = AppStore(path)
     try:
         assert reopened.migration_backup_path is None
-        assert len(list(tmp_path.glob("wot.pre-v3.*.db"))) == 1
+        assert len(list(tmp_path.glob("wot.pre-v6.*.db"))) == 1
     finally:
         reopened.db.close()
 
@@ -309,17 +309,18 @@ def test_delete_redacts_legacy_title_derived_from_first_message_and_cached_respo
     assert not any(prefix in row[0] for row in app_service.store.db.execute("SELECT response FROM requests"))
 
 
-def test_builtin_mock_roles_are_distinct_and_explicitly_offline_while_custom_keeps_fallback(app_service):
+def test_builtin_mock_roles_are_distinct_and_mock_state_is_separate_from_speech(app_service):
     replies = []
     for person in builtin_people():
         reply = app_service.provider.generate(role="EXTERNAL", topic="选择一个机会", transcript=[],
                                                private=[], goals=[], skill=role_context(person))
-        assert "离线演示" in reply["text"] and "非本人发言" in reply["text"]
+        assert reply["provider"] == "mock"
+        assert "离线演示" not in reply["text"] and "非本人发言" not in reply["text"]
         replies.append(reply["text"])
     assert len(replies) == len(set(replies)) == 15
     custom = app_service.provider.generate(role="EXTERNAL", topic="一个问题", transcript=[],
                                            private=[], goals=[], skill={"name": "自定义"})
-    assert custom["text"] == "离线演示：如果先不急着回答，你最想厘清的是哪一个前提？"
+    assert custom["text"] == "如果先不急着回答，你最想厘清的是哪一个前提？"
     assert app_service.provider.external_calls == 0
 
 

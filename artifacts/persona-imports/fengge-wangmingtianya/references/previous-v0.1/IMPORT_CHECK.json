@@ -1,0 +1,21 @@
+{
+  "checked_at": "2026-10-30T16:39:11.383182+00:00",
+  "data_version": "fengge-public-persona-v0.1.0",
+  "checks": {
+    "json_schema_accepted": true,
+    "markdown_json_same_body": true,
+    "body_not_truncated_by_role_context": true,
+    "no_runtime_permission_markers": true,
+    "isolated_draft_saved": true,
+    "adding_without_quality_review_rejected": true,
+    "formal_data_unchanged": true
+  },
+  "skill_characters": 4676,
+  "skill_utf8_bytes": 12443,
+  "external_model_calls": 0,
+  "quality_assessment": "NOT_RUN: user tests through the real admission flow; no synthetic score or permission issued",
+  "limitations": [
+    "Public-expression draft; no independent fidelity certification.",
+    "Video sources only read to metadata/description depth."
+  ]
+}

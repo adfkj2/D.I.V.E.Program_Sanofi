@@ -1,5 +1,7 @@
 # 实际验证记录
 
+> 各轮最新数字以当轮交付记录为准：当前后端全量为 `728 passed`，见[境内联网适配](DOMESTIC_WEB.md)。以下为各轮交付当时的历史输出，不代表当前测试总数。
+
 ## 最新：微信式聊天与15位人物改版
 
 2026-10-30，本轮最终独立环境输出：**142 passed, 1 warning in 31.47s**；Ruff（backend/tests/scripts及浏览器测试服务器）All checks passed；TypeScript＋Vite正式构建通过（33模块）；pip check无损坏依赖。一个警告仍是Starlette TestClient的httpx弃用提示，没有失败或跳过。

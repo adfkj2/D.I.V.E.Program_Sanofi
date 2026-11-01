@@ -30,7 +30,7 @@ Pop-Location
 
 首次打开会出现配置窗口，也可稍后进入「设置」。支持 OpenAI、Claude、Gemini、DeepSeek、通义千问、智谱、Kimi、豆包及自定义 OpenAI 兼容接口；提供四种原生协议、多连接、默认连接、模型列表及手动模型名称。
 
-API Key 仅提交给本机后端。勾选「记住 Key」时使用操作系统凭据库；系统安全存储不可用时，可选择仅本次运行。数据库保存凭据引用，浏览器不永久保存 Key。连接测试由用户主动触发，保存配置不自动调用模型。
+API Key 仅提交给本机后端。勾选「记住 Key」时使用操作系统凭据库；系统安全存储不可用时，可选择仅本次运行。数据库保存凭据引用，浏览器不永久保存 Key。点击「测试并添加／测试并保存」会发送一条简短请求，通过后才保存；失败保留表单并说明实际保存状态。成功后展示 Key 保存状态，点击「开始聊天」关闭窗口。
 
 实际推理会将当前功能所需的资料发送给所选供应商。调用账本只保留用途、状态、模型和用量，不记录提示词、答案或密钥。费用无可靠资料时显示「费用未估算」。
 
@@ -77,6 +77,16 @@ Pop-Location
 ```
 
 模型契约及后台运行测试使用隔离数据与模拟供应商，没有开发者发起的真实付费模型调用。浏览器验收与桌面/手机截图见[升级交付记录](docs/implementation/UPGRADE.md)。
+
+最新的角色表达、回复格式和模型配置修复见[本轮交付记录](docs/implementation/IMMERSION_FIX.md)。Windows／安卓打包、签名和 Release 发布暂停，当前继续提供本地页面测试。
+
+十六位人物的新版表达档案、来源覆盖、匿名同题样片和导入文件见[表达重做交付记录](docs/implementation/VOICE_REDESIGN.md)。内置资料升级为v1.2，真实模型拟真仍待试聊验证。
+
+微信式输入提示、连续消息、主动续话和虚拟空间分组发言见[自然聊天交付记录](docs/implementation/NATURAL_CHAT.md)。
+
+最新独立人物Agent、截断恢复、直接开放的虚拟空间、本人Skill质量准入及追加额度见[角色Agent交付记录](docs/implementation/CHARACTER_AGENTS.md)。
+
+人物 Agent 按需联网查证、报考条件核对、来源查看与联网额度见[公开资料查证说明](docs/implementation/WEB_RESEARCH.md)。在「设置 → 联网查询」选择来源，支持复用 DeepSeek、Kimi、智谱连接的 Key，也可使用博查或 Tavily；普通聊天和虚拟空间共用。境内接口、凭据复用与验证记录见[境内联网适配](docs/implementation/DOMESTIC_WEB.md)。
 
 详细说明：[模型连接](docs/implementation/CONNECTIONS.md)、[严格评估](docs/implementation/ASSESSMENTS.md)、[后台虚拟空间](docs/implementation/VIRTUAL_SPACE.md)、[实际架构](docs/implementation/ARCHITECTURE.md)。根目录四份原始产品文档保留为设计来源；本次升级的实际行为以这些实施说明为准。
 

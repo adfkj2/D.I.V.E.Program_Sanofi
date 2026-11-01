@@ -12,6 +12,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from .catalog import builtin_people, skill_summary
 from .domain import DomainError, SourceOrigin, classify
 from .storage import digest, now, uid
+from .voice import extract_voice
 
 
 class PeopleManager:
@@ -114,13 +115,18 @@ class PeopleManager:
         return self.service.evidence(eid)
 
     def user_skill(self, version_id=None):
+        if version_id is not None:
+            # A frozen read may occur inside a coordinator's transaction.
+            # Entering another sqlite connection context would commit it early.
+            with self.store.lock:
+                return self._user_skill(version_id)
         # Snapshot extraction and publication share deletion's serialization
         # boundary; no ACTIVE version can be compiled from a withdrawn source.
         with self.store.transaction():
             return self._user_skill(version_id)
 
     def _user_skill(self, version_id=None):
-        if version_id:
+        if version_id is not None:
             version = self.store.get(version_id, "user_skill")
             if not version:
                 raise DomainError("找不到本人画像版本", 404)
@@ -188,6 +194,8 @@ class PeopleManager:
             grant.get("profile_version_id") or grant.get("user_skill_id") or grant.get("version_id")
         )
         certified = self.store.get(certified_id, "user_skill") if certified_id else None
+        admission = self.assessments.self_admission() if self.assessments else {"eligible": False}
+        admitted = self.store.get(admission.get("version_id"), "user_skill") if admission.get("eligible") else None
         return {
             **self.profile(),
             "self_statements": [
@@ -201,6 +209,8 @@ class PeopleManager:
             "versions": self.store.all("user_skill"),
             "draft": draft,
             "certified": certified,
+            "self_admission": admission,
+            "admitted": admitted,
             "assessments": self.assessments.list() if self.assessments else [],
         }
 
@@ -225,6 +235,7 @@ class PeopleManager:
                 pass
         if not isinstance(text, str) or not text.strip() or len(text.encode()) > 64000:
             raise DomainError("人物资料需为 1–64KB 的文本")
+        extract_voice(text)  # Recognized envelopes fail early; ordinary Skills stay compatible.
         for field, limit in (("display_name", 120), ("description", 2000),
                              ("source", 4000), ("permission", 4000), ("category", 30)):
             if field in data and (not isinstance(data[field], str) or len(data[field]) > limit):

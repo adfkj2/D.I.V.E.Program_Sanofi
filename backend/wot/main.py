@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
@@ -27,6 +27,7 @@ class Input(BaseModel):
 class Conversation(Input):
     title: str = Field(default="一段新的对话", min_length=1, max_length=120)
     skill_id: str | None = None
+    web_enabled: bool = True
 
 
 class Message(Input):
@@ -39,6 +40,13 @@ class Goal(Input):
     objective: str = Field(min_length=1, max_length=2000)
     domain: str = Field(default="general", min_length=1, max_length=80)
     limits: str = Field(default="", max_length=2000)
+
+
+class ChatPresence(Input):
+    conversation_id: str | None = None
+    tab_id: str = Field(min_length=1, max_length=200)
+    visible: bool
+    composing: bool
 
 
 class Revision(Input):
@@ -100,6 +108,7 @@ def create_app(data_dir: str | Path | None = None, provider: Provider | None = N
 
     @asynccontextmanager
     async def lifespan(app):
+        service.chat.start_scheduler()
         upgrade.virtual.start_scheduler()
         yield
         upgrade.close()
@@ -166,7 +175,8 @@ def create_app(data_dir: str | Path | None = None, provider: Provider | None = N
 
     @app.post("/api/v1/real-conversations")
     def conversation(body: Conversation, request: Request):
-        return mutation(request, body.model_dump(), lambda: service.conversation(body.title, body.skill_id))
+        return mutation(request, body.model_dump(), lambda: service.conversation(
+            body.title, body.skill_id, body.web_enabled))
 
     @app.get("/api/v1/real-conversations/{rid}/messages")
     def messages(rid: str):
@@ -179,6 +189,27 @@ def create_app(data_dir: str | Path | None = None, provider: Provider | None = N
             raise DomainError("发送消息需要 Idempotency-Key")
         return mutation(request, body.model_dump(), lambda: service.send(
             rid, body.text, body.remember, body.domain, key))
+
+    @app.post("/api/v1/real-conversations/{rid}/turns", status_code=202)
+    def submit_turn(rid: str, body: Message, request: Request):
+        key = request.headers.get("idempotency-key")
+        if not key:
+            raise DomainError("发送消息需要 Idempotency-Key")
+        return mutation(request, body.model_dump(), lambda: service.chat.accept(
+            rid, body.text, body.remember, body.domain, key))
+
+    @app.get("/api/v1/real-conversations/{rid}/updates")
+    def chat_updates(rid: str, after_sequence: int = Query(0, ge=0),
+                     after_revision: int = Query(0, ge=0)):
+        return service.chat.updates(rid, after_sequence, after_revision)
+
+    @app.post("/api/v1/reply-batches/{rid}/retry", status_code=202)
+    def retry_batch(rid: str, body: Empty, request: Request):
+        return mutation(request, {}, lambda: service.chat.retry(rid))
+
+    @app.put("/api/v1/chat-presence")
+    def chat_presence(body: ChatPresence):
+        return service.chat.presence(body.model_dump())
 
     @app.post("/api/v1/real-messages/{rid}/admit")
     def admit(rid: str, body: Empty, request: Request):
@@ -231,12 +262,10 @@ def create_app(data_dir: str | Path | None = None, provider: Provider | None = N
 
     @app.post("/api/v1/simulations")
     def simulation(body: Simulation, request: Request):
-        upgrade.assessments.assert_unlocked()
         raise DomainError("旧预览记录仅供回看，请在虚拟空间新建会话", 409)
 
     @app.post("/api/v1/simulations/{rid}/next")
     def next_turn(rid: str, body: NextTurn, request: Request):
-        upgrade.assessments.assert_unlocked()
         raise DomainError("旧预览记录仅供回看，不能继续生成", 409)
 
     @app.post("/api/v1/simulations/{rid}/{action}")

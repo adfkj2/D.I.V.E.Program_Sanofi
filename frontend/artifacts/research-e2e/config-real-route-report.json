@@ -1,0 +1,17 @@
+{
+  "status": "PASSED",
+  "checks": [
+    "真实本机配置路由完成鉴权失败、系统凭据保存失败、仅本次运行成功与删除；失败保留Key、成功显示掩码、重新打开不回读。",
+    "搜索Key未进入SQLite正文、浏览器存储或公开配置；供应商回显的Key未进入错误提示。"
+  ],
+  "mock_search_calls": 3,
+  "real_search_calls": 0,
+  "real_model_calls": 0,
+  "screenshots": [
+    "web-config-real-route-1440.png",
+    "web-config-real-route-390.png"
+  ],
+  "browserErrors": [],
+  "externalRequests": [],
+  "limitation": "仅Tavily出站请求使用进程内MockTransport；本机API、表单、保存和删除均走真实实现。"
+}

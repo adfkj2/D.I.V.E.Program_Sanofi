@@ -35,6 +35,22 @@
 
 ## 快速开始
 
+### 安装包（不需要 Python／Node）
+
+运行 `WeOnceTalked-0.1.0-Setup.exe`，无需管理员权限，安装后开始菜单出现「我们曾聊过」。安装包**未做代码签名**，首次运行会被 SmartScreen 拦截，需要点「更多信息 → 仍要运行」。首版保留控制台窗口显示地址与错误，关闭窗口即停止服务；端口固定 8765，被占用时会明确提示。
+
+用户数据在 `%LOCALAPPDATA%\WeOnceTalked\data`，卸载不删除，重装后原有会话与记忆继续可用。体积、限制与验收记录见[Windows 安装包](docs/implementation/WINDOWS_PACKAGE.md)。
+
+安装包不进版本库，需要自行构建（首次会准备独立的 Python 3.12 环境）：
+
+```powershell
+.\scripts\build_windows.ps1
+```
+
+缺少 Inno Setup 时脚本只提示 `winget install JRSoftware.InnoSetup`，不会自行安装。
+
+### 从源码运行
+
 Windows 需要 Python 3.11+、Node.js 20.19+/22.12+：
 
 ```powershell
@@ -161,7 +177,7 @@ D.I.V.E 以固定版本 vendored 在 `vendor/dive-memory`（`0.4.0+wot.core`）�
 
 ## 数据与备份
 
-默认目录为 `.local`，可用 `WOT_DATA_DIR` 指定独立路径。包含应用数据库、记忆数据库、私有评估数据库和重新编码后的头像。当前 schema 为 v6，每次升级前自动保存完整备份，保留旧 ID、会话和证据；旧自定义人物转为待评，旧模拟记录不获得新许可。
+从源码运行时默认目录为 `.local`，安装版为 `%LOCALAPPDATA%\WeOnceTalked\data`，都可用 `WOT_DATA_DIR` 指定独立路径。包含应用数据库、记忆数据库、私有评估数据库和重新编码后的头像。当前 schema 为 v6，每次升级前自动保存完整备份，保留旧 ID、会话和证据；旧自定义人物转为待评，旧模拟记录不获得新许可。
 
 先停止服务再备份或恢复：
 
@@ -182,13 +198,13 @@ npm.cmd run build
 Pop-Location
 ```
 
-当前后端全量 762 个用例通过（仅 1 条既有 Starlette/httpx 弃用警告），Ruff、TypeScript 检查与构建均无错误。若本机系统临时目录不可写，用 `--basetemp` 指到其他目录，不影响结论。
+当前后端全量 779 个用例通过（仅 1 条既有 Starlette/httpx 弃用警告），Ruff、TypeScript 检查与构建均无错误。若本机系统临时目录不可写，用 `--basetemp` 指到其他目录，不影响结论。
 
 模型契约及后台运行测试使用隔离数据与模拟供应商，没有开发者发起的真实付费模型调用。浏览器验收与桌面/手机截图见[升级交付记录](docs/implementation/UPGRADE.md)。
 
 最近会话的置顶、取消置顶与删除已覆盖 6 个后端用例和一条浏览器验收步骤：删除会清除正文、取消在途回复、写入审计并递增隐私版本，且拒绝删除仍有在用记忆的会话。
 
-最新的角色表达、回复格式和模型配置修复见[本轮交付记录](docs/implementation/IMMERSION_FIX.md)。Windows／安卓打包、签名和 Release 发布暂停，当前继续提供本地页面测试。
+最新的角色表达、回复格式和模型配置修复见[本轮交付记录](docs/implementation/IMMERSION_FIX.md)。Windows 首版安装包已可构建并通过本机安装／卸载验收，但未做代码签名；安卓打包与 Release 发布仍暂停，当前继续提供本地页面测试。
 
 十六位人物的新版表达档案、来源覆盖、匿名同题样片和导入文件见[表达重做交付记录](docs/implementation/VOICE_REDESIGN.md)。内置资料升级为v1.2，真实模型拟真仍待试聊验证。
 

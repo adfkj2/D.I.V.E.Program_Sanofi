@@ -1,12 +1,10 @@
 """Local-only HTTP composition root. Run wot or python -m wot.main, one worker only."""
 import ipaddress
-import os
 import secrets
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-import uvicorn
 from fastapi import FastAPI, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -16,6 +14,7 @@ from starlette.concurrency import run_in_threadpool
 from .catalog import skill_summary
 from .domain import DomainError
 from .model import Provider
+from .resources import default_data_dir, frontend_dist, public_portraits
 from .service import WotService
 from .upgrade import Upgrade
 
@@ -101,7 +100,7 @@ class NextTurn(Input):
 
 
 def create_app(data_dir: str | Path | None = None, provider: Provider | None = None) -> FastAPI:
-    directory = Path(data_dir or os.getenv("WOT_DATA_DIR", str(Path.cwd() / ".local")))
+    directory = Path(data_dir) if data_dir is not None else default_data_dir()
     service = WotService(directory, provider)
     upgrade = Upgrade(service, directory, provider)
     token = secrets.token_urlsafe(32)
@@ -296,14 +295,14 @@ def create_app(data_dir: str | Path | None = None, provider: Provider | None = N
         return {**service.export(), "profile": upgrade.people.me(),
                 "virtual_sessions": upgrade.virtual.list()}
 
-    frontend = Path(__file__).resolve().parents[2] / "frontend" / "dist"
-    portraits = frontend / "portraits"
-    if not portraits.is_dir():
-        portraits = frontend.parent / "public" / "portraits"
-    if portraits.is_dir():
+    frontend = frontend_dist()
+    portraits = public_portraits()
+    if portraits is not None:
         app.mount("/portraits", StaticFiles(directory=portraits), name="portraits")
-    if frontend.is_dir():
-        app.mount("/assets", StaticFiles(directory=frontend / "assets"), name="assets")
+    if frontend is not None:
+        assets = frontend / "assets"
+        if assets.is_dir():
+            app.mount("/assets", StaticFiles(directory=assets), name="assets")
 
         @app.get("/{path:path}")
         def index(path: str):
@@ -315,8 +314,10 @@ def create_app(data_dir: str | Path | None = None, provider: Provider | None = N
 
 
 def main():
-    # Explicit vendor path for source checkout; pip-installable core is also supported.
-    uvicorn.run("wot.main:create_app", factory=True, host="127.0.0.1", port=8765, workers=1)
+    # Launched lazily: wot.desktop imports this module to build the app.
+    from .desktop import run
+
+    return run()
 
 
 if __name__ == "__main__":

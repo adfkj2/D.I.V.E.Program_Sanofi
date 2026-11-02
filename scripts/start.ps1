@@ -20,6 +20,6 @@ if (-not (Test-Path -LiteralPath 'frontend\dist\index.html')) {
     throw '尚未构建界面，请运行 .\scripts\start.ps1 -Install。'
 }
 if (-not $env:WOT_DATA_DIR) { $env:WOT_DATA_DIR = Join-Path $taskProject '.local' }
+if ($NoBrowser) { $env:WOT_NO_BROWSER = '1' }
 Write-Host '我们曾聊过：http://127.0.0.1:8765   按 Ctrl+C 停止。'
-if (-not $NoBrowser) { Start-Process 'http://127.0.0.1:8765' -WindowStyle Hidden }
 & $taskPython -m wot.main

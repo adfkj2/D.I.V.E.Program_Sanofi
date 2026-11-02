@@ -10,6 +10,8 @@ dist/
 eval/private/
 .env
 build/
+.build/
+packaging/windows/we-once-talked.ico
 artifacts/portrait-originals/
 *.db
 *.db-wal

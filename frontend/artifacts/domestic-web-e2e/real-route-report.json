@@ -1,0 +1,20 @@
+{
+  "status": "PASSED",
+  "checks": [
+    "真实配置窗口读取境内服务清单，默认 DeepSeek 且复用连接；打开不自动测试，不传原始模型 Key。",
+    "鉴权失败不保存；成功后保存 CONNECTION 引用，重开不回读，移除不删除共享模型 Key；浏览器及SQLite无原始 Key。"
+  ],
+  "screenshots": [
+    "deepseek-reuse-real-route-1440.png",
+    "deepseek-reuse-real-route-390.png"
+  ],
+  "mock_search_calls": 2,
+  "providers_called": [
+    "api.deepseek.com"
+  ],
+  "real_search_calls": 0,
+  "real_model_calls": 0,
+  "browserErrors": [],
+  "externalRequests": [],
+  "limitation": "本机配置接口与表单为真实实现；仅供应商出站请求使用进程内模拟服务，不证明真实搜索质量。"
+}

@@ -2,9 +2,11 @@ import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type Reac
 import { post, request, type Conversation, type Message, type Skill } from "./api";
 import type { Shared } from "./App";
 import { Avatar, AvatarControls, PersonManagement, modelConfigured } from "./Upgrade";
-import { chatMemory, emit, thread, threadKey, updateThread, useChatMemory, type Pending, type Selection } from "./chatMemory";
-import { activeBatch, presence, retryBatch, submitTurn, syncThread } from "./chatSync";
+import { chatMemory, conversationDeleted, emit, thread, threadKey, updateThread, useChatMemory, type Pending, type Selection } from "./chatMemory";
+import { activeBatch, presence, purgeConversation, retryBatch, submitTurn, syncThread } from "./chatSync";
 import { ResearchIndicator, ResearchNotice, ResearchSourcesButton } from "./WebResearch";
+import { MessageSoundControl } from "./MessageSoundControl";
+import { forgetMessageSoundScope } from "./messageSound";
 
 const pinned = ["munger", "buffett", "zhangxuefeng"];
 const domainLabels: Record<string, string> = { general: "日常", career: "工作", relationships: "关系", learning: "学习" };
@@ -33,6 +35,7 @@ function Glyph({ name, size = 20 }: { name: string; size?: number }) {
     down: <path d="m6 9 6 6 6-6" />,
     check: <path d="m5 12 4 4L19 6" />,
     user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
+    pin: <><path d="M9 4h6l-1 6 3 3H7l3-3-1-6Z" /><path d="M12 13v7" /></>,
   };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] || paths.more}</svg>;
 }
@@ -55,7 +58,7 @@ export default function Chat(shared: Shared) {
   const { data, act, confirm, navigate, refresh, openModels } = shared;
   const memory = useChatMemory();
   const skills = [...data.skills].filter(person => person.status === "ACTIVE").sort((a, b) => rank(a) - rank(b) || a.display_name.localeCompare(b.display_name, "zh-CN"));
-  const conversations = [...data.conversations].sort((a, b) => conversationTime(b).localeCompare(conversationTime(a)) || b.id.localeCompare(a.id));
+  const conversations = data.conversations.filter(conversation => !conversationDeleted(conversation.id)).sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || conversationTime(b).localeCompare(conversationTime(a)) || b.id.localeCompare(a.id));
   if (!memory.selection && skills.length) { const latest = conversations.find(conversation => skills.some(person => person.id === conversation.skill_id)); memory.selection = latest ? { skillId: latest.skill_id, conversationId: latest.id } : { skillId: skills[0].id, conversationId: null }; }
   const selection = memory.selection;
   const activeConversation = conversations.find(c => c.id === selection?.conversationId);
@@ -66,6 +69,7 @@ export default function Chat(shared: Shared) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [messageMenu, setMessageMenu] = useState("");
+  const [recentMenu, setRecentMenu] = useState("");
   const viewport = useRef<HTMLDivElement>(null);
   const profile = useRef<HTMLElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
@@ -152,8 +156,9 @@ export default function Chat(shared: Shared) {
       for (const [cachedKey, cached] of chatMemory.threads) {
         const removedMessages = cached.messages.filter(message => message.evidence_id && removed.has(message.evidence_id));
         if (!removedMessages.length) continue;
+        if (cachedKey.startsWith("conversation:")) forgetMessageSoundScope(`chat:${cachedKey.slice(13)}`);
         const requestIds = new Set(removedMessages.map(message => message.client_request_id));
-        updateThread(cachedKey, { loaded: false, error: "", messages: cached.messages.map(message => message.speaker === "AGENT" || (message.evidence_id && removed.has(message.evidence_id)) ? { ...message, text: message.speaker === "USER" ? "[已删除]" : "[关联来源已删除]", deleted: true } : message), pending: cached.pending.filter(pending => !requestIds.has(pending.id)), batch: null });
+        updateThread(cachedKey, { loaded: false, error: "", messages: cached.messages.map(message => message.speaker === "AGENT" || (message.evidence_id && removed.has(message.evidence_id)) ? { ...message, text: message.speaker === "USER" ? "[已删除]" : "[关联来源已删除]", deleted: true, research_id: null, source_refs: [] } : message), pending: cached.pending.filter(pending => !requestIds.has(pending.id)), batch: null });
       }
     }
     chatMemory.knownEvidenceIds = active;
@@ -178,7 +183,7 @@ export default function Chat(shared: Shared) {
   }, [key, view.draft]);
 
   function choose(next: Selection) {
-    memory.selection = next; memory.mobileChat = true; emit(); setMessageMenu(""); setProfileOpen(false);
+    memory.selection = next; memory.mobileChat = true; emit(); setMessageMenu(""); setRecentMenu(""); setProfileOpen(false);
   }
   function selectPerson(person: Skill) {
     const latest = conversations.find(c => c.skill_id === person.id);
@@ -188,6 +193,26 @@ export default function Chat(shared: Shared) {
     if (!skill) return;
     choose({ skillId: skill.id, conversationId: null });
     composer.current?.focus();
+  }
+  async function togglePin(conversation: Conversation) {
+    setRecentMenu("");
+    await act(conversation.pinned ? "已取消置顶" : "已置顶会话",
+      () => request(`/real-conversations/${encodeURIComponent(conversation.id)}/pin`,
+        { method: "PUT", body: JSON.stringify({ pinned: !conversation.pinned }) }));
+  }
+  function removeConversation(conversation: Conversation) {
+    setRecentMenu("");
+    confirm({
+      title: "删除这段会话",
+      body: "这段对话的消息正文会从本机清除，并从最近对话中移除，删除后不能恢复。若其中还有已纳入长期记忆的本人陈述，需要先在「我」中撤回那些记忆。",
+      button: "删除会话",
+      danger: true,
+      work: async () => {
+        await request(`/real-conversations/${encodeURIComponent(conversation.id)}`, { method: "DELETE" });
+        purgeConversation(conversation.id);
+        if (chatMemory.selection?.conversationId === conversation.id) choose({ skillId: conversation.skill_id, conversationId: null });
+      },
+    });
   }
   function deliver(originalKey: string, pending: Pending) { return submitTurn(originalKey, pending, refresh); }
   async function retryReply() {
@@ -235,14 +260,15 @@ export default function Chat(shared: Shared) {
           return <button key={person.id} data-testid="contact-row" data-builtin={person.builtin ? "true" : "false"} data-slug={person.slug} className={`contact-row ${skill?.id === person.id ? "selected" : ""}`} onClick={() => selectPerson(person)} aria-label={`与${person.display_name}聊天`}><Portrait skill={person} /><span className="contact-copy"><span className="contact-name"><strong>{person.display_name}</strong>{pinned.includes(person.slug || "") && <span className="pinned-mark" aria-label="置顶人物" />}{recent?.last_message_at && <time>{recentTime(recent.last_message_at)}</time>}</span><span className="contact-preview">{recent?.last_message_preview || person.description}</span><span className="contact-meta">{person.domain || "我的人物"}</span></span></button>;
         }) : <div className="list-empty"><Glyph name="search" size={25} /><p>没有找到相符的人物</p><span>试试姓名、话题或另一个领域。</span></div> : matchingConversations.length ? matchingConversations.map(conversation => {
           const person = skills.find(s => s.id === conversation.skill_id);
-          return <button key={conversation.id} data-testid="recent-row" className={`contact-row recent-row ${selection?.conversationId === conversation.id ? "selected" : ""}`} onClick={() => choose({ skillId: conversation.skill_id, conversationId: conversation.id })}><Portrait skill={person} /><span className="contact-copy"><span className="contact-name"><strong>{person?.display_name || "历史人物"}</strong><time>{recentTime(conversationTime(conversation))}</time></span><span className="contact-preview">{conversation.last_message_preview || conversation.title}</span><span className="contact-meta">{conversation.title}</span></span></button>;
+          const selected = selection?.conversationId === conversation.id;
+          return <div key={conversation.id} className={`recent-item ${recentMenu === conversation.id ? "menu-open" : ""}`}><button data-testid="recent-row" data-pinned={conversation.pinned ? "true" : "false"} className={`contact-row recent-row ${selected ? "selected" : ""}`} onClick={() => choose({ skillId: conversation.skill_id, conversationId: conversation.id })}><Portrait skill={person} /><span className="contact-copy"><span className="contact-name"><strong>{person?.display_name || "历史人物"}</strong>{conversation.pinned && <span className="pinned-mark" aria-label="已置顶" />}<time>{recentTime(conversationTime(conversation))}</time></span><span className="contact-preview">{conversation.last_message_preview || conversation.title}</span><span className="contact-meta">{conversation.title}</span></span></button><div className="bubble-menu-wrap recent-menu-wrap"><button className="recent-more icon-button" aria-label={`${conversation.title}的更多操作`} aria-haspopup="menu" aria-expanded={recentMenu === conversation.id} onClick={() => setRecentMenu(recentMenu === conversation.id ? "" : conversation.id)}><Glyph name="more" size={16} /></button>{recentMenu === conversation.id && <div className="bubble-menu recent-menu" role="menu" aria-label={`${conversation.title}的操作`}><button role="menuitem" data-testid="recent-pin" onClick={() => void togglePin(conversation)}><Glyph name="pin" size={15} />{conversation.pinned ? "取消置顶" : "置顶会话"}</button><button role="menuitem" data-testid="recent-delete" className="quiet-danger" onClick={() => removeConversation(conversation)}><Glyph name="close" size={15} />删除会话</button></div>}</div></div>;
         }) : <div className="list-empty"><Glyph name="memory" size={27} /><p>对话会从第一句话开始</p><span>选择一位人物，聊一个你关心的问题。</span></div>}
       </div>
       <div className="people-footer"><span className="local-dot" />本地私人空间<span>{data.privacy.provider === "mock" ? "演示模式" : "外部模型"}</span></div>
     </section>
 
     <section className="im-chat" aria-label={skill ? `与${skill.display_name}的对话` : "聊天"}>
-      <header className="im-chat-header"><button className="icon-button mobile-back" aria-label="返回人物列表" onClick={() => { memory.mobileChat = false; emit(); }}><Glyph name="back" /></button><button className="chat-person" onClick={() => setProfileOpen(!profileOpen)} aria-expanded={profileOpen} aria-label="查看人物资料"><Portrait skill={skill} size={42} /><span><strong>{skill?.display_name || "选择一位人物"}</strong><small><span className="chat-role-label">AI 角色</span>{replying ? <ResearchIndicator phase={view.batch?.research_phase}/> : <>{data.upgrade && !modelConfigured(data) ? "待配置模型 · 离线演示" : data.privacy.provider === "mock" ? "离线演示" : skill?.domain || "聊聊你关心的事"}</>}</small></span></button><div className="chat-header-actions"><label className="web-chat-switch"><input type="checkbox" checked={webEnabled} disabled={changingWeb} onChange={event => void toggleWeb(event.target.checked)}/>联网</label>{data.upgrade && !modelConfigured(data) && <button className="header-text-button" aria-label="配置模型" onClick={openModels}><Glyph name="info" size={17} />配置模型</button>}<button className="header-text-button" onClick={newTopic} disabled={!skill || (sending && !selection?.conversationId)}><Glyph name="plus" size={17} />新话题</button><button className={`icon-button ${profileOpen ? "active" : ""}`} aria-label="打开人物资料" onClick={() => setProfileOpen(!profileOpen)}><Glyph name="more" size={23} /></button></div></header>
+      <header className="im-chat-header"><button className="icon-button mobile-back" aria-label="返回人物列表" onClick={() => { memory.mobileChat = false; emit(); }}><Glyph name="back" /></button><button className="chat-person" onClick={() => setProfileOpen(!profileOpen)} aria-expanded={profileOpen} aria-label="查看人物资料"><Portrait skill={skill} size={42} /><span><strong>{skill?.display_name || "选择一位人物"}</strong><small><span className="chat-role-label">AI 角色</span>{replying ? <ResearchIndicator phase={view.batch?.research_phase}/> : <>{data.upgrade && !modelConfigured(data) ? "待配置模型 · 离线演示" : data.privacy.provider === "mock" ? "离线演示" : skill?.domain || "聊聊你关心的事"}</>}</small></span></button><div className="chat-header-actions"><MessageSoundControl compact/><label className="web-chat-switch"><input type="checkbox" checked={webEnabled} disabled={changingWeb} onChange={event => void toggleWeb(event.target.checked)}/>联网</label>{data.upgrade && !modelConfigured(data) && <button className="header-text-button" aria-label="配置模型" onClick={openModels}><Glyph name="info" size={17} />配置模型</button>}<button className="header-text-button" onClick={newTopic} disabled={!skill || (sending && !selection?.conversationId)}><Glyph name="plus" size={17} />新话题</button><button className={`icon-button ${profileOpen ? "active" : ""}`} aria-label="打开人物资料" onClick={() => setProfileOpen(!profileOpen)}><Glyph name="more" size={23} /></button></div></header>
       <ResearchNotice status={view.batch?.research_status} notice={view.batch?.research_notice} configure={() => navigate("settings")} retry={view.batch && ["FAILED", "INTERRUPTED"].includes(view.batch.status) ? () => void retryReply() : undefined}/>
       <div className="im-message-area" ref={viewport} data-testid="message-scroll" role="log" aria-label="消息记录" aria-live="polite" onScroll={event => {
         const element = event.currentTarget; const nearBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 70;

@@ -7,6 +7,9 @@ import {
   type ComponentProps,
 } from "react";
 import Chat from "./Chat";
+import { installMessageSound, notifyIncomingMessages } from "./messageSound";
+import { activeBatch, syncThread } from "./chatSync";
+import { chatMemory } from "./chatMemory";
 import { MePage, Modal, ModelSettings, ReadOnlyHistory, SettingsPage, VirtualSpace } from "./Upgrade";
 import {
   connect,
@@ -285,6 +288,7 @@ export default function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const soundSnapshotReady = useRef(false);
   const busy = Boolean(busyLabel);
   const current = pages.find((p) => p.id === page)!;
 
@@ -304,6 +308,32 @@ export default function App() {
   useEffect(() => {
     void load();
   }, []);
+  useEffect(() => installMessageSound(), []);
+  useEffect(() => {
+    if (!data?.upgrade) return;
+    for (const session of data.upgrade.virtual_sessions) {
+      notifyIncomingMessages(`virtual:${session.id}`, session.turns, { baseline: !soundSnapshotReady.current });
+    }
+    soundSnapshotReady.current = true;
+  }, [data?.upgrade?.virtual_sessions]);
+  useEffect(() => {
+    // Keep replies already requested by this browser audible while visiting
+    // settings or the profile; Chat owns the same incremental poll on its page.
+    if (page === "chat") return;
+    let stopped = false, running = false;
+    const poll = async () => {
+      if (stopped || running) return;
+      running = true;
+      try {
+        await Promise.allSettled([...chatMemory.threads].filter(([key, cached]) =>
+          key.startsWith("conversation:") && activeBatch(cached.batch)
+        ).map(([key]) => syncThread(key, key.slice(13))));
+      } finally { running = false; }
+    };
+    void poll();
+    const timer = window.setInterval(() => void poll(), 750);
+    return () => { stopped = true; window.clearInterval(timer); };
+  }, [page]);
   useEffect(() => {
     if (data?.upgrade && !data.upgrade.connections.length && !data.upgrade.preferences.setup_dismissed) setModelsOpen(true);
   }, [data?.upgrade?.connections.length, data?.upgrade?.preferences.setup_dismissed]);

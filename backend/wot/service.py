@@ -26,7 +26,7 @@ class WotService:
         # The privacy epoch survives process restarts so interrupted chat
         # batches can validate the same evidence snapshot before a manual retry.
         self.privacy_revision = self.store.fetchone(
-            "SELECT COUNT(*) FROM audit WHERE operation='EVIDENCE_DELETED'")[0]
+            "SELECT COUNT(*) FROM audit WHERE operation IN ('EVIDENCE_DELETED','CONVERSATION_DELETED')")[0]
         with self.store.transaction():
             if self.store.get("skill_socratic", "skill") is None:
                 self.store.add("skill", {
@@ -133,12 +133,16 @@ class WotService:
                 "last_message_at": last["created_at"] if last else None}
 
     def conversations(self) -> list[dict]:
-        summaries = [self.conversation_summary(c) for c in self.store.all("conversation")]
+        # A deleted room keeps its rows so evidence keeps pointing at them, but it
+        # never appears as a recent conversation or in an export again.
+        summaries = [self.conversation_summary(c) for c in self.store.all("conversation")
+                     if not c.get("deleted_at")]
         # Row insertion order breaks equal wall-clock timestamps across rooms.
         activity = {row["conversation_id"]: row["last_rowid"] for row in self.store.fetchall("SELECT conversation_id,MAX(rowid) AS last_rowid FROM messages "
             "WHERE owner_id='local' GROUP BY conversation_id")}
-        return sorted(summaries, key=lambda c: (c["updated_at"], activity.get(c["id"], 0),
-                                                c["created_at"], c["id"]), reverse=True)
+        return sorted(summaries, key=lambda c: (bool(c.get("pinned")), c["updated_at"],
+                                                activity.get(c["id"], 0), c["created_at"],
+                                                c["id"]), reverse=True)
 
     def messages(self, conversation_id: str) -> list[dict]:
         self.require(conversation_id, "conversation")

@@ -24,9 +24,12 @@ const connections = [
   { id: "glm-saved", provider: "glm", model: "glm-fixture", base_url: "https://open.bigmodel.cn/api/paas/v4", label: "智谱备用连接", key_status: "CONFIGURED", storage: "SESSION_ONLY" },
   { id: "kimi-missing", provider: "kimi", model: "kimi-fixture", base_url: "https://api.moonshot.cn/v1", label: "Key 已失效的 Kimi", key_status: "MISSING" },
   { id: "deepseek-proxy", provider: "deepseek", model: "proxy-fixture", base_url: "https://example.com/proxy", label: "第三方代理连接", key_status: "CONFIGURED" },
+  { id: "deepseek-query", provider: "deepseek", model: "query-fixture", base_url: "https://api.deepseek.com/v1?relay=1", label: "带查询参数的无效连接", key_status: "CONFIGURED" },
+  { id: "deepseek-fragment", provider: "deepseek", model: "fragment-fixture", base_url: "https://api.deepseek.com/v1#relay", label: "带片段的无效连接", key_status: "CONFIGURED" },
 ];
 let config = { provider: "tavily", configured: false, enabled: false, revision: 0, credential_store_available: false };
 let outcome = "TEST_FAILED", validationDelay = 200;
+let researchStatus = "READY", researchNotice = "检索内容是网页陈述，仍需核对年份、适用范围和相互冲突之处", researchRevision = 1;
 const writes = [], errors = [], external = [], checks = [], screenshots = [];
 const browser = await chromium.launch({ headless: true, channel: process.env.WOT_E2E_CHANNEL || undefined });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, reducedMotion: "reduce" });
@@ -60,7 +63,7 @@ await page.route("**/api/v1/**", async route => {
     if (saved) config = { provider: body.provider, provider_label: providers.find(item => item.id === body.provider).name, configured: true, enabled: body.enabled, credential_mode: body.credential_mode, connection_id: body.connection_id, engine: body.engine, remember: body.remember_key, storage: body.credential_mode === "CONNECTION" ? "MODEL_CONNECTION" : "SESSION_ONLY", api_key_mask: "••••••••", revision: (config.revision || 0) + 1, credential_store_available: false };
     return route.fulfill({ json: { status: selected, saved, tested: selected !== "TEST_FAILED", elapsed_ms: 200, message: saved ? "联网来源已测试并保存。" : "所选服务鉴权失败，请核对 Key。", ...(saved ? { config } : {}) } });
   }
-  if (pathname.endsWith("/updates")) return route.fulfill({ json: { messages: [{ id: "human-fixture", speaker: "USER", text: "怎样核实公开信息？", created_at: "2026-11-01T01:00:00Z", sequence: 1, reply_state: "REPLIED" }, { id: "reply-fixture", speaker: "AGENT", text: "先把资料出处看准。", created_at: "2026-11-01T01:00:01Z", sequence: 2, research_id: "source-fixture", source_refs: sources.map(item => item.id) }], reset: true, revision: 1, batch: null } });
+  if (pathname.endsWith("/updates")) return route.fulfill({ json: { messages: [{ id: "human-fixture", speaker: "USER", text: "怎样核实公开信息？", created_at: "2026-11-01T01:00:00Z", sequence: 1, reply_state: "REPLIED" }, { id: "reply-fixture", speaker: "AGENT", text: "先把资料出处看准。", created_at: "2026-11-01T01:00:01Z", sequence: 2, research_id: "source-fixture", source_refs: sources.map(item => item.id) }], reset: true, revision: researchRevision, batch: { id: "research-notice-fixture", status: "COMPLETED", typing: false, research_status: researchStatus, research_notice: researchNotice } } });
   if (pathname === "/research-runs/source-fixture/sources") return route.fulfill({ json: { research_id: "source-fixture", sources } });
   return route.fulfill({ json: {} });
 });
@@ -72,6 +75,7 @@ try {
   await go("settings"); let dialog = await open();
   assert.equal(await dialog.getByLabel("联网来源", { exact: true }).inputValue(), "deepseek");
   assert.equal(await dialog.getByLabel("已保存的模型连接", { exact: true }).inputValue(), "deepseek-saved");
+  assert.equal(await dialog.getByLabel("已保存的模型连接", { exact: true }).locator("option").count(), 1, "Credentialed official connections with URL query/fragment must not be offered for reuse.");
   assert.equal(await dialog.locator('input[type="password"]').count(), 0);
   assert.equal(writes.length, 0, "Opening must never test the saved Key automatically.");
   await widths("deepseek-reuse");
@@ -130,6 +134,14 @@ try {
   await dialog.getByRole("button", { name: "关闭联网查询", exact: true }).click();
   await page.setViewportSize({ width: 1440, height: 1050 });
   await go("chat");
+  await page.getByRole("button", { name: "查看依据", exact: true }).waitFor();
+  assert.equal(await page.locator(".web-research-notice").count(), 0, "Successful provenance guidance must not appear as a repair warning.");
+  researchStatus = "SNIPPETS_ONLY"; researchNotice = "本轮只有搜索摘要，关键数字还需要正文。"; researchRevision += 1;
+  await page.getByRole("button", { name: "更换联网来源", exact: true }).waitFor();
+  assert.ok(await page.getByText(researchNotice, { exact: true }).isVisible());
+  researchStatus = "READY"; researchNotice = "本场资料已读取，可查看依据。"; researchRevision += 1;
+  await page.locator(".web-research-notice").waitFor({ state: "hidden" });
+  checks.push("成功查证不出现修复配置提示；只有摘要时明确提醒更换正文来源，恢复成功后提示收起；官方地址带查询参数或片段的连接不提供 Key 复用。");
   await page.getByRole("button", { name: "查看依据", exact: true }).click();
   const sourceDialog = page.getByRole("dialog", { name: "本轮参考资料", exact: true });
   await sourceDialog.getByText("网页正文摘录", { exact: true }).waitFor();

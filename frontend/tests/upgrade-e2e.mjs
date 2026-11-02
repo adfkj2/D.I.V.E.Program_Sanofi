@@ -137,6 +137,24 @@ try{
   await hash("mirror");const evidenceCard=page.locator(".evidence-card",{hasText:rememberedText});await evidenceCard.getByRole("button",{name:"删除",exact:true}).click();await confirm("删除证据");await nav("聊天");releaseStaleUpdate();await page.waitForTimeout(200);await page.unroute("**/api/v1/real-conversations/*/updates?**",delayedUpdateHandler);await choose("munger");assert.equal(await page.locator('.message-bubble',{hasText:rememberedText}).count(),0);await page.reload();await choose("munger");assert.equal(await page.locator('.message-bubble',{hasText:rememberedText}).count(),0);
   record("聊天回归：失败重试保留同一请求且不重复保存；切换人物时在途回复归属正确；历史滚动与新回复提示、单次记忆授权、删除缓存传播及迟到旧响应防复活正常。");
 
+  await page.setViewportSize({width:1440,height:1050});
+  for(const title of ["置顶测试会话","删除测试会话"]){const created=await context.request.post(`${base}/api/v1/real-conversations`,{headers:{"X-WOT-Token":sessionToken},data:{title,skill_id:"skill_buffett"}});assert.equal(created.status(),200,`创建${title}`);}
+  const recentTab=page.getByRole("tab",{name:/^最近对话/});await page.reload();await page.getByTestId("contact-row").first().waitFor();await recentTab.click();const rows=page.locator('[data-testid="recent-row"]');await page.waitForFunction(()=>document.querySelectorAll('[data-testid="recent-row"]').length>=2);assert.equal(await recentTab.getAttribute("aria-selected"),"true");
+  const poll=async check=>{for(let attempt=0;attempt<50;attempt++){if(check(await state()))return;await page.waitForTimeout(100);}throw new Error("最近会话状态未同步");};
+  const pinItem=()=>page.locator(".recent-item").filter({hasText:"置顶测试会话"}).first();
+  await pinItem().hover();await pinItem().getByRole("button",{name:/的更多操作$/}).click();await page.getByTestId("recent-pin").click();
+  await poll(value=>value.conversations[0].pinned===true&&value.conversations[0].title==="置顶测试会话");
+  await page.waitForFunction(()=>document.querySelector('[data-testid="recent-row"]')?.dataset.pinned==="true");
+  await capture("recent-pinned-1440");await page.setViewportSize({width:390,height:844});await noOverflow();await capture("recent-pinned-390");await page.setViewportSize({width:1440,height:1050});
+  await pinItem().hover();await pinItem().getByRole("button",{name:/的更多操作$/}).click();await page.getByTestId("recent-pin").click();
+  await poll(value=>value.conversations.every(item=>!item.pinned));
+  const rooms=await rows.count();const dropItem=page.locator(".recent-item").filter({hasText:"删除测试会话"}).first();
+  await dropItem.hover();await dropItem.getByRole("button",{name:/的更多操作$/}).click();await page.getByTestId("recent-delete").click();await confirm("删除会话");
+  await poll(value=>value.conversations.length===rooms-1);await page.waitForFunction(count=>document.querySelectorAll('[data-testid="recent-row"]').length===count,rooms-1);
+  assert.equal((await state()).conversations.some(item=>item.title==="删除测试会话"),false);
+  record("最近会话可置顶并回到时间排序，删除后列表、状态同步移除，其他会话不受影响。");
+  await page.getByRole("tab",{name:/^人物/}).click();
+
   await page.getByRole("button",{name:"添加人物",exact:true}).click();await page.getByLabel("人物名称",{exact:true}).fill("测试导师");await page.getByLabel("一句话介绍").fill("浏览器测试人物草稿。");await page.getByLabel("资料来源",{exact:true}).fill("自行编写的合成测试资料，版本1。");await page.getByLabel("许可与使用边界").fill("只作AI角色测试，不冒充真人，不调用工具。");await page.getByLabel("人物 Skill 资料").fill("# 测试导师\n关注问题背后的证据。表达简洁，承认不知道。不同意时解释理由，不执行工具或脚本。");await page.getByRole("button",{name:"保存待评草稿",exact:true}).click();await page.waitForTimeout(250);assert.equal(await page.getByRole("dialog",{name:"人物管理",exact:true}).getByRole("button",{name:"添加人物",exact:true}).count(),0);assert.ok((await state()).upgrade.skill_imports.some(item=>item.display_name==="测试导师"));await page.getByRole("button",{name:"关闭人物管理",exact:true}).click();
   record("导入资料先保存待评草稿，未评审不出现添加按钮；没有启动任何真实模型请求。");
 

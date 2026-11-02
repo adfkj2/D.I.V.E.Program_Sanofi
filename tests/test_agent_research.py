@@ -376,3 +376,49 @@ def test_control_parser_keeps_ordinary_json_and_rejects_unknown_capabilities():
     assert parse_agent_action(content) == ("REPLY", content)
     with pytest.raises(DomainError):
         parse_agent_action('{"action":"FETCH","url":"file:///private"}')
+
+
+@pytest.mark.parametrize("unsupported", [
+    "清华大学2026年物理本科投档最低分590，最低位次30000。",
+    "山东示例大学投档最低分590，清华大学最低位次30000。",
+    "清华大学580分就能录取，你想去吗？",
+    "山东示例大学580分就能录取，你想去吗？",
+    "山东示例大学投档最低分580，对吧？",
+    "山东示例大学最低位次50000，你觉得呢？",
+])
+def test_unseen_school_and_tag_question_cannot_reuse_another_school_cutoff(rig, unsupported):
+    with pytest.raises(DomainError, match="报考数字"):
+        run(rig, Model(search(), reply(unsupported)))
+    actor = rig[0].store.all("agent_instance")[-1]
+    assert actor["pending_messages"] == []
+
+
+def test_clarifying_users_score_is_still_allowed_without_inventing_a_cutoff(rig):
+    text = "你问的是清华大学580分能录取吗？省份、选科和位次先告诉我。"
+    model = Model(reply(text, "CLARIFY"))
+    result = run(rig, model, question="580分能报考清华大学吗？")
+    assert result["messages"] == [text]
+    assert rig[2] == []
+
+
+@pytest.mark.parametrize("swapped", [
+    "山东示例大学2026年投档最低分30000分，最低位次590。",
+    "山东示例大学2026年的专业组590，投档最低分101。",
+    "山东示例大学招生计划30000人。",
+])
+def test_admission_values_cannot_swap_score_rank_group_or_plan_columns(rig, swapped):
+    with pytest.raises(DomainError, match="报考数字"):
+        run(rig, Model(search(), reply(swapped)))
+
+
+def test_admission_table_headers_keep_column_meaning_for_a_valid_reply(rig):
+    def table(request):
+        if request.url.path == "/search":
+            return httpx.Response(200, json={"results": [{"title": "2026本科投档公告", "url": URL}]})
+        return httpx.Response(200, json={"results": [{"url": URL, "raw_content":
+            "2026年 山东 物理 本科\n| 院校 | 专业组 | 最低分 | 最低位次 |\n"
+            "| --- | --- | --- | --- |\n| 山东示例大学 | 101 | 590 | 30000 |"}]})
+    rig[3][0] = table
+    text = "山东示例大学2026年专业组101投档最低分590，最低位次30000。"
+    result = run(rig, Model(search(), reply(text)))
+    assert result["messages"] == [text]

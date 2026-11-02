@@ -90,6 +90,16 @@ class Upgrade:
                 raise DomainError("请仅提交联网开关")
             return self.service.chat.web(rid, data["enabled"])
 
+        @r.put("/real-conversations/{rid}/pin")
+        def chat_pin(rid: str, data: dict = Body(...)):
+            if set(data) != {"pinned"}:
+                raise DomainError("请仅提交置顶状态")
+            return self.service.chat.pin(rid, data["pinned"])
+
+        @r.delete("/real-conversations/{rid}")
+        def chat_remove(rid: str):
+            return self.service.chat.remove(rid)
+
         @r.put("/virtual-sessions/{rid}/web")
         def virtual_web(rid: str, data: dict = Body(...)):
             if set(data) != {"enabled"}:

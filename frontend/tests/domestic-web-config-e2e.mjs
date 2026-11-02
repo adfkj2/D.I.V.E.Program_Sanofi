@@ -45,6 +45,7 @@ try {
   await page.getByRole("button", { name: "修改联网配置", exact: true }).click();
   dialog = page.getByRole("dialog", { name: "联网查询", exact: true });
   assert.equal(await dialog.locator('input[type="password"]').count(), 0);
+  await dialog.getByLabel("已保存的模型连接", { exact: true }).waitFor();
   assert.equal(await dialog.getByLabel("联网来源", { exact: true }).inputValue(), "deepseek");
   await dialog.getByRole("button", { name: "关闭联网查询", exact: true }).click();
   await page.getByRole("button", { name: "移除联网配置", exact: true }).click();

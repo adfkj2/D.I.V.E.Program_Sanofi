@@ -163,6 +163,82 @@ def _numbers(text):
     return result
 
 
+def _asserted_institutions(sentence, known_schools):
+    """Bind explicit school mentions, including names absent from the sources.
+
+    Looking only for known names in the assertion silently accepts a different
+    institution with the same score. Match each school-name ending instead;
+    conversational prefixes do not matter because the actual name is a suffix.
+    """
+    names, unsupported = set(), False
+    for ending in re.finditer(r"大学|学院", sentence):
+        prefix = sentence[:ending.end()]
+        matches = [name for name in known_schools if prefix.endswith(name)]
+        if matches:
+            names.add(max(matches, key=len))
+        elif re.search(r"[\u4e00-\u9fffA-Za-z·]{2,24}(?:大学|学院)$", prefix):
+            # These are explicit anaphors, not invented institution names.
+            if not re.search(r"(?:这所|那所|该|这个|那个)(?:大学|学院)$", prefix):
+                unsupported = True
+    return names, unsupported
+
+
+def _admission_fact_question(sentence):
+    """A question about the fact, rather than a question appended after it."""
+    return bool(re.search(
+        r"(?:能否|能不能|是否|是不是).{0,12}(?:录取|达到|能上)|"
+        r"\d\s*分.{0,12}(?:能录取|能上|能报考)(?:吗|么)[？?]?\s*$|"
+        r"(?:最低分|投档线|录取线|最低位次)(?:是|为)?\s*\d[\d,，]*(?:\.\d+)?\s*(?:分|名)?(?:吗|么)[？?]?\s*$",
+        sentence))
+
+
+_ADMISSION_FIELDS = {
+    "SCORE": r"最低分|最高分|平均分|最低投档分|投档最低分|录取最低分|最低录取分|分数线|投档线|录取线|专业录取线|专业线|分数",
+    "RANK": r"最低位次|最高位次|录取位次|投档位次|位次|排名|排位",
+    "GROUP": r"专业组(?:代码|编号)?",
+    "COUNT": r"招生计划(?:数)?|计划招生(?:数)?|录取人数|计划数|计划招收|计划招",
+}
+_ADMISSION_VALUE = r"\d[\d,，]*(?:\.\d+)?\s*[万千]?"
+
+
+def _field_names(text):
+    return {role for role, labels in _ADMISSION_FIELDS.items() if re.search(labels, text)}
+
+
+def _numeric_roles(text, *, excerpt=None):
+    """Keep a score, rank, professional-group code and plan count distinct."""
+    roles = {}
+    def add(values, field):
+        for value in _numbers(values):
+            roles.setdefault(value, set()).add(field)
+    for field, labels in _ADMISSION_FIELDS.items():
+        for match in re.finditer(r"(?:" + labels + r")(?P<gap>[^\d\n|；;。]{0,8}?)(?P<value>" + _ADMISSION_VALUE + r")", text):
+            if not _field_names(match["gap"]):
+                add(match["value"], field)
+    for match in re.finditer(r"(" + _ADMISSION_VALUE + r")\s*分(?!钟|之)", text):
+        add(match[1], "SCORE")
+    if excerpt and "|" in text:
+        # Retain column meaning for Markdown/plain pipe tables. The source
+        # fragment alone has numbers but its preceding header holds the type.
+        header = []
+        for line in excerpt.splitlines():
+            if "|" not in line:
+                header = []
+                continue
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            fields = [_field_names(cell) for cell in cells]
+            if any(fields) and not _numbers(line):
+                header = fields
+            if line.strip().rstrip("。") != text.strip().rstrip("。"):
+                continue
+            if len(cells) == len(header):
+                for cell, names in zip(cells, header):
+                    if len(names) == 1:
+                        add(cell, next(iter(names)))
+            break
+    return roles
+
+
 def validate_admission_numbers(parts, supplied, evidence, conditions):
     """Reject unsupported admissions numbers before a reply enters the outbox.
 
@@ -186,12 +262,16 @@ def validate_admission_numbers(parts, supplied, evidence, conditions):
             cutoff_assertion = bool(re.search(
                 r"(?:大学|学院).{0,24}(?:投档|录取|最低|专业|分|位次)|"
                 r"投档线|录取线|最低分|专业线|计划招|招生计划", sentence))
-            uncertain = bool(re.search(r"[？?]|不清楚|查不到|不能.{0,8}(?:判断|推荐|保证)|"
-                                       r"没有.{0,8}(?:资料|依据)|尚未.{0,8}公布", sentence))
+            uncertain = bool(re.search(r"不清楚|查不到|不能.{0,8}(?:判断|推荐|保证)|"
+                                       r"没有.{0,8}(?:资料|依据)|尚未.{0,8}公布", sentence)) or _admission_fact_question(sentence)
             numbers = _numbers(sentence) if cutoff_assertion and not uncertain else _numbers(sentence) - supplied_numbers
             # Ordinary counts ('先说两个条件') are not admission cutoffs. All
             # larger numerals and small scores/percentages still need support.
             numbers = {n for n in numbers if n >= 100 or re.search(r"\d\s*(?:分|%|％|万|千)", sentence)}
+            asserted_names, unsupported_school = _asserted_institutions(sentence, known_schools)
+            if numbers and cutoff_assertion and not uncertain and unsupported_school:
+                raise DomainError("本轮报考数字的院校与已读取依据不匹配，未发布；请补充资料或重试", 502)
+            claimed_roles = _numeric_roles(sentence)
             for number in numbers:
                 supported = False
                 for source in sources:
@@ -200,6 +280,9 @@ def validate_admission_numbers(parts, supplied, evidence, conditions):
                         continue
                     for fragment in re.split(r"\n|[；;。]", excerpt):
                         if number not in _numbers(fragment):
+                            continue
+                        required_roles = claimed_roles.get(number, set())
+                        if required_roles and not required_roles <= _numeric_roles(fragment, excerpt=excerpt).get(number, set()):
                             continue
                         region_text, region_excerpt = fragment, excerpt
                         for school in known_schools:
@@ -215,7 +298,6 @@ def validate_admission_numbers(parts, supplied, evidence, conditions):
                             continue
                         if subject in {"历史", "文科"} and re.search(r"物理类|理科", row_subject) and not re.search(r"历史|文科", row_subject):
                             continue
-                        asserted_names = [name for name in known_schools if name in sentence]
                         if (cutoff_assertion and asserted_names and not 2000 <= number <= 2099
                                 and not any(name in fragment for name in asserted_names)):
                             continue

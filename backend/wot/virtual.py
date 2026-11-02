@@ -624,6 +624,44 @@ class VirtualSpace:
                 self._save(s)
                 self.pool.submit(self._generate, s["id"], s["epoch"])
 
+    def _reserve_web_request(self, rid, epoch, request_id):
+        """Reserve once, refund only a request cancelled before HTTP dispatch.
+
+        The returned settler is process-local; it never exposes credentials or
+        changes the durable idempotency key. A failed/uncertain network attempt
+        remains dispatched and is never refunded as though it were free.
+        """
+        reservation_id = "vweb_" + digest([rid, request_id])[:32]
+        with self.lock, self.store.transaction():
+            current = self._session(rid)
+            if self._cancelled(rid, epoch):
+                raise DomainError("本次查询已取消", 409)
+            record = self.store.get(reservation_id, "virtual_web_reservation")
+            if record and record.get("state") == "NOT_SENT":
+                raise DomainError("这次查询的预留已取消", 409)
+            if record is None:
+                if current.get("used_web_requests", 0) >= current.get("max_web_requests", 20):
+                    raise AgentLimit("WEB_REQUEST_LIMIT")
+                current["used_web_requests"] = current.get("used_web_requests", 0) + 1
+                self.store.add("virtual_web_reservation", {
+                    "session_id": rid, "request_id": request_id, "epoch": epoch, "state": "RESERVED",
+                }, rid=reservation_id)
+                self._save(current)
+
+        def settle(sent):
+            with self.lock, self.store.transaction():
+                reservation = self.store.get(reservation_id, "virtual_web_reservation")
+                if not reservation or reservation.get("state") != "RESERVED":
+                    return
+                reservation["state"] = "DISPATCHED" if sent else "NOT_SENT"
+                self.store.update(reservation)
+                if not sent:
+                    latest = self._session(rid)
+                    latest["used_web_requests"] = max(0, latest.get("used_web_requests", 0) - 1)
+                    self._save(latest)
+
+        return settle
+
     def _generate(self, rid, epoch):
         try:
             s = self._session(rid)
@@ -672,22 +710,6 @@ class VirtualSpace:
                 if result.get("classification") != "LIVE":
                     raise DomainError("虚拟空间需要真实模型连接", 409)
 
-            def reserve_web(request_id):
-                with self.lock, self.store.transaction():
-                    current = self._session(rid)
-                    if self._cancelled(rid, epoch):
-                        raise DomainError("本次查询已取消", 409)
-                    reservation_id = "vweb_" + digest([rid, request_id])[:32]
-                    if self.store.get(reservation_id, "virtual_web_reservation"):
-                        return
-                    if current.get("used_web_requests", 0) >= current.get("max_web_requests", 20):
-                        raise AgentLimit("WEB_REQUEST_LIMIT")
-                    current["used_web_requests"] = current.get("used_web_requests", 0) + 1
-                    self.store.add("virtual_web_reservation", {
-                        "session_id": rid, "request_id": request_id, "epoch": epoch,
-                    }, rid=reservation_id)
-                    self._save(current)
-
             result = self.service.agents.respond(
                 scope_kind="VIRTUAL", scope_id=rid, participant_id=p["id"],
                 version_id=p["version_id"], personality=personality,
@@ -698,7 +720,8 @@ class VirtualSpace:
                 allow_followup=False, max_messages=remaining_messages,
                 on_usage=charge,
                 remaining_tokens=lambda: self._session(rid)["max_tokens"] - self._session(rid)["used_tokens"],
-                web_enabled=s.get("web_enabled", True), on_web_request=reserve_web,
+                web_enabled=s.get("web_enabled", True),
+                on_web_request=lambda request_id: self._reserve_web_request(rid, epoch, request_id),
             )
             with self.lock, self.store.transaction():
                 current = self._session(rid)

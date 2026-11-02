@@ -1,0 +1,29 @@
+{
+  "status": "PASSED",
+  "date": "2026-11-02T03:27:50.183Z",
+  "checks": [
+    "历史载入、用户消息、已删除消息、重复轮询与切换历史不响；同一轮收到三条新人物消息逐条提示且不重放。",
+    "静音立即生效并记住偏好；刷新与重新开启不补播旧消息，新到消息恢复提示。",
+    "在其他应用页面等待中的普通聊天仍能提示；设置开关在四种屏宽可见且无横向溢出。",
+    "虚拟空间旧记录和未发布草稿不响，实际发布的人物发言逐条提示，状态重复读取不重放。",
+    "后台且音频仍运行时可提示；浏览器挂起音频时不补队列，恢复后不补播旧发言，新发布消息正常提示。",
+    "浏览器不支持音频时不抛异常、不妨碍消息继续显示。",
+    "新建会话的用户收据作为静默基线，第一条真实人物回复仍正常提示，不被误判为历史。",
+    "真实浏览器AudioContext经用户点击可进入running，一条新回复创建并启动两枚本地音符节点；不访问音频外链。"
+  ],
+  "screenshots": [
+    "message-sound-chat-1440.png",
+    "message-sound-chat-768.png",
+    "message-sound-chat-390.png",
+    "message-sound-chat-360.png",
+    "message-sound-settings-1440.png",
+    "message-sound-settings-768.png",
+    "message-sound-settings-390.png",
+    "message-sound-settings-360.png"
+  ],
+  "browserErrors": [],
+  "externalRequests": [],
+  "realModelCalls": 0,
+  "realSearchCalls": 0,
+  "limitation": "消息与状态使用浏览器本地夹具；前七组用可观察音频节点验证调度与去重，最后一组使用真实浏览器AudioContext验证解锁与本地音符启动。不声称自动化测试已实际听辨音色。"
+}

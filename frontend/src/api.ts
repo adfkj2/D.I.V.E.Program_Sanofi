@@ -7,6 +7,8 @@ export interface Conversation {
   last_message_preview?: string;
   last_message_at?: string;
   web_enabled?: boolean;
+  pinned?: boolean;
+  deleted_at?: string | null;
 }
 export interface Message {
   id: string;
@@ -148,6 +150,9 @@ export interface VirtualSession {id:string;topic:string;state:string;participant
 export interface UpgradeState {connections:ModelConnection[];providers:ModelProvider[];me:MeProfile;web?:WebConfig;virtual_access?:{enabled:boolean};unlock:{unlocked:boolean;grant?:{profile_version_id?:string};reason?:string};preferences:{setup_dismissed?:boolean};skill_imports:SkillImport[];virtual_sessions:VirtualSession[];}
 
 let token = "";
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) { super(message); this.name = "ApiError"; }
+}
 export async function connect() {
   const session = await request<{ token: string }>("/session");
   token = session.token;
@@ -176,7 +181,7 @@ export async function request<T>(
     } catch {
       /* A non-JSON upstream error should keep the readable fallback. */
     }
-    throw new Error(detail);
+    throw new ApiError(detail, response.status);
   }
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;

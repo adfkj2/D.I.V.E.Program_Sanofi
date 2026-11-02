@@ -11,7 +11,7 @@ const storageLabel = (config?: WebConfig) => config?.credential_mode === "CONNEC
 function reusableConnection(connection: ModelConnection, provider?: string) {
   if (!provider || connection.provider !== provider || connection.key_status !== "CONFIGURED") return false;
   const hosts: Record<string, string> = { deepseek: "api.deepseek.com", kimi: "api.moonshot.cn", glm: "open.bigmodel.cn" };
-  try { const url = new URL(connection.base_url || ""); return url.protocol === "https:" && url.hostname === hosts[provider] && (!url.port || url.port === "443") && !url.username && !url.password; } catch { return false; }
+  try { const url = new URL(connection.base_url || ""); return url.protocol === "https:" && url.hostname === hosts[provider] && (!url.port || url.port === "443") && !url.username && !url.password && !url.search && !url.hash; } catch { return false; }
 }
 
 function WebDialog({ title, close, children }: { title: string; close: () => void; children: ReactNode }) {
@@ -95,12 +95,13 @@ function WebConfigForm({ initial, refresh, close }: { initial?: WebConfig; refre
     <label className="field">联网来源<select aria-label="联网来源" value={provider} disabled={loadingOptions || !providers.length} onChange={event => chooseProvider(event.target.value)}>{!providers.length && <option value="">{loadingOptions ? "正在读取联网来源…" : "联网来源暂不可用"}</option>}{providers.map(item => <option value={item.id} key={item.id}>{item.name}{item.id === "deepseek" || item.recommended ? "（推荐）" : ""}</option>)}</select></label>
     {selectedProvider && <div className="web-provider-description"><strong>{selectedProvider.name}</strong><p>{selectedProvider.description || "只查询回答所需的公开资料，不会更换聊天模型。"}</p>{selectedProvider.docs_url && safeSourceUrl(selectedProvider.docs_url) && <a href={safeSourceUrl(selectedProvider.docs_url)!} target="_blank" rel="noopener noreferrer">查看官方说明</a>}</div>}
     {selectedProvider?.reuse_provider && <fieldset className="web-credential-options"><legend>Key 使用方式</legend><label><input type="radio" name="web-credential-mode" checked={credentialMode === "CONNECTION"} disabled={!reusable.length} onChange={() => changed(() => { setCredentialMode("CONNECTION"); setConnectionId(connectionId || reusable[0]?.id || ""); setApiKey(""); setReplacing(false); })}/><span>复用已保存的模型连接{!reusable.length && <small>还没有此供应商的可用连接，可先填写 Key。</small>}</span></label><label><input type="radio" name="web-credential-mode" checked={credentialMode === "SEPARATE"} onChange={() => changed(() => { setCredentialMode("SEPARATE"); setApiKey(""); setReplacing(false); })}/><span>单独填写此服务的 Key</span></label></fieldset>}
-    {credentialMode === "CONNECTION" && selectedProvider?.reuse_provider ? <><label className="field">已保存的模型连接<select aria-label="已保存的模型连接" value={connectionId} onChange={event => changed(() => setConnectionId(event.target.value))}>{!selectedConnection && <option value="">请选择可用连接</option>}{reusable.map(item => <option value={item.id} key={item.id}>{item.label || item.model}{item.is_default ? "（当前默认）" : ""}</option>)}</select></label><p className="web-reuse-note">使用这份连接已保存的 Key 查询公开资料，不会更换你的聊天模型，也不需要另外填写 Tavily Key。</p></> : <>
+    {loadingOptions && <p className="up-note" role="status">正在读取联网来源与已保存连接…</p>}
+    {!loadingOptions && selectedProvider && (credentialMode === "CONNECTION" && selectedProvider.reuse_provider ? <><label className="field">已保存的模型连接<select aria-label="已保存的模型连接" value={connectionId} onChange={event => changed(() => setConnectionId(event.target.value))}>{!selectedConnection && <option value="">请选择可用连接</option>}{reusable.map(item => <option value={item.id} key={item.id}>{item.label || item.model}{item.is_default ? "（当前默认）" : ""}</option>)}</select></label><p className="web-reuse-note">使用这份连接已保存的 Key 查询公开资料，不会更换你的聊天模型，也不需要另外填写 Tavily Key。</p></> : <>
       {configured && !replacing ? <section className="up-key-state" aria-label="搜索 Key 状态"><div><strong>{storageLabel(config)}</strong><span>{config?.api_key_mask || "••••••••"}</span><small>{config?.storage === "OS_CREDENTIAL_STORE" ? "保存在系统安全凭据库，原始 Key 不会回显。" : "本机服务退出后需重新填写。"}</small></div><button type="button" className="text-button" onClick={() => changed(() => setReplacing(true))}>更换搜索 Key</button></section> : <label className="field">搜索 API Key<input type="password" autoComplete="new-password" spellCheck={false} value={apiKey} onChange={event => changed(() => setApiKey(event.target.value))} placeholder={configured ? "留空保留已有 Key" : selectedProvider?.key_hint || `填入${selectedProvider?.name || "所选服务"}的 Key`} required={!configured}/></label>}
       {keyMismatch && <p className="up-error" role="alert">{keyMismatch}</p>}
       <label className="up-checkbox"><input type="checkbox" checked={remember} onChange={event => changed(() => setRemember(event.target.checked))}/>记住搜索 Key，保存在系统安全凭据库</label>
       {initial?.credential_store_available === false && <p className="up-note">系统安全存储当前不可用，可取消勾选，仅在本次运行中使用。</p>}
-    </>}
+    </>)}
     {selectedProvider?.requires_model && <label className="field">联网模型<input value={model} onChange={event => changed(() => setModel(event.target.value))} placeholder={selectedProvider.model_hint || "填写支持联网的模型名称"} required/></label>}
     {selectedProvider?.engines?.length ? <label className="field">搜索引擎<select aria-label="搜索引擎" value={engine || selectedProvider.default_engine || (typeof selectedProvider.engines[0] === "string" ? selectedProvider.engines[0] : selectedProvider.engines[0].id)} onChange={event => changed(() => setEngine(event.target.value))}>{selectedProvider.engines.map(item => <option key={typeof item === "string" ? item : item.id} value={typeof item === "string" ? item : item.id}>{typeof item === "string" ? item : item.name}</option>)}</select></label> : null}
     <label className="up-checkbox"><input type="checkbox" checked={enabled} onChange={event => changed(() => setEnabled(event.target.checked))}/>启用按需联网查询</label>
@@ -126,8 +127,20 @@ export function ResearchIndicator({ phase }: { phase?: string | null }) {
 }
 
 export function ResearchNotice({ status, notice, configure, retry }: { status?: string | null; notice?: string | null; configure: () => void; retry?: () => void }) {
-  if (!notice && !["NOT_CONFIGURED", "FAILED", "UNAVAILABLE", "TIMEOUT"].includes(status || "")) return null;
-  return <div className="web-research-notice" role="status"><span>{notice || (status === "NOT_CONFIGURED" ? "联网查询尚未配置，当前回复无法核实最新资料。" : "本次资料查询未完成。")}</span>{status === "NOT_CONFIGURED" ? <button className="text-button" onClick={configure}>配置联网查询</button> : retry ? <button className="text-button" onClick={retry}>重试回复</button> : <button className="text-button" onClick={configure}>检查联网配置</button>}</div>;
+  const actionable: Record<string, { fallback: string; action?: string }> = {
+    NOT_CONFIGURED: { fallback: "联网查询尚未配置，当前回复无法核实最新资料。", action: "配置联网查询" },
+    DISABLED: { fallback: "联网查询已关闭，当前回复无法核实最新资料。", action: "启用联网查询" },
+    NO_RESULTS: { fallback: "没有读到能支持结论的公开资料，可补充条件后继续。", action: "调整联网来源" },
+    SNIPPETS_ONLY: { fallback: "本轮只有搜索摘要，关键数字还需要网页正文核对。", action: "更换联网来源" },
+    FAILED: { fallback: "本次资料查询未完成。" },
+    UNAVAILABLE: { fallback: "联网服务暂时不可用。" },
+    TIMEOUT: { fallback: "本次资料查询超时。" },
+  };
+  const state = actionable[status || ""];
+  // Successful research may carry provenance guidance for the sources drawer;
+  // it is not a connection failure and must not show a repair prompt in chat.
+  if (!state) return null;
+  return <div className="web-research-notice" role="status"><span>{notice || state.fallback}</span>{state.action ? <button className="text-button" onClick={configure}>{state.action}</button> : retry ? <button className="text-button" onClick={retry}>重试回复</button> : <button className="text-button" onClick={configure}>检查联网配置</button>}</div>;
 }
 
 function safeSourceUrl(value: string) { try { const url = new URL(value); if (!["https:", "http:"].includes(url.protocol) || url.username || url.password) return null; return url.href; } catch { return null; } }

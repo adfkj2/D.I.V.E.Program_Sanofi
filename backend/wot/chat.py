@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 
 from .domain import DomainError
-from .storage import digest
+from .storage import digest, now, operation_context
 
 ACTIVE = {"QUEUED", "GENERATING", "DELIVERING", "WAITING_FOLLOWUP"}
 RETRYABLE = {"FAILED", "INTERRUPTED"}
@@ -32,6 +32,9 @@ class ChatEngine:
         self.started = False
         self.closed = False
         with self.lock, self.store.transaction():
+            for conversation in self.store.all("conversation"):
+                if conversation.get("deleted_at") and conversation.get("deletion_cleanup_version", 0) < 1:
+                    self._purge_removed(conversation["id"])
             for batch in self.store.all("reply_batch"):
                 if batch["status"] in ACTIVE:
                     if batch["status"] == "WAITING_FOLLOWUP":
@@ -80,6 +83,8 @@ class ChatEngine:
             raise DomainError("联网开关无效")
         with self.lock, self.store.transaction():
             conversation = self.service.require(conversation_id, "conversation")
+            if conversation.get("deleted_at"):
+                raise DomainError("这段会话已删除，请开启新话题", 409)
             if conversation.get("web_enabled", True) != enabled:
                 conversation["web_enabled"] = enabled
                 self.store.update(conversation)
@@ -92,12 +97,88 @@ class ChatEngine:
                     research.invalidate_scope(conversation_id, "联网设置已改变", pending_only=True)
             return self.service.conversation_summary(conversation)
 
+    def pin(self, conversation_id, pinned):
+        if type(pinned) is not bool:
+            raise DomainError("置顶状态无效")
+        with self.lock, self.store.transaction():
+            conversation = self.service.require(conversation_id, "conversation")
+            if conversation.get("deleted_at"):
+                raise DomainError("这段会话已删除", 409)
+            if bool(conversation.get("pinned")) != pinned:
+                conversation["pinned"] = pinned
+                self.store.update(conversation)
+                self.store.audit("CONVERSATION_PINNED" if pinned else "CONVERSATION_UNPINNED",
+                                 conversation_id)
+            return self.service.conversation_summary(conversation)
+
+    def remove(self, conversation_id):
+        """Clears the room's text and hides it; evidence keeps its message rows."""
+        with self.lock, self.store.transaction():
+            conversation = self.service.require(conversation_id, "conversation")
+            if conversation.get("deleted_at"):
+                return {"id": conversation_id, "status": "DELETED"}
+            # Removing a room must never silently detach an admitted statement
+            # from the text it cites; the user retracts those memories first.
+            live = self.store.fetchone(
+                "SELECT COUNT(*) AS total FROM evidence AS e JOIN messages AS m "
+                "ON m.id=e.message_id WHERE m.conversation_id=? "
+                "AND e.status NOT IN ('DELETED','DELETE_PENDING')", (conversation_id,))["total"]
+            if live:
+                raise DomainError(
+                    f"这段对话里还有 {live} 条已纳入长期记忆的本人陈述。请先在「我」中撤回这些"
+                    "记忆，再删除会话。", 409)
+            cleared = self._purge_removed(conversation_id)
+            self.store.audit("CONVERSATION_DELETED", conversation_id)
+            self.service.privacy_revision += 1
+            operation = operation_context.get()
+            if operation is not None:
+                operation["privacy_updates"] = operation.get("privacy_updates", 0) + 1
+            return {"id": conversation_id, "status": "DELETED", "cleared_messages": cleared}
+
+    def _purge_removed(self, conversation_id):
+        """Join the caller's deletion/startup transaction; add no new consent."""
+        cleared = self.store.fetchone(
+            "SELECT COUNT(*) AS total FROM messages WHERE conversation_id=? AND owner_id='local' "
+            "AND deleted=0", (conversation_id,))["total"]
+        # Completed and failed batches retain paid text too. Purge every
+        # derivative, not only the currently active reply.
+        for batch in self.store.all("reply_batch"):
+            if batch["conversation_id"] != conversation_id:
+                continue
+            batch.update(status="CANCELLED", epoch=batch["epoch"] + 1,
+                         parts=[], idle_followup=None, next_at=None, generated=False,
+                         research_id=None, source_refs=[], failure="会话已删除")
+            self._user_state(batch, "FAILED")
+            self._save(batch)
+        self.service.agents.invalidate_scope(conversation_id, "会话已删除")
+        research = getattr(self.service, "research", None)
+        if research:
+            research.invalidate_scope(conversation_id, "会话已删除")
+        self.store.db.execute(
+            "UPDATE messages SET text='[已删除]',deleted=1,research_id=NULL,source_refs='[]' WHERE conversation_id=? "
+            "AND owner_id='local'", (conversation_id,))
+        # _save updated the room revision; keep its latest value.
+        conversation = self.service.require(conversation_id, "conversation")
+        skill = self.store.get(conversation["skill_id"], "skill") or {}
+        revision = conversation.get("reply_revision", 0) + 1
+        conversation.update(deleted_at=conversation.get("deleted_at") or now(), pinned=False,
+                            title=f"与{skill.get('display_name', '人物')}的聊天",
+                            deletion_cleanup_version=1,
+                            redaction_revision=revision, reply_revision=revision)
+        self.store.update(conversation)
+        self.store.db.execute("UPDATE requests SET response=''")
+        self.service.provider.calls.clear()
+        return cleared
+
     def _user_state(self, batch, state):
         for mid in batch["source_message_ids"]:
             self.store.db.execute("UPDATE messages SET reply_state=? WHERE id=? AND deleted=0",
                                   (state, mid))
 
     def _valid(self, batch):
+        conversation = self.service.require(batch["conversation_id"], "conversation")
+        if conversation.get("deleted_at"):
+            raise DomainError("这段会话已删除，不能继续生成", 409)
         research = getattr(self.service, "research", None)
         if research and batch.get("research_id") and research.stale(batch["research_id"]):
             raise DomainError("联网设置或资料已改变，本次未发内容已停止", 409)
@@ -127,6 +208,8 @@ class ChatEngine:
             raise DomainError("发送消息需要有效的 Idempotency-Key")
         with self.lock, self.store.transaction():
             conversation = self.service.require(conversation_id, "conversation")
+            if conversation.get("deleted_at"):
+                raise DomainError("这段会话已删除，请开启新话题", 409)
             skill = self.service.require(conversation["skill_id"], "skill")
             if skill["status"] != "ACTIVE":
                 raise DomainError("该人物已停用，历史聊天仍可查看", 409)
@@ -247,7 +330,9 @@ class ChatEngine:
         if not isinstance(tab, str) or not tab or len(tab) > 200 or type(data.get("visible")) is not bool or type(data.get("composing")) is not bool:
             raise DomainError("活跃状态无效")
         if cid is not None:
-            self.service.require(cid, "conversation")
+            conversation = self.service.require(cid, "conversation")
+            if conversation.get("deleted_at"):
+                raise DomainError("这段会话已删除，请开启新话题", 409)
         with self.lock, self.store.transaction():
             old = self.presences.get(tab)
             self.presences[tab] = {**data, "expires_at": self._at(self.presence_seconds)}
@@ -274,6 +359,8 @@ class ChatEngine:
             raise DomainError("消息游标无效")
         with self.lock:
             conversation = self.service.require(conversation_id, "conversation")
+            if conversation.get("deleted_at"):
+                raise DomainError("这段会话已删除，请开启新话题", 410)
             latest = self._latest(conversation_id)
             reset = after_revision < conversation.get("redaction_revision", 0)
             messages = self.service.messages(conversation_id)

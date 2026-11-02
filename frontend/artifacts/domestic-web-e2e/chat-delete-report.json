@@ -1,0 +1,16 @@
+{
+  "status": "PASSED",
+  "checks": [
+    "延迟删除非当前会话A不会改变当前B或清空B草稿，删除A后新话题无旧草稿/消息。",
+    "迟到的侧栏快照不恢复已删除会话；另一窗口删除B后410触发缓存清除，其他新话题草稿保留。"
+  ],
+  "screenshots": [
+    "chat-delete-keeps-b-1440.png",
+    "chat-delete-external-390.png"
+  ],
+  "browserErrors": [],
+  "externalRequests": [],
+  "realModelCalls": 0,
+  "realSearchCalls": 0,
+  "limitation": "删除、轮询和状态为本机浏览器夹具；不触发真实模型、搜索或私人数据修改。"
+}

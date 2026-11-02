@@ -1,0 +1,10 @@
+.message-sound-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.message-sound-control.icon-button { width: 34px; height: 34px; }
+.message-sound-control[aria-pressed="false"] { color: var(--muted, #718096); }
+.message-sound-control:focus-visible { outline: 2px solid #3f6ec6; outline-offset: 3px; }

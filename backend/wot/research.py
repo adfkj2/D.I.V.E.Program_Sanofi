@@ -173,12 +173,22 @@ class ResearchManager:
         self._lock = threading.RLock()
         self._deadlines = {}
         with self._atomic():
+            deleted_scopes = {conversation["id"] for conversation in self.store.all("conversation")
+                              if conversation.get("deleted_at")}
+            cleanup_scopes = set()
             for run in self.store.all("research_run"):
+                if run.get("scope_kind") == "CHAT" and run.get("scope_id") in deleted_scopes:
+                    if (run.get("phase") != "INVALIDATED" or any(run.get(key) for key in
+                            ("sources", "unread_sources", "publications", "query_hashes", "requested_urls"))):
+                        cleanup_scopes.add(run["scope_id"])
+                    continue
                 if run.get("phase") in _ACTIVE:
                     run.update(phase="INTERRUPTED", notice="上次查询已中断；不会自动产生新请求")
                     if not run.get("publications"):
                         run.update(sources=[], unread_sources=[])
                     self.store.update(run)
+            for scope_id in cleanup_scopes:
+                self.invalidate_scope(scope_id, "会话已删除")
 
     @contextmanager
     def _atomic(self):
@@ -488,25 +498,29 @@ class ResearchManager:
         return text[:limit]
 
     def _cache(self, run, query_hash):
-        current = datetime.now(timezone.utc)
-        for old in reversed(self.store.all("research_run")):
-            if (old["id"] == run["id"] or old.get("scope_id") != run["scope_id"]
-                    or old.get("provider", "tavily") != run.get("provider", "tavily")
-                    or query_hash not in old.get("query_hashes", []) or old.get("phase") in _STOPPED
-                    or not old.get("publications") or not self._published(old)):
-                continue
-            result = []
-            for source in old.get("sources", []):
-                try:
-                    age = (current - datetime.fromisoformat(source["retrieved_at"])).total_seconds()
-                except (ValueError, KeyError):
+        # Select a parent and attach its deletion lineage atomically, before a
+        # caller may merge the returned snapshot into the current generation.
+        with self._atomic():
+            self._check(run["id"])
+            run = self._run(run["id"])
+            current = datetime.now(timezone.utc)
+            for old in reversed(self.store.all("research_run")):
+                if (old["id"] == run["id"] or old.get("scope_id") != run["scope_id"]
+                        or old.get("provider", "tavily") != run.get("provider", "tavily")
+                        or query_hash not in old.get("query_hashes", []) or old.get("phase") in _STOPPED
+                        or not old.get("publications") or not self._published(old)):
                     continue
-                if 0 <= age <= 900:
-                    result.append(dict(source))
-            if result:
-                with self._atomic():
+                result = []
+                for source in old.get("sources", []):
+                    try:
+                        age = (current - datetime.fromisoformat(source["retrieved_at"])).total_seconds()
+                    except (ValueError, KeyError):
+                        continue
+                    if 0 <= age <= 900:
+                        result.append(dict(source))
+                if result:
                     self.store.link(old["id"], run["id"])
-                return result
+                    return result
         return []
 
     def collect(self, rid, queries, *, cancelled=None, on_request=None):
@@ -524,6 +538,7 @@ class ResearchManager:
         if run["rounds"] >= 2 or run["searches"] + len(queries) > 3:
             raise ResearchLimit()
         with self._atomic():
+            self._check(rid, cancelled)
             run = self._run(rid)
             run.update(rounds=run["rounds"] + 1, phase="SEARCHING")
             self.store.update(run)
@@ -534,6 +549,7 @@ class ResearchManager:
                 self._check(rid, cancelled)
                 qhash = digest(query)
                 with self._atomic():
+                    self._check(rid, cancelled)
                     run = self._run(rid)
                     if qhash not in run["query_hashes"]:
                         run["query_hashes"].append(qhash)
@@ -542,6 +558,7 @@ class ResearchManager:
                 cached = self._cache(run, qhash)
                 if cached:
                     with self._atomic():
+                        self._check(rid, cancelled)
                         current = self._run(rid)
                         for source in cached:
                             if source["url"] not in known:
@@ -581,6 +598,7 @@ class ResearchManager:
             selected = candidates[:remaining]
             if selected:
                 with self._atomic():
+                    self._check(rid, cancelled)
                     run = self._run(rid)
                     run.setdefault("requested_urls", []).extend(c["url"] for c in selected)
                     run["pages"] = len(set(run["requested_urls"]))
@@ -626,6 +644,7 @@ class ResearchManager:
                                                          "reason": "资料未读取"})
                     self.store.update(run)
             with self._atomic():
+                self._check(rid, cancelled)
                 run = self._run(rid)
                 run.update(status="READY" if run["sources"] else "NO_RESULTS",
                            notice="检索内容是网页陈述，仍需核对年份、适用范围和相互冲突之处" if run["sources"] else
@@ -637,6 +656,8 @@ class ResearchManager:
             if getattr(exc, "reason", None) or exc.status == 409:
                 raise
             with self._atomic():
+                if self.stale(rid) or cancelled and cancelled():
+                    raise DomainError("本次查询已取消", 409) from None
                 run = self._run(rid)
                 run.update(status="FAILED", phase="FAILED", notice=str(exc))
                 self.store.update(run)
@@ -666,6 +687,8 @@ class ResearchManager:
         if run["rounds"] >= 2 or run["searches"] + len(queries) > 3:
             raise ResearchLimit()
         with self._atomic():
+            self._check(rid, cancelled)
+            run = self._run(rid)
             run.update(rounds=run["rounds"] + 1, phase="SEARCHING")
             self.store.update(run)
         candidates = []
@@ -675,6 +698,7 @@ class ResearchManager:
                 self._check(rid, cancelled)
                 query_hash = digest(query)
                 with self._atomic():
+                    self._check(rid, cancelled)
                     run = self._run(rid)
                     if query_hash not in run["query_hashes"]:
                         run["query_hashes"].append(query_hash)
@@ -717,6 +741,7 @@ class ResearchManager:
             for candidate in candidates[:remaining]:
                 self._check(rid, cancelled)
                 with self._atomic():
+                    self._check(rid, cancelled)
                     current = self._run(rid)
                     current.setdefault("requested_urls", []).append(candidate["url"])
                     current["pages"] = len(set(current["requested_urls"]))
@@ -761,6 +786,7 @@ class ResearchManager:
                                                           "reason": "资料未读取"})
                     self.store.update(current)
             with self._atomic():
+                self._check(rid, cancelled)
                 run = self._run(rid)
                 body_read = any(source.get("verified_body", True) for source in run["sources"])
                 run.update(status="READY" if body_read else "SNIPPETS_ONLY" if run["sources"] else "NO_RESULTS",
@@ -772,6 +798,8 @@ class ResearchManager:
             if getattr(exc, "reason", None) or exc.status == 409:
                 raise
             with self._atomic():
+                if self.stale(rid) or cancelled and cancelled():
+                    raise DomainError("本次查询已取消", 409) from None
                 run = self._run(rid)
                 run.update(status="FAILED", phase="FAILED", notice=str(exc))
                 self.store.update(run)
@@ -786,27 +814,34 @@ class ResearchManager:
         """Only posted, still-current evidence can cross the two actors' boundary."""
         if not isinstance(research_ids, list):
             raise DomainError("来源引用格式无效")
-        run = self._run(rid)
-        current = datetime.now(timezone.utc)
-        inherited, parents = [], []
-        for old_id in list(dict.fromkeys(research_ids))[:12]:
-            old = self.store.get(old_id, "research_run")
-            if (not old or old["id"] == rid or old["scope_id"] != run["scope_id"]
-                    or old.get("phase") == "INVALIDATED" or not self._published(old)):
-                continue
-            for source in old.get("sources", []):
-                try:
-                    age = (current - datetime.fromisoformat(source["retrieved_at"])).total_seconds()
-                except (ValueError, KeyError):
+        # Parent validity, excerpt selection and the child publication must be
+        # one deletion-serialized operation. Reusing an earlier snapshot could
+        # otherwise persist text which has just been withdrawn.
+        with self._atomic():
+            if self.stale(rid):
+                return self.context(rid)
+            run = self._run(rid)
+            current = datetime.now(timezone.utc)
+            inherited, parents = [], []
+            for old_id in list(dict.fromkeys(research_ids))[:12]:
+                old = self.store.get(old_id, "research_run")
+                if (not old or old["id"] == rid or old["scope_id"] != run["scope_id"]
+                        or old.get("phase") == "INVALIDATED" or not self._published(old)):
                     continue
-                if 0 <= age <= 900:
-                    inherited.append({**source, "cache_hit": True})
-                    parents.append(old["id"])
-        if inherited:
-            with self._atomic():
-                run = self._run(rid)
+                for source in old.get("sources", []):
+                    try:
+                        age = (current - datetime.fromisoformat(source["retrieved_at"])).total_seconds()
+                    except (ValueError, KeyError):
+                        continue
+                    if 0 <= age <= 900:
+                        inherited.append({**source, "cache_hit": True})
+                        parents.append(old["id"])
+            if inherited:
                 run["sources"] = _bounded_sources([*run["sources"], *inherited])
-                run.update(status="READY", notice="仅复用本场已发布且15分钟内查询的资料；仍需核对适用范围")
+                body_read = any(source.get("verified_body", True) for source in run["sources"])
+                run.update(status="READY" if body_read else "SNIPPETS_ONLY",
+                           notice="仅复用本场已发布且15分钟内查询的资料；仍需核对适用范围" if body_read else
+                           "仅复用本场搜索摘要，不能据此给出录取分数等关键数字")
                 self.store.update(run)
                 for parent in set(parents):
                     self.store.link(parent, rid)
@@ -838,6 +873,8 @@ class ResearchManager:
                 raise DomainError("本次查询已取消", 409)
         call_id = uid("research_call")
         call = None
+        reservation_settler = None
+        dispatched = False
         try:
             if rid:
                 self._check(rid, cancelled)
@@ -852,7 +889,16 @@ class ResearchManager:
                     "request_hash": digest([provider, wire_payload]), "credits": None, "fee": None,
                     "at": now()}, rid=call_id)
             if on_request:
-                on_request(call_id)
+                reservation_settler = on_request(call_id)
+            deadline = max(0.1, self._deadlines[rid] - self.clock()) if rid else 20
+            if rid:
+                self._check(rid, cancelled)
+            # Reservation callbacks may themselves observe a pause. Until this
+            # final check passes there is no external attempt to charge. Never
+            # invoke a quota callback while holding the shared store lock.
+            if callable(reservation_settler):
+                reservation_settler(True)
+            dispatched = True
             with self._atomic():
                 call.update(state="DISPATCHED")
                 self.store.update(call)
@@ -860,9 +906,6 @@ class ResearchManager:
                     run = self._run(rid)
                     run["web_requests"] += 1
                     self.store.update(run)
-            deadline = max(0.1, self._deadlines[rid] - self.clock()) if rid else 20
-            if rid:
-                self._check(rid, cancelled)
             with self.client.stream("POST", url,
                                     headers={"Authorization": "Bearer " + secret,
                                              "Content-Type": "application/json", **extra_headers},
@@ -904,9 +947,11 @@ class ResearchManager:
                 with self._atomic():
                     latest = self.store.get(call_id, "research_call")
                     if latest and latest["state"] in {"RESERVED", "DISPATCHED"}:
-                        latest.update(state="NOT_SENT" if latest["state"] == "RESERVED" else "FAILED",
+                        latest.update(state="FAILED" if dispatched else "NOT_SENT",
                                       discarded=bool(rid and self.stale(rid)))
                         self.store.update(latest)
+            if not dispatched and callable(reservation_settler):
+                reservation_settler(False)
             if isinstance(exc, DomainError):
                 raise
             if isinstance(exc, httpx.TimeoutException):
@@ -982,7 +1027,7 @@ class ResearchManager:
                         run.update(phase="CANCELLED", notice="本轮未发布内容已取消")
                     else:
                         run.update(phase="INVALIDATED", status="INVALIDATED", sources=[], unread_sources=[],
-                                   publications=[], query_hashes=[], notice="依赖资料已撤回")
+                                   publications=[], query_hashes=[], requested_urls=[], notice="依赖资料已撤回")
                         invalidated.append(run["id"])
                     self.store.update(run)
             if invalidated:
@@ -1020,7 +1065,7 @@ class ResearchManager:
                         or message_id and message_id in run.get("source_message_ids", [])
                         or row and row["conversation_id"] == run["scope_id"]):
                     run.update(phase="INVALIDATED", status="INVALIDATED", sources=[], unread_sources=[],
-                               publications=[], query_hashes=[], notice="依赖资料已撤回")
+                               publications=[], query_hashes=[], requested_urls=[], notice="依赖资料已撤回")
                     self.store.update(run)
                     invalidated.append(run["id"])
             self._clear_metadata(invalidated)

@@ -6,10 +6,18 @@
 
 ## 项目理念
 
+> 试想一下，如果有另一个自己在自己忙碌的时间里，与你想畅谈的朋友聊天说地，畅谈世间万物，你会好奇他们说了什么吗？你所纠结的，他也会纠结，你感兴趣的，他也会感兴趣，你可以有无数的分身，在有限的时空里，与无数你想交流的人们畅谈，这不是很有趣吗？让我们看看我们聊过什么吧。
+>
+> 这个时代人们太多的把注意力放在外界，却很少关注自身，本项目理念在把注意力回归本身，让自己真正的看见自己。
+
+仓库：<https://github.com/adfkj2/D.I.V.E.Program_Sanofi>
+
+理念落到工程上，是六条必须兑现、而不是用来装饰的约束：
+
 - **记录，不是塑造**：记忆只保存本人明确授权、并确实说过的话，不推断性格、不合成事实。「他说过这句话」和「他是这样的人」是两件不同的事，本项目只做前者。
-- **界面说人话，边界说实话**：模拟内容一律标「AI 模拟」，未经验证的能力标 `UNVALIDATED`，费用没有可靠资料就写「费用未估算」。不拿漂亮的措辞把不确定包装成确定。
-- **删除必须是真删除**：删证据会清正文、断引用，并让依赖它的画像与许可失效；删会话在仍有在用记忆时会拒绝；已删除的内容不会被重放、也不会从缓存里复活。
-- **私人数据留在本机**：单机单进程，Key 存操作系统凭据库，调用账本只记用途、状态、模型与用量，不记录提示词、答案或密钥。
+- **看见自己，先要资料属于自己**：单机单进程，Key 存操作系统凭据库，调用账本只记用途、状态、模型与用量，不记录提示词、答案或密钥；导出与备份都留在本机。
+- **删除必须是真删除**：删证据会清正文、断引用，并让依赖它的画像与许可失效；删会话在仍有在用记忆时会被拒绝；已删除的内容不会被重放、也不会从缓存里复活。
+- **分身必须说实话**：所有模拟内容一律标「AI 模拟」，未经验证的能力标 `UNVALIDATED`，费用没有可靠资料就写「费用未估算」。
 - **人物是解释视角，不是偶像**：每位内置人物对应其公开的思想方法与资料边界，用来多提供一个看问题的角度，不冒充本人、不代其发言。
 - **能力靠证据，不靠数量**：严格个人校验使用冻结答案、匿名判分与本人核验；测试数量只说明契约覆盖，不等于拟真度或实际效果。
 
@@ -83,21 +91,75 @@ API Key 仅提交给本机后端。勾选「记住 Key」时使用操作系统�
 
 网页关闭后会话仍可运行，前提是本机服务保持运行。提供暂停、继续、停止和全部暂停；已发送的模型请求可能产生费用，暂停会丢弃其输出并记录实际用量。
 
-## D.I.V.E 记忆引擎如何实现
+## 记忆引擎：D.I.V.E 如何实现
 
-D.I.V.E 以固定版本 vendored 在 `vendor/dive-memory`（`0.4.0+wot.core`，零第三方依赖），通过 `pip install -c requirements.lock.txt -e './vendor/dive-memory'` 安装并由锁文件约束，不随上游漂移。记忆写入独立的 `memory.db`，与应用库 `wot.db`、私有评估库 `assessment-private.db` 分离。
+D.I.V.E 以固定版本 vendored 在 `vendor/dive-memory`（`0.4.0+wot.core`），通过 `pip install -c requirements.lock.txt -e './vendor/dive-memory'` 安装并由锁文件约束，不随上游漂移。记忆写入独立的 `memory.db`，与应用库 `wot.db`、私有评估库 `assessment-private.db` 分离。
 
-WOT 从不直接读写记忆表，唯一的边界是 `backend/wot/dive_adapter.py`。四个关键设计：
+### 技术栈
 
-**1. 只存原话，不做语义升级。** 适配器用自己的 `_VerbatimObservationExtractor` 替换内核抽取器：一条被授权的本人消息只生成一个 `episode` 候选，`evidence_state` 固定为 `OBSERVATION`，断言语义标记为 `reported_dialogue`。内核里“把对话提炼成事实或性格”的路径在本项目中不启用，因此记忆永远是「你说过这句话」，不会变成「你是这种人」。
+| 层次 | 选型 | 说明 |
+| --- | --- | --- |
+| 语言 | Python 3.11+ | `requires-python = ">=3.11"`，无 C 扩展 |
+| 依赖 | 零第三方依赖 | `dependencies = []`，只用标准库，不引入 ORM、向量库或 Web 框架 |
+| 存储 | SQLite 单文件 `memory.db` | `PRAGMA foreign_keys = ON`；事件、投影、墓碑同库不同表 |
+| 并发 | `threading.RLock` + `_synchronized` 装饰器 | `MemoryService` 的公开方法逐个串行进入，避让 SQLite 写锁 |
+| 主键 | `stable_id()` 确定性散列 / `new_id()` 随机 id | 事件 id 由幂等键派生，重复提交是重放而非新增 |
+| 召回 | 6 个通道 + RRF 融合 + 可权重排 | 默认启用 `bm25`、`dense`、`predicate`、`temporal`、`entity`、`relation`，`rrf_k=60`；`multi_hop` 与 `document_chunk` 需显式开启；未接嵌入模型时 `dense` 会在融合前被过滤 |
+| 应用集成 | `backend/wot/dive_adapter.py` | 全项目唯一调用边界，WOT 不直接读写记忆表 |
+| 应用侧 | FastAPI + 直写 SQLite + React/TypeScript/Vite | 本机单进程；Key 走操作系统凭据库 |
+
+### 数据模型
+
+- `events`：一次写入的原始事件，含 `namespace`、`payload`、`observed_at`、`idempotency_key`，并有 `UNIQUE(namespace, idempotency_key)`
+- `outbox`：投影队列，含 `status`、`attempts`、`last_error`，用来区分「事件已落库」与「记忆已生成」
+- `memories`：记忆条目，含 `evidence_state`、`content`、`importance`、`confidence`、`durability`、`valid_from/valid_to`、`status`、`version`、`supersedes_id`、`contradicts_id`
+- `memory_sources`：记忆与来源事件的多对多映射，检索时据此把每条记忆回指到原话
+- `memory_versions` / `memory_transitions` / `write_decisions`：版本快照、取代与矛盾迁移、写入决策的可审计记录
+- `tombstones`：删除墓碑，只存 `object_type`、`object_id`、`reason` 与时间，不存被删内容
+- 其余保留表：`memory_vectors`、`vector_metadata`、`memory_access`、`entities`、`memory_entities`、`relations`、`memory_relations`、`profiles`、`profile_revisions`、`profile_proposals`、`memory_modes`、`jobs`、`document_chunks`
+
+取值：证据状态 `FACT`／`OBSERVATION`／`INFERENCE`；记忆状态 `CANDIDATE`／`ACTIVE`／`REINFORCED`／`SUPERSEDED`／`MERGED`／`ARCHIVED`／`DELETED`／`REJECTED`。WOT 只使用 `OBSERVATION` 这一档。
+
+### 写入链路
+
+1. 你在消息上授权后，WOT 先在应用库写一条 `evidence`（含命名空间、幂等键 `stable_key`、发生时间），同一事务里写一条 `outbox` 待办。
+2. 进程内的 outbox 处理取出该条，调用 `core.ingest(namespace, text, key=…, source_message_id=…, source_type=…)`。
+3. 适配器先用 `stable_id("evt", namespace, key)` 算出事件 id，查墓碑：命中就拒绝，被删过的内容不能借重试复活。
+4. 内核在同一事务里写 `events` 与 `outbox`（状态 `PENDING`），事务返回后才做投影。
+5. 内核的 worker 消费 outbox，把候选写成 `memories`（`status=ACTIVE`）并建立 `memory_sources` 映射；失败则 `attempts+1` 并保留错误。
+6. 适配器轮询内核 outbox 直到 `DONE`；三次仍未完成就抛错，让 WOT 用同一个幂等键重试。只有确认投影完成，WOT 才回写 `evidence.core_event_id` 与 `memory_ids`，并把应用侧 outbox 标记 `APPLIED`。
+
+### 读取链路
+
+1. 查询先过 `plan_query`：把自然语言拆成 `intent`、`temporal_mode`、`predicates`、`limit` 与 token 预算，并决定是否包含历史版本。
+2. `store.search` 按启用配置跑召回：词法 `bm25`、结构化 `predicate`、时间窗 `temporal`、实体 `entity`、关系 `relation`；未接嵌入模型时 `dense` 会在融合前被过滤。
+3. 多路结果用 RRF（`rrf_k=60`）融合，避免不同通道的分数量纲不一致。
+4. `ScoringPolicy` 在融合分之上做重排，六个可独立调权的分量：语义、关键词、新近度（半衰期衰减）、重要度、时间兼容性、记忆状态。带否决性质的信号（已被取代、已归档）用乘性权重压低而不是删除，所以问历史时仍能看见旧版本。
+5. 硬过滤只有两条：命名空间与删除状态；命中后写 `memory_access` 访问记录，结果为空时显式返回 `abstain`，并留下 `retrieval-trace` 说明实际跑了哪些通道。
+6. 返回条目带 `memory_id`、`source_event_ids`、`text`、`evidence_state`、`observed_at`、`namespace`，界面据此显示来源并跳回原始消息。
+
+### 遗忘链路
+
+1. 撤回证据时，WOT 先在应用侧排一条 `DELETE` 任务，处理时调用 `core.delete_by_key(namespace, stable_key)`：命中事件就走 `forget_event(hard=True)`，删事件、记忆投影与向量。
+2. 应用侧的队列总是先处理删除、再处理写入；若删除先于写入到达内核，就只写一条由同一幂等键派生的不透明墓碑，迟到的 `ingest` 会被 `is_tombstoned` 拒绝。
+3. 同时清空幂等响应缓存、递增隐私版本、记录审计，使依赖这份证据的画像、许可与在途回复一起失效。
+
+### 这张记忆表在 WOT 里怎么被用
+
+- **真聊**：只发送本会话未删除的消息与人物上下文，私人记忆不进入真聊请求。
+- **虚拟空间**：仅当该参与者被允许使用私有上下文时，按证据所属的三个命名空间分别 `retrieve(topic, limit=12)`，再用返回的 `source_event_ids` 反查证据白名单，最多取 3 条、每条截断 1000 字，并再走一次 `allow_evidence()` 权限检查。
+- **画像与评估**：读 WOT 自己的证据表与私有评估库，不经过记忆内核；评估库不挂任何记忆适配器。
+- **删除传播**：证据撤回后，应用库的 `evidence` 与内核的 `events`／`memories` 同步失效，任何一侧都不能单独复活内容。
+
+### 关键取舍
+
+**1. 只存原话，不做语义升级。** 适配器用自己的 `_VerbatimObservationExtractor` 替换内核抽取器：一条被授权的本人消息只生成一个 `episode` 候选，`evidence_state` 固定为 `OBSERVATION`，断言语义标记为 `reported_dialogue`。内核里「把对话提炼成事实或性格」的路径在本项目中不启用，因此记忆永远是「你说过这句话」，不会变成「你是这种人」。
 
 **2. 三轨命名空间物理隔离。** 只接受 `user/<id>/real`、`user/<id>/self_reports`、`user/<id>/corrections` 三种命名空间，分别对应真聊、自报与确认更正，来源类型由命名空间推导（`user` / `user_correction`）。越界的命名空间直接报错，所以一条真聊内容不可能被写进自报轨，反向亦然。
 
-**3. 事件溯源 + 幂等键 + 投影确认。** 写入是“事件先落库、worker 再投影成记忆条目”：事件 id 由 `stable_id("evt", namespace, key)` 从幂等键派生，重复提交是重放而不是新增。适配器随后检查内核 `outbox` 的投影状态，最多尝试 3 次；仍未完成就抛错，让上层用同一个 key 重试，绝不把「事件已存但记忆未生成」当成成功返回。
+**3. 固定策略，而不是自适应打分。** 每次写入的接受与否、重要度、置信度、耐久度都取同一组固定值与固定策略版本（`wot-verbatim-observation-v1`），内核照常把这次决策写进 `write_decisions` 供审计，但不存在「让模型决定哪句话更值得记住」的空间。
 
-**4. 检索带来源，删除带墓碑。** 检索调用内核 `retrieve(namespace, query, limit)`，返回条目附带 `source_event_ids`、`evidence_state`、`observed_at` 与所属命名空间，所以界面上每条记忆都能回指原始消息。删除走 `forget_event(hard=True)`；如果删除先于写入到达，只留下由同一套幂等键派生的不透明墓碑，迟到写入会被 `is_tombstoned` 拒绝，被删文本不会复活。删除同时递增隐私版本（由审计表中的删除记录推导），使旧的缓存响应整体失效。
-
-授权与来源判断发生在进入适配器之前：只有本人主动勾选并确认的消息才会走到这里，模拟台词、只改本轮的反馈、模型生成内容都进不去。内核内其余模块（关系、实体、时间、衰减、token 预算、词法与向量检索等）保留在 vendor 中，本项目只用检索与遗忘两条路径，其余保持冻结。
+**4. 能力保留，行为冻结。** 内核里的画像（`profiles`、`hot_memory`）、记忆合并（`consolidate`）、遗忘曲线（`decay`）、任务调度（`jobs`）都留在 vendor 中但本项目不启用，因为「把对话升级成性格」正好与第一条理念相反。授权与来源判断发生在进入适配器之前：只有本人主动勾选并确认的消息才会走到这里，模拟台词、只改本轮的反馈、模型生成内容都进不去。
 
 ## 数据与备份
 

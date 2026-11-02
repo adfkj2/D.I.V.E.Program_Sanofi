@@ -37,7 +37,7 @@
 
 ### 安装包（不需要 Python／Node）
 
-运行 `WeOnceTalked-0.1.0-Setup.exe`，无需管理员权限，安装后开始菜单出现「我们曾聊过」。安装包**未做代码签名**，首次运行会被 SmartScreen 拦截，需要点「更多信息 → 仍要运行」。首版保留控制台窗口显示地址与错误，关闭窗口即停止服务；端口固定 8765，被占用时会明确提示。
+从仓库的 Releases 页面下载 `WeOnceTalked-0.1.0-Setup.exe`（附 SHA-256），无需管理员权限，安装后开始菜单出现「我们曾聊过」。安装包**未做代码签名**，首次运行会被 SmartScreen 拦截，需要点「更多信息 → 仍要运行」。首版保留控制台窗口显示地址与错误，关闭窗口即停止服务；端口固定 8765，被占用时会明确提示。
 
 用户数据在 `%LOCALAPPDATA%\WeOnceTalked\data`，卸载不删除，重装后原有会话与记忆继续可用。体积、限制与验收记录见[Windows 安装包](docs/implementation/WINDOWS_PACKAGE.md)。
 

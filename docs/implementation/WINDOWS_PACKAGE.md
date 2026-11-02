@@ -4,12 +4,18 @@
 
 ## 产物
 
-| 产物 | 路径 | 大小 |
+| 产物 | 位置 | 大小 |
 | --- | --- | --- |
-| 安装包 | `dist\windows\WeOnceTalked-0.1.0-Setup.exe` | 20.9 MB（21,912,556 字节） |
-| 冻结目录 | `dist\WeOnceTalked\`（`WeOnceTalked.exe` + `_internal\`） | 50.0 MB |
+| 安装包 | GitHub Release `v0.1.0` 资产 `WeOnceTalked-0.1.0-Setup.exe` + `.sha256` | 20.9 MB（21,912,556 字节） |
+| 构建产物 | 本地 `dist\windows\WeOnceTalked-0.1.0-Setup.exe`、`dist\WeOnceTalked\`（`WeOnceTalked.exe` + `_internal\`） | 20.9 MB / 冻结目录 50.0 MB |
 
-两者都不进版本库：`dist/` 与 `.build/` 已在 `.gitignore` 中。
+安装包已作为 Release 资产发布，供没有开发环境的人直接下载；`dist/` 与 `.build/` 仍在 `.gitignore` 中，二进制不进版本库。SHA-256：
+
+```
+8fb478d21aff889ade396149fd2d4b21fe4147f3fdef0b08a793f45d375ada17  WeOnceTalked-0.1.0-Setup.exe
+```
+
+发布不自动化：目前没有 Windows CI 作业，Release 由本机构建后手动上传。改动代码后需要重新构建并另发一个 tag，避免覆盖已发布的同名资产。
 
 ## 用户看到的行为
 

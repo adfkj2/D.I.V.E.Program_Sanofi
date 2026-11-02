@@ -39,6 +39,8 @@
 
 每位人物在 `vendor/nuwa-personas/{slug}/` 保存三个文件：未经修改的上游 `SKILL.md`、完整 `LICENSE` 和 `provenance.json`。总清单位于 `vendor/nuwa-personas/provenance.json`。上游通过 GitHub 连接按固定 commit 取得原始 base64 字节，落盘后重算 Git blob SHA-1 与上游比对。清单还记录原件/许可 SHA-256、版权、原路径、转换版本、runtime 正文 SHA-256及来源核查情况。原件只供追溯，运行时不读取，不执行。
 
+清单中的 `runtime_catalog_sha256` 固定 `backend/wot/data/people.json` 的发布内容：按仓库存储的 LF 换行计算 SHA-256，与开发机的 `core.autocrlf` 设置无关。重新生成该字段时必须先把 `\r\n` 归一化为 `\n` 再求摘要，否则 Windows 工作副本会写入 CRLF 摘要，而 Linux CI 检出 LF 后必然校验失败（2026-11-02 的 CI 红叉即由此产生）。
+
 WOT 的 `text` 是单独整理的角色数据：核心镜片、判断习惯、表达特点、适用范围和诚实边界。未继承上游的“直接冒充本人”“免责声明只说一次”、自动搜索/安装/脚本步骤或95分以上自评认证。所有人物都明示为解释性 AI 角色，`ACTIVE` 只表示资料可使用，不表示真人授权或人格忠实度通过验证。
 
 MIT 原件和转换资料应随分发保留完整许可与版权声明。上游文档许可不自动授予其链接书籍、网页、视频的全文再分发权，也不表示人物本人授权。本次没有下载书籍、字幕或打包一手网页全文。

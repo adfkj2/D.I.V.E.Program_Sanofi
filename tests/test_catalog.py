@@ -21,6 +21,16 @@ def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\x00" + data).hexdigest()
 
 
+def canonical_lf_bytes(path: Path) -> bytes:
+    """Read a text artefact with the line endings git stores it as.
+
+    Git keeps the catalog with LF, but a checkout with ``core.autocrlf=true``
+    writes CRLF, so hashing the working copy byte-for-byte would attest the
+    developer's platform instead of the shipped content.
+    """
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def test_exact_fifteen_people_and_first_three_ranks():
     people = builtin_people()
     assert len(people) == 15
@@ -91,7 +101,7 @@ def test_vendored_source_and_license_match_exact_upstream_and_runtime_hashes(slu
 def test_manifest_lists_every_source_and_exact_packaged_catalog():
     manifest = json.loads((ROOT / "vendor/nuwa-personas/provenance.json").read_text(encoding="utf-8"))
     assert {row["slug"] for row in manifest["people"]} == SLUGS
-    catalog_bytes = (ROOT / "backend/wot/data/people.json").read_bytes()
+    catalog_bytes = canonical_lf_bytes(ROOT / "backend/wot/data/people.json")
     assert hashlib.sha256(catalog_bytes).hexdigest() == manifest["runtime_catalog_sha256"]
 
 
